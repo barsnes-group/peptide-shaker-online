@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html style="width:100%;height: 100%;">
+    <head>
+        <title>Reactom viewer</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript" language="javascript" src="fireworks.nocache.js"></script>
+    </head>
+    <body style="width:98%;height: 98%;">
+        <div id="fireworksHolder" style="width:100%;height: 100%;"></div>
+        <script>
+            var value;
+            var frameWidth;
+            var frameHeight;
+            window.onload = function () {
+                var id = 'id';
+                value = getParameterByName(id);
+                frameWidth = document.getElementsByTagName("body")[0].offsetWidth;
+                frameHeight = document.getElementsByTagName("body")[0].offsetHeight;
+            };
+
+            var fireworks;
+            window.onresize = function (event) {
+                window.location.reload();
+            };
+
+            //Creating the Reactome pathways overview widget
+            function onReactomeFireworksReady() {  //This function is automatically called when the widget code is ready to be used
+                fireworks = Reactome.Fireworks.create({
+                    "placeHolder": "fireworksHolder",
+                    "width": frameWidth,
+                    "height": frameHeight
+                });
+                //Adding different listeners
+
+                fireworks.onFireworksLoaded(function (loaded) {
+                    console.info("Loaded ", loaded);
+                    loadSearch();
+                });
+
+                fireworks.onNodeHovered(function (hovered) {
+                    console.info("Hovered ", hovered);
+                });
+
+                fireworks.onNodeSelected(function (selected) {
+                    console.info("Selected ", selected);
+                });
+
+
+            }
+
+            function loadSearch() {
+                var viewSearchBtn = document.getElementsByClassName("GEHTCOXFN")[0];
+                viewSearchBtn.click();
+                var inputsearch = document.getElementsByClassName("GEHTCOXDN GEHTCOXEN")[0];
+                inputsearch.value = value;
+                var searchBtn = document.getElementsByClassName("GEHTCOXCN")[0];
+                searchBtn.click();
+
+                var searchBarTohide = document.getElementsByClassName("GEHTCOXGN GEHTCOXHN")[0];
+                searchBarTohide.style.display = "none";
+
+                var resultscontainer = document.getElementsByClassName("GEHTCOXOQ")[0];
+                resultscontainer.style.background = "#ffffff";
+
+
+                var resultscontainer = document.getElementsByClassName("GEHTCOXDL")[0];
+                resultscontainer.style.right = "50px";
+
+
+
+            }
+
+            function getParameterByName(name) {
+
+                var url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                        results = regex.exec(url);
+                if (!results)
+                    return null;
+                if (!results[2])
+                    return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+
+        </script>
+    </body>
+</html>

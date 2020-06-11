@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+    <display-name>Vaadin Web Application</display-name>
+    <listener>
+        <listener-class>com.uib.web.peptideshaker.listeners.VaadinSessionListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>com.uib.web.peptideshaker.listeners.VaadinContextListener</listener-class>
+    </listener> 
+    <context-param>
+        <description>link to csf-pr available proteins list</description>
+        <param-name>csfprservice</param-name>
+        <param-value>https://proteomics.uib.no/csf-pr/VAADIN/</param-value>
+    </context-param>
+    <context-param>
+        <description>galaxy url</description>
+        <param-name>galaxyServerUrl</param-name>
+        <param-value>http://158.39.74.194/</param-value>
+    </context-param>
+    <context-param>
+        <description>Test user API key for galaxy</description>
+        <param-name>testUserAPIKey</param-name>
+        <param-value>testuserapikey</param-value>
+    </context-param>
+    <context-param>
+        <description>peptide shaker tool version</description>
+        <param-name>psvirsion</param-name>
+        <param-value>2.0.1_SNAPSHOT.8</param-value>
+    </context-param>
+    <context-param>
+        <description>SearchGUI tool version</description>
+        <param-name>searchguivirsion</param-name>
+        <param-value>4.0.1_SNAPSHOT.8</param-value>
+    </context-param>
+    <context-param>
+        <description>MoFF tool version</description>
+        <param-name>moffvirsion</param-name>
+        <param-value>2.0.3.0</param-value>
+    </context-param>
+    <context-param>
+        <description>Database url</description>
+        <param-name>url</param-name>
+        <param-value>jdbc:mysql://localhost:3306/</param-value>
+    </context-param>   
+    <context-param>
+        <description>Database Driver</description>
+        <param-name>driver</param-name>
+        <param-value>com.mysql.jdbc.Driver</param-value>
+    </context-param>
+    <context-param>
+        <description>Database Password  </description>
+        <param-name>password</param-name>
+        <param-value>totest</param-value>
+    </context-param>
+    <context-param>
+        <description>Database Username root/phpmyadminuser</description>
+        <param-name>userName</param-name>
+        <param-value>root</param-value>
+    </context-param>
+     <context-param>
+        <description>Web Application name (same as war file)</description>
+        <param-name>appName</param-name>
+        <param-value>web-peptide-shaker-1.0</param-value>
+    </context-param>
+     <context-param>
+        <description>database name</description>
+        <param-name>dbName</param-name>
+        <param-value>dbname</param-value>
+    </context-param>
+    <!-- Session Configuration -->
+    <session-config>
+        <session-timeout>15</session-timeout>
+    </session-config>
+    <servlet>
+        <servlet-name>jsmol</servlet-name>
+        <jsp-file>/VAADIN/jsmol/jsptest.jsp</jsp-file>
+    </servlet>
+    <servlet>
+        <servlet-name>litemol</servlet-name>
+        <jsp-file>/VAADIN/litemol/LiteMolFrame.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>jsmol</servlet-name>
+        <url-pattern>/jsmol</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>litemol</servlet-name>
+        <url-pattern>/litemol</url-pattern>
+    </servlet-mapping>
+  
+</web-app>

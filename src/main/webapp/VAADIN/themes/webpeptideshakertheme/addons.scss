@@ -1,0 +1,17 @@
+/* This file is automatically managed and will be overwritten from time to time. */
+/* Do not manually edit this file. */
+
+/* Provided by vaadin-icons-2.0.0.jar */
+@import "../../../VAADIN/addons/vaadin-icons/vaadin-icons.scss";
+
+
+/* Provided by gofullscreen-addon-0.5.3.jar */
+@import "../../../VAADIN/addons/gofullscreen/gofullscreen.scss";
+
+
+/* Import and include this mixin into your project theme to include the addon themes */
+@mixin addons {
+	@include vaadin-icons;
+	@include gofullscreen;
+}
+

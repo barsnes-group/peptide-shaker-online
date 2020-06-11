@@ -1,0 +1,99 @@
+
+
+
+
+/* 
+    Created on : Nov 20, 2017, 1:52:43 PM
+    Author     : Yehia Farag
+*/
+html,body,.litemolbody,center{
+    overflow: hidden !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+.lm-plugin-content.lm-layout-standard.lm-layout-standard-outside{
+    width:50% !important;
+    height:50% !important;
+    padding:0px !important;
+    margin:0px !important;
+}
+.lm-layout-region.lm-layout-right, .lm-layout-region.lm-layout-bottom,.lm-layout-region.lm-layout-left{
+    visibility:hidden;
+    display:none;
+}
+.lm-plugin{
+    background:white;
+}
+.lm-layout-region.lm-layout-main {
+    width:100%;
+    height:100%;
+    left:0px !important;
+}
+.lm-viewport-controls-buttons{
+}
+.lm-btn.lm-btn-link.lm-btn-link-toggle-off,.lm-btn.lm-btn-link{
+    background:#ffffff !important;
+    color:#2886e3 !important ; 
+    height:20px !important;
+    margin-top:0px !important;
+    line-height:100%;
+    font-weight: 400 !important;
+    text-align: center;
+    font-size: 16px;
+    border:none !important;
+}
+.lm-btn.lm-btn-link.lm-btn-link-toggle-off:hover,.lm-btn.lm-btn-link:hover{    
+    color:gray !important; 
+}
+.lm-btn.lm-btn-link.lm-btn-link-toggle-off:focus {
+    outline: none !important;
+}
+.lm-highlight-info{
+    bottom:8px;
+    right:8px;
+    top:auto !important;
+    left:auto !important;
+    background:white !important;
+    border:2px solid whitesmoke;
+    border-radius:5px;
+    color:#2886e3 !important;
+
+}
+.lm-viewport-controls-buttons{
+    background:white !important;
+    border-radius:5px; 
+    padding:1px !important;
+    height:auto !important;
+}
+.lm-logo > div > div > div:first-child {
+    background: lightgray  !important;
+}
+.lm-viewport-controls{
+}
+.lm-plugin .lm-control-row > span {
+    line-height: 32px;
+    display: block;      
+    float:left;
+    text-align:right;
+    padding: 0 10px;  
+    -webkit-user-select: none;
+    /* Chrome/Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* IE10+ */
+    /* Rules below not implemented in browsers yet */
+    -o-user-select: none;
+    user-select: none;
+    cursor: default; 
+}
+.lm-layout-region.lm-layout-right{
+    visiblity:hidden !important;
+    width:0px !important
+}
+.lm-layout-region.lm-layout-main,.lm-viewport-host3d canvas{
+    width: 100% !important;
+}
+.progress{
+     background-image: url("img/loading.gif");
+}
