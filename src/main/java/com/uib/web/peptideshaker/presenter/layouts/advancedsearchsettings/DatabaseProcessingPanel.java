@@ -33,7 +33,7 @@ public class DatabaseProcessingPanel extends PopupWindow {
         AbsoluteLayout container = new AbsoluteLayout();
         container.setStyleName("popuppanelmaincontainer");
         container.setWidth(400, Unit.PIXELS);
-        container.setHeight(185, Unit.PIXELS);
+        container.setHeight(182, Unit.PIXELS);
 
         VerticalLayout subContainer = new VerticalLayout();
         subContainer.setSizeFull();
