@@ -43,7 +43,7 @@ public class StatusLabel extends Image {
             this.status = 0;
         } else if (status.equalsIgnoreCase("new") || status.equalsIgnoreCase("running") || status.equalsIgnoreCase("queued")) {
             StatusLabel.this.setSource(processing);
-            StatusLabel.this.setWidth(100, Unit.PIXELS);
+            StatusLabel.this.setWidth(80, Unit.PIXELS);
             this.status = 1;
         } else {
             StatusLabel.this.setSource(notValid);

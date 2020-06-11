@@ -548,8 +548,6 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
             } else {
                 inputDataFilesContainer.removeStyleName("errorstyle");
             }
-            System.out.println("at search settings ?? " + _searchSettingsFileList.getSelectedValue());
-
             if (searchEngines.getSelectedValue() == null || searchEngines.getSelectedValue().isEmpty()) {
                 searchEngines.setRequired(true, "Select at least 1 search engine");
                 return;
