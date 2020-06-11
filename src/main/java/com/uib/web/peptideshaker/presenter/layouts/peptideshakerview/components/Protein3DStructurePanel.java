@@ -1,5 +1,6 @@
 package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components;
 
+import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideObject;
 import com.uib.web.peptideshaker.model.core.pdb.PDBMatch;
@@ -22,7 +23,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import com.uib.web.peptideshaker.model.core.ModificationFactory;
 import java.util.HashSet;
 
 /**
@@ -275,7 +275,7 @@ public class Protein3DStructurePanel extends AbsoluteLayout {
     /**
      * The post translational modifications factory.
      */
-    private final ModificationFactory PTM = new ModificationFactory();
+    private final ModificationFactory PTM = ModificationFactory.getInstance();
 
     private void selectPeptides(String peptideKey) {
         lastSelectedPeptideKey = peptideKey;

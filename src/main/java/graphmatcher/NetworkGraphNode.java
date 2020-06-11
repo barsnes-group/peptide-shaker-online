@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package graphmatcher;
-import com.uib.web.peptideshaker.model.core.ModificationFactory;
+import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
@@ -41,7 +41,7 @@ public abstract class NetworkGraphNode extends VerticalLayout implements LayoutE
     private final String accession;
     private final boolean parent;
     private NetworkGraphNode parentNode;
-    private final ModificationFactory modificationFactory = new ModificationFactory();
+    private final ModificationFactory modificationFactory = ModificationFactory.getInstance();
     private final Map<String, Integer> modificationsLocationsMap;
     private final Color finalColor;
     private Label modificationLabel;

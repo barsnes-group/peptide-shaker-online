@@ -21,7 +21,6 @@ import com.compomics.util.experiment.identification.spectrum_assumptions.Peptide
 import com.compomics.util.experiment.io.biology.protein.SequenceProvider;
 import com.compomics.util.experiment.mass_spectrometry.spectra.Precursor;
 import com.compomics.util.experiment.mass_spectrometry.spectra.Spectrum;
-import com.compomics.util.gui.spectrum.SpectrumPanel;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.advanced.SequenceMatchingParameters;
 import com.compomics.util.parameters.identification.search.ModificationParameters;
@@ -38,7 +37,6 @@ import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.slider.SliderOrientation;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.MenuBar;
@@ -46,16 +44,9 @@ import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.Slider;
 import com.vaadin.ui.themes.ValoTheme;
-import edu.uci.ics.jung.algorithms.layout.FRLayout;
-import edu.uci.ics.jung.visualization.VisualizationViewer;
-import edu.uci.ics.jung.visualization.control.CrossoverScalingControl;
-import edu.uci.ics.jung.visualization.control.ScalingControl;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Shape;
 import java.awt.event.ActionEvent;
-import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -487,13 +478,21 @@ public class SpectrumPlot extends AbsoluteLayout {
         AnnotationParameters annotationParameters = identificationParameters.getAnnotationParameters();
         annotationParameters.setIntensityLimit(levelSlider.getValue() / 100.0);
         annotationParameters.setFragmentIonAccuracy(accuracy);
-        specificAnnotationParameters = new SpecificAnnotationParameters(currentSpectrum.getSpectrumKey(), peptideAssumption);
+        specificAnnotationParameters = new SpecificAnnotationParameters();
         ModificationParameters modificationParameters = identificationParameters.getSearchParameters().getModificationParameters();
         SequenceMatchingParameters modificationSequenceMatchingParameters = identificationParameters.getModificationLocalizationParameters().getSequenceMatchingParameters();
         identificationParameters.setAnnotationParameters(annotationParameters);
-        //                identificationParameters.setAnnotationSettings(annotationPreferences);
-        specificAnnotationParameters = annotationParameters.getSpecificAnnotationParameters(currentSpectrum.getSpectrumKey(), peptideAssumption, modificationParameters, sequenceProvider, modificationSequenceMatchingParameters, spectrumAnnotator);
-        //                specificAnnotationParameters = annotationParameters.getSpecificAnnotationParameters(currentSpectrum.getSpectrumKey(), specificAnnotationParameters.getSpectrumIdentificationAssumption(), identificationParameters.getSequenceMatchingPreferences(), identificationParameters.getPtmScoringPreferencesSequenceMatchingPreferences());
+        
+        specificAnnotationParameters = annotationParameters.getSpecificAnnotationParameters(
+                        spectrumMatch.getSpectrumFile(),
+                        spectrumMatch.getSpectrumTitle(),
+                        peptideAssumption,
+                        modificationParameters,
+                        sequenceProvider,
+                        modificationSequenceMatchingParameters,
+                        spectrumAnnotator
+                );
+
         if (!defaultAnnotationInUse) {
             specificAnnotationParameters.getIonTypes().get(IonType.PEPTIDE_FRAGMENT_ION).clear();
             specificAnnotationParameters.getIonTypes().get(IonType.TAG_FRAGMENT_ION).clear();
@@ -553,8 +552,17 @@ public class SpectrumPlot extends AbsoluteLayout {
         spectrumPanel.removeAllReferenceAreasXAxis();
         spectrumPanel.removeAllReferenceAreasYAxis();
         spectrumPanel.setDeltaMassWindow(accuracy);
-        IonMatch[] annotations = spectrumAnnotator.getSpectrumAnnotation(annotationParameters, specificAnnotationParameters, currentSpectrum, currentPeptide,
-                modificationParameters, sequenceProvider, modificationSequenceMatchingParameters);
+        IonMatch[] annotations = spectrumAnnotator.getSpectrumAnnotation(
+                annotationParameters, 
+                specificAnnotationParameters, 
+                spectrumMatch.getSpectrumFile(),
+                spectrumMatch.getSpectrumTitle(),
+                currentSpectrum, 
+                currentPeptide,
+                modificationParameters, 
+                sequenceProvider,
+                modificationSequenceMatchingParameters
+        );
         spectrumPanel.setAnnotations(SpectrumAnnotator.getSpectrumAnnotation(annotations));
         spectrumPanel.showAnnotatedPeaksOnly(!annotationParameters.showAllPeaks());
         spectrumPanel.setYAxisZoomExcludesBackgroundPeaks(annotationParameters.yAxisZoomExcludesBackgroundPeaks());//
@@ -606,8 +614,8 @@ public class SpectrumPlot extends AbsoluteLayout {
         selectedSpectrumThread = new Thread(() -> {
             Precursor precursor = currentSpectrum.getPrecursor();
             spectrumPanel = new WebSpectrumPanel(
-                    currentSpectrum.getOrderedMzValues(), currentSpectrum.getIntensityValuesAsArray(),
-                    precursor.getMz(), Charge.toString(spectrumMatch.getBestPeptideAssumption().getIdentificationCharge()),
+                    currentSpectrum.mz, currentSpectrum.intensity,
+                    precursor.mz, Charge.toString(spectrumMatch.getBestPeptideAssumption().getIdentificationCharge()),
                     "", 40, false, false, false, 2, false);
 
 //                    

@@ -77,11 +77,14 @@ public class GalaxyDatasetServingUtil {
             URLConnection conn = website.openConnection();
             conn.addRequestProperty("Accept", "application/json, text/javascript, */*; q=0.01");
             double precursorMz = 0, precursorIntensity = 0, rt = -1.0, rt1 = -1, rt2 = -1;
-            ArrayList<Integer> precursorCharges = new ArrayList<>();
+            int[] precursorCharges = null;
             String scanNumber = "", spectrumTitle = "";
             HashMap<Double, Peak> spectrum = new HashMap<>();
             String line;
             boolean insideSpectrum = false;
+            ArrayList<Double> mzList = new ArrayList<>(0);
+            ArrayList<Double> intensityList = new ArrayList<>(0);
+
             try (BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"))) {
                 while ((line = bin.readLine()) != null) {
                     JSONObject jsonObject = new JSONObject(line);
@@ -99,7 +102,8 @@ public class GalaxyDatasetServingUtil {
 
                         if (line.startsWith("BEGIN")) {
                             insideSpectrum = true;
-                            spectrum = new HashMap<>();
+                            mzList = new ArrayList<>();
+                            intensityList = new ArrayList<>();
                         } else if (line.startsWith("TITLE")) {
                             insideSpectrum = true;
                             spectrumTitle = line.substring(line.indexOf('=') + 1);
@@ -169,17 +173,27 @@ public class GalaxyDatasetServingUtil {
                             } else {
                                 precursor = new Precursor(rt, precursorMz, precursorIntensity, precursorCharges);
                             }
-                            Spectrum msnSpectrum = new Spectrum(2, precursor, spectrumTitle, spectrum, MGFFileName);
-                            msnSpectrum.setScanNumber(scanNumber);
-                            return msnSpectrum;
+
+                            double[] mzArray = mzList.stream()
+                                    .mapToDouble(
+                                            a -> a
+                                    )
+                                    .toArray();
+                            double[] intensityArray = intensityList.stream()
+                                    .mapToDouble(
+                                            a -> a
+                                    )
+                                    .toArray();
+                            return new Spectrum(precursor, mzArray, intensityArray);
+
                         } else if (insideSpectrum && !line.equals("")) {
                             try {
                                 String values[] = line.split("\\s+");
-                                Double mz = new Double(values[0]);
-                                Double intensity = new Double(values[1]);
-                                spectrum.put(mz, new Peak(mz, intensity));
-                            } catch (NumberFormatException e1) {
-                                e1.printStackTrace();
+                                double mz = Double.parseDouble(values[0]);
+                                mzList.add(mz);
+                                double intensity = Double.parseDouble(values[1]);
+                                intensityList.add(intensity);
+                            } catch (Exception e1) {
                                 // ignore comments and all other lines
                             }
                         }
@@ -208,7 +222,7 @@ public class GalaxyDatasetServingUtil {
      * @return the possible charges found
      * @throws IllegalArgumentException
      */
-    private ArrayList<Integer> parseCharges(String chargeLine) {
+    private int[] parseCharges(String chargeLine) {
 
         ArrayList<Integer> result = new ArrayList<>(1);
         String tempLine = chargeLine.substring(chargeLine.indexOf("=") + 1);
@@ -246,7 +260,10 @@ public class GalaxyDatasetServingUtil {
         if (result.isEmpty()) {
             result.add(1);
         }
-        return result;
+
+        return result.stream()
+                .mapToInt(a -> a)
+                .toArray();
     }
 
     /**

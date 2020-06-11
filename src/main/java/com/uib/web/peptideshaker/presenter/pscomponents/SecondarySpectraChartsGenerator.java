@@ -107,10 +107,28 @@ public class SecondarySpectraChartsGenerator {
         identificationParameters.setAnnotationParameters(annotationParameters);
         SequenceMatchingParameters modificationSequenceMatchingParameters = identificationParameters.getModificationLocalizationParameters().getSequenceMatchingParameters();
 
-        SpecificAnnotationParameters specificAnnotationParameters = annotationParameters.getSpecificAnnotationParameters(spectrumInformation.getSpectrum().getSpectrumKey(), peptideAssumption, modificationParameters, sequenceProvider, modificationSequenceMatchingParameters, spectrumAnnotator);
+        SpecificAnnotationParameters specificAnnotationParameters = annotationParameters.getSpecificAnnotationParameters(
+                spectrumInformation.getSpectrumMatch().getSpectrumFile(),
+                spectrumInformation.getSpectrumMatch().getSpectrumTitle(),
+                peptideAssumption, 
+                modificationParameters, 
+                sequenceProvider, 
+                modificationSequenceMatchingParameters, 
+                spectrumAnnotator
+        );
 
-        IonMatch[] annotations = spectrumAnnotator.getSpectrumAnnotation(annotationParameters, specificAnnotationParameters, spectrumInformation.getSpectrum(), currentPeptide,
-                modificationParameters, sequenceProvider, modificationSequenceMatchingParameters);
+        IonMatch[] annotations = spectrumAnnotator.getSpectrumAnnotation(
+                        annotationParameters,
+                        specificAnnotationParameters,
+                        spectrumInformation.getSpectrumMatch().getSpectrumFile(),
+                        spectrumInformation.getSpectrumMatch().getSpectrumTitle(),
+                        spectrumInformation.getSpectrum(),
+                        currentPeptide,
+                        modificationParameters,
+                        sequenceProvider,
+                        modificationSequenceMatchingParameters
+                );
+        
 //        PeptideAssumption peptideAssumption = spectrumInformation.getSpectrumMatch().getBestPeptideAssumption();
 //        Peptide currentPeptide = peptideAssumption.getPeptide();
 //        AnnotationParameters annotationParameters = spectrumInformation.getIdentificationParameters().getAnnotationParameters();

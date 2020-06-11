@@ -1712,7 +1712,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             Peptide psPeptide = new Peptide(peptideObject.getSequence(), peptideObject.getVariableModifications());//modifiedPeptideSequence.replace("NH2-", "").replace("-COOH", "")
 //            psPeptide.setProteinMapping(new ArrayList<>(selectedPsm.getProteins()));
             PeptideAssumption psAssumption = new PeptideAssumption(psPeptide, tCharge);
-            SpectrumMatch spectrumMatch = new SpectrumMatch(spectrum.getSpectrumKey());
+            SpectrumMatch spectrumMatch = new SpectrumMatch(selectedPsm.getSpectrumFile(), selectedPsm.getSpectrumTitle());
             spectrumMatch.setBestPeptideAssumption(psAssumption);
             SpectrumInformation spectrumInformation = new SpectrumInformation();
             spectrumInformation.setCharge(Charge.getChargeAsFormattedString(tCharge));

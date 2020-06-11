@@ -5,8 +5,8 @@
  */
 package com.uib.web.peptideshaker.presenter.core.graph;
 
+import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
-import com.uib.web.peptideshaker.model.core.ModificationFactory;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
@@ -47,7 +47,7 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
     /**
      * The post translational modifications factory.
      */
-    private final ModificationFactory PTM = new ModificationFactory();
+    private final ModificationFactory PTM = ModificationFactory.getInstance();
 
     public Node(String id, String tooltip, String modifications, String sequence, int psmNumber, String PSMNumberColor, double inteinsity, String inteinsityColor) {
 
