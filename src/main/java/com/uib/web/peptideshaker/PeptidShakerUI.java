@@ -60,13 +60,13 @@ public class PeptidShakerUI extends UI {
         String brwserApp = Page.getCurrent().getWebBrowser().getBrowserApplication();
         int screenWidth = Page.getCurrent().getBrowserWindowWidth();
         int screenHeigh = Page.getCurrent().getBrowserWindowHeight();
-        int screenWidth2 = Page.getCurrent().getWebBrowser().getScreenWidth();
-        int screenHeigh2 = Page.getCurrent().getWebBrowser().getScreenHeight();
-        System.out.println("*************************************************************************");
-        System.out.println("at app " + brwserApp);
-        System.out.println("at  w: " + screenWidth + " |  h: " + screenHeigh);
-        System.out.println("at w2: " + screenWidth2 + " | h2: " + screenHeigh2);
-        System.out.println("*************************************************************************");
+//        int screenWidth2 = Page.getCurrent().getWebBrowser().getScreenWidth();
+//        int screenHeigh2 = Page.getCurrent().getWebBrowser().getScreenHeight();
+//        System.out.println("*************************************************************************");
+//        System.out.println("at app " + brwserApp);
+//        System.out.println("at  w: " + screenWidth + " |  h: " + screenHeigh);
+//        System.out.println("at w2: " + screenWidth2 + " | h2: " + screenHeigh2);
+//        System.out.println("*************************************************************************");
         portraitScreenMode = screenWidth < screenHeigh;
         /**
          * case of average screen 1000*500
@@ -179,53 +179,8 @@ public class PeptidShakerUI extends UI {
             e.printStackTrace();
 
         }
-      
-//        button.addFullScreenChangeListener(new FullScreenChangeListener() {
-//
-//            @Override
-//            public void onFullScreenChangeListener(AbstractComponent component,
-//                    boolean fullscreen) {
-//
-//                if (fullscreen) {
-//                    System.out.println("All is now fullscreen");
-//                    button.setCaption("All (off)");
-//                } else {
-//                    System.out.println("All isn't anymore fullscreen");
-//                    button.setCaption("All (on)");
-//                }
-//            }
-//
-//        });
-
-//        com.vaadin.ui.JavaScript.getCurrent().execute("document.body.webkitRequestFullscreen();");
-//        com.vaadin.ui.JavaScript.getCurrent().execute("document.documentElement.webkitRequestFullscreen();");
-//        Button btn = new Button("excute js");
-//        webPeptideShakerApp.getApplicationUserInterface().addComponent(btn);
-//        btn.addClickListener(new Button.ClickListener() {
-//            @Override
-//            public void buttonClick(Button.ClickEvent event) {
-//                System.out.println("invokation is active :-D ");
-//                String url1 = "\"http://localhost:8080/web-peptide-shaker-1.0/VAADIN/js/LiteMol-plugin.js\"";
-//                String url2="\"http://localhost:8080/web-peptide-shaker-1.0/VAADIN/js/mylitemol-connector.js\"";
-//                String url3 ="\"http://localhost:8080/web-peptide-shaker-1.0/VAADIN/js/mylitemollibrary.js\"";
-//                String url4="\"https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js\"";
-//                String url5 = "\"https://cdnjs.cloudflare.com/ajax/libs/jquery.touch/1.1.0/jquery.touch.min.js\"";
-//                addJavaScriptFile(url1);
-//                addJavaScriptFile(url2);
-//                addJavaScriptFile(url3);
-//                addJavaScriptFile(url4);
-//                addJavaScriptFile(url5);
-//            }
-//        });
 
     }
-//    private void addJavaScriptFile(String fileURL){
-//        String code ="var js = document.createElement(\"script\"); js.type = \"text/javascript\";js.src = "+fileURL+";"
-//                        + "document.body.appendChild(js);" ;
-//                
-//    
-//    }
-//    
 
     /**
      * update main style for the application.

@@ -233,7 +233,6 @@ public abstract class DataViewLayout extends Panel {
                 labelContainer.addStyleName("maxwidth90per");
                 labelContainer.setWidthUndefined();
                 labelContainer.setHeight(260, Unit.PIXELS);
-                System.out.println("((PeptideShakerVisualizationDataset) ds) "+((PeptideShakerVisualizationDataset) ds).getVariableModification());
                 Label l = new Label(("<h1>Web PeptideShaker Dataset</h1><p>Project:      " + ds.getName().split("___")[0] + "<p>FASTA:       " +((PeptideShakerVisualizationDataset) ds).getFastaFileName() + "</p>"+ "<p>SearchEngines:       " +((PeptideShakerVisualizationDataset) ds).getSearchEngines()+ "</p>"+ "<p>Variable Modifications:       " +((PeptideShakerVisualizationDataset) ds).getVariableModification()+ "</p>"+ "<p>Fixed Modifications:       " +((PeptideShakerVisualizationDataset) ds).getFixedModification()+ "</p>").replace("[","").replace("]",""), ContentMode.HTML);
                 l.setSizeFull();
                 l.setStyleName("uploadeddsinfo");

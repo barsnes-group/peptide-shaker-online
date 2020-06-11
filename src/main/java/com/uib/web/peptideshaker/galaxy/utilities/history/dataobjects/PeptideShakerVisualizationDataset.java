@@ -2889,8 +2889,6 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             ProteinGroupObject p1 = proteinNodes.get(arr[0].split(";")[0].split("-")[0]);
             ProteinGroupObject p2 = proteinNodes.get(arr[1].split(";")[0].split("-")[0]);
             NetworkGraphNode n1, n2;
-           
-            System.out.println("at p1  "+(p1==null)+" arr "+arr[0]+" -- "+(p2==null)+" "+arr[1]);
             
             if ((p1 == null || !(p1.getProteoformsNodes().containsKey(arr[0].trim()))) && !tNodes.containsKey(arr[0].trim())) {
                 n1 = new NetworkGraphNode(arr[0], false, false) {
