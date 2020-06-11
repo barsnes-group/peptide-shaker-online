@@ -1,12 +1,10 @@
 package com.uib.web.peptideshaker.model.core;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Random;
 import java.util.logging.Level;
@@ -16,8 +14,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * This class is utility for sharing links cross Web PeptideShaker users
@@ -36,8 +33,6 @@ public class LinkUtil {
     private String myEncryptionKey;
     private String myEncryptionScheme;
     SecretKey key;
-    private final BASE64Decoder decoder = new BASE64Decoder();
-    private final BASE64Encoder encoder = new BASE64Encoder();
 
     /**
      * Initialise the utility
@@ -79,7 +74,7 @@ public class LinkUtil {
 
 //        rand.nextBytes(salt);
 
-        return encoder.encode(salt) + encoder.encode(linkToShare.getBytes());
+        return Base64.encodeBase64String(salt) + Base64.encodeBase64String(linkToShare.getBytes());
     }
 
     /**
@@ -93,14 +88,7 @@ public class LinkUtil {
         if (encstr.length() > 12) {
 
             String cipher = encstr.substring(12);
-
-            try {
-
-                return indecrypt(new String(decoder.decodeBuffer(cipher)));
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            return indecrypt(new String(Base64.decodeBase64(cipher)));
 
         }
 
@@ -119,7 +107,7 @@ public class LinkUtil {
             cipher.init(Cipher.ENCRYPT_MODE, key);
             byte[] plainText = unencryptedString.getBytes(UNICODE_FORMAT);
             byte[] encryptedText = cipher.doFinal(plainText);
-            encryptedString = new String(Base64.getEncoder().encode(encryptedText));
+            encryptedString = Base64.encodeBase64String(encryptedText);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -127,7 +115,7 @@ public class LinkUtil {
     }
 
     /**
-     * initialise link to be decyoted
+     * initialise link to be decoded
      *
      * @param encryptedString encrypted link
      * @return decrypted link
@@ -136,7 +124,7 @@ public class LinkUtil {
         String decryptedText = null;
         try {
             cipher.init(Cipher.DECRYPT_MODE, key);
-            byte[] encryptedText = Base64.getDecoder().decode(encryptedString);
+            byte[] encryptedText = Base64.decodeBase64(encryptedString);
             byte[] plainText = cipher.doFinal(encryptedText);
             decryptedText = new String(plainText);
         } catch (Exception e) {
