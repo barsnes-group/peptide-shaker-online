@@ -113,7 +113,7 @@
         <dependency>
             <groupId>com.compomics</groupId>   
             <artifactId>utilities</artifactId>
-            <version>5.0.1-SNAPSHOT-local</version>
+            <version>5.0.0-beta</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>

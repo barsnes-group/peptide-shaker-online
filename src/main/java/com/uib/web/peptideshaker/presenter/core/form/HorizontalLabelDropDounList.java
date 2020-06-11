@@ -98,5 +98,9 @@ public String fullLabelValue(){
         return "<b>"+cap.getValue()+": </b>"+list.getValue();
     
     }
+ public void updateExpandingRatio(float first, float secound) {
+        HorizontalLabelDropDounList.this.setExpandRatio(cap, first);
+        HorizontalLabelDropDounList.this.setExpandRatio(list, secound);
+    }
 
 }

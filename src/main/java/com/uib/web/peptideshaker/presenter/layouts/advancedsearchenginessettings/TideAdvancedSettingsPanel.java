@@ -14,6 +14,7 @@ import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
@@ -66,14 +67,16 @@ public class TideAdvancedSettingsPanel extends PopupWindow {
         AbsoluteLayout container = new AbsoluteLayout();
         container.setStyleName("popuppanelmaincontainer");
         container.setWidth(500, Unit.PIXELS);
-        container.setHeight(415, Unit.PIXELS);
+        container.setHeight(430, Unit.PIXELS);
 
         TideAdvancedSettingsPanel.this.setContent(container);
         TideAdvancedSettingsPanel.this.setClosable(true);
 
+        Label title = new Label("Tide");
+        container.addComponent(title, "left:10px;top:10px");
         TabSheet subContainer = new TabSheet();
         subContainer.setSizeFull();
-        container.addComponent(subContainer, "left:10px;top:10px;right:10px;bottom:40px");
+        container.addComponent(subContainer, "left:10px;top:40px;right:10px;bottom:40px");
         subContainer.setStyleName("subcontainertabsheet");
         subContainer.addStyleName(ValoTheme.TABSHEET_COMPACT_TABBAR);
         /**
@@ -82,10 +85,10 @@ public class TideAdvancedSettingsPanel extends PopupWindow {
         VerticalLayout tab1 = new VerticalLayout();
         subContainer.addTab(tab1, "Index");
 
-        this.peptideLength = new HorizontalLabel2TextField("Peptide Length (min-max)", 0, 0, new IntegerRangeValidator("Only integer number allowed ", (-1* Integer.MAX_VALUE), Integer.MAX_VALUE));
+        this.peptideLength = new HorizontalLabel2TextField("Peptide Length (min-max)", 0, 0, new IntegerRangeValidator("Only integer number allowed ", (-1 * Integer.MAX_VALUE), Integer.MAX_VALUE));
         tab1.addComponent(peptideLength);
 
-        this.precursorMass = new HorizontalLabel2TextField("Precursor Mass (min-max)", 0.0, 0.0, new DoubleRangeValidator("Only double values allowed", (-1* Double.MAX_VALUE), Double.MAX_VALUE));
+        this.precursorMass = new HorizontalLabel2TextField("Precursor Mass (min-max)", 0.0, 0.0, new DoubleRangeValidator("Only double values allowed", (-1 * Double.MAX_VALUE), Double.MAX_VALUE));
         tab1.addComponent(precursorMass);
         Set<String> values = new LinkedHashSet<>();
         values.add("Yes");
@@ -142,6 +145,7 @@ public class TideAdvancedSettingsPanel extends PopupWindow {
         /*tab 2*/
         VerticalLayout tab2 = new VerticalLayout();
         subContainer.addTab(tab2, "Search");
+        tab2.setHeight(301, Unit.PIXELS);
         calculateExactPValue = new HorizontalLabelDropDounList("Calculate Exact p-value");
         calculateExactPValue.updateData(values);
         tab2.addComponent(this.calculateExactPValue);
@@ -150,7 +154,7 @@ public class TideAdvancedSettingsPanel extends PopupWindow {
         calculateSPScore.updateData(values);
         tab2.addComponent(this.calculateSPScore);
 
-        this.spectrumMZ = new HorizontalLabel2TextField("Spectrum m/z (min-max)", 0.0, 0.0, new DoubleRangeValidator("Only double values allowed", (-1* Double.MAX_VALUE), Double.MAX_VALUE));
+        this.spectrumMZ = new HorizontalLabel2TextField("Spectrum m/z (min-max)", 0.0, 0.0, new DoubleRangeValidator("Only double values allowed", (-1.0 * Double.MAX_VALUE), Double.MAX_VALUE));
         tab2.addComponent(spectrumMZ);
         spectrumMZ.setRequired(false);
 
@@ -209,9 +213,9 @@ public class TideAdvancedSettingsPanel extends PopupWindow {
             }
         });
 
-        String helpText = "<a href='http://crux.ms/' targe='_blank'>";
-        Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open the Tide help page.</font>",100,20);
-        container.addComponent(help, "left:20px;bottom:10px;");
+        String helpText = "<a href='http://crux.ms/' target='_blank'>";
+        Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open the Tide help page.</font>", 100, 20);
+        container.addComponent(help, "left:10px;bottom:10px;");
         Button okBtn = new Button("OK");
         okBtn.setWidth(76, Unit.PIXELS);
         okBtn.setHeight(20, Unit.PIXELS);
@@ -232,8 +236,8 @@ public class TideAdvancedSettingsPanel extends PopupWindow {
             TideAdvancedSettingsPanel.this.setPopupVisible(false);
         });
 
-        container.addComponent(okBtn, "bottom:10px;right:10px");
-        container.addComponent(cancelBtn, "bottom:10px;right:96px");
+        container.addComponent(cancelBtn, "bottom:10px;right:10px");
+        container.addComponent(okBtn, "bottom:10px;right:96px");
     }
 
     public void updateGUI(IdentificationParameters webSearchParameters) {
@@ -285,7 +289,9 @@ public class TideAdvancedSettingsPanel extends PopupWindow {
             calculateSPScore.setSelected("No");
         }
         spectrumMZ.setFirstSelectedValue(oldTideParameters.getMinSpectrumMz());
-        spectrumMZ.setSecondSelectedValue(oldTideParameters.getMaxSpectrumMz());
+        if (oldTideParameters.getMaxSpectrumMz() != null) {
+            spectrumMZ.setSecondSelectedValue(oldTideParameters.getMaxSpectrumMz());
+        }
         minimumNumberofPeaks.setSelectedValue(oldTideParameters.getMinSpectrumPeaks());
         charges.setSelected(oldTideParameters.getSpectrumCharges());
         if (oldTideParameters.getRemovePrecursor()) {
@@ -356,7 +362,9 @@ public class TideAdvancedSettingsPanel extends PopupWindow {
         oldTideParameters.setComputeSpScore(calculateSPScore.getSelectedValue().equalsIgnoreCase("Yes"));
 
         oldTideParameters.setMinSpectrumMz(Double.valueOf(spectrumMZ.getFirstSelectedValue()));
-        oldTideParameters.setMaxSpectrumMz(Double.valueOf(spectrumMZ.getSecondSelectedValue()));
+        if (spectrumMZ.getSecondSelectedValue() != null) {
+            oldTideParameters.setMaxSpectrumMz(Double.valueOf(spectrumMZ.getSecondSelectedValue()));
+        }
         oldTideParameters.setMinSpectrumPeaks(Integer.valueOf(minimumNumberofPeaks.getSelectedValue()));
         oldTideParameters.setSpectrumCharges(charges.getSelectedValue());
         oldTideParameters.setRemovePrecursor(removePrecursorPeakPP.getSelectedValue().equalsIgnoreCase("Yes"));

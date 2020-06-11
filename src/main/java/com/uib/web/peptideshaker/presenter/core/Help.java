@@ -55,7 +55,8 @@ public class Help extends AbsoluteLayout {
         closableLayout.addComponent(infoLabel, "left:10px;top:10px; right:20px;");
         if (noteText != null) {
             Label note = new Label(noteText, ContentMode.HTML);
-            Help.this.addComponent(note, "left:50px;top:0px");
+            note.setDescription(noteText);
+            Help.this.addComponent(note, "left:30px;top:0px");
         }
 
     }

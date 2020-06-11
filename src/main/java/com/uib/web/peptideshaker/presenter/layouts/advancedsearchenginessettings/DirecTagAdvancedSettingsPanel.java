@@ -56,11 +56,11 @@ public class DirecTagAdvancedSettingsPanel extends PopupWindow {
         container.setWidth(500, Unit.PIXELS);
         container.setHeight(500, Unit.PIXELS);
 
-        Label title = new Label("Search Settings");
+        Label title = new Label("DirecTag");
         container.addComponent(title, "left:10px;top:10px");
         HorizontalLayout subContainersFrame = new HorizontalLayout();
         subContainersFrame.setSizeFull();
-        container.addComponent(subContainersFrame, "left:10px;top:40px;right:10px;bottom:40px");
+        container.addComponent(subContainersFrame, "left:10px;top:45px;right:10px;bottom:40px");
 
         VerticalLayout leftSubContainer = new VerticalLayout();
         leftSubContainer.setSizeFull();
@@ -143,9 +143,9 @@ public class DirecTagAdvancedSettingsPanel extends PopupWindow {
         maxPeakCount.setEnabled(false);
         adjustPrecursorMass.setEnabled(false);
 
-        String helpText = "<a href='' targe='_blank'>";
+        String helpText = "<a href='' target='_blank'>";
         Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open the DirecTag help page.</font>",100,20);
-        container.addComponent(help, "left:20px;bottom:10px;");
+        container.addComponent(help, "left:10px;bottom:10px;");
         Button okBtn = new Button("OK");
         okBtn.setWidth(76, Unit.PIXELS);
         okBtn.setHeight(20, Unit.PIXELS);
@@ -158,12 +158,13 @@ public class DirecTagAdvancedSettingsPanel extends PopupWindow {
                 setPopupVisible(false);
             }
         });
-        container.addComponent(okBtn, "bottom:10px;right:10px");
+        
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);
         cancelBtn.setHeight(20, Unit.PIXELS);
-        container.addComponent(cancelBtn, "bottom:10px;right:96px");
+        container.addComponent(okBtn, "bottom:10px;right:96px");
+        container.addComponent(cancelBtn, "bottom:10px;right:10px");
         cancelBtn.addClickListener((Button.ClickEvent event) -> {
             DirecTagAdvancedSettingsPanel.this.setPopupVisible(false);
         });

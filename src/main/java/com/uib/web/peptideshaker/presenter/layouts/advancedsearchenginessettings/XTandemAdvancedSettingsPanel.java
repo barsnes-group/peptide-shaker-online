@@ -18,6 +18,7 @@ import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
@@ -93,14 +94,17 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
         AbsoluteLayout container = new AbsoluteLayout();
         container.setStyleName("popuppanelmaincontainer");
         container.setWidth(500, Unit.PIXELS);
-        container.setHeight(600, Unit.PIXELS);
+        container.setHeight(500, Unit.PIXELS);
 
         XTandemAdvancedSettingsPanel.this.setContent(container);
         XTandemAdvancedSettingsPanel.this.setClosable(true);
 
+        Label title = new Label("X! Tandem ");
+        container.addComponent(title, "left:10px;top:10px");
+
         TabSheet subContainer = new TabSheet();
         subContainer.setSizeFull();
-        container.addComponent(subContainer, "left:10px;top:10px;right:10px;bottom:40px");
+        container.addComponent(subContainer, "left:10px;top:40px;right:10px;bottom:40px");
         subContainer.setStyleName("subcontainertabsheet");
         subContainer.addStyleName(ValoTheme.TABSHEET_COMPACT_TABBAR);
         /**
@@ -207,30 +211,38 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
         refinement = new HorizontalLabelDropDounList("Refinement <a href='https://www.thegpm.org/TANDEM/api/refine.html' target=\"_blank\"> (?)</a>");
         refinement.updateData(values);
         tab4.addComponent(this.refinement);
+        refinement.updateExpandingRatio(0.6f, 0.4f);
 
         this.maximumValidExpectationValue = new HorizontalLabelTextField("Maximum Valid Expectation Value<a href='https://www.thegpm.org/TANDEM/api/refmvev.html' target=\"_blank\"> (?)</a>", 0.0, new DoubleRangeValidator("Select positive number ", 0.0, Double.MAX_VALUE));
         tab4.addComponent(maximumValidExpectationValue);
+        maximumValidExpectationValue.updateExpandingRatio(0.6f, 0.4f);
 
         unanticipatedCleavage = new HorizontalLabelDropDounList(" Unanticipated Cleavage <a href='https://www.thegpm.org/TANDEM/api/ruc.html' target=\"_blank\"> (?)</a>");
         unanticipatedCleavage.updateData(values);
         tab4.addComponent(this.unanticipatedCleavage);
+        unanticipatedCleavage.updateExpandingRatio(0.6f, 0.4f);
 
         semiEnzymaticCleavage = new HorizontalLabelDropDounList("Semi-Enzymatic Cleavage <a href='https://www.thegpm.org/TANDEM/api/rcsemi.html' target=\"_blank\"> (?)</a>");
         semiEnzymaticCleavage.updateData(values);
         tab4.addComponent(this.semiEnzymaticCleavage);
+        semiEnzymaticCleavage.updateExpandingRatio(0.6f, 0.4f);
 
         potintialModificationsforFullRefinement = new HorizontalLabelDropDounList("Potintial Modifications for Full Refinement <a href='https://www.thegpm.org/TANDEM/api/rupmffr.html' target=\"_blank\"> (?)</a>");
         potintialModificationsforFullRefinement.updateData(values);
+        potintialModificationsforFullRefinement.updateExpandingRatio(0.6f, 0.4f);
         tab4.addComponent(this.potintialModificationsforFullRefinement);
 
         pointMutations = new HorizontalLabelDropDounList("Point Mutations <a href='https://www.thegpm.org/TANDEM/api/rpm.html' target=\"_blank\"> (?)</a>");
         pointMutations.updateData(values);
+        pointMutations.updateExpandingRatio(0.6f, 0.4f);
         tab4.addComponent(this.pointMutations);
         snAPs = new HorizontalLabelDropDounList("snAPs <a href='https://www.thegpm.org/TANDEM/api/rsaps.html' target=\"_blank\"> (?)</a>");
         snAPs.updateData(values);
+        snAPs.updateExpandingRatio(0.6f, 0.4f);
         tab4.addComponent(this.snAPs);
         spectrumSynthesis = new HorizontalLabelDropDounList("Spectrum Synthesis <a href='https://www.thegpm.org/TANDEM/api/rss.html' target=\"_blank\"> (?)</a>");
         spectrumSynthesis.updateData(values);
+        spectrumSynthesis.updateExpandingRatio(0.6f, 0.4f);
         tab4.addComponent(this.spectrumSynthesis);
 
         refinement.addValueChangeListener((Property.ValueChangeEvent event) -> {
@@ -247,7 +259,7 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
 
         List<String> allModiList = PTM.getDefaultModifications();
         // get the min and max values for the mass sparklines
-        double maxMass =  (-1.0*Double.MAX_VALUE);
+        double maxMass = (-1.0 * Double.MAX_VALUE);
         double minMass = Double.MAX_VALUE;
 
         for (String ptm : PTM.getModifications()) {
@@ -317,10 +329,10 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
 
         String helpText = "<h1>X!Tandem Advanced Settings</h1>"
                 + "X!Tandem comes with many options allowing you to fine tune the search settings. Note that these settings aim to be used by advanced users only. It is highly recommended to carefully test any change to the default settings, to document them and report them in any publication/report.  For more help, consult the X!Tandem API. If you are missing a parameter, please contact the developers.";
-        Help help = new Help(helpText, "Note: The advanced settings are for expert use only. See help for details",100,20);
-        container.addComponent(help, "left:20px;bottom:10px;");
-        container.addComponent(okBtn, "bottom:10px;right:10px");
-        container.addComponent(cancelBtn, "bottom:10px;right:96px");
+        Help help = new Help(helpText, "The advanced settings are for expert use only. See help for details", 450, 155);
+        container.addComponent(help, "left:10px;bottom:10px;");
+        container.addComponent(cancelBtn, "bottom:10px;right:10px");
+        container.addComponent(okBtn, "bottom:10px;right:96px");
     }
 
     public void updateGUI(IdentificationParameters webSearchParameters) {
@@ -513,7 +525,7 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
 
         };
         modificationsTable.setWidth(100, Unit.PERCENTAGE);
-        modificationsTable.setHeight(275, Unit.PIXELS);
+        modificationsTable.setHeight(135, Unit.PIXELS);
         modificationsTable.setCaptionAsHtml(true);
 //        modificationsTable.setStyleName(ValoTheme.TABLE_SMALL);
         modificationsTable.addStyleName(ValoTheme.TREETABLE_SMALL);

@@ -30,134 +30,29 @@ public abstract class Uploader extends AbsoluteLayout {
 
     private File userUploadFolder;
     private Plupload uploaderComponent;
-    private final Label info;
-    private final Button uploaderBtn;
-    private final Button closeBtn;
-    private final ProgressBar bar;
+    private final Label busyUpload;
     private final Set<String> filterSet;
-
-    private PopupView popupUploaderUnit;
 
     /**
      * Initialise upload component
      */
     public Uploader() {
 
-        Uploader.this.setHeight(28, Unit.PIXELS);
-        Uploader.this.setWidth(100, Unit.PERCENTAGE);
+        Uploader.this.setHeight(25, Unit.PIXELS);
+        Uploader.this.setWidth(25, Unit.PIXELS);
         Uploader.this.setStyleName("uploaderlayout");
         this.filterSet = new LinkedHashSet<>();
 
-        VerticalLayout uploaderLayout = new VerticalLayout();
-        uploaderLayout.setWidth(300, Unit.PIXELS);
-        uploaderLayout.setHeight(100, Unit.PERCENTAGE);
-        uploaderLayout.setSpacing(false);
-        Uploader.this.addComponent(uploaderLayout, "right:140px;top:2px");
-        uploaderLayout.addStyleName("smooth");
-        uploaderLayout.addStyleName("hidebywidth");
-
-        bar = new ProgressBar(0.0f);
-        uploaderLayout.addComponent(bar);
-        uploaderLayout.setComponentAlignment(bar, Alignment.TOP_LEFT);
-        bar.setWidth(300, Unit.PIXELS);
-
-        info = new Label();
-        info.setContentMode(ContentMode.HTML);
-        info.setStyleName(ValoTheme.LABEL_TINY);
-        info.addStyleName(ValoTheme.LABEL_NO_MARGIN);
-        uploaderLayout.addComponent(info);
-        uploaderLayout.setComponentAlignment(info, Alignment.TOP_LEFT);
-        info.setWidth(300, Unit.PIXELS);
-
+        Uploader.this.addStyleName("uploaderbtnonly");
+        busyUpload = new Label();
+        busyUpload.setContentMode(ContentMode.HTML);
+        busyUpload.setStyleName(ValoTheme.LABEL_TINY);
+        busyUpload.addStyleName(ValoTheme.LABEL_NO_MARGIN);
+        busyUpload.setValue(htmlLoadingImg);
+        Uploader.this.addComponent(busyUpload);
         initUploaderComponent();
-        uploaderComponent.addStyleName("hidebywidth");
-
-        uploaderBtn = new Button("Upload", FontAwesome.UPLOAD);
-        uploaderBtn.setWidth(28, Unit.PIXELS);
-        uploaderBtn.setHeight(28, Unit.PIXELS);
-        uploaderBtn.addStyleName(ValoTheme.BUTTON_TINY);
-        uploaderBtn.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
-        Uploader.this.addComponent(uploaderBtn, "right:2px;top:2px");
-
-        closeBtn = new Button();
-        closeBtn.setIcon(FontAwesome.CLOSE);
-        closeBtn.setWidth(28, Unit.PIXELS);
-        closeBtn.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
-        closeBtn.setHeight(28, Unit.PIXELS);
-        closeBtn.addStyleName(ValoTheme.BUTTON_TINY);
-        closeBtn.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
-        Uploader.this.addComponent(closeBtn, "right:2px;top:2px");
-        closeBtn.addClickListener((Button.ClickEvent event) -> {
-            if (popupUploaderUnit != null) {
-                popupUploaderUnit.setPopupVisible(false);
-                bar.setValue(0.0f);
-
-            } else {
-                closeBtn.setVisible(false);
-                uploaderBtn.setVisible(true);
-                uploaderLayout.addStyleName("hidebywidth");
-                uploaderComponent.addStyleName("hidebywidth");
-            }
-            initUploaderComponent();
-
-        });
-
-        uploaderBtn.addClickListener((Button.ClickEvent event) -> {
-            if (userUploadFolder == null) {
-                String userDataFolderUrl = VaadinSession.getCurrent().getAttribute("userDataFolderUrl") + "";
-                String APIKey = VaadinSession.getCurrent().getAttribute("ApiKey").toString();
-                File user_folder = new File(userDataFolderUrl, APIKey);
-                if (!user_folder.exists()) {
-                    user_folder.mkdir();
-                }
-                userUploadFolder = new File(user_folder, "uploadedFiles");
-                userUploadFolder.mkdir();
-                uploaderComponent.setUploadPath(userUploadFolder.getAbsolutePath());
-
-            }
-            uploaderLayout.removeStyleName("hidebywidth");
-            uploaderComponent.removeStyleName("hidebywidth");
-            uploaderBtn.setVisible(false);
-            closeBtn.setVisible(true);
-
-        });
-    }
-
-    /**
-     * Get the upload progress pop-up layout
-     *
-     * @return pop-up view component
-     */
-    public PopupView getPopupUploaderUnit() {
-        if (popupUploaderUnit == null) {
-            Uploader.this.setWidth(375, Unit.PIXELS);
-            Uploader.this.setHeight(32, Unit.PIXELS);
-            popupUploaderUnit = new PopupView(FontAwesome.UPLOAD.getHtml(), Uploader.this) {
-                @Override
-                public void setPopupVisible(boolean visible) {
-                    if (!filterSet.isEmpty()) {
-                        info.setValue("Upload " + filterSet);
-                    }
-                    if (visible) {
-                        uploaderBtn.click();
-                    }
-                    if (!busy) {
-                        bar.setValue(0.0f);
-                        initUploaderComponent();
-                        super.setPopupVisible(visible); 
-                    } else {
-                        super.setPopupVisible(false);
-                    }
-                }
-
-            };
-            popupUploaderUnit.setHideOnMouseOut(false);
-            popupUploaderUnit.setCaptionAsHtml(true);
-            popupUploaderUnit.setWidth(100, Unit.PIXELS);
-            popupUploaderUnit.setHeight(28, Unit.PIXELS);
-            popupUploaderUnit.addStyleName("popupuploader");
-        }
-        return popupUploaderUnit;
+        busyUpload.setVisible(true);
+        uploaderComponent.setVisible(false);
     }
 
     /**
@@ -178,8 +73,7 @@ public abstract class Uploader extends AbsoluteLayout {
         uploaderComponent.addStyleName(ValoTheme.BUTTON_TINY);
         uploaderComponent.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
         uploaderComponent.addStyleName("smooth");
-        Uploader.this.addComponent(uploaderComponent, "right:35px;top:2px");
-        info.setValue("Upload " + filterSet);
+        Uploader.this.addComponent(uploaderComponent);
         filterSet.forEach((ext) -> {
             this.addUploaderFilter(ext);
         });
@@ -187,30 +81,28 @@ public abstract class Uploader extends AbsoluteLayout {
          * show notification after file is uploaded*
          */
         uploaderComponent.addFileUploadedListener((PluploadFile file) -> {
-            Notification.show("File uploaded : " + file.getName());
-        });
-
-        uploaderComponent.addUploadProgressListener((PluploadFile file) -> {
-            info.setValue("File: " + file.getName() + " - " + file.getPercent() + " %");
-            float current = bar.getValue();
-            if (current < 1.0f) {
-                float perc = (float) file.getPercent() / 100.0f;
-                bar.setValue(perc);
-                popupUploaderUnit.setDescription(((int) perc) + "%");
-
-            } else {
-                bar.setValue(0.0f);
-            }
-
+            Notification.show("File uploaded : " + file.getName(),Notification.Type.TRAY_NOTIFICATION);
         });
         uploaderComponent.setPreventDuplicates(true);
 
         /**
-         * autostart the upload after add files
+         * auto start the upload after add files
          */
         uploaderComponent.addFilesAddedListener((PluploadFile[] files) -> {
-
+            if (userUploadFolder == null) {
+                String userDataFolderUrl = VaadinSession.getCurrent().getAttribute("userDataFolderUrl") + "";
+                String APIKey = VaadinSession.getCurrent().getAttribute("ApiKey").toString();
+                File user_folder = new File(userDataFolderUrl, APIKey);
+                if (!user_folder.exists()) {
+                    user_folder.mkdir();
+                }
+                userUploadFolder = new File(user_folder, "uploadedFiles");
+                userUploadFolder.mkdir();
+                uploaderComponent.setUploadPath(userUploadFolder.getAbsolutePath());
+            }
             uploaderComponent.start();
+            busyUpload.setVisible(true);
+            uploaderComponent.setVisible(false);
         });
         uploaderComponent.addUploadStopListener(() -> {
         });
@@ -220,30 +112,20 @@ public abstract class Uploader extends AbsoluteLayout {
          *
          */
         uploaderComponent.addUploadCompleteListener(() -> {
-            bar.setValue(0.0f);
-            info.setValue("upload is done " + FontAwesome.SMILE_O.getHtml());
             filesUploaded(uploaderComponent.getUploadedFiles());
             initUploaderComponent();
-            uploaderComponent.removeStyleName("hidebywidth");
-
-            if (popupUploaderUnit != null) {
-                popupUploaderUnit.setPopupVisible(false);
-            }
         });
 
         /**
          * handle errors
          */
         uploaderComponent.addErrorListener((PluploadError error) -> {
-            Notification.show("Error in uploading file, only " + filterSet + " file format allowed", Notification.Type.ERROR_MESSAGE);
-            info.setValue("Not Supported File Format " + filterSet + " " + FontAwesome.FROWN_O.getHtml());
+            Notification.show("Error", "Only " + filterSet + " file format allowed", Notification.Type.TRAY_NOTIFICATION);
         });
 
     }
 
-    private final String htmlLoadingImg = "<img src='VAADIN/themes/webpeptideshakertheme/img/globeearthanimation.gif' alt='' style='width: 17px;top: -17px;background-color: white;margin-left: -10px;position: absolute;'>";
-
-    private boolean busy = false;
+    private final String htmlLoadingImg = "<img src='VAADIN/themes/webpeptideshakertheme/img/globeearthanimation.gif' alt='' style='width: 17px;top: -2px;background-color: white;position: absolute;'>";
 
     /**
      * Set upload is temporary disable
@@ -251,16 +133,8 @@ public abstract class Uploader extends AbsoluteLayout {
      * @param busy upload in progress
      */
     public void setBusy(boolean busy) {
-        if (popupUploaderUnit == null) {
-            return;
-        }
-        this.busy = busy;
-        if (busy) {
-            popupUploaderUnit.setCaption(htmlLoadingImg);
-        } else {
-            popupUploaderUnit.setCaption(null);
-        }
-
+        busyUpload.setVisible(busy);
+        uploaderComponent.setVisible(!busy);
     }
 
     /**

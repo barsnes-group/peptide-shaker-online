@@ -242,7 +242,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         };
         mgf_raw_dataUploader.addUploaderFilter("mgf");
         mgf_raw_dataUploader.addUploaderFilter("thermo.raw");
-        inputDataFilesContainer.addComponent(mgf_raw_dataUploader.getPopupUploaderUnit(), "right:19px;top:-13px");
+        inputDataFilesContainer.addComponent(mgf_raw_dataUploader, "right:5px;top:-40px");
 
         rawDataListLayout = new VerticalLayout();
         rawDataListLayout.setSizeFull();
@@ -408,7 +408,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
 
         fastaFileList.addStyleName("v-caption-on-left");;
         fastaFileList.setWidth(100, Unit.PERCENTAGE);
-        fastaFileList.addUploadBtn(fastaFileUploader.getPopupUploaderUnit());
+        fastaFileList.addUploadBtn(fastaFileUploader);
         fastaFileList.setReadOnly(true);
         return fastaFileList;
     }

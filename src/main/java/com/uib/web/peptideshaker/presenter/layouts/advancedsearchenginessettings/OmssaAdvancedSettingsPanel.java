@@ -14,6 +14,7 @@ import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
@@ -76,15 +77,17 @@ public class OmssaAdvancedSettingsPanel extends PopupWindow {
 
         AbsoluteLayout container = new AbsoluteLayout();
         container.setStyleName("popuppanelmaincontainer");
-        container.setWidth(735, Unit.PIXELS);
-        container.setHeight(600, Unit.PIXELS);
+        container.setWidth(500, Unit.PIXELS);
+        container.setHeight(530, Unit.PIXELS);
 
         OmssaAdvancedSettingsPanel.this.setContent(container);
         OmssaAdvancedSettingsPanel.this.setClosable(true);
 
+        Label title = new Label("OMSSA");
+        container.addComponent(title, "left:10px;top:10px");
         TabSheet subContainer = new TabSheet();
         subContainer.setSizeFull();
-        container.addComponent(subContainer, "left:10px;top:10px;right:10px;bottom:40px");
+        container.addComponent(subContainer, "left:10px;top:45px;right:10px;bottom:40px");
         subContainer.setStyleName("subcontainertabsheet");
         subContainer.addStyleName(ValoTheme.TABSHEET_COMPACT_TABBAR);
         /**
@@ -94,20 +97,23 @@ public class OmssaAdvancedSettingsPanel extends PopupWindow {
         subContainer.addTab(tab1, "Spectrum");
 
         this.lowIntensityCutoff = new HorizontalLabelTextField("Low Intensity Cutoff (percent of most intense peak)", 0.0, new DoubleRangeValidator("Only positive double allowed", 0.0, Double.MAX_VALUE));
+        lowIntensityCutoff.updateExpandingRatio(0.6f, 0.4f);
         tab1.addComponent(lowIntensityCutoff);
         this.highIntensityCutoff = new HorizontalLabelTextField("High Intensity Cutoff (percent of most intense peak)", 0.0, new DoubleRangeValidator("Only positive double allowed", 0.0, Double.MAX_VALUE));
+        highIntensityCutoff.updateExpandingRatio(0.6f, 0.4f);
         tab1.addComponent(highIntensityCutoff);
         this.intensityCutoffIncrement = new HorizontalLabelTextField("Intensity Cutoff Increment", 0.0, new DoubleRangeValidator("Only postive double value allowed ", 0.0, Double.MAX_VALUE));
         tab1.addComponent(intensityCutoffIncrement);
-
+        intensityCutoffIncrement.updateExpandingRatio(0.6f, 0.4f);
         this.minimalNumberofPeaks = new HorizontalLabelTextField("Minimal Number of Peaks", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab1.addComponent(minimalNumberofPeaks);
-
+        minimalNumberofPeaks.updateExpandingRatio(0.6f, 0.4f);
         Set<String> values = new LinkedHashSet<>();
         values.add("Yes");
         values.add("No");
         this.eliminateChargeReducedPrecursorsinSpectra = new HorizontalLabelDropDounList("Eliminate Charge Reduced Precursors in Spectra");
         this.eliminateChargeReducedPrecursorsinSpectra.updateData(values);
+        eliminateChargeReducedPrecursorsinSpectra.updateExpandingRatio(0.6f, 0.4f);
         tab1.addComponent(this.eliminateChargeReducedPrecursorsinSpectra);
         Set<String> values2 = new LinkedHashSet<>();
         values2.add("Use Range");
@@ -115,16 +121,21 @@ public class OmssaAdvancedSettingsPanel extends PopupWindow {
         precursorChargeEstimation = new HorizontalLabelDropDounList("Precursor Charge Estimation");
         precursorChargeEstimation.updateData(values2);
         tab1.addComponent(this.precursorChargeEstimation);
+        precursorChargeEstimation.updateExpandingRatio(0.6f, 0.4f);
         plusOneChargeEstimatedAlgorithmically = new HorizontalLabelDropDounList("Plus One Charge Estimated Algorithmically");
         plusOneChargeEstimatedAlgorithmically.updateData(values);
+        plusOneChargeEstimatedAlgorithmically.updateExpandingRatio(0.6f, 0.4f);
         tab1.addComponent(this.plusOneChargeEstimatedAlgorithmically);
         this.fractionofPrecursorsMZforChargeOneEstimation = new HorizontalLabelTextField("Fraction of Precursors m/z for Charge One Estimation", 0.0, new DoubleRangeValidator("Only postive double values allowed", 0.0, Double.MAX_VALUE));
         tab1.addComponent(this.fractionofPrecursorsMZforChargeOneEstimation);
+        fractionofPrecursorsMZforChargeOneEstimation.updateExpandingRatio(0.6f, 0.4f);
         this.minimalNumberofPrecursorsperSpectrum = new HorizontalLabelTextField("Minimal Number of Precursors per Spectrum", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab1.addComponent(minimalNumberofPrecursorsperSpectrum);
+        minimalNumberofPrecursorsperSpectrum.updateExpandingRatio(0.6f, 0.4f);
         precursorMassScaling = new HorizontalLabelDropDounList("Precursor Mass Scaling");
         precursorMassScaling.updateData(values);
         tab1.addComponent(this.precursorMassScaling);
+        precursorMassScaling.updateExpandingRatio(0.6f, 0.4f);
 
 
         /*tab 2*/
@@ -140,71 +151,80 @@ public class OmssaAdvancedSettingsPanel extends PopupWindow {
         /*tab 3*/
         VerticalLayout tab3 = new VerticalLayout();
         subContainer.addTab(tab3, "Search");
+        tab3.setHeight(380,Unit.PIXELS);
         this.minimumPrecursorChargeforMultiplyChargedFragments = new HorizontalLabelTextField("Minimum Precursor Charge for Multiply Charged Fragmentse", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab3.addComponent(minimumPrecursorChargeforMultiplyChargedFragments);
+        this.minimumPrecursorChargeforMultiplyChargedFragments.updateExpandingRatio(0.7f, 0.3f);
         this.massThresholdtoConsiderExactNeutronMass = new HorizontalLabelTextField("Mass Threshold to Consider Exact Neutron Mass", 0.0, new DoubleRangeValidator("Only postive double values allowed", 0.0, Double.MAX_VALUE));
         tab3.addComponent(massThresholdtoConsiderExactNeutronMass);
+        this.massThresholdtoConsiderExactNeutronMass.updateExpandingRatio(0.7f, 0.3f);
 
         this.singlyChargedWindowWidth = new HorizontalLabelTextField("Singly Charged Window Width (Da)", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab3.addComponent(singlyChargedWindowWidth);
+        singlyChargedWindowWidth.updateExpandingRatio(0.7f, 0.3f);
 
         this.doublyChargedWindowWidth = new HorizontalLabelTextField("Doubly Charged Window Width (Da)", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab3.addComponent(doublyChargedWindowWidth);
+        doublyChargedWindowWidth.updateExpandingRatio(0.7f, 0.3f);
 
         this.numberofPeaksinSinglyChargedWindow = new HorizontalLabelTextField("Number of Peaks in Singly Charged Window", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab3.addComponent(numberofPeaksinSinglyChargedWindow);
-
+        numberofPeaksinSinglyChargedWindow.updateExpandingRatio(0.7f, 0.3f);
         this.numberofPeaksinDoublyChargedWindow = new HorizontalLabelTextField("Number of Peaks in Doubly Charged Window", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab3.addComponent(numberofPeaksinDoublyChargedWindow);
+        numberofPeaksinDoublyChargedWindow.updateExpandingRatio(0.7f, 0.3f);
 
         this.minimumAnnotatedPeaksAmongtheMostIntenseOnes = new HorizontalLabelTextField("Minimum Annotated Peaks Among the Most Intense Ones", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab3.addComponent(minimumAnnotatedPeaksAmongtheMostIntenseOnes);
+        minimumAnnotatedPeaksAmongtheMostIntenseOnes.updateExpandingRatio(0.7f, 0.3f);
 
         this.minimumNumberofAnnotaedPeaks = new HorizontalLabelTextField("Minimum Number of Annotated Peaks", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab3.addComponent(minimumNumberofAnnotaedPeaks);
-
+        minimumNumberofAnnotaedPeaks.updateExpandingRatio(0.7f, 0.3f);
         this.maximumMZLadders = new HorizontalLabelTextField("Maximum m/z Ladders", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab3.addComponent(maximumMZLadders);
-
+        maximumMZLadders.updateExpandingRatio(0.7f, 0.3f);
         this.maximumFragmentCharge = new HorizontalLabelTextField("Maximum Fragment Charge", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab3.addComponent(maximumFragmentCharge);
-
+        maximumFragmentCharge.updateExpandingRatio(0.7f, 0.3f);
         searchPostiveIons = new HorizontalLabelDropDounList("Search Postive Ions");
         searchPostiveIons.updateData(values);
         tab3.addComponent(this.searchPostiveIons);
-
+        searchPostiveIons.updateExpandingRatio(0.7f, 0.3f);
         searchFirstForwardIon_b1 = new HorizontalLabelDropDounList("Search First ForwardIon (b1)");
         searchFirstForwardIon_b1.updateData(values);
         tab3.addComponent(this.searchFirstForwardIon_b1);
-
+        searchFirstForwardIon_b1.updateExpandingRatio(0.7f, 0.3f);
         searchRewind_c_terminal_Ions = new HorizontalLabelDropDounList("Search Rewind (C-Terminal) Ions");
         searchRewind_c_terminal_Ions.updateData(values);
         tab3.addComponent(this.searchRewind_c_terminal_Ions);
-
+        searchRewind_c_terminal_Ions.updateExpandingRatio(0.7f, 0.3f);
         this.maximumFragmentsperSeries = new HorizontalLabelTextField("Maximum Fragments per Series", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab3.addComponent(maximumFragmentsperSeries);
+        maximumFragmentsperSeries.updateExpandingRatio(0.7f, 0.3f);
         this.useCorrelationScore = new HorizontalLabelDropDounList("Use Correlation Score");
         useCorrelationScore.updateData(values);
         tab3.addComponent(this.useCorrelationScore);
-
+        useCorrelationScore.updateExpandingRatio(0.7f, 0.3f);
         this.consectiveIonProbability = new HorizontalLabelTextField("Consective Ion Probability", 0.0, new DoubleRangeValidator("Only postive double values allowed", 0.0, Double.MAX_VALUE));
         tab3.addComponent(this.consectiveIonProbability);
-
+        consectiveIonProbability.updateExpandingRatio(0.7f, 0.3f);
         this.numberofHitsPerSpectrumperCharge = new HorizontalLabelTextField("Number of Hits per Spectrum per Charge", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab3.addComponent(numberofHitsPerSpectrumperCharge);
-
+        numberofHitsPerSpectrumperCharge.updateExpandingRatio(0.7f, 0.3f);
         /*tab 4*/
         VerticalLayout tab4 = new VerticalLayout();
         subContainer.addTab(tab4, "Iterative Search");
 
         this.evalueCutoffforSequences = new HorizontalLabelTextField("E-value Cutoff for Sequences (0 means all)", 0.0, new DoubleRangeValidator("Only postive double values allowed", 0.0, Double.MAX_VALUE));
         tab4.addComponent(this.evalueCutoffforSequences);
+        evalueCutoffforSequences.updateExpandingRatio(0.6f, 0.4f);
         this.evalueCutoffforSpectra = new HorizontalLabelTextField("E-value Cutoff for Spectra (0 means all", 0.0, new DoubleRangeValidator("Only postive double values allowed", 0.0, Double.MAX_VALUE));
         tab4.addComponent(this.evalueCutoffforSpectra);
-
+        evalueCutoffforSpectra.updateExpandingRatio(0.6f, 0.4f);
         this.evalueCutofftoReplaceaHit = new HorizontalLabelTextField("E-value Cutoff to Replace a Hit (o means keep best)", 0.0, new DoubleRangeValidator("Only postive double values allowed", 0.0, Double.MAX_VALUE));
         tab4.addComponent(this.evalueCutofftoReplaceaHit);
-
+        evalueCutofftoReplaceaHit.updateExpandingRatio(0.6f, 0.4f);
         /*tab 5*/
         VerticalLayout tab5 = new VerticalLayout();
         subContainer.addTab(tab5, "Semi-Enzymatic");
@@ -335,10 +355,10 @@ public class OmssaAdvancedSettingsPanel extends PopupWindow {
                 + "            <li>Maximum number of hits reported per spectrum (0 equals all, for accurate PTM scoring retain all, -hc command line option)</li>\n"
                 + "            <li>OMSSA output format (for compatibility with PeptideShaker use omx, -ox or -oc command line option)</li>\n"
                 + "        </ul></div>";
-        Help help = new Help(helpText, "Note: The advanced settings are for expert use only. See help for details",100,20);
-        container.addComponent(help, "left:20px;bottom:10px;");
-        container.addComponent(okBtn, "bottom:10px;right:10px");
-        container.addComponent(cancelBtn, "bottom:10px;right:96px");
+        Help help = new Help(helpText, "The advanced settings are for expert use only. See help for details", 500, 300);
+        container.addComponent(help, "left:10px;bottom:10px;");
+        container.addComponent(cancelBtn, "bottom:10px;right:10px");
+        container.addComponent(okBtn, "bottom:10px;right:96px");
     }
 
     public void updateGUI(IdentificationParameters webSearchParameters) {
@@ -507,7 +527,6 @@ public class OmssaAdvancedSettingsPanel extends PopupWindow {
         oldOmssaParameters.setHitListLength(Integer.valueOf(maximumHitListLength.getSelectedValue()));
         oldOmssaParameters.setSelectedOutput(omssaOutputFormat.getSelectedValue());
 
-       
     }
 
 }

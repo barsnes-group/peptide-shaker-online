@@ -42,14 +42,15 @@ public class MsGFAdvancedSettingsPanel extends PopupWindow {
         AbsoluteLayout container = new AbsoluteLayout();
         container.setStyleName("popuppanelmaincontainer");
         container.setWidth(500, Unit.PIXELS);
-        container.setHeight(500, Unit.PIXELS);
+        container.setHeight(410, Unit.PIXELS);
 
-        Label title = new Label("Search Settings");
+        Label title = new Label("MS-GF+");
         container.addComponent(title, "left:10px;top:10px");
         VerticalLayout subContainer = new VerticalLayout();
         subContainer.setSizeFull();
         subContainer.setStyleName("subcontainer");
-        container.addComponent(subContainer, "left:10px;top:40px;right:10px;bottom:40px");
+        subContainer.addStyleName("paddingvertical5");
+        container.addComponent(subContainer, "left:10px;top:45px;right:10px;bottom:40px");
         MsGFAdvancedSettingsPanel.this.setContent(container);
         MsGFAdvancedSettingsPanel.this.setClosable(true);
 
@@ -123,6 +124,7 @@ public class MsGFAdvancedSettingsPanel extends PopupWindow {
         enzymaticTerminal.setItemCaption(2 + "", "Both");
 
         peptideLength = new HorizontalLabel2TextField("Peptide Length (min-max)", 0, 0, new IntegerRangeValidator("Only double values allowd", (-1* Integer.MAX_VALUE), Integer.MAX_VALUE));
+        peptideLength.setSpacing(true);
         subContainer.addComponent(peptideLength);
 
         maxVariabalePTMperPeptide = new HorizontalLabelTextField("MAx Variable PTMs per Peptid", 0, new IntegerRangeValidator("Postive integer only allowed", 0, Integer.MAX_VALUE));
@@ -136,9 +138,9 @@ public class MsGFAdvancedSettingsPanel extends PopupWindow {
         numberofTasks = new HorizontalLabelTextField("Number of tasks", "default", new IntegerRangeValidator("Only Integer value allowed", (-1* Integer.MAX_VALUE), Integer.MAX_VALUE));
         subContainer.addComponent(numberofTasks);
 
-        String helpText = "<a href='https://msgfplus.github.io/msgfplus/MSGFPlus.html' targe='_blank'>";
+        String helpText = "<a href='https://msgfplus.github.io/msgfplus/MSGFPlus.html' target='_blank'>";
         Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open the MS-GF+ help page.</font>",100,20);
-        container.addComponent(help, "left:20px;bottom:10px;");
+        container.addComponent(help, "left:10px;bottom:10px;");
         Button okBtn = new Button("OK");
         okBtn.setWidth(76, Unit.PIXELS);
         okBtn.setHeight(20, Unit.PIXELS);
@@ -148,12 +150,13 @@ public class MsGFAdvancedSettingsPanel extends PopupWindow {
                 setPopupVisible(false);
             }
         });
-        container.addComponent(okBtn, "bottom:10px;right:10px");
+       
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);
         cancelBtn.setHeight(20, Unit.PIXELS);
-        container.addComponent(cancelBtn, "bottom:10px;right:96px");
+        container.addComponent(okBtn, "bottom:10px;right:96px"); 
+        container.addComponent(cancelBtn, "bottom:10px;right:10px");
         cancelBtn.addClickListener((Button.ClickEvent event) -> {
             MsGFAdvancedSettingsPanel.this.setPopupVisible(false);
         });

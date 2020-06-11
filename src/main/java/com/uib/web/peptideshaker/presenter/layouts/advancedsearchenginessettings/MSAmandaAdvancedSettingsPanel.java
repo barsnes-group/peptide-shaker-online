@@ -47,12 +47,13 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
         container.setWidth(500, Unit.PIXELS);
         container.setHeight(500, Unit.PIXELS);
 
-        Label title = new Label("Search Settings");
+        Label title = new Label("MS Amandas");
         container.addComponent(title, "left:10px;top:10px");
         VerticalLayout subContainer = new VerticalLayout();
         subContainer.setSizeFull();
-        subContainer.setStyleName("subcontainer");
-        container.addComponent(subContainer, "left:10px;top:40px;right:10px;bottom:40px");
+        subContainer.setStyleName("subcontainer");       
+        subContainer.addStyleName("paddingvertical5");
+        container.addComponent(subContainer, "left:10px;top:45px;right:10px;bottom:40px");
         MSAmandaAdvancedSettingsPanel.this.setContent(container);
         MSAmandaAdvancedSettingsPanel.this.setClosable(true);
 
@@ -165,9 +166,9 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
         values.add("mzIdentML");
         outputFormat.updateData(values);
 
-        String helpText = "<a href='https://ms.imp.ac.at/?goto=msamanda' targe='_blank'>";
+        String helpText = "<a href='https://ms.imp.ac.at/?goto=msamanda' target='_blank'>";
         Help help = new Help(helpText, "Click to open the MS Amanda help page.",100,20);
-        container.addComponent(help, "left:20px;bottom:10px;");
+        container.addComponent(help, "left:10px;bottom:10px;");
 
         Button okBtn = new Button("OK");
         okBtn.setWidth(76, Unit.PIXELS);
@@ -178,12 +179,13 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
                 setPopupVisible(false);
             }
         });
-        container.addComponent(okBtn, "bottom:10px;right:10px");
+       
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);
         cancelBtn.setHeight(20, Unit.PIXELS);
-        container.addComponent(cancelBtn, "bottom:10px;right:96px");
+        container.addComponent(okBtn, "bottom:10px;right:96px"); 
+        container.addComponent(cancelBtn, "bottom:10px;right:10px");
         cancelBtn.addClickListener((Button.ClickEvent event) -> {
             MSAmandaAdvancedSettingsPanel.this.setPopupVisible(false);
         });

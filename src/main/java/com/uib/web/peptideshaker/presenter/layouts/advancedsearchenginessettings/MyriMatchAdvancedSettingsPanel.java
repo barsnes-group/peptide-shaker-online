@@ -13,6 +13,7 @@ import com.vaadin.data.validator.DoubleRangeValidator;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
@@ -52,18 +53,22 @@ public class MyriMatchAdvancedSettingsPanel extends PopupWindow {
         container.setWidth(500, Unit.PIXELS);
         container.setHeight(500, Unit.PIXELS);
 
-        Label title = new Label("Search Settings");
+        Label title = new Label("MyriMatch");
         container.addComponent(title, "left:10px;top:10px");
         VerticalLayout subContainer = new VerticalLayout();
         subContainer.setSizeFull();
         subContainer.setStyleName("subcontainer");
-        container.addComponent(subContainer, "left:10px;top:40px;right:10px;bottom:40px");
+        subContainer.addStyleName("paddingvertical5");
+        container.addComponent(subContainer, "left:10px;top:45px;right:10px;bottom:40px");
         MyriMatchAdvancedSettingsPanel.this.setContent(container);
         MyriMatchAdvancedSettingsPanel.this.setClosable(true);
 
         peptideLength = new HorizontalLabel2TextField("Peptide Length (min-max)", 0, 0, new IntegerRangeValidator("Only integer number allowd", (-1* Integer.MAX_VALUE), Integer.MAX_VALUE));
+       peptideLength.setSpacing(true);
         subContainer.addComponent(peptideLength);
+         subContainer.setComponentAlignment(peptideLength,Alignment.BOTTOM_LEFT);
         precursorMass = new HorizontalLabel2TextField("Precursor Mass (min-max)", 0.0, 0.0, new DoubleRangeValidator("Only double values allowd", (-1* Double.MAX_VALUE), Double.MAX_VALUE));
+         precursorMass.setSpacing(true);
         subContainer.addComponent(precursorMass);
         numberOfSpectrumMatches = new HorizontalLabelTextField("Number of Spectrum Matches", 0, new IntegerRangeValidator("Postive integer only allowed", 0, Integer.MAX_VALUE));
         subContainer.addComponent(numberOfSpectrumMatches);
@@ -116,6 +121,7 @@ public class MyriMatchAdvancedSettingsPanel extends PopupWindow {
 
         outputFormat = new HorizontalLabelDropDounList("Output Format");
         subContainer.addComponent(outputFormat);
+        subContainer.setComponentAlignment(outputFormat,Alignment.BOTTOM_LEFT);
         values.clear();
         values.add("mzIdentML");
         values.add("pepXML");
@@ -126,9 +132,9 @@ public class MyriMatchAdvancedSettingsPanel extends PopupWindow {
             }
         });
 
-        String helpText = "<a href='http://htmlpreview.github.io/?https://github.com/ProteoWizard/pwiz/blob/master/pwiz_tools/Bumbershoot/myrimatch/doc/index.html' targe='_blank'>";
-        Help help = new Help(helpText, "Note: The advanced settings are for expert use only. See help for details",100,20);
-        container.addComponent(help, "left:20px;bottom:10px;");
+        String helpText = "<a href='http://htmlpreview.github.io/?https://github.com/ProteoWizard/pwiz/blob/master/pwiz_tools/Bumbershoot/myrimatch/doc/index.html' target='_blank'>";
+        Help help = new Help(helpText, "The advanced settings are for expert use only. See help for details",100,20);
+        container.addComponent(help, "left:10px;bottom:10px;");
 
         Button okBtn = new Button("OK");
         okBtn.setWidth(76, Unit.PIXELS);
@@ -139,12 +145,13 @@ public class MyriMatchAdvancedSettingsPanel extends PopupWindow {
                 setPopupVisible(false);
             }
         });
-        container.addComponent(okBtn, "bottom:10px;right:10px");
+       
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);
         cancelBtn.setHeight(20, Unit.PIXELS);
-        container.addComponent(cancelBtn, "bottom:10px;right:96px");
+        container.addComponent(okBtn, "bottom:10px;right:96px"); 
+        container.addComponent(cancelBtn, "bottom:10px;right:10px");
         cancelBtn.addClickListener((Button.ClickEvent event) -> {
             MyriMatchAdvancedSettingsPanel.this.setPopupVisible(false);
         });

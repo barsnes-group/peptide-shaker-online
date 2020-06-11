@@ -54,17 +54,18 @@ public class AndromedaAdvancedSettingsPanel extends PopupWindow {
         container.setWidth(500, Unit.PIXELS);
         container.setHeight(500, Unit.PIXELS);
 
-        Label title = new Label("Search Settings");
+        Label title = new Label("Andromeda");
         container.addComponent(title, "left:10px;top:10px");
         VerticalLayout subContainer = new VerticalLayout();
         subContainer.setSizeFull();
         subContainer.setStyleName("subcontainer");
-        container.addComponent(subContainer, "left:10px;top:40px;right:10px;bottom:40px");
+        container.addComponent(subContainer, "left:10px;top:45px;right:10px;bottom:40px");
         AndromedaAdvancedSettingsPanel.this.setContent(container);
         AndromedaAdvancedSettingsPanel.this.setClosable(true);
 
         peptideLength = new HorizontalLabel2TextField("Peptide Length No Enzyme", 0, 0, new IntegerRangeValidator("Only integer values allowd", (-1* Integer.MAX_VALUE), Integer.MAX_VALUE));
         subContainer.addComponent(peptideLength);
+        peptideLength.setSpacing(true);
 
         maxPeptideMass = new HorizontalLabelTextField("Max Peptide Mass", 0.0, new DoubleRangeValidator("Postive double only allowed", 0.0, Double.MAX_VALUE));
         subContainer.addComponent(maxPeptideMass);
@@ -131,9 +132,9 @@ public class AndromedaAdvancedSettingsPanel extends PopupWindow {
         values2.add(AndromedaParameters.AndromedaDecoyMode.reverse.name());
         decoyMode.updateData(values2);
 
-        String helpText = "<a href='http://coxdocs.org/doku.php?id=maxquant:andromeda:start' targe='_blank'>";
+        String helpText = "<a href='http://coxdocs.org/doku.php?id=maxquant:andromeda:start' target='_blank'>";
         Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open the Andromeda help page.</font>",100,20);
-        container.addComponent(help, "left:20px;bottom:10px;");
+        container.addComponent(help, "left:10px;bottom:10px;");
         Button okBtn = new Button("OK");
         okBtn.setWidth(76, Unit.PIXELS);
         okBtn.setHeight(20, Unit.PIXELS);
@@ -144,12 +145,13 @@ public class AndromedaAdvancedSettingsPanel extends PopupWindow {
                 setPopupVisible(false);
             }
         });
-        container.addComponent(okBtn, "bottom:10px;right:10px");
+        
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);
         cancelBtn.setHeight(20, Unit.PIXELS);
-        container.addComponent(cancelBtn, "bottom:10px;right:96px");
+        container.addComponent(okBtn, "bottom:10px;right:96px");
+        container.addComponent(cancelBtn, "bottom:10px;right:10px");
         cancelBtn.addClickListener((Button.ClickEvent event) -> {
             AndromedaAdvancedSettingsPanel.this.setPopupVisible(false);
         });

@@ -6747,7 +6747,7 @@
         font-weight:500;
     }
     .v-tabsheet-subcontainertabsheet .v-tabsheet-tabsheetpanel{
-        margin-top:10px !important;
+       margin-top: 10px !important;
     }
 
     .v-tabsheet-subcontainertabsheet{
@@ -6757,11 +6757,14 @@
 
 
     .infopopupcontainer .v-label{
-        font-size:11px !important;
-        font-weight:normal !important;
-        line-height:12px;
-        max-width:250px;
-        padding-top:15px !important;
+        font-size: 11px !important;
+	font-weight: normal !important;
+	 line-height: 23px; 
+	 white-space:nowrap;
+	 text-overflow:ellipsis;
+	 overflow:hidden;
+	max-width: 280px;
+	padding-top: 15px !important;
     }
     .v-popupview-infopopup .v-icon{
         margin-top:15px !important;
@@ -8825,12 +8828,32 @@
     .v-filterselect-suggestpopup [class$="suggestmenu"] {
         width: auto !important;
     }
-     .v-caption-importfiltersubcontainer.v-caption-validationsubcontainer{
-       min-width:318px !important; 
+    .v-caption-importfiltersubcontainer.v-caption-validationsubcontainer{
+        min-width:318px !important; 
+    }
+
+    .v-caption-importfiltersubcontainer.v-caption-fractionsubcontainer{
+        min-width:333px !important; 
+    }
+    .subcontainer.paddingvertical5{
+        padding-top: 10px;
+        padding-bottom: 0px;
     }
     
-    .v-caption-importfiltersubcontainer.v-caption-fractionsubcontainer{
-       min-width:333px !important; 
+ .v-window {
+    overflow: auto!important;
+    max-width:100% !important;
+    max-height:100% !important;
+}
+.v-caption-importfiltersubcontainer.v-caption-noversubcontainer{
+        min-width:356px !important; 
+    }
+      .uploaderbtnonly .v-absolutelayout-wrapper-icon-only.v-absolutelayout-wrapper-smooth .v-button-icon-only{ 
+    	
+    	min-width:30px !important;
+    	min-height:22px !important;
+    	text-align:center;
+    	line-height:130% !important;
     }
 }
 

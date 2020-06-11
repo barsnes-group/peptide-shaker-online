@@ -15,6 +15,7 @@ import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
@@ -60,10 +61,13 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
 
         CometAdvancedSettingsPanel.this.setContent(container);
         CometAdvancedSettingsPanel.this.setClosable(true);
+        
+         Label title = new Label("Comet");
+        container.addComponent(title, "left:10px;top:10px");
 
         TabSheet subContainer = new TabSheet();
         subContainer.setSizeFull();
-        container.addComponent(subContainer, "left:10px;top:10px;right:10px;bottom:40px");
+        container.addComponent(subContainer, "left:10px;top:40px;right:10px;bottom:40px");
         subContainer.setStyleName("subcontainertabsheet");
         subContainer.addStyleName(ValoTheme.TABSHEET_COMPACT_TABBAR);
         /**
@@ -213,9 +217,9 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
         printExpectScore.updateData(values);
         tab4.addComponent(this.printExpectScore);
 
-        String helpText = "<a href='http://comet-ms.sourceforge.net/' targe='_blank'>";
+        String helpText = "<a href='http://comet-ms.sourceforge.net/' target='_blank'>";
         Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open the Comet help page.</font>",100,20);
-        container.addComponent(help, "left:20px;bottom:10px;");
+        container.addComponent(help, "left:10px;bottom:10px;");
         Button okBtn = new Button("OK");
         okBtn.setWidth(76, Unit.PIXELS);
         okBtn.setHeight(20, Unit.PIXELS);
@@ -236,8 +240,8 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
             CometAdvancedSettingsPanel.this.setPopupVisible(false);
         });
 
-        container.addComponent(okBtn, "bottom:10px;right:10px");
-        container.addComponent(cancelBtn, "bottom:10px;right:96px");
+        container.addComponent(cancelBtn, "bottom:10px;right:10px");
+        container.addComponent(okBtn, "bottom:10px;right:96px");
     }
 
     public void updateGUI(IdentificationParameters webSearchParameters) {
