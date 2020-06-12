@@ -5,7 +5,7 @@ import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.tool_specific.DirecTagParameters;
 import com.uib.web.peptideshaker.presenter.core.Help;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDounList;
+import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
 import com.vaadin.data.validator.DoubleRangeValidator;
 import com.vaadin.data.validator.IntegerRangeValidator;
@@ -28,7 +28,7 @@ public class DirecTagAdvancedSettingsPanel extends PopupWindow {
     private final HorizontalLabelTextField tagLength;
     private final HorizontalLabelTextField maxVariabalePTMs;
     private final HorizontalLabelTextField numberChargeState;
-    private final HorizontalLabelDropDounList duplicateSpectraPerCharge;
+    private final HorizontalLabelDropDownList duplicateSpectraPerCharge;
     private final HorizontalLabelTextField isotopeMZTolerance;
     private final HorizontalLabelTextField deisptopingMode;
     private final HorizontalLabelTextField numberIntensityClasses;
@@ -45,8 +45,8 @@ public class DirecTagAdvancedSettingsPanel extends PopupWindow {
     private final HorizontalLabelTextField MZFidelityScoreWeight;
     private final HorizontalLabelTextField complementScoreWeight;
 
-    private final HorizontalLabelDropDounList adjustPrecursorMass;
-    private final HorizontalLabelDropDounList useSpectrumChargeState;
+    private final HorizontalLabelDropDownList adjustPrecursorMass;
+    private final HorizontalLabelDropDownList useSpectrumChargeState;
     private IdentificationParameters webSearchParameters;
 
     public DirecTagAdvancedSettingsPanel() {
@@ -56,11 +56,11 @@ public class DirecTagAdvancedSettingsPanel extends PopupWindow {
         container.setWidth(500, Unit.PIXELS);
         container.setHeight(500, Unit.PIXELS);
 
-        Label title = new Label("Search Settings");
+        Label title = new Label("DirecTag");
         container.addComponent(title, "left:10px;top:10px");
         HorizontalLayout subContainersFrame = new HorizontalLayout();
         subContainersFrame.setSizeFull();
-        container.addComponent(subContainersFrame, "left:10px;top:40px;right:10px;bottom:40px");
+        container.addComponent(subContainersFrame, "left:10px;top:45px;right:10px;bottom:40px");
 
         VerticalLayout leftSubContainer = new VerticalLayout();
         leftSubContainer.setSizeFull();
@@ -84,7 +84,7 @@ public class DirecTagAdvancedSettingsPanel extends PopupWindow {
         numberChargeState = new HorizontalLabelTextField("Number Charge State", 0, new IntegerRangeValidator("Postive integer only allowed", 0, Integer.MAX_VALUE));
         leftSubContainer.addComponent(numberChargeState);
 
-        duplicateSpectraPerCharge = new HorizontalLabelDropDounList("Duplicate Spectra Per Charge");
+        duplicateSpectraPerCharge = new HorizontalLabelDropDownList("Duplicate Spectra Per Charge");
         leftSubContainer.addComponent(duplicateSpectraPerCharge);
         Set<String> values = new LinkedHashSet<>();
         values.add("Yes");
@@ -118,7 +118,7 @@ public class DirecTagAdvancedSettingsPanel extends PopupWindow {
         precursorAdjustmentStep = new HorizontalLabelTextField("Precursor Adjustment Step", 0.0, new DoubleRangeValidator("Postive double only allowed", 0.0, Double.MAX_VALUE));
         rightSubContainer.addComponent(precursorAdjustmentStep);
 
-        minPrecursorAdjustment = new HorizontalLabelTextField("Min Precursor Adjustment", 0.0, new DoubleRangeValidator("Only double value allowed", (-1* Double.MAX_VALUE), Double.MAX_VALUE));
+        minPrecursorAdjustment = new HorizontalLabelTextField("Min Precursor Adjustment", 0.0, new DoubleRangeValidator("Only double value allowed", (-1 * Double.MAX_VALUE), Double.MAX_VALUE));
         rightSubContainer.addComponent(minPrecursorAdjustment);
 
         maxPrecursorAdjustment = new HorizontalLabelTextField("Max Precursor Adjustment", 0.0, new DoubleRangeValidator("Postive double only allowed", 0.0, Double.MAX_VALUE));
@@ -133,37 +133,38 @@ public class DirecTagAdvancedSettingsPanel extends PopupWindow {
         complementScoreWeight = new HorizontalLabelTextField("Complement Score Weight", 0.0, new DoubleRangeValidator("Postive double only allowed", 0.0, Double.MAX_VALUE));
         rightSubContainer.addComponent(complementScoreWeight);
 
-        adjustPrecursorMass = new HorizontalLabelDropDounList("Adjust Precursor Mass");
+        adjustPrecursorMass = new HorizontalLabelDropDownList("Adjust Precursor Mass");
         rightSubContainer.addComponent(adjustPrecursorMass);
         adjustPrecursorMass.updateData(values);
 
-        useSpectrumChargeState = new HorizontalLabelDropDounList("Use Spectrum Charge State");
+        useSpectrumChargeState = new HorizontalLabelDropDownList("Use Spectrum Charge State");
         rightSubContainer.addComponent(useSpectrumChargeState);
         useSpectrumChargeState.updateData(values);
         maxPeakCount.setEnabled(false);
         adjustPrecursorMass.setEnabled(false);
 
-        String helpText = "<a href='' targe='_blank'>";
-        Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open the DirecTag help page.</font>",100,20);
-        container.addComponent(help, "left:20px;bottom:10px;");
+        String helpText = "<a href='' target='_blank'>";
+        Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open the DirecTag help page.</font>", 100, 20);
+        container.addComponent(help, "left:10px;bottom:10px;");
         Button okBtn = new Button("OK");
         okBtn.setWidth(76, Unit.PIXELS);
         okBtn.setHeight(20, Unit.PIXELS);
         okBtn.setStyleName(ValoTheme.BUTTON_TINY);
         okBtn.addClickListener((Button.ClickEvent event) -> {
-            if (tagLength.isValid() && maxVariabalePTMs.isValid() && isotopeMZTolerance.isValid() && numberChargeState.isValid() && deisptopingMode.isValid() && numberIntensityClasses.isValid() && maxPeakCount.isValid()&& maxTagCount.isValid()&& ticCuttoffPercentage.isValid()
-                    && complementMZTolerance.isValid()&& precursorAdjustmentStep.isValid()&& minPrecursorAdjustment.isValid()&& maxPrecursorAdjustment.isValid()&& intensityScoreWeight.isValid()
-                    && MZFidelityScoreWeight.isValid()&& complementScoreWeight.isValid()) {
+            if (tagLength.isValid() && maxVariabalePTMs.isValid() && isotopeMZTolerance.isValid() && numberChargeState.isValid() && deisptopingMode.isValid() && numberIntensityClasses.isValid() && maxPeakCount.isValid() && maxTagCount.isValid() && ticCuttoffPercentage.isValid()
+                    && complementMZTolerance.isValid() && precursorAdjustmentStep.isValid() && minPrecursorAdjustment.isValid() && maxPrecursorAdjustment.isValid() && intensityScoreWeight.isValid()
+                    && MZFidelityScoreWeight.isValid() && complementScoreWeight.isValid()) {
                 updateParameters();
                 setPopupVisible(false);
             }
         });
-        container.addComponent(okBtn, "bottom:10px;right:10px");
+
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);
         cancelBtn.setHeight(20, Unit.PIXELS);
-        container.addComponent(cancelBtn, "bottom:10px;right:96px");
+        container.addComponent(okBtn, "bottom:10px;right:96px");
+        container.addComponent(cancelBtn, "bottom:10px;right:10px");
         cancelBtn.addClickListener((Button.ClickEvent event) -> {
             DirecTagAdvancedSettingsPanel.this.setPopupVisible(false);
         });

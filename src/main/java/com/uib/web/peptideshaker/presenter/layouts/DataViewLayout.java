@@ -229,6 +229,24 @@ public abstract class DataViewLayout extends Panel {
 
                 };
                 infoLabel.setIcon(VaadinIcons.INFO_CIRCLE_O);
+                VerticalLayout labelContainer = new VerticalLayout();
+                labelContainer.addStyleName("maxwidth90per");
+                labelContainer.setWidthUndefined();
+                labelContainer.setHeight(260, Unit.PIXELS);
+                Label l = new Label(("<h1>Web PeptideShaker Dataset</h1><p>Project:      " + ds.getName().split("___")[0] + "<p>FASTA:       " +((PeptideShakerVisualizationDataset) ds).getFastaFileName() + "</p>"+ "<p>SearchEngines:       " +((PeptideShakerVisualizationDataset) ds).getSearchEngines()+ "</p>"+ "<p>Variable Modifications:       " +((PeptideShakerVisualizationDataset) ds).getVariableModification()+ "</p>"+ "<p>Fixed Modifications:       " +((PeptideShakerVisualizationDataset) ds).getFixedModification()+ "</p>").replace("[","").replace("]",""), ContentMode.HTML);
+                l.setSizeFull();
+                l.setStyleName("uploadeddsinfo");
+                labelContainer.addComponent(l);
+
+                ((PopupWindow) infoLabel).setContent(labelContainer);
+                ((PopupWindow) infoLabel).setDescription("View search settings ");
+                ((PopupWindow) infoLabel).setClosable(true);
+                if (statusLabel.getStatus() == 2) {
+                    statusLabel.setStatus("Some files are missings or corrupted please re-run SearchGUI-PeptideShaker-WorkFlow");
+                }
+                
+                
+                
                 String link = ((PeptideShakerVisualizationDataset) ds).getLinkToShare();
                 int dsKey = -1;
                 if (link != null) {
@@ -241,30 +259,30 @@ public abstract class DataViewLayout extends Panel {
                 }
                 ClipboardUtil shareLabel = new ClipboardUtil(link);
                 shareLabel.setEnabled(dsKey != -1);
-                SearchParametersForm dsOverview = new SearchParametersForm((PeptideShakerVisualizationDataset) ds, false) {
-                    private final PopupWindow tDsOverview = (PopupWindow) infoLabel;
-
-                    @Override
-                    public void saveSearchingFile(IdentificationParameters searchParameters, boolean isNew) {
-                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-                    }
-
-                    @Override
-                    public void cancel() {
-                        ((PopupWindow) tDsOverview).setPopupVisible(false);
-                    }
-
-                };
-                dsOverview.setSizeFull();
-                ((PeptideShakerVisualizationDataset) ds).setEnzyme(dsOverview.getEnzyme());
-                ((PopupWindow) infoLabel).setContent(dsOverview);
-                ((PopupWindow) infoLabel).setWidth(500, Unit.PIXELS);
-                ((PopupWindow) infoLabel).setHeight(500, Unit.PIXELS);
-                ((PopupWindow) infoLabel).setClosable(true);
-                ((PopupWindow) infoLabel).setDescription("View search settings ");
-                if (statusLabel.getStatus() == 2) {
-                    statusLabel.setStatus("Some files are missings or corrupted please re-run SearchGUI-PeptideShaker-WorkFlow");
-                }
+//                SearchParametersForm dsOverview = new SearchParametersForm((PeptideShakerVisualizationDataset) ds, false) {
+//                    private final PopupWindow tDsOverview = (PopupWindow) infoLabel;
+//
+//                    @Override
+//                    public void saveSearchingFile(IdentificationParameters searchParameters, boolean isNew) {
+//                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//                    }
+//
+//                    @Override
+//                    public void cancel() {
+//                        ((PopupWindow) tDsOverview).setPopupVisible(false);
+//                    }
+//
+//                };
+//                dsOverview.setSizeFull();
+//                ((PeptideShakerVisualizationDataset) ds).setEnzyme(dsOverview.getEnzyme());
+//                ((PopupWindow) infoLabel).setContent(dsOverview);
+//                ((PopupWindow) infoLabel).setWidth(500, Unit.PIXELS);
+//                ((PopupWindow) infoLabel).setHeight(500, Unit.PIXELS);
+//                ((PopupWindow) infoLabel).setClosable(true);
+//                ((PopupWindow) infoLabel).setDescription("View search settings ");
+//                if (statusLabel.getStatus() == 2) {
+//                    statusLabel.setStatus("Some files are missings or corrupted please re-run SearchGUI-PeptideShaker-WorkFlow");
+//                }
                 infoLabel.addStyleName("centeredicon");
                 //0psiconHRNS
                 String quant = null;

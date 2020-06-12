@@ -13,7 +13,7 @@ import com.uib.web.peptideshaker.presenter.core.form.ColorLabel;
 import com.uib.web.peptideshaker.presenter.core.form.Horizontal2Label;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabel2DropdownList;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabel2TextField;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDounList;
+import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextFieldDropdownList;
 import com.uib.web.peptideshaker.presenter.core.form.SparkLine;
@@ -124,15 +124,15 @@ public abstract class SearchParametersForm extends VerticalLayout {
     /**
      * Protein digestion options list.
      */
-    private HorizontalLabelDropDounList digestionList;
+    private HorizontalLabelDropDownList digestionList;
     /**
      * Protein enzymes options list.
      */
-    private HorizontalLabelDropDounList enzymeList;
+    private HorizontalLabelDropDownList enzymeList;
     /**
      * Protein digestion specificity options list.
      */
-    private HorizontalLabelDropDounList specificityList;
+    private HorizontalLabelDropDownList specificityList;
     /**
      * Maximum number of miss cleavages input field.
      */
@@ -867,7 +867,7 @@ public abstract class SearchParametersForm extends VerticalLayout {
         digestionOptionList.add("Unspecific");
         digestionOptionList.add("Whole Protein");
 
-        digestionList = new HorizontalLabelDropDounList("Digestion");
+        digestionList = new HorizontalLabelDropDownList("Digestion");
         digestionList.setHeight(25, Unit.PIXELS);
         digestionList.updateData(digestionOptionList);
         digestionList.addValueChangeListener((Property.ValueChangeEvent event) -> {
@@ -883,7 +883,7 @@ public abstract class SearchParametersForm extends VerticalLayout {
 
         });
 
-        enzymeList = new HorizontalLabelDropDounList("Enzyme");
+        enzymeList = new HorizontalLabelDropDownList("Enzyme");
         Set<String> enzList = new TreeSet<>();
         List<Enzyme> enzObjList = enzymeFactory.getEnzymes();
         enzObjList.forEach((enz) -> {
@@ -896,7 +896,7 @@ public abstract class SearchParametersForm extends VerticalLayout {
         specificityOptionList.add("N-term Specific");
         specificityOptionList.add("C-term Specific");
 
-        specificityList = new HorizontalLabelDropDounList("Specificity");
+        specificityList = new HorizontalLabelDropDownList("Specificity");
         specificityList.updateData(specificityOptionList);
         maxMissCleavages = new HorizontalLabelTextField("Max Missed Cleavages", 2, new IntegerRangeValidator("Error", (-1* Integer.MAX_VALUE), Integer.MAX_VALUE));
 

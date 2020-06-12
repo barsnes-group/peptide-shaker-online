@@ -7,7 +7,7 @@ import com.compomics.util.parameters.identification.tool_specific.XtandemParamet
 import com.uib.web.peptideshaker.presenter.core.Help;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.form.ColorLabel;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDounList;
+import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
 import com.uib.web.peptideshaker.presenter.core.form.SparkLine;
 import com.vaadin.data.Property;
@@ -18,6 +18,7 @@ import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
@@ -42,30 +43,30 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
     private final HorizontalLabelTextField minFragment;
     private final HorizontalLabelTextField minPeaks;
     private final HorizontalLabelTextField minPrecursorMass;
-    private final HorizontalLabelDropDounList noiseSuppressionList;
-    private final HorizontalLabelDropDounList parentIsotopExpansionList;
+    private final HorizontalLabelDropDownList noiseSuppressionList;
+    private final HorizontalLabelDropDownList parentIsotopExpansionList;
 
-    private final HorizontalLabelDropDounList quickAcetyl;
-    private final HorizontalLabelDropDounList quickPyrolidone;
-    private final HorizontalLabelDropDounList stPbias;
+    private final HorizontalLabelDropDownList quickAcetyl;
+    private final HorizontalLabelDropDownList quickPyrolidone;
+    private final HorizontalLabelDropDownList stPbias;
     private final HorizontalLabelTextField ptmComplexity;
 //
-    private final HorizontalLabelDropDounList outputResults;
+    private final HorizontalLabelDropDownList outputResults;
     private final HorizontalLabelTextField eValueCutoff;
-    private final HorizontalLabelDropDounList outputProteins;
-    private final HorizontalLabelDropDounList outputSequences;
-    private final HorizontalLabelDropDounList outputSpectra;
-    private final HorizontalLabelDropDounList outputHistograms;
+    private final HorizontalLabelDropDownList outputProteins;
+    private final HorizontalLabelDropDownList outputSequences;
+    private final HorizontalLabelDropDownList outputSpectra;
+    private final HorizontalLabelDropDownList outputHistograms;
     private final HorizontalLabelTextField skylinePath;
 
-    private final HorizontalLabelDropDounList refinement;
+    private final HorizontalLabelDropDownList refinement;
     private final HorizontalLabelTextField maximumValidExpectationValue;
-    private final HorizontalLabelDropDounList unanticipatedCleavage;
-    private final HorizontalLabelDropDounList semiEnzymaticCleavage;
-    private final HorizontalLabelDropDounList potintialModificationsforFullRefinement;
-    private final HorizontalLabelDropDounList pointMutations;
-    private final HorizontalLabelDropDounList snAPs;
-    private final HorizontalLabelDropDounList spectrumSynthesis;
+    private final HorizontalLabelDropDownList unanticipatedCleavage;
+    private final HorizontalLabelDropDownList semiEnzymaticCleavage;
+    private final HorizontalLabelDropDownList potintialModificationsforFullRefinement;
+    private final HorizontalLabelDropDownList pointMutations;
+    private final HorizontalLabelDropDownList snAPs;
+    private final HorizontalLabelDropDownList spectrumSynthesis;
 
     /**
      * The full modifications list table.
@@ -93,14 +94,17 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
         AbsoluteLayout container = new AbsoluteLayout();
         container.setStyleName("popuppanelmaincontainer");
         container.setWidth(500, Unit.PIXELS);
-        container.setHeight(600, Unit.PIXELS);
+        container.setHeight(500, Unit.PIXELS);
 
         XTandemAdvancedSettingsPanel.this.setContent(container);
         XTandemAdvancedSettingsPanel.this.setClosable(true);
 
+        Label title = new Label("X! Tandem ");
+        container.addComponent(title, "left:10px;top:10px");
+
         TabSheet subContainer = new TabSheet();
         subContainer.setSizeFull();
-        container.addComponent(subContainer, "left:10px;top:10px;right:10px;bottom:40px");
+        container.addComponent(subContainer, "left:10px;top:40px;right:10px;bottom:40px");
         subContainer.setStyleName("subcontainertabsheet");
         subContainer.addStyleName(ValoTheme.TABSHEET_COMPACT_TABBAR);
         /**
@@ -123,7 +127,7 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
         Set<String> values = new LinkedHashSet<>();
         values.add("Yes");
         values.add("No");
-        this.noiseSuppressionList = new HorizontalLabelDropDounList("Noise Suppression <a href='https://www.thegpm.org/TANDEM/api/suns.html' target=\"_blank\"> (?)</a>");
+        this.noiseSuppressionList = new HorizontalLabelDropDownList("Noise Suppression <a href='https://www.thegpm.org/TANDEM/api/suns.html' target=\"_blank\"> (?)</a>");
         this.noiseSuppressionList.updateData(values);
         tab1.addComponent(this.noiseSuppressionList);
 
@@ -135,22 +139,22 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
         });
         this.noiseSuppressionList.setSelected("No");
 
-        parentIsotopExpansionList = new HorizontalLabelDropDounList("Parent Isotop Expansion <a href='https://www.thegpm.org/TANDEM/api/spmmie.html' target=\"_blank\"> (?)</a>");
+        parentIsotopExpansionList = new HorizontalLabelDropDownList("Parent Isotop Expansion <a href='https://www.thegpm.org/TANDEM/api/spmmie.html' target=\"_blank\"> (?)</a>");
         parentIsotopExpansionList.updateData(values);
         tab1.addComponent(this.parentIsotopExpansionList);
 
         /*tab 2*/
         VerticalLayout tab2 = new VerticalLayout();
         subContainer.addTab(tab2, "Advanced Search");
-        quickAcetyl = new HorizontalLabelDropDounList("Quick Acetyl <a href='https://www.thegpm.org/TANDEM/api/pqa.html' target=\"_blank\"> (?)</a>");
+        quickAcetyl = new HorizontalLabelDropDownList("Quick Acetyl <a href='https://www.thegpm.org/TANDEM/api/pqa.html' target=\"_blank\"> (?)</a>");
         quickAcetyl.updateData(values);
         tab2.addComponent(this.quickAcetyl);
 
-        quickPyrolidone = new HorizontalLabelDropDounList("Quick Pyrolidone <a href='https://www.thegpm.org/TANDEM/api/pqp.html' target=\"_blank\"> (?)</a>");
+        quickPyrolidone = new HorizontalLabelDropDownList("Quick Pyrolidone <a href='https://www.thegpm.org/TANDEM/api/pqp.html' target=\"_blank\"> (?)</a>");
         quickPyrolidone.updateData(values);
         tab2.addComponent(this.quickPyrolidone);
 
-        stPbias = new HorizontalLabelDropDounList("stP bias <a href='https://www.thegpm.org/TANDEM/api/pstpb.html' target=\"_blank\"> (?)</a>");
+        stPbias = new HorizontalLabelDropDownList("stP bias <a href='https://www.thegpm.org/TANDEM/api/pstpb.html' target=\"_blank\"> (?)</a>");
         stPbias.updateData(values);
         tab2.addComponent(this.stPbias);
 
@@ -170,7 +174,7 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
         values2.add("valid");
         values2.add("stochastic");
 
-        outputResults = new HorizontalLabelDropDounList("Output Results <a href='https://www.thegpm.org/TANDEM/api/oresu.html' target=\"_blank\"> (?)</a>");
+        outputResults = new HorizontalLabelDropDownList("Output Results <a href='https://www.thegpm.org/TANDEM/api/oresu.html' target=\"_blank\"> (?)</a>");
         outputResults.updateData(values2);
         tab3.addComponent(this.outputResults);
 
@@ -179,19 +183,19 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
         outputResults.addValueChangeListener((Property.ValueChangeEvent event) -> {
             eValueCutoff.setEnabled(!outputResults.getSelectedValue().equalsIgnoreCase("all"));
         });
-        outputProteins = new HorizontalLabelDropDounList("Output Proteins <a href='https://www.thegpm.org/TANDEM/api/oprot.html' target=\"_blank\"> (?)</a>");
+        outputProteins = new HorizontalLabelDropDownList("Output Proteins <a href='https://www.thegpm.org/TANDEM/api/oprot.html' target=\"_blank\"> (?)</a>");
         outputProteins.updateData(values);
         tab3.addComponent(this.outputProteins);
 
-        outputSequences = new HorizontalLabelDropDounList("Output Sequences <a href='https://www.thegpm.org/TANDEM/api/osequ.html' target=\"_blank\"> (?)</a>");
+        outputSequences = new HorizontalLabelDropDownList("Output Sequences <a href='https://www.thegpm.org/TANDEM/api/osequ.html' target=\"_blank\"> (?)</a>");
         outputSequences.updateData(values);
         tab3.addComponent(this.outputSequences);
 
-        outputSpectra = new HorizontalLabelDropDounList("Output Spectra <a href='https://www.thegpm.org/TANDEM/api/ospec.html' target=\"_blank\"> (?)</a>");
+        outputSpectra = new HorizontalLabelDropDownList("Output Spectra <a href='https://www.thegpm.org/TANDEM/api/ospec.html' target=\"_blank\"> (?)</a>");
         outputSpectra.updateData(values);
         tab3.addComponent(this.outputSpectra);
 
-        outputHistograms = new HorizontalLabelDropDounList("Output Histograms <a href='https://www.thegpm.org/TANDEM/api/ohist.html' target=\"_blank\"> (?)</a>");
+        outputHistograms = new HorizontalLabelDropDownList("Output Histograms <a href='https://www.thegpm.org/TANDEM/api/ohist.html' target=\"_blank\"> (?)</a>");
         outputHistograms.updateData(values);
         tab3.addComponent(this.outputHistograms);
 
@@ -204,33 +208,41 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
         VerticalLayout tab4 = new VerticalLayout();
         subContainer.addTab(tab4, "Refinement");
 
-        refinement = new HorizontalLabelDropDounList("Refinement <a href='https://www.thegpm.org/TANDEM/api/refine.html' target=\"_blank\"> (?)</a>");
+        refinement = new HorizontalLabelDropDownList("Refinement <a href='https://www.thegpm.org/TANDEM/api/refine.html' target=\"_blank\"> (?)</a>");
         refinement.updateData(values);
         tab4.addComponent(this.refinement);
+        refinement.updateExpandingRatio(0.6f, 0.4f);
 
         this.maximumValidExpectationValue = new HorizontalLabelTextField("Maximum Valid Expectation Value<a href='https://www.thegpm.org/TANDEM/api/refmvev.html' target=\"_blank\"> (?)</a>", 0.0, new DoubleRangeValidator("Select positive number ", 0.0, Double.MAX_VALUE));
         tab4.addComponent(maximumValidExpectationValue);
+        maximumValidExpectationValue.updateExpandingRatio(0.6f, 0.4f);
 
-        unanticipatedCleavage = new HorizontalLabelDropDounList(" Unanticipated Cleavage <a href='https://www.thegpm.org/TANDEM/api/ruc.html' target=\"_blank\"> (?)</a>");
+        unanticipatedCleavage = new HorizontalLabelDropDownList(" Unanticipated Cleavage <a href='https://www.thegpm.org/TANDEM/api/ruc.html' target=\"_blank\"> (?)</a>");
         unanticipatedCleavage.updateData(values);
         tab4.addComponent(this.unanticipatedCleavage);
+        unanticipatedCleavage.updateExpandingRatio(0.6f, 0.4f);
 
-        semiEnzymaticCleavage = new HorizontalLabelDropDounList("Semi-Enzymatic Cleavage <a href='https://www.thegpm.org/TANDEM/api/rcsemi.html' target=\"_blank\"> (?)</a>");
+        semiEnzymaticCleavage = new HorizontalLabelDropDownList("Semi-Enzymatic Cleavage <a href='https://www.thegpm.org/TANDEM/api/rcsemi.html' target=\"_blank\"> (?)</a>");
         semiEnzymaticCleavage.updateData(values);
         tab4.addComponent(this.semiEnzymaticCleavage);
+        semiEnzymaticCleavage.updateExpandingRatio(0.6f, 0.4f);
 
-        potintialModificationsforFullRefinement = new HorizontalLabelDropDounList("Potintial Modifications for Full Refinement <a href='https://www.thegpm.org/TANDEM/api/rupmffr.html' target=\"_blank\"> (?)</a>");
+        potintialModificationsforFullRefinement = new HorizontalLabelDropDownList("Potintial Modifications for Full Refinement <a href='https://www.thegpm.org/TANDEM/api/rupmffr.html' target=\"_blank\"> (?)</a>");
         potintialModificationsforFullRefinement.updateData(values);
+        potintialModificationsforFullRefinement.updateExpandingRatio(0.6f, 0.4f);
         tab4.addComponent(this.potintialModificationsforFullRefinement);
 
-        pointMutations = new HorizontalLabelDropDounList("Point Mutations <a href='https://www.thegpm.org/TANDEM/api/rpm.html' target=\"_blank\"> (?)</a>");
+        pointMutations = new HorizontalLabelDropDownList("Point Mutations <a href='https://www.thegpm.org/TANDEM/api/rpm.html' target=\"_blank\"> (?)</a>");
         pointMutations.updateData(values);
+        pointMutations.updateExpandingRatio(0.6f, 0.4f);
         tab4.addComponent(this.pointMutations);
-        snAPs = new HorizontalLabelDropDounList("snAPs <a href='https://www.thegpm.org/TANDEM/api/rsaps.html' target=\"_blank\"> (?)</a>");
+        snAPs = new HorizontalLabelDropDownList("snAPs <a href='https://www.thegpm.org/TANDEM/api/rsaps.html' target=\"_blank\"> (?)</a>");
         snAPs.updateData(values);
+        snAPs.updateExpandingRatio(0.6f, 0.4f);
         tab4.addComponent(this.snAPs);
-        spectrumSynthesis = new HorizontalLabelDropDounList("Spectrum Synthesis <a href='https://www.thegpm.org/TANDEM/api/rss.html' target=\"_blank\"> (?)</a>");
+        spectrumSynthesis = new HorizontalLabelDropDownList("Spectrum Synthesis <a href='https://www.thegpm.org/TANDEM/api/rss.html' target=\"_blank\"> (?)</a>");
         spectrumSynthesis.updateData(values);
+        spectrumSynthesis.updateExpandingRatio(0.6f, 0.4f);
         tab4.addComponent(this.spectrumSynthesis);
 
         refinement.addValueChangeListener((Property.ValueChangeEvent event) -> {
@@ -247,7 +259,7 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
 
         List<String> allModiList = PTM.getDefaultModifications();
         // get the min and max values for the mass sparklines
-        double maxMass =  (-1.0*Double.MAX_VALUE);
+        double maxMass = (-1.0 * Double.MAX_VALUE);
         double minMass = Double.MAX_VALUE;
 
         for (String ptm : PTM.getModifications()) {
@@ -317,10 +329,10 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
 
         String helpText = "<h1>X!Tandem Advanced Settings</h1>"
                 + "X!Tandem comes with many options allowing you to fine tune the search settings. Note that these settings aim to be used by advanced users only. It is highly recommended to carefully test any change to the default settings, to document them and report them in any publication/report.  For more help, consult the X!Tandem API. If you are missing a parameter, please contact the developers.";
-        Help help = new Help(helpText, "Note: The advanced settings are for expert use only. See help for details",100,20);
-        container.addComponent(help, "left:20px;bottom:10px;");
-        container.addComponent(okBtn, "bottom:10px;right:10px");
-        container.addComponent(cancelBtn, "bottom:10px;right:96px");
+        Help help = new Help(helpText, "The advanced settings are for expert use only. See help for details", 450, 155);
+        container.addComponent(help, "left:10px;bottom:10px;");
+        container.addComponent(cancelBtn, "bottom:10px;right:10px");
+        container.addComponent(okBtn, "bottom:10px;right:96px");
     }
 
     public void updateGUI(IdentificationParameters webSearchParameters) {
@@ -513,7 +525,7 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
 
         };
         modificationsTable.setWidth(100, Unit.PERCENTAGE);
-        modificationsTable.setHeight(275, Unit.PIXELS);
+        modificationsTable.setHeight(135, Unit.PIXELS);
         modificationsTable.setCaptionAsHtml(true);
 //        modificationsTable.setStyleName(ValoTheme.TABLE_SMALL);
         modificationsTable.addStyleName(ValoTheme.TREETABLE_SMALL);

@@ -6,7 +6,7 @@ import com.compomics.util.parameters.identification.tool_specific.TideParameters
 import com.uib.web.peptideshaker.presenter.core.Help;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabel2TextField;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDounList;
+import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
 import com.vaadin.data.Property;
 import com.vaadin.data.validator.DoubleRangeValidator;
@@ -14,6 +14,7 @@ import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
@@ -30,32 +31,32 @@ public class TideAdvancedSettingsPanel extends PopupWindow {
 
     private final HorizontalLabel2TextField peptideLength;
     private final HorizontalLabel2TextField precursorMass;
-    private final HorizontalLabelDropDounList monoisotopicPrecursor;
-    private final HorizontalLabelDropDounList removeStartingMethionine;
+    private final HorizontalLabelDropDownList monoisotopicPrecursor;
+    private final HorizontalLabelDropDownList removeStartingMethionine;
     private final HorizontalLabelTextField maxVariablePTMsPerPeptide;
     private final HorizontalLabelTextField maxVariablePTMsPerType;
 
-    private final HorizontalLabelDropDounList enzymeType;
-    private final HorizontalLabelDropDounList peptideList;
-    private final HorizontalLabelDropDounList decoyFormat;
-    private final HorizontalLabelDropDounList keepTerminalAAs;
+    private final HorizontalLabelDropDownList enzymeType;
+    private final HorizontalLabelDropDownList peptideList;
+    private final HorizontalLabelDropDownList decoyFormat;
+    private final HorizontalLabelDropDownList keepTerminalAAs;
     private final HorizontalLabelTextField decoySeed;
-    private final HorizontalLabelDropDounList removeTempFolder;
+    private final HorizontalLabelDropDownList removeTempFolder;
     //tab 2
-    private final HorizontalLabelDropDounList calculateExactPValue;
-    private final HorizontalLabelDropDounList calculateSPScore;
+    private final HorizontalLabelDropDownList calculateExactPValue;
+    private final HorizontalLabelDropDownList calculateSPScore;
     private final HorizontalLabel2TextField spectrumMZ;
     private final HorizontalLabelTextField minimumNumberofPeaks;
 
-    private final HorizontalLabelDropDounList charges;
-    private final HorizontalLabelDropDounList removePrecursorPeakPP;
+    private final HorizontalLabelDropDownList charges;
+    private final HorizontalLabelDropDownList removePrecursorPeakPP;
     private final HorizontalLabelTextField removePPTolerance;
-    private final HorizontalLabelDropDounList useFlankingPeaks;
-    private final HorizontalLabelDropDounList useNeutralLossPeaks;
+    private final HorizontalLabelDropDownList useFlankingPeaks;
+    private final HorizontalLabelDropDownList useNeutralLossPeaks;
     private final HorizontalLabelTextField MZBinWidth;
     private final HorizontalLabelTextField MZBinOffset;
     private final HorizontalLabelTextField numberOfSpectrumMatches;
-    private final HorizontalLabelDropDounList outputFormat;
+    private final HorizontalLabelDropDownList outputFormat;
 //
 
     private IdentificationParameters webSearchParameters;
@@ -66,14 +67,16 @@ public class TideAdvancedSettingsPanel extends PopupWindow {
         AbsoluteLayout container = new AbsoluteLayout();
         container.setStyleName("popuppanelmaincontainer");
         container.setWidth(500, Unit.PIXELS);
-        container.setHeight(415, Unit.PIXELS);
+        container.setHeight(430, Unit.PIXELS);
 
         TideAdvancedSettingsPanel.this.setContent(container);
         TideAdvancedSettingsPanel.this.setClosable(true);
 
+        Label title = new Label("Tide");
+        container.addComponent(title, "left:10px;top:10px");
         TabSheet subContainer = new TabSheet();
         subContainer.setSizeFull();
-        container.addComponent(subContainer, "left:10px;top:10px;right:10px;bottom:40px");
+        container.addComponent(subContainer, "left:10px;top:40px;right:10px;bottom:40px");
         subContainer.setStyleName("subcontainertabsheet");
         subContainer.addStyleName(ValoTheme.TABSHEET_COMPACT_TABBAR);
         /**
@@ -82,19 +85,19 @@ public class TideAdvancedSettingsPanel extends PopupWindow {
         VerticalLayout tab1 = new VerticalLayout();
         subContainer.addTab(tab1, "Index");
 
-        this.peptideLength = new HorizontalLabel2TextField("Peptide Length (min-max)", 0, 0, new IntegerRangeValidator("Only integer number allowed ", (-1* Integer.MAX_VALUE), Integer.MAX_VALUE));
+        this.peptideLength = new HorizontalLabel2TextField("Peptide Length (min-max)", 0, 0, new IntegerRangeValidator("Only integer number allowed ", (-1 * Integer.MAX_VALUE), Integer.MAX_VALUE));
         tab1.addComponent(peptideLength);
 
-        this.precursorMass = new HorizontalLabel2TextField("Precursor Mass (min-max)", 0.0, 0.0, new DoubleRangeValidator("Only double values allowed", (-1* Double.MAX_VALUE), Double.MAX_VALUE));
+        this.precursorMass = new HorizontalLabel2TextField("Precursor Mass (min-max)", 0.0, 0.0, new DoubleRangeValidator("Only double values allowed", (-1 * Double.MAX_VALUE), Double.MAX_VALUE));
         tab1.addComponent(precursorMass);
         Set<String> values = new LinkedHashSet<>();
         values.add("Yes");
         values.add("No");
-        this.monoisotopicPrecursor = new HorizontalLabelDropDounList("Monoisotopic Precursor");
+        this.monoisotopicPrecursor = new HorizontalLabelDropDownList("Monoisotopic Precursor");
         this.monoisotopicPrecursor.updateData(values);
         tab1.addComponent(this.monoisotopicPrecursor);
 
-        removeStartingMethionine = new HorizontalLabelDropDounList("Remove Starting Methionine");
+        removeStartingMethionine = new HorizontalLabelDropDownList("Remove Starting Methionine");
         removeStartingMethionine.updateData(values);
         tab1.addComponent(this.removeStartingMethionine);
 
@@ -108,15 +111,15 @@ public class TideAdvancedSettingsPanel extends PopupWindow {
         Set<String> values2 = new LinkedHashSet<>();
         values2.add("full-digest");
         values2.add("partial-digest");
-        enzymeType = new HorizontalLabelDropDounList("Enzyme Type");
+        enzymeType = new HorizontalLabelDropDownList("Enzyme Type");
         enzymeType.updateData(values2);
         tab1.addComponent(this.enzymeType);
-        peptideList = new HorizontalLabelDropDounList("Peptide List");
+        peptideList = new HorizontalLabelDropDownList("Peptide List");
         peptideList.updateData(values);
         tab1.addComponent(this.peptideList);
 
         values2.clear();
-        decoyFormat = new HorizontalLabelDropDounList("Decoy Format");
+        decoyFormat = new HorizontalLabelDropDownList("Decoy Format");
         values2.add("none");
         values2.add("shuffle");
         values2.add("peptide-reverse");
@@ -129,28 +132,29 @@ public class TideAdvancedSettingsPanel extends PopupWindow {
         values2.add("C");
         values2.add("NC");
         values2.add("none");
-        keepTerminalAAs = new HorizontalLabelDropDounList("Keep Terminal AAs");
+        keepTerminalAAs = new HorizontalLabelDropDownList("Keep Terminal AAs");
         keepTerminalAAs.updateData(values2);
         tab1.addComponent(this.keepTerminalAAs);
 
         this.decoySeed = new HorizontalLabelTextField("Decoy Seed", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab1.addComponent(this.decoySeed);
-        removeTempFolder = new HorizontalLabelDropDounList("Remove Temp Folder");
+        removeTempFolder = new HorizontalLabelDropDownList("Remove Temp Folder");
         removeTempFolder.updateData(values);
         tab1.addComponent(this.removeTempFolder);
 
         /*tab 2*/
         VerticalLayout tab2 = new VerticalLayout();
         subContainer.addTab(tab2, "Search");
-        calculateExactPValue = new HorizontalLabelDropDounList("Calculate Exact p-value");
+        tab2.setHeight(301, Unit.PIXELS);
+        calculateExactPValue = new HorizontalLabelDropDownList("Calculate Exact p-value");
         calculateExactPValue.updateData(values);
         tab2.addComponent(this.calculateExactPValue);
 
-        calculateSPScore = new HorizontalLabelDropDounList("Calculate SP Score");
+        calculateSPScore = new HorizontalLabelDropDownList("Calculate SP Score");
         calculateSPScore.updateData(values);
         tab2.addComponent(this.calculateSPScore);
 
-        this.spectrumMZ = new HorizontalLabel2TextField("Spectrum m/z (min-max)", 0.0, 0.0, new DoubleRangeValidator("Only double values allowed", (-1* Double.MAX_VALUE), Double.MAX_VALUE));
+        this.spectrumMZ = new HorizontalLabel2TextField("Spectrum m/z (min-max)", 0.0, 0.0, new DoubleRangeValidator("Only double values allowed", (-1.0 * Double.MAX_VALUE), Double.MAX_VALUE));
         tab2.addComponent(spectrumMZ);
         spectrumMZ.setRequired(false);
 
@@ -162,22 +166,22 @@ public class TideAdvancedSettingsPanel extends PopupWindow {
         values2.add("2");
         values2.add("3");
         values2.add("all");
-        charges = new HorizontalLabelDropDounList("Charges");
+        charges = new HorizontalLabelDropDownList("Charges");
         charges.updateData(values2);
         tab2.addComponent(this.charges);
 
-        removePrecursorPeakPP = new HorizontalLabelDropDounList("Remove Precursor Peak (PP)");
+        removePrecursorPeakPP = new HorizontalLabelDropDownList("Remove Precursor Peak (PP)");
         removePrecursorPeakPP.updateData(values);
         tab2.addComponent(this.removePrecursorPeakPP);
 
         this.removePPTolerance = new HorizontalLabelTextField("Remove PP Tolerance (in Da)", 0.0, new DoubleRangeValidator("Only postive double value allowed ", 0.0, Double.MAX_VALUE));
         tab2.addComponent(removePPTolerance);
 
-        useFlankingPeaks = new HorizontalLabelDropDounList("Use Flanking Peaks");
+        useFlankingPeaks = new HorizontalLabelDropDownList("Use Flanking Peaks");
         useFlankingPeaks.updateData(values);
         tab2.addComponent(this.useFlankingPeaks);
 
-        useNeutralLossPeaks = new HorizontalLabelDropDounList("Use Neutral Loss Peaks");
+        useNeutralLossPeaks = new HorizontalLabelDropDownList("Use Neutral Loss Peaks");
         useNeutralLossPeaks.updateData(values);
         tab2.addComponent(this.useNeutralLossPeaks);
 
@@ -196,7 +200,7 @@ public class TideAdvancedSettingsPanel extends PopupWindow {
         values2.add("pepxml");
         values2.add("mzIdentML");
         values2.add("Percolator input file");
-        outputFormat = new HorizontalLabelDropDounList("Output Format");
+        outputFormat = new HorizontalLabelDropDownList("Output Format");
         outputFormat.updateData(values2);
         tab2.addComponent(this.outputFormat);
         outputFormat.addValueChangeListener(new Property.ValueChangeListener() {
@@ -209,9 +213,9 @@ public class TideAdvancedSettingsPanel extends PopupWindow {
             }
         });
 
-        String helpText = "<a href='http://crux.ms/' targe='_blank'>";
-        Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open the Tide help page.</font>",100,20);
-        container.addComponent(help, "left:20px;bottom:10px;");
+        String helpText = "<a href='http://crux.ms/' target='_blank'>";
+        Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open the Tide help page.</font>", 100, 20);
+        container.addComponent(help, "left:10px;bottom:10px;");
         Button okBtn = new Button("OK");
         okBtn.setWidth(76, Unit.PIXELS);
         okBtn.setHeight(20, Unit.PIXELS);
@@ -232,8 +236,8 @@ public class TideAdvancedSettingsPanel extends PopupWindow {
             TideAdvancedSettingsPanel.this.setPopupVisible(false);
         });
 
-        container.addComponent(okBtn, "bottom:10px;right:10px");
-        container.addComponent(cancelBtn, "bottom:10px;right:96px");
+        container.addComponent(cancelBtn, "bottom:10px;right:10px");
+        container.addComponent(okBtn, "bottom:10px;right:96px");
     }
 
     public void updateGUI(IdentificationParameters webSearchParameters) {
@@ -285,7 +289,9 @@ public class TideAdvancedSettingsPanel extends PopupWindow {
             calculateSPScore.setSelected("No");
         }
         spectrumMZ.setFirstSelectedValue(oldTideParameters.getMinSpectrumMz());
-        spectrumMZ.setSecondSelectedValue(oldTideParameters.getMaxSpectrumMz());
+        if (oldTideParameters.getMaxSpectrumMz() != null) {
+            spectrumMZ.setSecondSelectedValue(oldTideParameters.getMaxSpectrumMz());
+        }
         minimumNumberofPeaks.setSelectedValue(oldTideParameters.getMinSpectrumPeaks());
         charges.setSelected(oldTideParameters.getSpectrumCharges());
         if (oldTideParameters.getRemovePrecursor()) {
@@ -356,7 +362,9 @@ public class TideAdvancedSettingsPanel extends PopupWindow {
         oldTideParameters.setComputeSpScore(calculateSPScore.getSelectedValue().equalsIgnoreCase("Yes"));
 
         oldTideParameters.setMinSpectrumMz(Double.valueOf(spectrumMZ.getFirstSelectedValue()));
-        oldTideParameters.setMaxSpectrumMz(Double.valueOf(spectrumMZ.getSecondSelectedValue()));
+        if (spectrumMZ.getSecondSelectedValue() != null) {
+            oldTideParameters.setMaxSpectrumMz(Double.valueOf(spectrumMZ.getSecondSelectedValue()));
+        }
         oldTideParameters.setMinSpectrumPeaks(Integer.valueOf(minimumNumberofPeaks.getSelectedValue()));
         oldTideParameters.setSpectrumCharges(charges.getSelectedValue());
         oldTideParameters.setRemovePrecursor(removePrecursorPeakPP.getSelectedValue().equalsIgnoreCase("Yes"));

@@ -2,7 +2,7 @@ package com.uib.web.peptideshaker.presenter.layouts.advancedsearchsettings;
 
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDounList;
+import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
 import com.vaadin.data.Property;
 import com.vaadin.data.validator.DoubleRangeValidator;
@@ -21,13 +21,13 @@ import java.util.Set;
  */
 public class ProteinInferencePanel extends PopupWindow {
 
-    private final HorizontalLabelDropDounList simplyProteinGroups;
-    private final HorizontalLabelDropDounList uniprotEvidenceLevel;
-    private final HorizontalLabelDropDounList peptideConfidence;
-    private final HorizontalLabelDropDounList enzymaticity;
-    private final HorizontalLabelDropDounList variantMapping;
+    private final HorizontalLabelDropDownList simplyProteinGroups;
+    private final HorizontalLabelDropDownList uniprotEvidenceLevel;
+    private final HorizontalLabelDropDownList peptideConfidence;
+    private final HorizontalLabelDropDownList enzymaticity;
+    private final HorizontalLabelDropDownList variantMapping;
     private final HorizontalLabelTextField peptideIgnoredConfidence;
-    private final HorizontalLabelDropDounList accountModificationforProteinMapping;
+    private final HorizontalLabelDropDownList accountModificationforProteinMapping;
 
     private IdentificationParameters webSearchParameters;
 
@@ -48,25 +48,25 @@ public class ProteinInferencePanel extends PopupWindow {
         values.add("Yes");
         values.add("No");
 
-        uniprotEvidenceLevel = new HorizontalLabelDropDounList("&nbsp&nbsp-Based on UniProt Evidence Level");
+        uniprotEvidenceLevel = new HorizontalLabelDropDownList("&nbsp&nbsp-Based on UniProt Evidence Level");
         uniprotEvidenceLevel.updateData(values);
 
-        peptideConfidence = new HorizontalLabelDropDounList("&nbsp&nbsp-Based on Peptide Confidence");
+        peptideConfidence = new HorizontalLabelDropDownList("&nbsp&nbsp-Based on Peptide Confidence");
         peptideConfidence.updateData(values);
         peptideIgnoredConfidence = new HorizontalLabelTextField("&nbsp&nbsp&nbsp&nbsp&nbspConfidence Below Which A Peptide Is Ignored", 0.0, new DoubleRangeValidator("Only double values allowd", (-1* Double.MAX_VALUE), Double.MAX_VALUE));
 
-        enzymaticity = new HorizontalLabelDropDounList("&nbsp&nbsp-Based on Enzymaticity");
+        enzymaticity = new HorizontalLabelDropDownList("&nbsp&nbsp-Based on Enzymaticity");
         enzymaticity.updateData(values);
 
-        variantMapping = new HorizontalLabelDropDounList("&nbsp&nbsp-Based on Variant Mapping");
+        variantMapping = new HorizontalLabelDropDownList("&nbsp&nbsp-Based on Variant Mapping");
         variantMapping.updateData(values);
 
-        accountModificationforProteinMapping = new HorizontalLabelDropDounList("Account for Modifications in Protein Mapping");
+        accountModificationforProteinMapping = new HorizontalLabelDropDownList("Account for Modifications in Protein Mapping");
         accountModificationforProteinMapping.updateData(values);
 
         container.addComponent(title, "left:10px;top:10px");
         container.addComponent(subContainer, "left:10px;top:70px;right:10px;bottom:40px");
-        simplyProteinGroups = new HorizontalLabelDropDounList("Simplify Protein Froups");
+        simplyProteinGroups = new HorizontalLabelDropDownList("Simplify Protein Froups");
         simplyProteinGroups.updateData(values);
         subContainer.addComponent(simplyProteinGroups);
         subContainer.addComponent(uniprotEvidenceLevel);

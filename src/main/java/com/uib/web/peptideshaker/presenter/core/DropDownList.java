@@ -48,12 +48,13 @@ public class DropDownList extends AbsoluteLayout {
         list.setTextInputAllowed(false);
 
     }
-    public void addUploadBtn(PopupView uploader){
+    public void addUploadBtn(Uploader uploader){
          DropDownList.this.removeAllComponents();
      DropDownList.this.addComponent(container,"right:36px;");
-     DropDownList.this.addComponent(uploader,"right: 24px;top: 4px;");
+     DropDownList.this.addComponent(uploader,"right: 4px;top: -3px;");
     
     }
+    
 
     /**
      * Set the list is required to have a value.

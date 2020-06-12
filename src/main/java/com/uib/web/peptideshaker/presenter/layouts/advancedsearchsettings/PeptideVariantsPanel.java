@@ -4,7 +4,7 @@ import com.compomics.util.experiment.biology.variants.AaSubstitutionMatrix;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.advanced.PeptideVariantsParameters;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDounList;
+import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
 import com.vaadin.data.Property;
 import com.vaadin.data.validator.IntegerRangeValidator;
@@ -26,7 +26,7 @@ import java.util.Set;
  */
 public class PeptideVariantsPanel extends PopupWindow {
 
-    private final HorizontalLabelDropDounList variantType;
+    private final HorizontalLabelDropDownList variantType;
     private final HorizontalLabelTextField total;
     private final HorizontalLabelTextField aminoAcidDeletion;
     private final HorizontalLabelTextField aminoAcidInsertion;
@@ -58,7 +58,7 @@ public class PeptideVariantsPanel extends PopupWindow {
 
         total = new HorizontalLabelTextField("Total", 0, new IntegerRangeValidator("Only integer values allowd", 0, Integer.MAX_VALUE));
 
-        variantType = new HorizontalLabelDropDounList("Variant Type");
+        variantType = new HorizontalLabelDropDownList("Variant Type");
         variantType.updateData(values);
         variantType.setItemCaption(PeptideVariantsParameters.VariantType.NO_VARIANT.name(), "None");
 

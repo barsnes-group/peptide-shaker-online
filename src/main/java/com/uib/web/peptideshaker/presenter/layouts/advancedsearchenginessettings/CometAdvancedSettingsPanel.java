@@ -7,7 +7,7 @@ import com.compomics.util.parameters.identification.tool_specific.CometParameter
 import com.uib.web.peptideshaker.presenter.core.Help;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabel2TextField;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDounList;
+import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
 import com.vaadin.data.Property;
 import com.vaadin.data.validator.DoubleRangeValidator;
@@ -15,6 +15,7 @@ import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
@@ -30,23 +31,23 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
 
     private final HorizontalLabelTextField minimumNumberofPeaks;
     private final HorizontalLabelTextField minimalPeakIntensity;
-    private final HorizontalLabelDropDounList removePrecursorPeak;
+    private final HorizontalLabelDropDownList removePrecursorPeak;
     private final HorizontalLabelTextField removePrecursorPeakTolerance;
     private final HorizontalLabel2TextField clearMZRange;
 
-    private final HorizontalLabelDropDounList enzymeType;
-    private final HorizontalLabelDropDounList isotopeCorrection;
+    private final HorizontalLabelDropDownList enzymeType;
+    private final HorizontalLabelDropDownList isotopeCorrection;
     private final HorizontalLabel2TextField precursorMass;
     private final HorizontalLabelTextField maxFragmentCharge;
-    private final HorizontalLabelDropDounList removeStartingMethionine;
+    private final HorizontalLabelDropDownList removeStartingMethionine;
     private final HorizontalLabelTextField spectrumBatchSize;
     private final HorizontalLabelTextField maxVariablePTMsPerPeptide;
-    private final HorizontalLabelDropDounList requiredVariablePTM;
-    private final HorizontalLabelDropDounList correlationScoreType;
+    private final HorizontalLabelDropDownList requiredVariablePTM;
+    private final HorizontalLabelDropDownList correlationScoreType;
     private final HorizontalLabelTextField fragmentBinOffset;
     private final HorizontalLabelTextField numberOfSpectrumMatches;
-    private final HorizontalLabelDropDounList outputFormat;
-    private final HorizontalLabelDropDounList printExpectScore;
+    private final HorizontalLabelDropDownList outputFormat;
+    private final HorizontalLabelDropDownList printExpectScore;
 
     private IdentificationParameters webSearchParameters;
 
@@ -61,9 +62,12 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
         CometAdvancedSettingsPanel.this.setContent(container);
         CometAdvancedSettingsPanel.this.setClosable(true);
 
+        Label title = new Label("Comet");
+        container.addComponent(title, "left:10px;top:10px");
+
         TabSheet subContainer = new TabSheet();
         subContainer.setSizeFull();
-        container.addComponent(subContainer, "left:10px;top:10px;right:10px;bottom:40px");
+        container.addComponent(subContainer, "left:10px;top:40px;right:10px;bottom:40px");
         subContainer.setStyleName("subcontainertabsheet");
         subContainer.addStyleName(ValoTheme.TABSHEET_COMPACT_TABBAR);
         /**
@@ -82,7 +86,7 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
         values.add(2 + "");
         values.add(3 + "");
 
-        this.removePrecursorPeak = new HorizontalLabelDropDounList("Monoisotopic Precursor");
+        this.removePrecursorPeak = new HorizontalLabelDropDownList("Monoisotopic Precursor");
         this.removePrecursorPeak.updateData(values);
         tab1.addComponent(this.removePrecursorPeak);
         removePrecursorPeak.setItemCaption(0 + "", "No");
@@ -96,7 +100,7 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
         this.removePrecursorPeakTolerance = new HorizontalLabelTextField("Remove Precursor Peak Tolerance (Da)", 0.0, new DoubleRangeValidator("Only postive double value allowed ", 0.0, Double.MAX_VALUE));
         tab1.addComponent(removePrecursorPeakTolerance);
 
-        this.clearMZRange = new HorizontalLabel2TextField("Clear m/z Range", 0.0,0.0, new DoubleRangeValidator("Only double number allowed ",(-1* Double.MAX_VALUE), Double.MAX_VALUE));
+        this.clearMZRange = new HorizontalLabel2TextField("Clear m/z Range", 0.0, 0.0, new DoubleRangeValidator("Only double number allowed ", (-1 * Double.MAX_VALUE), Double.MAX_VALUE));
         tab1.addComponent(clearMZRange);
 
         /*tab 2*/
@@ -108,7 +112,7 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
         values2.add(2 + "");
         values2.add(3 + "");
 
-        enzymeType = new HorizontalLabelDropDounList("Enzyme Type");
+        enzymeType = new HorizontalLabelDropDownList("Enzyme Type");
         enzymeType.updateData(values2);
         tab2.addComponent(this.enzymeType);
         /**
@@ -130,7 +134,7 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
          * isotope labeling).
          */
         values2.clear();
-        isotopeCorrection = new HorizontalLabelDropDounList("isotopeCorrection");
+        isotopeCorrection = new HorizontalLabelDropDownList("isotopeCorrection");
         values2.add(0 + "");
         values2.add(1 + "");
         values2.add(2 + "");
@@ -144,11 +148,11 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
         isotopeCorrection.setItemCaption(3 + "", "0, +1, +2, +3");
         isotopeCorrection.setItemCaption(4 + "", " -8, -4, 0, +4, +8");
 
-        this.precursorMass = new HorizontalLabel2TextField("Precursor Mass (min-max)", 0.0, 0.0, new DoubleRangeValidator("Only double values allowed", (-1.0*Double.MAX_VALUE), Double.MAX_VALUE));
+        this.precursorMass = new HorizontalLabel2TextField("Precursor Mass (min-max)", 0.0, 0.0, new DoubleRangeValidator("Only double values allowed", (-1.0 * Double.MAX_VALUE), Double.MAX_VALUE));
         tab2.addComponent(precursorMass);
         this.maxFragmentCharge = new HorizontalLabelTextField("Max Fragment Charge", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab2.addComponent(maxFragmentCharge);
-        removeStartingMethionine = new HorizontalLabelDropDounList("Remove Starting Methionine");
+        removeStartingMethionine = new HorizontalLabelDropDownList("Remove Starting Methionine");
         removeStartingMethionine.updateData(values);
         tab2.addComponent(this.removeStartingMethionine);
         this.spectrumBatchSize = new HorizontalLabelTextField("spectrum Batch Size", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
@@ -156,7 +160,7 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
         spectrumBatchSize.setRequired(false);
         this.maxVariablePTMsPerPeptide = new HorizontalLabelTextField("Max Variable PTMs per Type", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab2.addComponent(maxVariablePTMsPerPeptide);
-        requiredVariablePTM = new HorizontalLabelDropDounList("Required Variable PTM");
+        requiredVariablePTM = new HorizontalLabelDropDownList("Required Variable PTM");
         requiredVariablePTM.updateData(values);
         tab2.addComponent(this.requiredVariablePTM);
 
@@ -169,7 +173,7 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
         values2.add(Boolean.FALSE.toString());
         values2.add(Boolean.TRUE.toString());
 
-        correlationScoreType = new HorizontalLabelDropDounList("Correlation Score Type");
+        correlationScoreType = new HorizontalLabelDropDownList("Correlation Score Type");
         correlationScoreType.updateData(values2);
         tab3.addComponent(this.correlationScoreType);
         correlationScoreType.setItemCaption(Boolean.FALSE.toString(), "Summed Intensities + Flanking");//false
@@ -190,7 +194,7 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
         values2.add(CometParameters.CometOutputFormat.TXT.name());
         values2.add(CometParameters.CometOutputFormat.Percolator.name());
 
-        outputFormat = new HorizontalLabelDropDounList("Output Format");
+        outputFormat = new HorizontalLabelDropDownList("Output Format");
         outputFormat.updateData(values2);
 
         outputFormat.setItemCaption(CometParameters.CometOutputFormat.PepXML.name(), "PepXML");
@@ -199,7 +203,7 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
         outputFormat.setItemCaption(CometParameters.CometOutputFormat.Percolator.name(), "Percolator");
 
         tab4.addComponent(this.outputFormat);
-        printExpectScore = new HorizontalLabelDropDounList("Print Expect Score");
+        printExpectScore = new HorizontalLabelDropDownList("Print Expect Score");
         outputFormat.addValueChangeListener((Property.ValueChangeEvent event) -> {
             String selectedValue = outputFormat.getSelectedValue();
             if (!selectedValue.equalsIgnoreCase(CometParameters.CometOutputFormat.PepXML.name())) {
@@ -213,9 +217,9 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
         printExpectScore.updateData(values);
         tab4.addComponent(this.printExpectScore);
 
-        String helpText = "<a href='http://comet-ms.sourceforge.net/' targe='_blank'>";
-        Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open the Comet help page.</font>",100,20);
-        container.addComponent(help, "left:20px;bottom:10px;");
+        String helpText = "<a href='http://comet-ms.sourceforge.net/' target='_blank'>";
+        Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open the Comet help page.</font>", 100, 20);
+        container.addComponent(help, "left:10px;bottom:10px;");
         Button okBtn = new Button("OK");
         okBtn.setWidth(76, Unit.PIXELS);
         okBtn.setHeight(20, Unit.PIXELS);
@@ -236,8 +240,8 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
             CometAdvancedSettingsPanel.this.setPopupVisible(false);
         });
 
-        container.addComponent(okBtn, "bottom:10px;right:10px");
-        container.addComponent(cancelBtn, "bottom:10px;right:96px");
+        container.addComponent(cancelBtn, "bottom:10px;right:10px");
+        container.addComponent(okBtn, "bottom:10px;right:96px");
     }
 
     public void updateGUI(IdentificationParameters webSearchParameters) {

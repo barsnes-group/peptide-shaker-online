@@ -6,13 +6,14 @@ import com.compomics.util.parameters.identification.tool_specific.MyriMatchParam
 import com.uib.web.peptideshaker.presenter.core.Help;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabel2TextField;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDounList;
+import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
 import com.vaadin.data.Property;
 import com.vaadin.data.validator.DoubleRangeValidator;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
@@ -31,17 +32,17 @@ public class MyriMatchAdvancedSettingsPanel extends PopupWindow {
     private final HorizontalLabel2TextField precursorMass;
     private final HorizontalLabelTextField numberOfSpectrumMatches;
     private final HorizontalLabelTextField maxVariablePTMperPeptide;
-    private final HorizontalLabelDropDounList fragmentationMethodList;
-    private final HorizontalLabelDropDounList enzymaticTerminalsList;
-    private final HorizontalLabelDropDounList useSmartPlusTreeModelList;
-    private final HorizontalLabelDropDounList computeXCorrList;
+    private final HorizontalLabelDropDownList fragmentationMethodList;
+    private final HorizontalLabelDropDownList enzymaticTerminalsList;
+    private final HorizontalLabelDropDownList useSmartPlusTreeModelList;
+    private final HorizontalLabelDropDownList computeXCorrList;
 
     private final HorizontalLabelTextField ticCuttoffPercentage;
     private final HorizontalLabelTextField numberOfIntensityClasses;
     private final HorizontalLabelTextField classSizeMultiplier;
     private final HorizontalLabelTextField numberOfBatches;
     private final HorizontalLabelTextField maxPeakCount;
-    private final HorizontalLabelDropDounList outputFormat;
+    private final HorizontalLabelDropDownList outputFormat;
 
     private IdentificationParameters webSearchParameters;
 
@@ -52,18 +53,22 @@ public class MyriMatchAdvancedSettingsPanel extends PopupWindow {
         container.setWidth(500, Unit.PIXELS);
         container.setHeight(500, Unit.PIXELS);
 
-        Label title = new Label("Search Settings");
+        Label title = new Label("MyriMatch");
         container.addComponent(title, "left:10px;top:10px");
         VerticalLayout subContainer = new VerticalLayout();
         subContainer.setSizeFull();
         subContainer.setStyleName("subcontainer");
-        container.addComponent(subContainer, "left:10px;top:40px;right:10px;bottom:40px");
+        subContainer.addStyleName("paddingvertical5");
+        container.addComponent(subContainer, "left:10px;top:45px;right:10px;bottom:40px");
         MyriMatchAdvancedSettingsPanel.this.setContent(container);
         MyriMatchAdvancedSettingsPanel.this.setClosable(true);
 
-        peptideLength = new HorizontalLabel2TextField("Peptide Length (min-max)", 0, 0, new IntegerRangeValidator("Only integer number allowd", (-1* Integer.MAX_VALUE), Integer.MAX_VALUE));
+        peptideLength = new HorizontalLabel2TextField("Peptide Length (min-max)", 0, 0, new IntegerRangeValidator("Only integer number allowd", (-1 * Integer.MAX_VALUE), Integer.MAX_VALUE));
+        peptideLength.setSpacing(true);
         subContainer.addComponent(peptideLength);
-        precursorMass = new HorizontalLabel2TextField("Precursor Mass (min-max)", 0.0, 0.0, new DoubleRangeValidator("Only double values allowd", (-1* Double.MAX_VALUE), Double.MAX_VALUE));
+        subContainer.setComponentAlignment(peptideLength, Alignment.BOTTOM_LEFT);
+        precursorMass = new HorizontalLabel2TextField("Precursor Mass (min-max)", 0.0, 0.0, new DoubleRangeValidator("Only double values allowd", (-1 * Double.MAX_VALUE), Double.MAX_VALUE));
+        precursorMass.setSpacing(true);
         subContainer.addComponent(precursorMass);
         numberOfSpectrumMatches = new HorizontalLabelTextField("Number of Spectrum Matches", 0, new IntegerRangeValidator("Postive integer only allowed", 0, Integer.MAX_VALUE));
         subContainer.addComponent(numberOfSpectrumMatches);
@@ -71,7 +76,7 @@ public class MyriMatchAdvancedSettingsPanel extends PopupWindow {
         maxVariablePTMperPeptide = new HorizontalLabelTextField("Max Variable PTMs per Peptide", 0, new IntegerRangeValidator("Postive integer only allowed", 0, Integer.MAX_VALUE));
         subContainer.addComponent(maxVariablePTMperPeptide);
 
-        fragmentationMethodList = new HorizontalLabelDropDounList("Fragmentation Method");
+        fragmentationMethodList = new HorizontalLabelDropDownList("Fragmentation Method");
         subContainer.addComponent(fragmentationMethodList);
         Set<String> values = new LinkedHashSet<>();
         values.add("CID");
@@ -79,7 +84,7 @@ public class MyriMatchAdvancedSettingsPanel extends PopupWindow {
         values.add("ETD");
         fragmentationMethodList.updateData(values);
 
-        enzymaticTerminalsList = new HorizontalLabelDropDounList("Enzymatic Terminals");
+        enzymaticTerminalsList = new HorizontalLabelDropDownList("Enzymatic Terminals");
         subContainer.addComponent(enzymaticTerminalsList);
         values.clear();
         values.add(0 + "");
@@ -90,13 +95,13 @@ public class MyriMatchAdvancedSettingsPanel extends PopupWindow {
         enzymaticTerminalsList.setItemCaption(1, "At Least One");
         enzymaticTerminalsList.setItemCaption(2, "Both");
 
-        useSmartPlusTreeModelList = new HorizontalLabelDropDounList("Use Smart Plus Tree Model");
+        useSmartPlusTreeModelList = new HorizontalLabelDropDownList("Use Smart Plus Tree Model");
         subContainer.addComponent(useSmartPlusTreeModelList);
         values.clear();
         values.add("Yes");
         values.add("No");
         useSmartPlusTreeModelList.updateData(values);
-        computeXCorrList = new HorizontalLabelDropDounList("Compute XCorr");
+        computeXCorrList = new HorizontalLabelDropDownList("Compute XCorr");
         subContainer.addComponent(computeXCorrList);
         computeXCorrList.updateData(values);
 
@@ -114,8 +119,9 @@ public class MyriMatchAdvancedSettingsPanel extends PopupWindow {
         maxPeakCount = new HorizontalLabelTextField("Max Peak Count", 0, new IntegerRangeValidator("Postive integer only allowed", 0, Integer.MAX_VALUE));
         subContainer.addComponent(maxPeakCount);
 
-        outputFormat = new HorizontalLabelDropDounList("Output Format");
+        outputFormat = new HorizontalLabelDropDownList("Output Format");
         subContainer.addComponent(outputFormat);
+        subContainer.setComponentAlignment(outputFormat, Alignment.BOTTOM_LEFT);
         values.clear();
         values.add("mzIdentML");
         values.add("pepXML");
@@ -126,9 +132,9 @@ public class MyriMatchAdvancedSettingsPanel extends PopupWindow {
             }
         });
 
-        String helpText = "<a href='http://htmlpreview.github.io/?https://github.com/ProteoWizard/pwiz/blob/master/pwiz_tools/Bumbershoot/myrimatch/doc/index.html' targe='_blank'>";
-        Help help = new Help(helpText, "Note: The advanced settings are for expert use only. See help for details",100,20);
-        container.addComponent(help, "left:20px;bottom:10px;");
+        String helpText = "<a href='http://htmlpreview.github.io/?https://github.com/ProteoWizard/pwiz/blob/master/pwiz_tools/Bumbershoot/myrimatch/doc/index.html' target='_blank'>";
+        Help help = new Help(helpText, "The advanced settings are for expert use only. See help for details", 100, 20);
+        container.addComponent(help, "left:10px;bottom:10px;");
 
         Button okBtn = new Button("OK");
         okBtn.setWidth(76, Unit.PIXELS);
@@ -139,12 +145,13 @@ public class MyriMatchAdvancedSettingsPanel extends PopupWindow {
                 setPopupVisible(false);
             }
         });
-        container.addComponent(okBtn, "bottom:10px;right:10px");
+
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);
         cancelBtn.setHeight(20, Unit.PIXELS);
-        container.addComponent(cancelBtn, "bottom:10px;right:96px");
+        container.addComponent(okBtn, "bottom:10px;right:96px");
+        container.addComponent(cancelBtn, "bottom:10px;right:10px");
         cancelBtn.addClickListener((Button.ClickEvent event) -> {
             MyriMatchAdvancedSettingsPanel.this.setPopupVisible(false);
         });
@@ -206,7 +213,7 @@ public class MyriMatchAdvancedSettingsPanel extends PopupWindow {
         myriMatchParameters.setClassSizeMultiplier(Integer.valueOf(classSizeMultiplier.getSelectedValue()));
         myriMatchParameters.setNumberOfBatches(Integer.valueOf(numberOfBatches.getSelectedValue()));
         myriMatchParameters.setMaxPeakCount(Integer.valueOf(maxPeakCount.getSelectedValue()));
-        
+
         myriMatchParameters.setMinPrecursorMass(Double.valueOf(precursorMass.getFirstSelectedValue()));
         myriMatchParameters.setMaxPrecursorMass(Double.valueOf(precursorMass.getSecondSelectedValue()));
         myriMatchParameters.setTicCutoffPercentage(Double.valueOf(ticCuttoffPercentage.getSelectedValue()));
@@ -215,7 +222,7 @@ public class MyriMatchAdvancedSettingsPanel extends PopupWindow {
         myriMatchParameters.setMinTerminiCleavages(Integer.valueOf(enzymaticTerminalsList.getSelectedValue()));
         myriMatchParameters.setUseSmartPlusThreeModel(useSmartPlusTreeModelList.getSelectedValue().equalsIgnoreCase("Yes"));
         myriMatchParameters.setComputeXCorr(computeXCorrList.getSelectedValue().equalsIgnoreCase("Yes"));
-        
+
         peptideLength.setFirstSelectedValue(myriMatchParameters.getMinPeptideLength());
         peptideLength.setSecondSelectedValue(myriMatchParameters.getMaxPeptideLength());
         precursorMass.setFirstSelectedValue(myriMatchParameters.getMinPrecursorMass());

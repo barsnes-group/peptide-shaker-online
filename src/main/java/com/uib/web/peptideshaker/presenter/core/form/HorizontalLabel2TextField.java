@@ -142,7 +142,7 @@ public class HorizontalLabel2TextField extends HorizontalLayout {
         if (validator != null && validator instanceof IntegerRangeValidator) {
             check3 = Integer.valueOf(this.getFirstSelectedValue()) < Integer.valueOf(this.getSecondSelectedValue());
    }else  if (validator != null && validator instanceof DoubleRangeValidator) {
-        check3 = Double.valueOf(this.getFirstSelectedValue()) < Double.valueOf(this.getSecondSelectedValue());
+        check3 = Double.valueOf(this.getFirstSelectedValue()) <= Double.valueOf(this.getSecondSelectedValue());
        
    }else{
        check3=true;

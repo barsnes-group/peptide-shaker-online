@@ -5,7 +5,7 @@ import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.tool_specific.MsAmandaParameters;
 import com.uib.web.peptideshaker.presenter.core.Help;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDounList;
+import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
@@ -23,20 +23,20 @@ import java.util.Set;
  */
 public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
 
-    private final HorizontalLabelDropDounList generateDecoyDatabase;
-    private final HorizontalLabelDropDounList fragmentIonTypes;
-    private final HorizontalLabelDropDounList monoisotopicList;
+    private final HorizontalLabelDropDownList generateDecoyDatabase;
+    private final HorizontalLabelDropDownList fragmentIonTypes;
+    private final HorizontalLabelDropDownList monoisotopicList;
     private final HorizontalLabelTextField maxRank;
-    private final HorizontalLabelDropDounList performDeisotoping;
-    private final HorizontalLabelDropDounList maxPtmDublicatesPerPeptide;
-    private final HorizontalLabelDropDounList maxVariablePTMsPerPeptide;
-    private final HorizontalLabelDropDounList maxPotintialPtmSitesPerPeptide;
-    private final HorizontalLabelDropDounList maxNeutralLossesPerPeptide;
-    private final HorizontalLabelDropDounList maxPtmNeutralLossesPerPeptide;
+    private final HorizontalLabelDropDownList performDeisotoping;
+    private final HorizontalLabelDropDownList maxPtmDublicatesPerPeptide;
+    private final HorizontalLabelDropDownList maxVariablePTMsPerPeptide;
+    private final HorizontalLabelDropDownList maxPotintialPtmSitesPerPeptide;
+    private final HorizontalLabelDropDownList maxNeutralLossesPerPeptide;
+    private final HorizontalLabelDropDownList maxPtmNeutralLossesPerPeptide;
     private final HorizontalLabelTextField minPeptideLength;
     private final HorizontalLabelTextField maxProteinsLoadedIntoMemory;
     private final HorizontalLabelTextField maxSpectraLoadedIntoMemory;
-    private final HorizontalLabelDropDounList outputFormat;
+    private final HorizontalLabelDropDownList outputFormat;
 
     private IdentificationParameters webSearchParameters;
 
@@ -47,23 +47,24 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
         container.setWidth(500, Unit.PIXELS);
         container.setHeight(500, Unit.PIXELS);
 
-        Label title = new Label("Search Settings");
+        Label title = new Label("MS Amandas");
         container.addComponent(title, "left:10px;top:10px");
         VerticalLayout subContainer = new VerticalLayout();
         subContainer.setSizeFull();
-        subContainer.setStyleName("subcontainer");
-        container.addComponent(subContainer, "left:10px;top:40px;right:10px;bottom:40px");
+        subContainer.setStyleName("subcontainer");       
+        subContainer.addStyleName("paddingvertical5");
+        container.addComponent(subContainer, "left:10px;top:45px;right:10px;bottom:40px");
         MSAmandaAdvancedSettingsPanel.this.setContent(container);
         MSAmandaAdvancedSettingsPanel.this.setClosable(true);
 
-        generateDecoyDatabase = new HorizontalLabelDropDounList("Generate Decoy Database");
+        generateDecoyDatabase = new HorizontalLabelDropDownList("Generate Decoy Database");
         subContainer.addComponent(generateDecoyDatabase);
         Set<String> values = new LinkedHashSet<>();
         values.add("Yes");
         values.add("No");
         generateDecoyDatabase.updateData(values);
 
-        fragmentIonTypes = new HorizontalLabelDropDounList("Fragment Ion Types");
+        fragmentIonTypes = new HorizontalLabelDropDownList("Fragment Ion Types");
         subContainer.addComponent(fragmentIonTypes);
         Set<String> values2 = new LinkedHashSet<>();
 //         new String[] {   , , , , ,, , , , , , ,  };
@@ -90,17 +91,17 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
         fragmentIonTypes.setItemCaption(1, "At Least One");
         fragmentIonTypes.setItemCaption(2, "Both");
 
-        monoisotopicList = new HorizontalLabelDropDounList("Monoisotopic");
+        monoisotopicList = new HorizontalLabelDropDownList("Monoisotopic");
         subContainer.addComponent(monoisotopicList);
         monoisotopicList.updateData(values);
         maxRank = new HorizontalLabelTextField("Max Rank", 0, new IntegerRangeValidator("Postive integer only allowed", 0, Integer.MAX_VALUE));
         subContainer.addComponent(maxRank);
 
-        performDeisotoping = new HorizontalLabelDropDounList("Perform Deisotoping");
+        performDeisotoping = new HorizontalLabelDropDownList("Perform Deisotoping");
         subContainer.addComponent(performDeisotoping);
         performDeisotoping.updateData(values);
 
-        maxPtmDublicatesPerPeptide = new HorizontalLabelDropDounList("Max PTM Duplicates per Peptide");
+        maxPtmDublicatesPerPeptide = new HorizontalLabelDropDownList("Max PTM Duplicates per Peptide");
         subContainer.addComponent(maxPtmDublicatesPerPeptide);
         Set<String> values3 = new LinkedHashSet<>();
         values3.add(0 + "");
@@ -116,11 +117,11 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
         values3.add(10 + "");
         maxPtmDublicatesPerPeptide.updateData(values3);
 
-        maxVariablePTMsPerPeptide = new HorizontalLabelDropDounList("Max Variable PTMs per Peptide");
+        maxVariablePTMsPerPeptide = new HorizontalLabelDropDownList("Max Variable PTMs per Peptide");
         subContainer.addComponent(maxVariablePTMsPerPeptide);
         maxVariablePTMsPerPeptide.updateData(values3);
 
-        maxPotintialPtmSitesPerPeptide = new HorizontalLabelDropDounList("Max Potintial PTM sites per PTM");
+        maxPotintialPtmSitesPerPeptide = new HorizontalLabelDropDownList("Max Potintial PTM sites per PTM");
         subContainer.addComponent(maxPotintialPtmSitesPerPeptide);
         values3.add(11 + "");
         values3.add(12 + "");
@@ -134,7 +135,7 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
         values3.add(20 + "");
         maxPotintialPtmSitesPerPeptide.updateData(values3);
 
-        maxNeutralLossesPerPeptide = new HorizontalLabelDropDounList("Max Neutral Losses per Peptide");
+        maxNeutralLossesPerPeptide = new HorizontalLabelDropDownList("Max Neutral Losses per Peptide");
         subContainer.addComponent(maxNeutralLossesPerPeptide);
         values3.clear();
         values3.add(0 + "");
@@ -145,7 +146,7 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
         values3.add(5 + "");
         maxNeutralLossesPerPeptide.updateData(values3);
 
-        maxPtmNeutralLossesPerPeptide = new HorizontalLabelDropDounList("Max PTM Neutral Losses per Peptide");
+        maxPtmNeutralLossesPerPeptide = new HorizontalLabelDropDownList("Max PTM Neutral Losses per Peptide");
         subContainer.addComponent(maxPtmNeutralLossesPerPeptide);
         maxPtmNeutralLossesPerPeptide.updateData(values3);
 
@@ -158,16 +159,16 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
         maxSpectraLoadedIntoMemory = new HorizontalLabelTextField("Max Spectra Loaded into Memory", 0, new IntegerRangeValidator("Postive integer only allowed", 0, Integer.MAX_VALUE));
         subContainer.addComponent(maxSpectraLoadedIntoMemory);
 
-        outputFormat = new HorizontalLabelDropDounList("Output Format");
+        outputFormat = new HorizontalLabelDropDownList("Output Format");
         subContainer.addComponent(outputFormat);
         values.clear();
         values.add("csv");
         values.add("mzIdentML");
         outputFormat.updateData(values);
 
-        String helpText = "<a href='https://ms.imp.ac.at/?goto=msamanda' targe='_blank'>";
+        String helpText = "<a href='https://ms.imp.ac.at/?goto=msamanda' target='_blank'>";
         Help help = new Help(helpText, "Click to open the MS Amanda help page.",100,20);
-        container.addComponent(help, "left:20px;bottom:10px;");
+        container.addComponent(help, "left:10px;bottom:10px;");
 
         Button okBtn = new Button("OK");
         okBtn.setWidth(76, Unit.PIXELS);
@@ -178,12 +179,13 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
                 setPopupVisible(false);
             }
         });
-        container.addComponent(okBtn, "bottom:10px;right:10px");
+       
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);
         cancelBtn.setHeight(20, Unit.PIXELS);
-        container.addComponent(cancelBtn, "bottom:10px;right:96px");
+        container.addComponent(okBtn, "bottom:10px;right:96px"); 
+        container.addComponent(cancelBtn, "bottom:10px;right:10px");
         cancelBtn.addClickListener((Button.ClickEvent event) -> {
             MSAmandaAdvancedSettingsPanel.this.setPopupVisible(false);
         });

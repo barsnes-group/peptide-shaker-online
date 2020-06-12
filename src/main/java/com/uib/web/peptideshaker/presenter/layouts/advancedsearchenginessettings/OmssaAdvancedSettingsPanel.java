@@ -6,7 +6,7 @@ import com.compomics.util.parameters.identification.tool_specific.OmssaParameter
 import com.uib.web.peptideshaker.presenter.core.Help;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabel2TextField;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDounList;
+import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
 import com.vaadin.data.Property;
 import com.vaadin.data.validator.DoubleRangeValidator;
@@ -31,15 +31,15 @@ public class OmssaAdvancedSettingsPanel extends PopupWindow {
     private final HorizontalLabelTextField highIntensityCutoff;
     private final HorizontalLabelTextField intensityCutoffIncrement;
     private final HorizontalLabelTextField minimalNumberofPeaks;
-    private final HorizontalLabelDropDounList eliminateChargeReducedPrecursorsinSpectra;
-    private final HorizontalLabelDropDounList precursorChargeEstimation;
-    private final HorizontalLabelDropDounList plusOneChargeEstimatedAlgorithmically;
+    private final HorizontalLabelDropDownList eliminateChargeReducedPrecursorsinSpectra;
+    private final HorizontalLabelDropDownList precursorChargeEstimation;
+    private final HorizontalLabelDropDownList plusOneChargeEstimatedAlgorithmically;
     private final HorizontalLabelTextField fractionofPrecursorsMZforChargeOneEstimation;
     private final HorizontalLabelTextField minimalNumberofPrecursorsperSpectrum;
-    private final HorizontalLabelDropDounList precursorMassScaling;
+    private final HorizontalLabelDropDownList precursorMassScaling;
 
-    private final HorizontalLabelDropDounList sequencesMappinginMemory;
-    private final HorizontalLabelDropDounList cleaveNTerminalMethionine;
+    private final HorizontalLabelDropDownList sequencesMappinginMemory;
+    private final HorizontalLabelDropDownList cleaveNTerminalMethionine;
 
     private final HorizontalLabelTextField minimumPrecursorChargeforMultiplyChargedFragments;
     private final HorizontalLabelTextField massThresholdtoConsiderExactNeutronMass;
@@ -51,11 +51,11 @@ public class OmssaAdvancedSettingsPanel extends PopupWindow {
     private final HorizontalLabelTextField minimumNumberofAnnotaedPeaks;
     private final HorizontalLabelTextField maximumMZLadders;
     private final HorizontalLabelTextField maximumFragmentCharge;
-    private final HorizontalLabelDropDounList searchPostiveIons;
-    private final HorizontalLabelDropDounList searchFirstForwardIon_b1;
-    private final HorizontalLabelDropDounList searchRewind_c_terminal_Ions;
+    private final HorizontalLabelDropDownList searchPostiveIons;
+    private final HorizontalLabelDropDownList searchFirstForwardIon_b1;
+    private final HorizontalLabelDropDownList searchRewind_c_terminal_Ions;
     private final HorizontalLabelTextField maximumFragmentsperSeries;
-    private final HorizontalLabelDropDounList useCorrelationScore;
+    private final HorizontalLabelDropDownList useCorrelationScore;
     private final HorizontalLabelTextField consectiveIonProbability;
     private final HorizontalLabelTextField numberofHitsPerSpectrumperCharge;
 
@@ -67,7 +67,7 @@ public class OmssaAdvancedSettingsPanel extends PopupWindow {
 
     private final HorizontalLabelTextField evalueCutoff;
     private final HorizontalLabelTextField maximumHitListLength;
-    private final HorizontalLabelDropDounList omssaOutputFormat;
+    private final HorizontalLabelDropDownList omssaOutputFormat;
 
     private IdentificationParameters webSearchParameters;
 
@@ -106,23 +106,23 @@ public class OmssaAdvancedSettingsPanel extends PopupWindow {
         Set<String> values = new LinkedHashSet<>();
         values.add("Yes");
         values.add("No");
-        this.eliminateChargeReducedPrecursorsinSpectra = new HorizontalLabelDropDounList("Eliminate Charge Reduced Precursors in Spectra");
+        this.eliminateChargeReducedPrecursorsinSpectra = new HorizontalLabelDropDownList("Eliminate Charge Reduced Precursors in Spectra");
         this.eliminateChargeReducedPrecursorsinSpectra.updateData(values);
         tab1.addComponent(this.eliminateChargeReducedPrecursorsinSpectra);
         Set<String> values2 = new LinkedHashSet<>();
         values2.add("Use Range");
         values2.add("Believe Input File");
-        precursorChargeEstimation = new HorizontalLabelDropDounList("Precursor Charge Estimation");
+        precursorChargeEstimation = new HorizontalLabelDropDownList("Precursor Charge Estimation");
         precursorChargeEstimation.updateData(values2);
         tab1.addComponent(this.precursorChargeEstimation);
-        plusOneChargeEstimatedAlgorithmically = new HorizontalLabelDropDounList("Plus One Charge Estimated Algorithmically");
+        plusOneChargeEstimatedAlgorithmically = new HorizontalLabelDropDownList("Plus One Charge Estimated Algorithmically");
         plusOneChargeEstimatedAlgorithmically.updateData(values);
         tab1.addComponent(this.plusOneChargeEstimatedAlgorithmically);
         this.fractionofPrecursorsMZforChargeOneEstimation = new HorizontalLabelTextField("Fraction of Precursors m/z for Charge One Estimation", 0.0, new DoubleRangeValidator("Only postive double values allowed", 0.0, Double.MAX_VALUE));
         tab1.addComponent(this.fractionofPrecursorsMZforChargeOneEstimation);
         this.minimalNumberofPrecursorsperSpectrum = new HorizontalLabelTextField("Minimal Number of Precursors per Spectrum", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab1.addComponent(minimalNumberofPrecursorsperSpectrum);
-        precursorMassScaling = new HorizontalLabelDropDounList("Precursor Mass Scaling");
+        precursorMassScaling = new HorizontalLabelDropDownList("Precursor Mass Scaling");
         precursorMassScaling.updateData(values);
         tab1.addComponent(this.precursorMassScaling);
 
@@ -130,10 +130,10 @@ public class OmssaAdvancedSettingsPanel extends PopupWindow {
         /*tab 2*/
         VerticalLayout tab2 = new VerticalLayout();
         subContainer.addTab(tab2, "Database");
-        sequencesMappinginMemory = new HorizontalLabelDropDounList("Sequences Mapping in Memory");
+        sequencesMappinginMemory = new HorizontalLabelDropDownList("Sequences Mapping in Memory");
         sequencesMappinginMemory.updateData(values);
         tab2.addComponent(this.sequencesMappinginMemory);
-        cleaveNTerminalMethionine = new HorizontalLabelDropDounList("Cleave N-Terminal Methionine");
+        cleaveNTerminalMethionine = new HorizontalLabelDropDownList("Cleave N-Terminal Methionine");
         cleaveNTerminalMethionine.updateData(values);
         tab2.addComponent(this.cleaveNTerminalMethionine);
 
@@ -169,21 +169,21 @@ public class OmssaAdvancedSettingsPanel extends PopupWindow {
         this.maximumFragmentCharge = new HorizontalLabelTextField("Maximum Fragment Charge", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab3.addComponent(maximumFragmentCharge);
 
-        searchPostiveIons = new HorizontalLabelDropDounList("Search Postive Ions");
+        searchPostiveIons = new HorizontalLabelDropDownList("Search Postive Ions");
         searchPostiveIons.updateData(values);
         tab3.addComponent(this.searchPostiveIons);
 
-        searchFirstForwardIon_b1 = new HorizontalLabelDropDounList("Search First ForwardIon (b1)");
+        searchFirstForwardIon_b1 = new HorizontalLabelDropDownList("Search First ForwardIon (b1)");
         searchFirstForwardIon_b1.updateData(values);
         tab3.addComponent(this.searchFirstForwardIon_b1);
 
-        searchRewind_c_terminal_Ions = new HorizontalLabelDropDounList("Search Rewind (C-Terminal) Ions");
+        searchRewind_c_terminal_Ions = new HorizontalLabelDropDownList("Search Rewind (C-Terminal) Ions");
         searchRewind_c_terminal_Ions.updateData(values);
         tab3.addComponent(this.searchRewind_c_terminal_Ions);
 
         this.maximumFragmentsperSeries = new HorizontalLabelTextField("Maximum Fragments per Series", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab3.addComponent(maximumFragmentsperSeries);
-        this.useCorrelationScore = new HorizontalLabelDropDounList("Use Correlation Score");
+        this.useCorrelationScore = new HorizontalLabelDropDownList("Use Correlation Score");
         useCorrelationScore.updateData(values);
         tab3.addComponent(this.useCorrelationScore);
 
@@ -225,7 +225,7 @@ public class OmssaAdvancedSettingsPanel extends PopupWindow {
         values2.add("OMX");
         values2.add("CSV");
         values2.add("pepXML");
-        omssaOutputFormat = new HorizontalLabelDropDounList("OMSSA Output Format");
+        omssaOutputFormat = new HorizontalLabelDropDownList("OMSSA Output Format");
         omssaOutputFormat.updateData(values2);
 //        tab2.addComponent(this.omssaOutputFormat);
 

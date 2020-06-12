@@ -7,7 +7,7 @@ import com.compomics.util.parameters.identification.tool_specific.AndromedaParam
 import com.uib.web.peptideshaker.presenter.core.Help;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabel2TextField;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDounList;
+import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
 import com.vaadin.data.validator.DoubleRangeValidator;
 import com.vaadin.data.validator.IntegerRangeValidator;
@@ -31,19 +31,19 @@ public class AndromedaAdvancedSettingsPanel extends PopupWindow {
     private final HorizontalLabelTextField numberOfSpectrumMatches;
     private final HorizontalLabelTextField maxVariabalePTMs;
 
-    private final HorizontalLabelDropDounList fragmentaionMethod;
-    private final HorizontalLabelDropDounList waterLoss;
-    private final HorizontalLabelDropDounList ammoniaLoss;
-    private final HorizontalLabelDropDounList sequenceDependentNeutralLoss;
-    private final HorizontalLabelDropDounList equalIandL;
-    private final HorizontalLabelDropDounList fragmentAll;
-    private final HorizontalLabelDropDounList empiricalCorrection;
-    private final HorizontalLabelDropDounList higherCharge;
+    private final HorizontalLabelDropDownList fragmentaionMethod;
+    private final HorizontalLabelDropDownList waterLoss;
+    private final HorizontalLabelDropDownList ammoniaLoss;
+    private final HorizontalLabelDropDownList sequenceDependentNeutralLoss;
+    private final HorizontalLabelDropDownList equalIandL;
+    private final HorizontalLabelDropDownList fragmentAll;
+    private final HorizontalLabelDropDownList empiricalCorrection;
+    private final HorizontalLabelDropDownList higherCharge;
 
     private final HorizontalLabelTextField maxCombinations;
     private final HorizontalLabelTextField topPeaks;
     private final HorizontalLabelTextField topPeaksWindows;
-    private final HorizontalLabelDropDounList decoyMode;
+    private final HorizontalLabelDropDownList decoyMode;
 
     private IdentificationParameters webSearchParameters;
 
@@ -54,17 +54,18 @@ public class AndromedaAdvancedSettingsPanel extends PopupWindow {
         container.setWidth(500, Unit.PIXELS);
         container.setHeight(500, Unit.PIXELS);
 
-        Label title = new Label("Search Settings");
+        Label title = new Label("Andromeda");
         container.addComponent(title, "left:10px;top:10px");
         VerticalLayout subContainer = new VerticalLayout();
         subContainer.setSizeFull();
         subContainer.setStyleName("subcontainer");
-        container.addComponent(subContainer, "left:10px;top:40px;right:10px;bottom:40px");
+        container.addComponent(subContainer, "left:10px;top:45px;right:10px;bottom:40px");
         AndromedaAdvancedSettingsPanel.this.setContent(container);
         AndromedaAdvancedSettingsPanel.this.setClosable(true);
 
         peptideLength = new HorizontalLabel2TextField("Peptide Length No Enzyme", 0, 0, new IntegerRangeValidator("Only integer values allowd", (-1* Integer.MAX_VALUE), Integer.MAX_VALUE));
         subContainer.addComponent(peptideLength);
+        peptideLength.setSpacing(true);
 
         maxPeptideMass = new HorizontalLabelTextField("Max Peptide Mass", 0.0, new DoubleRangeValidator("Postive double only allowed", 0.0, Double.MAX_VALUE));
         subContainer.addComponent(maxPeptideMass);
@@ -75,7 +76,7 @@ public class AndromedaAdvancedSettingsPanel extends PopupWindow {
         maxVariabalePTMs = new HorizontalLabelTextField("Max Variable PTMs", 0, new IntegerRangeValidator("Postive integer only allowed", 0, Integer.MAX_VALUE));
         subContainer.addComponent(maxVariabalePTMs);
 
-        fragmentaionMethod = new HorizontalLabelDropDounList("Fragmentation Method");
+        fragmentaionMethod = new HorizontalLabelDropDownList("Fragmentation Method");
         subContainer.addComponent(fragmentaionMethod);
         Set<String> values = new LinkedHashSet<>();
         /**
@@ -87,32 +88,32 @@ public class AndromedaAdvancedSettingsPanel extends PopupWindow {
         values.add(FragmentationMethod.ETD.name());
         fragmentaionMethod.updateData(values);
 
-        waterLoss = new HorizontalLabelDropDounList("Water Loss");
+        waterLoss = new HorizontalLabelDropDownList("Water Loss");
         subContainer.addComponent(waterLoss);
         Set<String> values2 = new LinkedHashSet<>();
         values2.add("Yes");
         values2.add("No");
         waterLoss.updateData(values2);
 
-        ammoniaLoss = new HorizontalLabelDropDounList("Ammonia Loss");
+        ammoniaLoss = new HorizontalLabelDropDownList("Ammonia Loss");
         subContainer.addComponent(ammoniaLoss);
         ammoniaLoss.updateData(values2);
 
-        sequenceDependentNeutralLoss = new HorizontalLabelDropDounList("Sequence Dependent Neutral Loss");
+        sequenceDependentNeutralLoss = new HorizontalLabelDropDownList("Sequence Dependent Neutral Loss");
         subContainer.addComponent(sequenceDependentNeutralLoss);
         sequenceDependentNeutralLoss.updateData(values2);
-        equalIandL = new HorizontalLabelDropDounList("Equal I and L");
+        equalIandL = new HorizontalLabelDropDownList("Equal I and L");
         subContainer.addComponent(equalIandL);
         equalIandL.updateData(values2);
-        fragmentAll = new HorizontalLabelDropDounList("fragmentAll");
+        fragmentAll = new HorizontalLabelDropDownList("fragmentAll");
         subContainer.addComponent(fragmentAll);
         fragmentAll.updateData(values2);
 
-        empiricalCorrection = new HorizontalLabelDropDounList("Empirical Correction");
+        empiricalCorrection = new HorizontalLabelDropDownList("Empirical Correction");
         subContainer.addComponent(empiricalCorrection);
         empiricalCorrection.updateData(values2);
 
-        higherCharge = new HorizontalLabelDropDounList("Higher Charge");
+        higherCharge = new HorizontalLabelDropDownList("Higher Charge");
         subContainer.addComponent(higherCharge);
         higherCharge.updateData(values2);
 
@@ -124,16 +125,16 @@ public class AndromedaAdvancedSettingsPanel extends PopupWindow {
         topPeaksWindows = new HorizontalLabelTextField("Top Peaks Windows", 0, new IntegerRangeValidator("Postive integer only allowed", 0, Integer.MAX_VALUE));
         subContainer.addComponent(topPeaksWindows);
 
-        decoyMode = new HorizontalLabelDropDounList("Decoy Mode");
+        decoyMode = new HorizontalLabelDropDownList("Decoy Mode");
         subContainer.addComponent(decoyMode);
         values2.clear();
         values2.add(AndromedaParameters.AndromedaDecoyMode.none.name());
         values2.add(AndromedaParameters.AndromedaDecoyMode.reverse.name());
         decoyMode.updateData(values2);
 
-        String helpText = "<a href='http://coxdocs.org/doku.php?id=maxquant:andromeda:start' targe='_blank'>";
+        String helpText = "<a href='http://coxdocs.org/doku.php?id=maxquant:andromeda:start' target='_blank'>";
         Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open the Andromeda help page.</font>",100,20);
-        container.addComponent(help, "left:20px;bottom:10px;");
+        container.addComponent(help, "left:10px;bottom:10px;");
         Button okBtn = new Button("OK");
         okBtn.setWidth(76, Unit.PIXELS);
         okBtn.setHeight(20, Unit.PIXELS);
@@ -144,12 +145,13 @@ public class AndromedaAdvancedSettingsPanel extends PopupWindow {
                 setPopupVisible(false);
             }
         });
-        container.addComponent(okBtn, "bottom:10px;right:10px");
+        
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);
         cancelBtn.setHeight(20, Unit.PIXELS);
-        container.addComponent(cancelBtn, "bottom:10px;right:96px");
+        container.addComponent(okBtn, "bottom:10px;right:96px");
+        container.addComponent(cancelBtn, "bottom:10px;right:10px");
         cancelBtn.addClickListener((Button.ClickEvent event) -> {
             AndromedaAdvancedSettingsPanel.this.setPopupVisible(false);
         });

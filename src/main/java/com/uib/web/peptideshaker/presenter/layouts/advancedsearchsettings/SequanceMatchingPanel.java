@@ -4,7 +4,7 @@ package com.uib.web.peptideshaker.presenter.layouts.advancedsearchsettings;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.advanced.SequenceMatchingParameters;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDounList;
+import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
 import com.vaadin.data.validator.DoubleRangeValidator;
 import com.vaadin.icons.VaadinIcons;
@@ -24,14 +24,14 @@ import java.util.Set;
 public class SequanceMatchingPanel extends PopupWindow {
 
     private final HorizontalLabelTextField shareOfX;
-    private final HorizontalLabelDropDounList matchingMethodList;
+    private final HorizontalLabelDropDownList matchingMethodList;
     private IdentificationParameters webSearchParameters;
 
     public SequanceMatchingPanel() {
         super(VaadinIcons.COG.getHtml() + " Sequance Matching");
         Label title = new Label("Sequance Matching");
 
-        matchingMethodList = new HorizontalLabelDropDounList("Matching Method");
+        matchingMethodList = new HorizontalLabelDropDownList("Matching Method");
         Set<String> values = new LinkedHashSet<>();
         values.add(SequenceMatchingParameters.MatchingType.string.name());
 

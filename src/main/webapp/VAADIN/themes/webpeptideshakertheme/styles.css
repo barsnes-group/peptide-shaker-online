@@ -19875,8 +19875,11 @@ div.v-layout.v-horizontal.v-widget {
 .webpeptideshakertheme .infopopupcontainer .v-label {
 	font-size: 11px !important;
 	font-weight: normal !important;
-	line-height: 12px;
-	max-width: 250px;
+	line-height: 23px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	max-width: 280px;
 	padding-top: 15px !important;
 }
 
@@ -22028,4 +22031,26 @@ div.v-layout.v-horizontal.v-widget {
 
 .webpeptideshakertheme .v-caption-importfiltersubcontainer.v-caption-fractionsubcontainer {
 	min-width: 333px !important;
+}
+
+.webpeptideshakertheme .subcontainer.paddingvertical5 {
+	padding-top: 10px;
+	padding-bottom: 0px;
+}
+
+.webpeptideshakertheme .v-window {
+	overflow: auto !important;
+	max-width: 100% !important;
+	max-height: 100% !important;
+}
+
+.webpeptideshakertheme .v-caption-importfiltersubcontainer.v-caption-noversubcontainer {
+	min-width: 356px !important;
+}
+
+.webpeptideshakertheme .uploaderbtnonly .v-absolutelayout-wrapper-icon-only.v-absolutelayout-wrapper-smooth .v-button-icon-only {
+	min-width: 30px !important;
+	min-height: 22px !important;
+	text-align: center;
+	line-height: 130% !important;
 }

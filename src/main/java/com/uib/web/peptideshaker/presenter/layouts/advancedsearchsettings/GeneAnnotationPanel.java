@@ -2,7 +2,7 @@ package com.uib.web.peptideshaker.presenter.layouts.advancedsearchsettings;
 
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDounList;
+import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
@@ -18,8 +18,8 @@ import java.util.Set;
  */
 public class GeneAnnotationPanel extends PopupWindow {
 
-    private final HorizontalLabelDropDounList useMapping;
-    private final HorizontalLabelDropDounList autoUpdate;
+    private final HorizontalLabelDropDownList useMapping;
+    private final HorizontalLabelDropDownList autoUpdate;
 
     private IdentificationParameters webSearchParameters;
 
@@ -39,12 +39,12 @@ public class GeneAnnotationPanel extends PopupWindow {
         values.add("Yes");
         values.add("No");
 
-        autoUpdate = new HorizontalLabelDropDounList("&nbsp&nbsp-Based on UniProt Evidence Level");
+        autoUpdate = new HorizontalLabelDropDownList("&nbsp&nbsp-Based on UniProt Evidence Level");
         autoUpdate.updateData(values);
 
         container.addComponent(title, "left:10px;top:10px");
         container.addComponent(subContainer, "left:10px;top:45px;right:10px;bottom:40px");
-        useMapping = new HorizontalLabelDropDounList("Simplify Protein Froups");
+        useMapping = new HorizontalLabelDropDownList("Simplify Protein Froups");
         useMapping.updateData(values);
         subContainer.addComponent(useMapping);
         subContainer.addComponent(autoUpdate);

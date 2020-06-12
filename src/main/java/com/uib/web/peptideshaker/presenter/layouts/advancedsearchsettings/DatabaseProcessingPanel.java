@@ -2,7 +2,7 @@ package com.uib.web.peptideshaker.presenter.layouts.advancedsearchsettings;
 
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDounList;
+import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
 import com.vaadin.data.Property;
 import com.vaadin.icons.VaadinIcons;
@@ -20,8 +20,8 @@ import java.util.Set;
  */
 public class DatabaseProcessingPanel extends PopupWindow {
 
-    private final HorizontalLabelDropDounList targetDecoy;
-    private final HorizontalLabelDropDounList decoyType;
+    private final HorizontalLabelDropDownList targetDecoy;
+    private final HorizontalLabelDropDownList decoyType;
     private final HorizontalLabelTextField decoyTag;
     private final HorizontalLabelTextField decoyFileTag;
 
@@ -43,7 +43,7 @@ public class DatabaseProcessingPanel extends PopupWindow {
         values.add("Prefix");
         values.add("Suffix");
 
-        decoyType = new HorizontalLabelDropDounList("Decoy Type");
+        decoyType = new HorizontalLabelDropDownList("Decoy Type");
         decoyType.updateData(values);
 
         decoyTag = new HorizontalLabelTextField("Decoy Tag", "_REVERSED", null);
@@ -55,7 +55,7 @@ public class DatabaseProcessingPanel extends PopupWindow {
         values.add("Yes");
         values.add("No");
 
-        targetDecoy = new HorizontalLabelDropDounList("Target-Decoy");
+        targetDecoy = new HorizontalLabelDropDownList("Target-Decoy");
         targetDecoy.updateData(values);
         subContainer.addComponent(targetDecoy);
         subContainer.addComponent(decoyType);

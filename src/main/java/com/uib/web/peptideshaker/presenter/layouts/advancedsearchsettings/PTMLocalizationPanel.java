@@ -3,7 +3,7 @@ package com.uib.web.peptideshaker.presenter.layouts.advancedsearchsettings;
 import com.compomics.util.experiment.identification.modification.ModificationLocalizationScore;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDounList;
+import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
 import com.vaadin.data.validator.DoubleRangeValidator;
 import com.vaadin.icons.VaadinIcons;
@@ -21,9 +21,9 @@ import java.util.Set;
  */
 public class PTMLocalizationPanel extends PopupWindow {
 
-    private final HorizontalLabelDropDounList probabilisticScore;
-    private final HorizontalLabelDropDounList accountNeutralLosses;
-    private final HorizontalLabelDropDounList confidentSites;
+    private final HorizontalLabelDropDownList probabilisticScore;
+    private final HorizontalLabelDropDownList accountNeutralLosses;
+    private final HorizontalLabelDropDownList confidentSites;
     private final HorizontalLabelTextField threshold;
 
     private IdentificationParameters webSearchParameters;
@@ -44,18 +44,18 @@ public class PTMLocalizationPanel extends PopupWindow {
         values.add(ModificationLocalizationScore.PhosphoRS.getName());
         values.add(ModificationLocalizationScore.None.getName());
 
-        probabilisticScore = new HorizontalLabelDropDounList("Probabilistic Score");
+        probabilisticScore = new HorizontalLabelDropDownList("Probabilistic Score");
         probabilisticScore.updateData(values);
         values.clear();
 
         values.add("Yes");
         values.add("No");
 
-        accountNeutralLosses = new HorizontalLabelDropDounList("Account Neutral Losses");
+        accountNeutralLosses = new HorizontalLabelDropDownList("Account Neutral Losses");
         accountNeutralLosses.updateData(values);
         threshold = new HorizontalLabelTextField("Threshold", 0.0, new DoubleRangeValidator("Only double values allowd", (-1* Double.MAX_VALUE), Double.MAX_VALUE));
 
-        confidentSites = new HorizontalLabelDropDounList("Confident Sites");
+        confidentSites = new HorizontalLabelDropDownList("Confident Sites");
         confidentSites.updateData(values);
 
         container.addComponent(title, "left:10px;top:10px");
