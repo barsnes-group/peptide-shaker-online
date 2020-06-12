@@ -131,7 +131,7 @@ public abstract class DataViewLayout extends Panel {
         topDataTable.removeAllComponents();
         bottomDataTable.removeAllComponents();
         int i = 1;
-        int ii=1;
+        int ii = 1;
         for (GalaxyFileObject ds : historyFilesMap.values()) {
             if (ds.getName() == null || ds.getType().equalsIgnoreCase("FASTA File")) {
                 continue;
@@ -233,7 +233,14 @@ public abstract class DataViewLayout extends Panel {
                 labelContainer.addStyleName("maxwidth90per");
                 labelContainer.setWidthUndefined();
                 labelContainer.setHeight(260, Unit.PIXELS);
-                Label l = new Label(("<h1>Web PeptideShaker Dataset</h1><p>Project:      " + ds.getName().split("___")[0] + "<p>FASTA:       " +((PeptideShakerVisualizationDataset) ds).getFastaFileName() + "</p>"+ "<p>SearchEngines:       " +((PeptideShakerVisualizationDataset) ds).getSearchEngines()+ "</p>"+ "<p>Variable Modifications:       " +((PeptideShakerVisualizationDataset) ds).getVariableModification()+ "</p>"+ "<p>Fixed Modifications:       " +((PeptideShakerVisualizationDataset) ds).getFixedModification()+ "</p>").replace("[","").replace("]",""), ContentMode.HTML);
+                String labelValue = "";
+                if ((((PeptideShakerVisualizationDataset) ds).getStatus() != null && ((PeptideShakerVisualizationDataset) ds).getStatus().equalsIgnoreCase("ok"))) {
+                    labelValue = ("<h1>Web PeptideShaker Dataset</h1><p>Project:      " + ds.getName().split("___")[0] + "<p>FASTA:       " + ((PeptideShakerVisualizationDataset) ds).getFastaFileName() + "</p>" + "<p>SearchEngines:       " + ((PeptideShakerVisualizationDataset) ds).getSearchEngines() + "</p>" + "<p>Variable Modifications:       " + ((PeptideShakerVisualizationDataset) ds).getVariableModification() + "</p>" + "<p>Fixed Modifications:       " + ((PeptideShakerVisualizationDataset) ds).getFixedModification() + "</p>").replace("[", "").replace("]", "");
+
+                } else {
+                    System.out.println("@ ---(PeptideShakerVisualizationDataset) ds).getSearchEngines() " + ((PeptideShakerVisualizationDataset) ds).getStatus());
+                }
+                Label l = new Label(labelValue, ContentMode.HTML);
                 l.setSizeFull();
                 l.setStyleName("uploadeddsinfo");
                 labelContainer.addComponent(l);
@@ -244,17 +251,15 @@ public abstract class DataViewLayout extends Panel {
                 if (statusLabel.getStatus() == 2) {
                     statusLabel.setStatus("Some files are missings or corrupted please re-run SearchGUI-PeptideShaker-WorkFlow");
                 }
-                
-                
-                
+
                 String link = ((PeptideShakerVisualizationDataset) ds).getLinkToShare();
                 int dsKey = -1;
                 if (link != null) {
                     dsKey = insertDatsetLinkToShare(linkUtil.encrypt(link));
-                    String appName = VaadinSession.getCurrent().getAttribute("appName")+"";
-                    String url = Page.getCurrent().getLocation().toString().split(appName)[0]+appName+"/";
-                    String encryptedDsKey= linkUtil.encrypt(dsKey+"");
-                    link =url+ "toShare_-_" + encryptedDsKey;
+                    String appName = VaadinSession.getCurrent().getAttribute("appName") + "";
+                    String url = Page.getCurrent().getLocation().toString().split(appName)[0] + appName + "/";
+                    String encryptedDsKey = linkUtil.encrypt(dsKey + "");
+                    link = url + "toShare_-_" + encryptedDsKey;
 
                 }
                 ClipboardUtil shareLabel = new ClipboardUtil(link);

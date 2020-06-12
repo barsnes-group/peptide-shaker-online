@@ -365,7 +365,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * @return list of used search engines used in the search
      */
     public String getSearchEngines() {
-        if (SearchGUIResultFile != null) {
+        if (SearchGUIResultFile != null && SearchGUIResultFile.getOverview()!=null) {
             return SearchGUIResultFile.getOverview().split("DB:")[0];
         }
         return "";
@@ -709,7 +709,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * @return FASTA file name
      */
     public String getFastaFileName() {
-        if (SearchGUIResultFile != null) {
+        if (SearchGUIResultFile != null && SearchGUIResultFile.getOverview()!=null) {
             return SearchGUIResultFile.getOverview().split("sequences:")[0].split("DB:")[1].trim();
         }
 

@@ -3,7 +3,6 @@ package com.uib.web.peptideshaker.presenter.layouts;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.presenter.core.DropDownList;
 import com.uib.web.peptideshaker.presenter.core.MultiSelectOptionGroup;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
@@ -170,7 +169,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         searchParameterContainer.setWidth(100, Unit.PERCENTAGE);
         searchParameterContainer.setHeight(37, Unit.PERCENTAGE);
         searchParameterContainer.setStyleName("titleinborder");
-         searchParameterContainer.addStyleName("searchparametercontainer");
+        searchParameterContainer.addStyleName("searchparametercontainer");
         newProjectContainer.addComponent(searchParameterContainer, "left:25px;top:25px;right:50%");
         _searchSettingsFileList = initialiseSearchSettingsFileDropdownList();
         searchParameterContainer.addComponent(_searchSettingsFileList, "left:15px;top:15px;right:15px");
@@ -603,7 +602,6 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
                         _searchParameterForm.updateForms(searchParamUtil);
                         _searchParameterFormContainer.setPopupVisible(true);
                     } catch (IOException ex) {
-                        System.out.println("exception is handeled ");
                         ex.printStackTrace();
                     }
                     return;
@@ -611,9 +609,11 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
 
                 try {
                     File file = _searchSettingsMap.get(_searchSettingsFileList.getSelectedValue()).getFile();
-                    _searchParameters = IdentificationParameters.getIdentificationParameters(file);
-//                    _searchParameters.setGalaxyId( _searchSettingsMap.get(_searchSettingsFileList.getSelectedValue()).getGalaxyId());
-                    String descrip = _searchParameters.getDescription();
+                    if (IdentificationParameters.supportedVersion(file)) {
+                        _searchParameters = IdentificationParameters.getIdentificationParameters(file);
+                    }
+                    String descrip = "Fixed:" + _searchParameters.getSearchParameters().getModificationParameters().getFixedModifications() + "</br>Variable:" + _searchParameters.getSearchParameters().getModificationParameters().getVariableModifications() + "<br/>Fragment Tolerance:" + _searchParameters.getSearchParameters().getFragmentIonAccuracyInDaltons();
+                    descrip = descrip.replace("[", "").replace("]", "");
                     for (String mod : _searchParameterForm.getUpdatedModiList().keySet()) {
                         if (descrip.contains(mod)) {
                             descrip = descrip.replace(mod, _searchParameterForm.getUpdatedModiList().get(mod));
@@ -625,8 +625,6 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
                     ex.printStackTrace();
                     return;
                 }
-//                _searchParameterForm.updateForms(_searchParameters, _searchSettingsFileList.getSelectedValue());
-
             }
         }
         );
