@@ -444,7 +444,7 @@ private boolean disableresize;
             return;
         }
         disableresize=true;
-        int maxWidth = Math.max(valWidth, pIWidth) + 1;
+        int maxWidth = Math.max(valWidth, pIWidth) + 2;
         ProteinInferenceFilter.setLegendWidth(maxWidth);
         validationFilter.setLegendWidth(maxWidth);
     }

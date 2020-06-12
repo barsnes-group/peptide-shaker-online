@@ -138,9 +138,9 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
         }
         int step;
         if (columnMap.size() > 1) {
-            step = (mainWidth - rowLabelsWidth - 20) / (columnMap.size());
+            step = (mainWidth - rowLabelsWidth - 0) / (columnMap.size());
         } else {
-            step = (mainWidth - rowLabelsWidth - 20);
+            step = (mainWidth - rowLabelsWidth - 0);
         }
         int steps;
         if ((columnMap.size() % 2) == 0) {
@@ -148,7 +148,7 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
         } else {
             steps = columnMap.size();
         }
-        int corrector = (mainWidth - rowLabelsWidth) - (((columnMap.size() - 1) * step) + 20);
+        int corrector = (mainWidth - rowLabelsWidth) - (((columnMap.size() - 1) * step) + 0);
         int x = rowLabelsWidth + corrector;
         AbsoluteLayout.ComponentPosition position = container.getPosition(spacer);
         position.setLeftValue((float) x);
@@ -233,7 +233,7 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
             bar.setHeight(bheight, Unit.PIXELS);
             bar.addLayoutClickListener(barListener);
             container.addComponent(bar, "left:" + currentX + "px; top:" + (barchartHeight - bheight) + "px;");
-            currentX += 20;
+            currentX += 0;
             bar.setData(columnIndex);
             String mod = columns.keySet().toArray()[columnIndex++].toString().replace("[", "").replace("]", "").replace(",", "<br/>") + "<font style='font-size:10px !important;margin-right:5px'><br/>" + VaadinIcons.HASH.getHtml() + "</font>Proteins" + " (" + ((int) (double) barChartValues.get(columnIndex - 1)) + ")";
             for (String key : dataColors.keySet()) {
@@ -327,7 +327,7 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
             }
             
         }
-        minWidth = finalwidth + 20;
+        minWidth = finalwidth + 0;
         container.setWidth(minWidth, Unit.PIXELS);
         container.setHeight(finalheight + 30, Unit.PIXELS);
         allowRedraw = true;

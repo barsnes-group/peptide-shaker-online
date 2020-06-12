@@ -6747,7 +6747,7 @@
         font-weight:500;
     }
     .v-tabsheet-subcontainertabsheet .v-tabsheet-tabsheetpanel{
-       margin-top: 10px !important;
+        margin-top: 10px !important;
     }
 
     .v-tabsheet-subcontainertabsheet{
@@ -6758,13 +6758,13 @@
 
     .infopopupcontainer .v-label{
         font-size: 11px !important;
-	font-weight: normal !important;
-	 line-height: 23px; 
-	 white-space:nowrap;
-	 text-overflow:ellipsis;
-	 overflow:hidden;
-	max-width: 280px;
-	padding-top: 15px !important;
+        font-weight: normal !important;
+        line-height: 23px; 
+        white-space:nowrap;
+        text-overflow:ellipsis;
+        overflow:hidden;
+        max-width: 280px;
+        padding-top: 15px !important;
     }
     .v-popupview-infopopup .v-icon{
         margin-top:15px !important;
@@ -8228,7 +8228,8 @@
     }
     .averagescreenstyle .v-absolutelayout-wrapper-searchtablecontainer .v-popupview-popupwithicon {
         max-width: 66px;
-        margin-left: -66px !important;
+        margin-left: -83px !important;
+        line-height:200% !important;
     }
     .averagescreenstyle  .v-absolutelayout-wrapper-searchtablecontainer .v-slot-tiny.v-slot-smallundecorated{
         margin-left:-10px;
@@ -8839,22 +8840,27 @@
         padding-top: 10px;
         padding-bottom: 0px;
     }
-    
- .v-window {
-    overflow: auto!important;
-    max-width:100% !important;
-    max-height:100% !important;
-}
-.v-caption-importfiltersubcontainer.v-caption-noversubcontainer{
+
+    .v-window {
+        overflow: auto!important;
+        max-width:100% !important;
+        max-height:100% !important;
+    }
+    .v-caption-importfiltersubcontainer.v-caption-noversubcontainer{
         min-width:356px !important; 
     }
-      .uploaderbtnonly .v-absolutelayout-wrapper-icon-only.v-absolutelayout-wrapper-smooth .v-button-icon-only{ 
-    	
-    	min-width:30px !important;
-    	min-height:22px !important;
-    	text-align:center;
-    	line-height:130% !important;
+    .uploaderbtnonly .v-absolutelayout-wrapper-icon-only.v-absolutelayout-wrapper-smooth .v-button-icon-only{ 
+
+        min-width:30px !important;
+        min-height:22px !important;
+        text-align:center;
+        line-height:130% !important;
     }
+    .averagescreenstyle .searchtablecontainer .exportbtn{      
+        left: -9px !important;
+        position:relative !important;
+    }
+
 }
 
 

@@ -236,9 +236,6 @@ public abstract class DataViewLayout extends Panel {
                 String labelValue = "";
                 if ((((PeptideShakerVisualizationDataset) ds).getStatus() != null && ((PeptideShakerVisualizationDataset) ds).getStatus().equalsIgnoreCase("ok"))) {
                     labelValue = ("<h1>Web PeptideShaker Dataset</h1><p>Project:      " + ds.getName().split("___")[0] + "<p>FASTA:       " + ((PeptideShakerVisualizationDataset) ds).getFastaFileName() + "</p>" + "<p>SearchEngines:       " + ((PeptideShakerVisualizationDataset) ds).getSearchEngines() + "</p>" + "<p>Variable Modifications:       " + ((PeptideShakerVisualizationDataset) ds).getVariableModification() + "</p>" + "<p>Fixed Modifications:       " + ((PeptideShakerVisualizationDataset) ds).getFixedModification() + "</p>").replace("[", "").replace("]", "");
-
-                } else {
-                    System.out.println("@ ---(PeptideShakerVisualizationDataset) ds).getSearchEngines() " + ((PeptideShakerVisualizationDataset) ds).getStatus());
                 }
                 Label l = new Label(labelValue, ContentMode.HTML);
                 l.setSizeFull();
@@ -263,31 +260,7 @@ public abstract class DataViewLayout extends Panel {
 
                 }
                 ClipboardUtil shareLabel = new ClipboardUtil(link);
-                shareLabel.setEnabled(dsKey != -1);
-//                SearchParametersForm dsOverview = new SearchParametersForm((PeptideShakerVisualizationDataset) ds, false) {
-//                    private final PopupWindow tDsOverview = (PopupWindow) infoLabel;
-//
-//                    @Override
-//                    public void saveSearchingFile(IdentificationParameters searchParameters, boolean isNew) {
-//                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//                    }
-//
-//                    @Override
-//                    public void cancel() {
-//                        ((PopupWindow) tDsOverview).setPopupVisible(false);
-//                    }
-//
-//                };
-//                dsOverview.setSizeFull();
-//                ((PeptideShakerVisualizationDataset) ds).setEnzyme(dsOverview.getEnzyme());
-//                ((PopupWindow) infoLabel).setContent(dsOverview);
-//                ((PopupWindow) infoLabel).setWidth(500, Unit.PIXELS);
-//                ((PopupWindow) infoLabel).setHeight(500, Unit.PIXELS);
-//                ((PopupWindow) infoLabel).setClosable(true);
-//                ((PopupWindow) infoLabel).setDescription("View search settings ");
-//                if (statusLabel.getStatus() == 2) {
-//                    statusLabel.setStatus("Some files are missings or corrupted please re-run SearchGUI-PeptideShaker-WorkFlow");
-//                }
+                shareLabel.setReadOnly(dsKey != -1);
                 infoLabel.addStyleName("centeredicon");
                 //0psiconHRNS
                 String quant = null;
@@ -335,12 +308,10 @@ public abstract class DataViewLayout extends Panel {
                 ActionLabel shareLabel = new ActionLabel(VaadinIcons.LINK, "Share as link") {
                     @Override
                     public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-//                        System.out.println("copy as link ?? ");
                     }
 
                 };
                 shareLabel.setEnabled(false);
-//                ((Label) nameLabel).setDescription(ds.getName());
                 rowLayout = initializeRowData(new Component[]{new Label(ii++ + ""), nameLabel, type, infoLabel, shareLabel, downloadLabel, deleteLabel, statusLabel}, false);
                 bottomDataTable.addComponent(rowLayout);
             }
@@ -359,7 +330,6 @@ public abstract class DataViewLayout extends Panel {
             rowLayout.setData(ds.getGalaxyId());
             i++;
         }
-//        topPanelLayout.setVisible(topDataTable.getComponentCount() > 1);
 
     }
 

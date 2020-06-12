@@ -21401,7 +21401,8 @@ div.v-layout.v-horizontal.v-widget {
 
 .webpeptideshakertheme .averagescreenstyle .v-absolutelayout-wrapper-searchtablecontainer .v-popupview-popupwithicon {
 	max-width: 66px;
-	margin-left: -66px !important;
+	margin-left: -83px !important;
+	line-height: 200% !important;
 }
 
 .webpeptideshakertheme .averagescreenstyle .v-absolutelayout-wrapper-searchtablecontainer .v-slot-tiny.v-slot-smallundecorated {
@@ -22053,4 +22054,9 @@ div.v-layout.v-horizontal.v-widget {
 	min-height: 22px !important;
 	text-align: center;
 	line-height: 130% !important;
+}
+
+.webpeptideshakertheme .averagescreenstyle .searchtablecontainer .exportbtn {
+	left: -9px !important;
+	position: relative !important;
 }

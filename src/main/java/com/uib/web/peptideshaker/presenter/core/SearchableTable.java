@@ -68,6 +68,7 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
         searchContainer.setHeight(20, Unit.PIXELS);
         Button exportBtn = new Button(VaadinIcons.FILE_TABLE);
         exportBtn.setStyleName(ValoTheme.BUTTON_ICON_ONLY);
+        exportBtn.addStyleName("exportbtn");
         exportBtn.setWidth(20, Unit.PIXELS);
         exportBtn.setHeight(20, Unit.PIXELS);
         searchContainer.addComponent(exportBtn);
