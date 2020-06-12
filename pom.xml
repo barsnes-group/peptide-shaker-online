@@ -56,6 +56,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.vaadin.addons</groupId>
+                <artifactId>filteringtable</artifactId>
+                <version>0.9.15.v7</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
