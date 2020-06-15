@@ -597,7 +597,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
                 if (_searchSettingsFileList.getSelectedValue().equalsIgnoreCase("Add new")) {
                     String basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
                     try {
-                        File file = new File(basepath + "/VAADIN/SEARCHGUI_IdentificationParameters.par");
+                        File file = new File(basepath + "/VAADIN/SEARCHGUI_IdentificationParameters.json");
                         IdentificationParameters searchParamUtil = IdentificationParameters.getIdentificationParameters(file);
                         _searchParameterForm.updateForms(searchParamUtil);
                         _searchParameterFormContainer.setPopupVisible(true);
@@ -665,7 +665,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         Map<String, String> searchSettingsFileIdToNameMap = new LinkedHashMap<>();
         Object selectedId = "";
         for (String id : searchSettingsMap.keySet()) {
-            searchSettingsFileIdToNameMap.put(id, searchSettingsMap.get(id).getGalaxyFileObject().getName().replace(".par", ""));
+            searchSettingsFileIdToNameMap.put(id, searchSettingsMap.get(id).getGalaxyFileObject().getName().replace(".json", ""));
             selectedId = id;
         }
         searchSettingsFileIdToNameMap.put("Add new", "Add new");
@@ -757,7 +757,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         Map<String, String> searchSettingsFileIdToNameMap = new LinkedHashMap<>();
         String objectId = "";
         for (String id : _searchSettingsMap.keySet()) {
-            searchSettingsFileIdToNameMap.put(id, _searchSettingsMap.get(id).getGalaxyFileObject().getName().replace(".par", ""));
+            searchSettingsFileIdToNameMap.put(id, _searchSettingsMap.get(id).getGalaxyFileObject().getName().replace(".json", ""));
             objectId = id;
         }
         searchSettingsFileIdToNameMap.put("Add new", "Add new");
