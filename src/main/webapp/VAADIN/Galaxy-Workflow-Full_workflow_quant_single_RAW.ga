@@ -90,7 +90,7 @@
             "workflow_outputs": [{
                     "output_name": "output",
                     "uuid": "2b7718d9-82cf-48c3-b0ee-f07383db6bff",
-                    "label": "Label-ToDelete-MGF"
+                    "label": "Label-original-input-MGF"
                 }],
             "input_connections": {
                 "input": {
@@ -114,7 +114,7 @@
                     "output_name": "output",
                     "action_type": "RenameDatasetAction",
                     "action_arguments": {
-                        "newname": "Label-ToDelete-MGF"
+                        "newname": "Label-original-input-MGF"
                     }
                 }
             },
@@ -248,19 +248,19 @@
             "workflow_outputs": [{
                     "output_name": "output_proteins_nonvalidated",
                     "uuid": "2c7f3de6-0abe-403c-bc8a-e2c65efb6a78",
-                    "label": "Label-Proteins-ToDelete"
+                    "label": "Label-Proteins-original-input"
                 }, {
                     "output_name": "output_peptides_nonvalidated",
                     "uuid": "50f7ab89-395f-410c-a372-c9d7bf9c6098",
-                    "label": "Label-Peptide-ToDelete"
+                    "label": "Label-Peptide-original-input"
                 }, {
                     "output_name": "output_psm_nonvalidated",
                     "uuid": "0e31c248-78bf-4fb9-94a3-845691cbaab9",
-                    "label": "Label-PSM-ToDelete"
+                    "label": "Label-PSM-original-input"
                 }, {
                     "output_name": "output_proteoforms",
                     "uuid": "ec23f168-26e1-4a25-9e23-bbaa4397592f",
-                    "label": "Label-PS-Proteoforms-ToDelete"
+                    "label": "Label-PS-Proteoforms-original-input"
                 }, {
                     "output_name": "output_zip",
                     "uuid": "0b7d6b4b-a84e-4712-aa6c-f2d2787c5d7f",
@@ -288,14 +288,14 @@
                     "output_name": "output_proteoforms",
                     "action_type": "RenameDatasetAction",
                     "action_arguments": {
-                        "newname": "Label-PS-Proteoforms-ToDelete"
+                        "newname": "Label-PS-Proteoforms-original-input"
                     }
                 },
                 "RenameDatasetActionoutput_peptides_nonvalidated": {
                     "output_name": "output_peptides_nonvalidated",
                     "action_type": "RenameDatasetAction",
                     "action_arguments": {
-                        "newname": "Label-Peptide-ToDelete"
+                        "newname": "Label-Peptide-original-input"
                     }
                 },
                 "RenameDatasetActionoutput_zip": {
@@ -309,14 +309,14 @@
                     "output_name": "output_proteins_nonvalidated",
                     "action_type": "RenameDatasetAction",
                     "action_arguments": {
-                        "newname": "Label-Proteins-ToDelete"
+                        "newname": "Label-Proteins-original-input"
                     }
                 },
                 "RenameDatasetActionoutput_psm_nonvalidated": {
                     "output_name": "output_psm_nonvalidated",
                     "action_type": "RenameDatasetAction",
                     "action_arguments": {
-                        "newname": "Label-PSM-ToDelete"
+                        "newname": "Label-PSM-original-input"
                     }
                 }
             },
@@ -359,7 +359,7 @@
                 }, {
                     "output_name": "output_logs",
                     "uuid": "0a858af4-bd96-4102-b2f5-0dae2832cf52",
-                    "label": "moff-log-ToDelete"
+                    "label": "moff-log-original-input"
                 }],
             "input_connections": {
                 "task|msms_input|raw_list": {
@@ -387,7 +387,7 @@
                     "output_name": "output_logs",
                     "action_type": "RenameDatasetAction",
                     "action_arguments": {
-                        "newname": "moff-log-ToDelete"
+                        "newname": "moff-log-original-input"
                     }
                 },
                 "RenameDatasetActionoutput_table": {

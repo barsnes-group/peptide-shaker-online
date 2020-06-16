@@ -22064,3 +22064,15 @@ div.v-layout.v-horizontal.v-widget {
 .webpeptideshakertheme .averagescreenstyle .exportcameraicon {
 	line-height: 18px;
 }
+
+.webpeptideshakertheme .hidebutton {
+	display: none !important;
+}
+
+.webpeptideshakertheme .v-disabled.v-absolutelayout-uploaderlayout .v-button {
+	display: none !important;
+}
+
+.webpeptideshakertheme .v-disabled.v-absolutelayout-uploaderlayout .v-label {
+	opacity: 1 !important;
+}

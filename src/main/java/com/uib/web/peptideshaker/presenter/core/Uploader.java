@@ -51,8 +51,8 @@ public abstract class Uploader extends AbsoluteLayout {
         busyUpload.setValue(htmlLoadingImg);
         Uploader.this.addComponent(busyUpload);
         initUploaderComponent();
-        busyUpload.setVisible(true);
-        uploaderComponent.setVisible(false);
+//        busyUpload.setVisible(false);
+        uploaderComponent.setVisible(true);
     }
 
     /**
@@ -68,7 +68,17 @@ public abstract class Uploader extends AbsoluteLayout {
         if (uploaderComponent != null) {
             Uploader.this.removeComponent(uploaderComponent);
         }
-        uploaderComponent = new Plupload("Browse", VaadinIcons.FOLDER_OPEN_O);
+        uploaderComponent = new Plupload("Browse", VaadinIcons.FOLDER_OPEN_O) {
+            @Override
+            public void setVisible(boolean visible) {
+                if (visible) {
+                    this.removeStyleName("hidebutton");
+                } else {
+                    this.addStyleName("hidebutton");
+                }
+            }
+
+        };
         uploaderComponent.setMaxFileSize("1gb");
         uploaderComponent.addStyleName(ValoTheme.BUTTON_TINY);
         uploaderComponent.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
@@ -81,7 +91,7 @@ public abstract class Uploader extends AbsoluteLayout {
          * show notification after file is uploaded*
          */
         uploaderComponent.addFileUploadedListener((PluploadFile file) -> {
-            Notification.show("File uploaded : " + file.getName(),Notification.Type.TRAY_NOTIFICATION);
+            Notification.show("File uploaded : " + file.getName(), Notification.Type.TRAY_NOTIFICATION);
         });
         uploaderComponent.setPreventDuplicates(true);
 
@@ -98,10 +108,12 @@ public abstract class Uploader extends AbsoluteLayout {
                 }
                 userUploadFolder = new File(user_folder, "uploadedFiles");
                 userUploadFolder.mkdir();
+
                 uploaderComponent.setUploadPath(userUploadFolder.getAbsolutePath());
             }
+          
             uploaderComponent.start();
-            busyUpload.setVisible(true);
+//            busyUpload.setVisible(true);
             uploaderComponent.setVisible(false);
         });
         uploaderComponent.addUploadStopListener(() -> {
@@ -115,6 +127,7 @@ public abstract class Uploader extends AbsoluteLayout {
             filesUploaded(uploaderComponent.getUploadedFiles());
             initUploaderComponent();
         });
+        
 
         /**
          * handle errors
@@ -125,7 +138,7 @@ public abstract class Uploader extends AbsoluteLayout {
 
     }
 
-    private final String htmlLoadingImg = "<img src='VAADIN/themes/webpeptideshakertheme/img/globeearthanimation.gif' alt='' style='width: 17px;top: -2px;background-color: white;position: absolute;'>";
+    private final String htmlLoadingImg = "<img src='VAADIN/themes/webpeptideshakertheme/img/globeearthanimation.gif' alt='' style='width: 17px;top: 10px;background-color: white;position: relative!important;z-index: 3!important;'>";
 
     /**
      * Set upload is temporary disable
@@ -133,7 +146,7 @@ public abstract class Uploader extends AbsoluteLayout {
      * @param busy upload in progress
      */
     public void setBusy(boolean busy) {
-        busyUpload.setVisible(busy);
+//        busyUpload.setVisible(busy);
         uploaderComponent.setVisible(!busy);
     }
 

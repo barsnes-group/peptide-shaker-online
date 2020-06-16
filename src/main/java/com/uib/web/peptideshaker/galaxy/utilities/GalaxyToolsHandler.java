@@ -422,7 +422,7 @@ public abstract class GalaxyToolsHandler {
             }
             String jsonWorkflow = readWorkflowFile(workflowFile);
             jsonWorkflow = jsonWorkflow.replace("2.0.1_SNAPSHOT.8", peptideShaker_Tool.getVersion()).replace("4.0.1_SNAPSHOT.8", search_GUI_Tool.getVersion()).replace("2.0.2.0", moff_Tool.getVersion());
-            jsonWorkflow = jsonWorkflow.replace("Label-SearchGUI Results", projectName + "-SearchGUI Results").replace("Label-PS", projectName + "-PS").replace("Label-MOFF", projectName + "-MOFF").replace("Label-Indexed-MGF", projectName + "-Indexed-MGF").replace("Label-ToDelete-MGF", projectName + "-ToDelete-MGF");
+            jsonWorkflow = jsonWorkflow.replace("Label-SearchGUI Results", projectName + "-SearchGUI Results").replace("Label-PS", projectName + "-PS").replace("Label-MOFF", projectName + "-MOFF").replace("Label-Indexed-MGF", projectName + "-Indexed-MGF").replace("Label-original-input-MGF", projectName + "-original-input-MGF");
             /**
              * Search engines options.
              */

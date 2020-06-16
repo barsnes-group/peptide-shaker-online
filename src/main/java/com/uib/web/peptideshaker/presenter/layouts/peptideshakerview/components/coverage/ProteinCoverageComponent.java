@@ -114,9 +114,7 @@ private boolean suspendListener;
             Component clickedComp = event.getClickedComponent();
            if (clickedComp == null) {
                 return;
-            } 
-           System.out.println("at --->>  seected peptide invoked " + clickedComp+"  "+clickedComp.getStyleName().contains("peptidelayout"));
-           
+            }            
             if ((clickedComp.getStyleName().contains("proteoformcoverage") || clickedComp.getStyleName().contains("proteoformmodstyle") || (clickedComp.getStyleName().contains("peptidelayout") && (clickedComp instanceof VerticalLayout)))) {
 
             } else if (clickedComp.getStyleName().contains("peptidelayout")) {

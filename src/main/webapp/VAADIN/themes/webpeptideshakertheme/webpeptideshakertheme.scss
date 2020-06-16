@@ -8863,7 +8863,19 @@
     .averagescreenstyle .exportcameraicon {
         line-height: 18px;
     }
+    .hidebutton{
+        display:none !important;
+    }
+    .v-disabled.v-absolutelayout-uploaderlayout .v-button{
 
+        display:none !important;
+
+    }
+    .v-disabled.v-absolutelayout-uploaderlayout .v-label{
+
+        opacity:1 !important
+
+    }
 }
 
 

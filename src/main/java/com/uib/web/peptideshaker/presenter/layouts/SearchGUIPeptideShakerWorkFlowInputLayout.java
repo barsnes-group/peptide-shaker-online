@@ -564,7 +564,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
             Set<String> spectrumIds = _mgfFileList;
             Set<String> rawIds = _rawFileList;
             Set<String> searchEnginesIds = searchEngines.getSelectedValue();
-            String projectName = _projectNameField.getValue().replace(" ", "_").replace("-", "_") + "___" + (new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss").format(new Timestamp(System.currentTimeMillis())));
+            String projectName = _projectNameField.getValue().replace(" ", "_").replace("-", "_") + "___" + (new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss").format(new Timestamp(System.currentTimeMillis()))).replace(":", "_-_");
 
             searchEngines.setRequired(false, "Select at least 1 search engine");
             Map<String, Boolean> selectedSearchEngines = new HashMap<>();

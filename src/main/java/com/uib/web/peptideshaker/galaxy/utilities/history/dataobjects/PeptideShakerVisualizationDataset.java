@@ -1673,7 +1673,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             String galaxyFileId = "";
             String galaxyHistoryId = "";
             for (GalaxyFileObject ds : inputMGFFiles.values()) {
-                if (ds.getName().replace("-Indexed-", "-ToDelete-").equalsIgnoreCase(selectedPsm.getSpectrumFile().replace(".mgf", ""))) {
+                if (ds.getName().replace("-Indexed-", "original-input-").equalsIgnoreCase(selectedPsm.getSpectrumFile().replace(".mgf", ""))) {
                     galaxyFileId = ds.getGalaxyId();
                     galaxyHistoryId = ds.getHistoryId();
                     break;

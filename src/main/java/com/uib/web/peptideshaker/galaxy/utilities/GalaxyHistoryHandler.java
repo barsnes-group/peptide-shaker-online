@@ -656,7 +656,7 @@ public abstract class GalaxyHistoryHandler {
                 String userID = Galaxy_Instance.getUsersClient().getUsers().get(0).getId();
                 usedStorageSpace = galaxyApiInteractiveLayer.getUserMemoryUsage(Galaxy_Instance.getGalaxyUrl(), userID, Galaxy_Instance.getApiKey());
                 results.stream().filter((map) -> map != null && (!((map.get("purged") + "").equalsIgnoreCase("true") || (!historiesIds.contains(map.get("history_id") + "")) || (map.get("deleted") + "").equalsIgnoreCase("true")))).forEachOrdered((Map<String, Object> map) -> {
-                    if (map.get("name").toString().contains("-ToDelete")) {
+                    if (map.get("name").toString().contains("-original-input")) {
                         toDeleteMap.add(map.get("history_id") + ";" + map.get("id").toString());
                     } else if (map.containsKey("collection_type") && map.get("collection_type").toString().equalsIgnoreCase("list")) {
                         List elements = ((List) map.get("elements"));
@@ -708,7 +708,7 @@ public abstract class GalaxyHistoryHandler {
                                 jobsInProgress = true;
                             }
                             try {
-                                ds.setCreate_time(df6.parse((map.get("create_time") + "")));
+                                ds.setCreate_time(df6.parse((map.get("create_time") + "").replace( "_-_",":")));
                             } catch (ParseException ex) {
                                 ex.printStackTrace();
                             }
@@ -734,7 +734,7 @@ public abstract class GalaxyHistoryHandler {
                             ds.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + map.get("url") + "/display?");
                             ds.setStatus(map.get("state") + "");
                             try {
-                                ds.setCreate_time(df6.parse((map.get("create_time") + "")));
+                                ds.setCreate_time(df6.parse((map.get("create_time") + "").replace( "_-_",":")));
                             } catch (ParseException ex) {
                                 ex.printStackTrace();
                             }

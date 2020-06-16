@@ -6,7 +6,6 @@ import com.vaadin.server.Resource;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.PopupView;
 import com.vaadin.ui.VerticalLayout;
 import java.util.Map;
 
@@ -23,7 +22,7 @@ public class DropDownList extends AbsoluteLayout {
     private final ComboBox list;
     private Property.ValueChangeListener listener;
     private Object lastSelectedId;
-    private final VerticalLayout container ;
+    private final VerticalLayout container;
 
     /**
      * Constructor to initialise the main attributes.
@@ -31,11 +30,10 @@ public class DropDownList extends AbsoluteLayout {
      * @param title the title of the list
      */
     public DropDownList(String title) {
-        
-       
+
         DropDownList.this.setSizeFull();
         DropDownList.this.setStyleName("dropdownlistframe");
- 
+
         container = new VerticalLayout();
         container.setSizeFull();
         container.setStyleName("dropdownlistframe");
@@ -44,17 +42,17 @@ public class DropDownList extends AbsoluteLayout {
         list.setStyleName("dropdownlist");
         list.setInputPrompt("Please select from the list");
         list.setNullSelectionAllowed(false);
-       container.addComponent(list);
+        container.addComponent(list);
         list.setTextInputAllowed(false);
 
     }
-    public void addUploadBtn(Uploader uploader){
-         DropDownList.this.removeAllComponents();
-     DropDownList.this.addComponent(container,"right:36px;");
-     DropDownList.this.addComponent(uploader,"right: 4px;top: -3px;");
-    
+
+    public void addUploadBtn(Uploader uploader) {
+        DropDownList.this.removeAllComponents();
+        DropDownList.this.addComponent(container, "right:36px;");
+        DropDownList.this.addComponent(uploader, "right: 4px;top: -3px;");
+
     }
-    
 
     /**
      * Set the list is required to have a value.
@@ -128,8 +126,8 @@ public class DropDownList extends AbsoluteLayout {
             list.setData(list.getValue());
             lastSelectedId = objectId;
         } catch (Exception e) {
-
-        Page.getCurrent().reload();
+            e.printStackTrace();
+            Page.getCurrent().reload();
         }
 
     }
