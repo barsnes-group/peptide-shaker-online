@@ -141,7 +141,7 @@ public class PeptidShakerUI extends UI {
             String dbURL = (scx.getInitParameter("url"));
             String dbDriver = (scx.getInitParameter("driver"));
             String dbUserName = (scx.getInitParameter("userName"));
-            String dbPassword = (scx.getInitParameter("password"));//"d#%[Q=`+<8U,)Pxw";//
+            String dbPassword = "d#%[Q=`+<8U,)Pxw";//(scx.getInitParameter("password"));//
             String dbName = (scx.getInitParameter("dbName"));
             String appName = (scx.getInitParameter("appName"));
             VaadinSession.getCurrent().setAttribute("dbName", dbName);

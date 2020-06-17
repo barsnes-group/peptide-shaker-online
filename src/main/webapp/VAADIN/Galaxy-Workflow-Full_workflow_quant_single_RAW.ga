@@ -90,7 +90,7 @@
             "workflow_outputs": [{
                     "output_name": "output",
                     "uuid": "2b7718d9-82cf-48c3-b0ee-f07383db6bff",
-                    "label": "Label-original-input-MGF"
+                    "label": "Label-original-input-MGF.mgf"
                 }],
             "input_connections": {
                 "input": {
@@ -114,7 +114,7 @@
                     "output_name": "output",
                     "action_type": "RenameDatasetAction",
                     "action_arguments": {
-                        "newname": "Label-original-input-MGF"
+                        "newname": "Label-original-input-MGF.mgf"
                     }
                 }
             },
