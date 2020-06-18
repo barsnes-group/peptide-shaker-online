@@ -39,7 +39,7 @@ public class RangeColorGenerator {
         colorScale.setWidth(100, Unit.PERCENTAGE);
         colorScale.setStyleName("stacked");
         colorScale.addStyleName("colorscale");
-        Label l = new Label("<center style= 'margin-left:-10px;font-size: 1vmin;width:15px !important; height:15px !important;'>0</center>", ContentMode.HTML);
+        Label l = new Label("<center style= 'margin-left:-10px;font-size: 1vmin;width:15px !important; height:15px !important;letter-spacing: 10px !important;'>0</center>", ContentMode.HTML);
         l.setSizeFull();
         colorScale.addComponent(l);
         for (double x = 0; x < 50; x++) {

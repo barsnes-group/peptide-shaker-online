@@ -9,6 +9,7 @@ import com.compomics.util.experiment.biology.proteins.Peptide;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
 import com.compomics.util.experiment.identification.spectrum_assumptions.PeptideAssumption;
+import com.compomics.util.experiment.io.mass_spectrometry.cms.CmsFileReader;
 import com.compomics.util.experiment.io.mass_spectrometry.mgf.MgfIndex;
 import com.compomics.util.experiment.mass_spectrometry.spectra.Spectrum;
 import com.compomics.util.io.file.SerializationUtils;
@@ -161,7 +162,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * @param moff_quant_file galaxy transferable file
      */
     public void setMoff_quant_file(GalaxyTransferableFile moff_quant_file) {
-        this.quantDataset = true;
+        this.quantDataset = moff_quant_file.getStatus().equalsIgnoreCase("ok");
         this.moff_quant_file = moff_quant_file;
     }
     /**
@@ -170,13 +171,13 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      */
     private FastaFileWebService FastaFileWebService;
     /**
-     * MGF index file map (.cui) files.
+     * MGF index file map (.cms) files.
      */
     private final Map<String, GalaxyTransferableFile> MGFFileIndexMap;
     /**
-     * Imported MGF index file map (.cui).
+     * Imported MGF index file map (.cms).
      */
-    private final Map<String, MgfIndex> importedMgfFilesIndexers;
+    private final Map<String, CmsFileReader> importedMgfFilesIndexers;
     /**
      * Protein evidence options array.
      */
@@ -460,7 +461,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
     }
 
     /**
-     * Initialise MGF index files map (.cui).
+     * Initialise MGF index files map (.cms).
      */
     private void initMgfIndexFiles() {
         MGFFileIndexMap.clear();
@@ -469,13 +470,13 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                 String mgfFileName = str.split("\\(API:")[0].trim().replace(":", "--");
                 String key;
                 if (mgfFileName.endsWith(".mgf")) {
-                    key = "data/" + mgfFileName + ".cui";
+                    key = "data/" + mgfFileName + ".cms";
                 } else {
                     //here is the file name error should we call it with id ??
-                    key = "data/" + mgfFileName + ".mgf.cui";
+                    key = "data/" + mgfFileName + ".mgf.cms";
                 }
                 GalaxyFileObject ds = new GalaxyFileObject();
-                ds.setName(this.projectName + "-CUI");
+                ds.setName(this.projectName + "-CMS");
                 ds.setType("MGF Index File");
                 ds.setGalaxyId(zip_file.getGalaxyId() + "__" + key);
                 ds.setHistoryId(zip_file.getHistoryId());
@@ -1038,33 +1039,33 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                 ex.printStackTrace();
             }
         }
+        HashMap<String, Integer> psmMoffFileHeaderIndexerMap = new HashMap<>();
+        psmMoffFileHeaderIndexerMap.put("", -1);
+        psmMoffFileHeaderIndexerMap.put("Protein(s)", -1);
+        psmMoffFileHeaderIndexerMap.put("Sequence", -1);
+        psmMoffFileHeaderIndexerMap.put("AAs Before", -1);
+        psmMoffFileHeaderIndexerMap.put("AAs After", -1);
+        psmMoffFileHeaderIndexerMap.put("Position", -1);
+        psmMoffFileHeaderIndexerMap.put("Modified Sequence", -1);
+        psmMoffFileHeaderIndexerMap.put("Variable Modifications", -1);
+        psmMoffFileHeaderIndexerMap.put("Fixed Modifications", -1);
+        psmMoffFileHeaderIndexerMap.put("Spectrum File", -1);
+        psmMoffFileHeaderIndexerMap.put("Spectrum Title", -1);
+//            psmMoffFileHeaderIndexerMap.put("Spectrum scan number", -1);
+        psmMoffFileHeaderIndexerMap.put("RT", -1);
+        psmMoffFileHeaderIndexerMap.put("m/z", -1);
+        psmMoffFileHeaderIndexerMap.put("Measured Charge", -1);
+        psmMoffFileHeaderIndexerMap.put("Identification Charge", -1);
+        psmMoffFileHeaderIndexerMap.put("Theoretical Mass", -1);
+        psmMoffFileHeaderIndexerMap.put("Isotope Number", -1);
+        psmMoffFileHeaderIndexerMap.put("Precursor m/z Error [ppm]", -1);
+        psmMoffFileHeaderIndexerMap.put("Localization Confidence", -1);
+        psmMoffFileHeaderIndexerMap.put("Probabilistic PTM score", -1);
+        psmMoffFileHeaderIndexerMap.put("D-score", -1);
+        psmMoffFileHeaderIndexerMap.put("Confidence [%]", -1);
+        psmMoffFileHeaderIndexerMap.put("Validation", -1);
         if (isQuantDataset()) {
 
-            HashMap<String, Integer> psmMoffFileHeaderIndexerMap = new HashMap<>();
-            psmMoffFileHeaderIndexerMap.put("", -1);
-            psmMoffFileHeaderIndexerMap.put("prot", -1);
-            psmMoffFileHeaderIndexerMap.put("peptide", -1);
-            psmMoffFileHeaderIndexerMap.put("aas before", -1);
-            psmMoffFileHeaderIndexerMap.put("aas after", -1);
-            psmMoffFileHeaderIndexerMap.put("position", -1);
-            psmMoffFileHeaderIndexerMap.put("mod_peptide", -1);
-            psmMoffFileHeaderIndexerMap.put("variable modifications", -1);
-            psmMoffFileHeaderIndexerMap.put("fixed modifications", -1);
-            psmMoffFileHeaderIndexerMap.put("spectrum file", -1);
-            psmMoffFileHeaderIndexerMap.put("spectrum title", -1);
-            psmMoffFileHeaderIndexerMap.put("spectrum scan number", -1);
-            psmMoffFileHeaderIndexerMap.put("rt", -1);
-            psmMoffFileHeaderIndexerMap.put("mz", -1);
-            psmMoffFileHeaderIndexerMap.put("charge", -1);
-            psmMoffFileHeaderIndexerMap.put("identification charge", -1);
-            psmMoffFileHeaderIndexerMap.put("mass", -1);
-            psmMoffFileHeaderIndexerMap.put("isotope number", -1);
-            psmMoffFileHeaderIndexerMap.put("precursor m/z error [ppm]", -1);
-            psmMoffFileHeaderIndexerMap.put("localization confidence", -1);
-            psmMoffFileHeaderIndexerMap.put("probabilistic ptm score", -1);
-            psmMoffFileHeaderIndexerMap.put("d-score", -1);
-            psmMoffFileHeaderIndexerMap.put("confidence [%]", -1);
-            psmMoffFileHeaderIndexerMap.put("validation", -1);
             psmMoffFileHeaderIndexerMap.put("intensity", -1);
 
             BufferedReader bufferedReader = null;
@@ -1097,46 +1098,46 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                     PSMObject psm = new PSMObject();
                     innerPSMList.add(psm);
                     psm.setIndex(index++);
-                    for (String acc : arr[psmMoffFileHeaderIndexerMap.get("prot")].split(",")) {
+                    for (String acc : arr[psmMoffFileHeaderIndexerMap.get("Protein(s)")].split(",")) {
                         psm.addProtein(acc);
                     }
-                    psm.setSequence(arr[psmMoffFileHeaderIndexerMap.get("peptide")]);
-                    psm.setAasBefore(arr[psmMoffFileHeaderIndexerMap.get("aas before")]);
-                    psm.setAasAfter((arr[psmMoffFileHeaderIndexerMap.get("aas after")]));
-                    psm.setPostions(arr[psmMoffFileHeaderIndexerMap.get("position")]);
-                    psm.setModifiedSequence(arr[psmMoffFileHeaderIndexerMap.get("mod_peptide")]);
-                    for (String mod : arr[psmMoffFileHeaderIndexerMap.get("variable modifications")].split(",")) {
+                    psm.setSequence(arr[psmMoffFileHeaderIndexerMap.get("Sequence")]);
+                    psm.setAasBefore(arr[psmMoffFileHeaderIndexerMap.get("AAs Before")]);
+                    psm.setAasAfter((arr[psmMoffFileHeaderIndexerMap.get("AAs After")]));
+                    psm.setPostions(arr[psmMoffFileHeaderIndexerMap.get("Position")]);
+                    psm.setModifiedSequence(arr[psmMoffFileHeaderIndexerMap.get("Modified Sequence")]);
+                    for (String mod : arr[psmMoffFileHeaderIndexerMap.get("Variable Modifications")].split(",")) {
                         psm.addVariableModification(mod);
                     }
-                    for (String mod : arr[psmMoffFileHeaderIndexerMap.get("fixed modifications")].split(",")) {
+                    for (String mod : arr[psmMoffFileHeaderIndexerMap.get("Fixed Modifications")].split(",")) {
                         psm.addFixedModification(mod);
                     }
-                    psm.setSpectrumFile(arr[psmMoffFileHeaderIndexerMap.get("spectrum file")]);
-                    psm.setSpectrumTitle(arr[psmMoffFileHeaderIndexerMap.get("spectrum title")]);
-                    psm.setSpectrumScanNumber(arr[psmMoffFileHeaderIndexerMap.get("spectrum scan number")]);
-                    psm.setRT(arr[psmMoffFileHeaderIndexerMap.get("rt")]);
-                    psm.setMZ(arr[psmMoffFileHeaderIndexerMap.get("mz")]);
-                    psm.setMeasuredCharge((arr[psmMoffFileHeaderIndexerMap.get("charge")]));
-                    psm.setIdentificationCharge((arr[psmMoffFileHeaderIndexerMap.get("identification charge")]));
-                    if (!arr[psmMoffFileHeaderIndexerMap.get("mass")].equalsIgnoreCase("")) {
-                        psm.setTheoreticalMass(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get("mass")]));
+                    psm.setSpectrumFile(arr[psmMoffFileHeaderIndexerMap.get("Spectrum File")]);
+                    psm.setSpectrumTitle(arr[psmMoffFileHeaderIndexerMap.get("Spectrum Title")]);
+//                    psm.setSpectrumScanNumber(arr[psmMoffFileHeaderIndexerMap.get("spectrum scan number")]);
+                    psm.setRT(arr[psmMoffFileHeaderIndexerMap.get("RT")]);
+                    psm.setMZ(arr[psmMoffFileHeaderIndexerMap.get("m/z")]);
+                    psm.setMeasuredCharge((arr[psmMoffFileHeaderIndexerMap.get("Measured Charge")]));
+                    psm.setIdentificationCharge((arr[psmMoffFileHeaderIndexerMap.get("Identification Charge")]));
+                    if (!arr[psmMoffFileHeaderIndexerMap.get("Theoretical Mass")].equalsIgnoreCase("")) {
+                        psm.setTheoreticalMass(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get("Theoretical Mass")]));
                     }
-                    if (!arr[psmMoffFileHeaderIndexerMap.get("isotope number")].equalsIgnoreCase("")) {
-                        psm.setIsotopeNumber(Integer.parseInt(arr[psmMoffFileHeaderIndexerMap.get("isotope number")]));
+                    if (!arr[psmMoffFileHeaderIndexerMap.get("Isotope Number")].equalsIgnoreCase("")) {
+                        psm.setIsotopeNumber(Integer.parseInt(arr[psmMoffFileHeaderIndexerMap.get("Isotope Number")]));
                     }
-                    if (!arr[psmMoffFileHeaderIndexerMap.get("precursor m/z error [ppm]")].equalsIgnoreCase("")) {
-                        psm.setPrecursorMZError_PPM(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get("precursor m/z error [ppm]")]));
+                    if (!arr[psmMoffFileHeaderIndexerMap.get("Precursor m/z Error [ppm]")].equalsIgnoreCase("")) {
+                        psm.setPrecursorMZError_PPM(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get("Precursor m/z Error [ppm]")]));
                     }
-                    psm.setLocalizationConfidence(arr[psmMoffFileHeaderIndexerMap.get("localization confidence")]);
+                    psm.setLocalizationConfidence(arr[psmMoffFileHeaderIndexerMap.get("Localization Confidence")]);
 
-                    psm.setProbabilisticPTMScore((arr[psmMoffFileHeaderIndexerMap.get("probabilistic ptm score")]));
+                    psm.setProbabilisticPTMScore((arr[psmMoffFileHeaderIndexerMap.get("Probabilistic PTM score")]));
 
-                    psm.setD_Score((arr[psmMoffFileHeaderIndexerMap.get("d-score")]));
+                    psm.setD_Score((arr[psmMoffFileHeaderIndexerMap.get("D-score")]));
 
-                    if (!arr[psmMoffFileHeaderIndexerMap.get("confidence [%]")].equalsIgnoreCase("")) {
-                        psm.setConfidence(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get("confidence [%]")]));
+                    if (!arr[psmMoffFileHeaderIndexerMap.get("Confidence [%]")].equalsIgnoreCase("")) {
+                        psm.setConfidence(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get("Confidence [%]")]));
                     }
-                    psm.setValidation(arr[psmMoffFileHeaderIndexerMap.get("validation")]);
+                    psm.setValidation(arr[psmMoffFileHeaderIndexerMap.get("Validation")]);
                     double quant = Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get("intensity")]);
                     if (quant > 0) {
                         psm.setIntensity(quant);
@@ -1176,71 +1177,63 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             try {//     
                 File f = psm_file.getFile();
                 bufferedReader = new BufferedReader(new FileReader(f), 1024 * 100);
-                String line;
-                /**
-                 * escape header
-                 */
-                bufferedReader.readLine();
-//                 int i = 0;
-//                for (String str : line.split("\\t")) {
-//                    str = str.trim();
-//                    if (psmMoffFileHeaderIndexerMap.containsKey(str)) {
-//                        psmMoffFileHeaderIndexerMap.replace(str, i);
-//                    }
-//                    i++;
-//
-//                }
+               
+                String line = bufferedReader.readLine();
+                line = line.replace("\"", "");
+                int i = 0;
+                for (String str : line.split("\\t")) {
+                    str = str.trim();
+                    if (psmMoffFileHeaderIndexerMap.containsKey(str)) {
+                        psmMoffFileHeaderIndexerMap.replace(str, i);
+                    }
+                    i++;
+
+                }
 
                 while ((line = bufferedReader.readLine()) != null) {
                     line = line.replace("\"", "");
                     String[] arr = line.split("\\t");
                     PSMObject psm = new PSMObject();
-
-                    psm.setIndex(Integer.parseInt(arr[0]));
-                    for (String acc : arr[1].split(",")) {
+                    for (String acc : arr[psmMoffFileHeaderIndexerMap.get("Protein(s)")].split(",")) {
                         psm.addProtein(acc);
                     }
-                    psm.setSequence(arr[2]);
-                    psm.setAasBefore(arr[3]);
-                    psm.setAasAfter((arr[4]));
-                    psm.setPostions(arr[5]);
-                    psm.setModifiedSequence(arr[6]);
-                    for (String mod : arr[7].split(",")) {
+                    psm.setSequence(arr[psmMoffFileHeaderIndexerMap.get("Sequence")]);
+                    psm.setAasBefore(arr[psmMoffFileHeaderIndexerMap.get("AAs Before")]);
+                    psm.setAasAfter((arr[psmMoffFileHeaderIndexerMap.get("AAs After")]));
+                    psm.setPostions(arr[psmMoffFileHeaderIndexerMap.get("Position")]);
+                    psm.setModifiedSequence(arr[psmMoffFileHeaderIndexerMap.get("Modified Sequence")]);
+                    for (String mod : arr[psmMoffFileHeaderIndexerMap.get("Variable Modifications")].split(",")) {
                         psm.addVariableModification(mod);
                     }
-                    for (String mod : arr[8].split(",")) {
+                    for (String mod : arr[psmMoffFileHeaderIndexerMap.get("Fixed Modifications")].split(",")) {
                         psm.addFixedModification(mod);
                     }
-                    psm.setSpectrumFile(arr[9]);
-                    psm.setSpectrumTitle(arr[10]);
-                    psm.setSpectrumScanNumber(arr[11]);
-                    psm.setRT(arr[12]);
-                    psm.setMZ(arr[13]);
-                    psm.setMeasuredCharge((arr[14]));
-
-                    psm.setIdentificationCharge((arr[15]));
-                    if (psm.getMeasuredCharge().trim().equalsIgnoreCase("")) {
-
+                    psm.setSpectrumFile(arr[psmMoffFileHeaderIndexerMap.get("Spectrum File")]);
+                    psm.setSpectrumTitle(arr[psmMoffFileHeaderIndexerMap.get("Spectrum Title")]);
+//                    psm.setSpectrumScanNumber(arr[psmMoffFileHeaderIndexerMap.get("spectrum scan number")]);
+                    psm.setRT(arr[psmMoffFileHeaderIndexerMap.get("RT")]);
+                    psm.setMZ(arr[psmMoffFileHeaderIndexerMap.get("m/z")]);
+                    psm.setMeasuredCharge((arr[psmMoffFileHeaderIndexerMap.get("Measured Charge")]));
+                    psm.setIdentificationCharge((arr[psmMoffFileHeaderIndexerMap.get("Identification Charge")]));
+                    if (!arr[psmMoffFileHeaderIndexerMap.get("Theoretical Mass")].equalsIgnoreCase("")) {
+                        psm.setTheoreticalMass(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get("Theoretical Mass")]));
                     }
-                    if (!arr[16].equalsIgnoreCase("")) {
-                        psm.setTheoreticalMass(Double.parseDouble(arr[16]));
+                    if (!arr[psmMoffFileHeaderIndexerMap.get("Isotope Number")].equalsIgnoreCase("")) {
+                        psm.setIsotopeNumber(Integer.parseInt(arr[psmMoffFileHeaderIndexerMap.get("Isotope Number")]));
                     }
-                    if (!arr[17].equalsIgnoreCase("")) {
-                        psm.setIsotopeNumber(Integer.parseInt(arr[17]));
+                    if (!arr[psmMoffFileHeaderIndexerMap.get("Precursor m/z Error [ppm]")].equalsIgnoreCase("")) {
+                        psm.setPrecursorMZError_PPM(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get("Precursor m/z Error [ppm]")]));
                     }
-                    if (!arr[18].equalsIgnoreCase("")) {
-                        psm.setPrecursorMZError_PPM(Double.parseDouble(arr[18]));
-                    }
-                    psm.setLocalizationConfidence(arr[19]);
+                    psm.setLocalizationConfidence(arr[psmMoffFileHeaderIndexerMap.get("Localization Confidence")]);
 
-                    psm.setProbabilisticPTMScore((arr[20]));
+                    psm.setProbabilisticPTMScore((arr[psmMoffFileHeaderIndexerMap.get("Probabilistic PTM score")]));
 
-                    psm.setD_Score((arr[21]));
+                    psm.setD_Score((arr[psmMoffFileHeaderIndexerMap.get("D-score")]));
 
-                    if (!arr[22].equalsIgnoreCase("")) {
-                        psm.setConfidence(Double.parseDouble(arr[22]));
+                    if (!arr[psmMoffFileHeaderIndexerMap.get("Confidence [%]")].equalsIgnoreCase("")) {
+                        psm.setConfidence(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get("Confidence [%]")]));
                     }
-                    psm.setValidation(arr[23]);
+                    psm.setValidation(arr[psmMoffFileHeaderIndexerMap.get("Validation")]);
 
                     if (processPeptidesTask.getPSMsMap().containsKey(psm.getModifiedSequence())) {
                         processPeptidesTask.getPSMsMap().get(psm.getModifiedSequence()).add(psm);
@@ -1662,18 +1655,21 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
         for (PSMObject selectedPsm : PSMs) {
             try {
                 if (!importedMgfFilesIndexers.containsKey(selectedPsm.getSpectrumFile())) {
-                    Object object = SerializationUtils.readObject(MGFFileIndexMap.get("data/" + selectedPsm.getSpectrumFile().replace(":", "--") + ".cui").getFile());
-                    importedMgfFilesIndexers.put(selectedPsm.getSpectrumFile(), (MgfIndex) object);
+
+                    CmsFileReader cmsFileIndexReader = new CmsFileReader(MGFFileIndexMap.get("data/" + selectedPsm.getSpectrumFile()+ ".mgf.cms").getFile(), null);
+//                    Object object = SerializationUtils.readObject(MGFFileIndexMap.get("data/" + selectedPsm.getSpectrumFile().replace(":", "--") + ".cms").getFile());
+                    importedMgfFilesIndexers.put(selectedPsm.getSpectrumFile(), cmsFileIndexReader);
+
                 }
 
-            } catch (IOException | ClassNotFoundException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            MgfIndex mgfIndex = importedMgfFilesIndexers.get(selectedPsm.getSpectrumFile());
+            CmsFileReader mgfIndex = importedMgfFilesIndexers.get(selectedPsm.getSpectrumFile());
             String galaxyFileId = "";
             String galaxyHistoryId = "";
             for (GalaxyFileObject ds : inputMGFFiles.values()) {
-                if (ds.getName().replace("-Indexed-", "original-input-").equalsIgnoreCase(selectedPsm.getSpectrumFile().replace(".mgf", ""))) {
+                if (ds.getName().replace("-Indexed-", "-original-input-").equalsIgnoreCase(selectedPsm.getSpectrumFile().replace(".mgf", ""))) {
                     galaxyFileId = ds.getGalaxyId();
                     galaxyHistoryId = ds.getHistoryId();
                     break;
@@ -1683,7 +1679,13 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                     break;
                 }
             }
+            if (mgfIndex == null) {
+                return null;
+            }
+            
+            System.out.println("at >>>>>>>>>>>>>>>>>>>>>>>>>>>> bspectrum index " + mgfIndex.getIndex(selectedPsm.getSpectrumTitle()));
             Spectrum spectrum = galaxyDatasetServingUtil.getSpectrum(mgfIndex.getIndex(selectedPsm.getSpectrumTitle()), galaxyHistoryId, galaxyFileId, selectedPsm.getSpectrumFile());
+            
             int tCharge = 0;
             if (!selectedPsm.getMeasuredCharge().trim().equalsIgnoreCase("")) {
                 try {
@@ -1869,7 +1871,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             peptideFileHeaderIndexerMap.put("Protein(s)", -1);
             peptideFileHeaderIndexerMap.put("Protein Group(s)", -1);
             peptideFileHeaderIndexerMap.put("#Validated Protein Group(s)", -1);
-            peptideFileHeaderIndexerMap.put("Unique Group", -1);
+            peptideFileHeaderIndexerMap.put("Unique Protein Group", -1);
             peptideFileHeaderIndexerMap.put("Sequence", -1);
             peptideFileHeaderIndexerMap.put("Modified Sequence", -1);
             peptideFileHeaderIndexerMap.put("Position", -1);
@@ -1932,7 +1934,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                         peptide.setIndex(Integer.parseInt(arr[peptideFileHeaderIndexerMap.get("")]));
                         peptide.setProteins(arr[peptideFileHeaderIndexerMap.get("Protein(s)")]);
                         peptide.setValidatedProteinGroupsNumber(Integer.parseInt(arr[peptideFileHeaderIndexerMap.get("#Validated Protein Group(s)")]));
-                        peptide.setUniqueDatabase(Integer.parseInt(arr[peptideFileHeaderIndexerMap.get("Unique Group")]));
+                        peptide.setUniqueDatabase(Integer.parseInt(arr[peptideFileHeaderIndexerMap.get("Unique Protein Group")]));
                         peptide.setPostion(arr[peptideFileHeaderIndexerMap.get("Position")]);
                         peptide.setAasBefore(arr[peptideFileHeaderIndexerMap.get("AAs Before")]);
                         peptide.setAasAfter(arr[peptideFileHeaderIndexerMap.get("AAs After")]);
@@ -2344,7 +2346,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                 proteinFileHeaderIndexerMap.put("Coverage [%]", -1);
                 proteinFileHeaderIndexerMap.put("Spectrum Counting", -1);
                 proteinFileHeaderIndexerMap.put("Confidently Localized Modification Sites", -1);
-                proteinFileHeaderIndexerMap.put("# Confidently Localized Modification Sites", -1);
+                proteinFileHeaderIndexerMap.put("#Confidently Localized Modification Sites", -1);
                 proteinFileHeaderIndexerMap.put("Ambiguously Localized Modification Sites", -1);
                 proteinFileHeaderIndexerMap.put("#Ambiguously Localized Modification Sites", -1);
                 proteinFileHeaderIndexerMap.put("Protein Inference", -1);
@@ -2352,8 +2354,8 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                 proteinFileHeaderIndexerMap.put("Protein Group", -1);
                 proteinFileHeaderIndexerMap.put("#Validated Peptides", -1);
                 proteinFileHeaderIndexerMap.put("#Peptides", -1);
-                proteinFileHeaderIndexerMap.put("#Unique", -1);
-                proteinFileHeaderIndexerMap.put("#Validated Unique", -1);
+                proteinFileHeaderIndexerMap.put("#Unique Peptides", -1);
+                proteinFileHeaderIndexerMap.put("#Validated Unique Peptides", -1);
                 proteinFileHeaderIndexerMap.put("#Validated PSMs", -1);
                 proteinFileHeaderIndexerMap.put("#PSMs", -1);
                 proteinFileHeaderIndexerMap.put("Confidence [%]", -1);
@@ -2477,7 +2479,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                         } else {
                             proteinGroup.setConfidentlyLocalizedModificationSites(arr[proteinFileHeaderIndexerMap.get("Confidently Localized Modification Sites")]);//.split("\\(")[0]);                  
                         }
-                        proteinGroup.setConfidentlyLocalizedModificationSitesNumber(arr[proteinFileHeaderIndexerMap.get("# Confidently Localized Modification Sites")]);
+                        proteinGroup.setConfidentlyLocalizedModificationSitesNumber(arr[proteinFileHeaderIndexerMap.get("#Confidently Localized Modification Sites")]);
 
                         proteinGroup.setAmbiguouslyLocalizedModificationSites(arr[proteinFileHeaderIndexerMap.get("Ambiguously Localized Modification Sites")]);
                         proteinGroup.setAmbiguouslyLocalizedModificationSitesNumber(arr[proteinFileHeaderIndexerMap.get("#Ambiguously Localized Modification Sites")]);
@@ -2495,8 +2497,8 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
 
                         proteinGroup.setSecondaryAccessions(arr[proteinFileHeaderIndexerMap.get("Secondary Accessions")]);
 
-                        proteinGroup.setUniqueNumber(Integer.parseInt(arr[proteinFileHeaderIndexerMap.get("#Unique")]));
-                        proteinGroup.setValidatedUniqueNumber(Integer.parseInt(arr[proteinFileHeaderIndexerMap.get("#Validated Unique")]));
+                        proteinGroup.setUniqueNumber(Integer.parseInt(arr[proteinFileHeaderIndexerMap.get("#Unique Peptides")]));
+                        proteinGroup.setValidatedUniqueNumber(Integer.parseInt(arr[proteinFileHeaderIndexerMap.get("#Validated Unique Peptides")]));
                         proteinGroup.setValidation(arr[proteinFileHeaderIndexerMap.get("Validation")]);
                         if (proteinGroup.getValidation().trim().isEmpty()) {
                             proteinGroup.setValidation("No Information");

@@ -21265,7 +21265,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .webpeptideshakertheme .averagescreenstyle .v-absolutelayout-wrapper-stacked.v-absolutelayout-wrapper-colorscale {
 	left: auto !important;
-	right: 25px !important;
+	right: 35px !important;
 	width: 100% !important;
 	max-width: 50px;
 	top: 10px !important;
@@ -21486,7 +21486,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .averagescreenstyle .v-verticallayout-lefttoppanelstyle {
-	max-width: 435px !important;
+	max-width: 440px !important;
 	max-height: 20px !important;
 	min-height: 25px !important;
 }
@@ -22075,4 +22075,12 @@ div.v-layout.v-horizontal.v-widget {
 
 .webpeptideshakertheme .v-disabled.v-absolutelayout-uploaderlayout .v-label {
 	opacity: 1 !important;
+}
+
+.webpeptideshakertheme .compact.inframetable .v-scrollable.v-table-body-wrapper.v-table-body {
+	overflow-y: scroll !important;
+}
+
+.webpeptideshakertheme .averagescreenstyle .v-caption.v-caption-compact.v-caption-small.v-caption-inframetable.v-caption-framedpanel.v-caption-no-stripes {
+	max-height: 5px;
 }

@@ -82,7 +82,7 @@ public abstract class ProteinCoverageTable extends VerticalLayout {
             //disable column resize listener
             allowReize = true;
              lastCapturedWidth = event.getWidth();
-            double availableWidth = lastCapturedWidth - 37 - 80 - intensityWidth-8;
+            double availableWidth = lastCapturedWidth - 37 - 80 - intensityWidth-8-16;
             double nameWidth = availableWidth * 20.0 / 100.0;
             double coverageWidth = availableWidth - nameWidth;
             proteinCoverageTable.setColumnWidth("name", (int) nameWidth);
@@ -156,7 +156,7 @@ public abstract class ProteinCoverageTable extends VerticalLayout {
             intensityWidth=0;
             //disable column resize listener
             allowReize = true;
-            double availableWidth = lastCapturedWidth - 37 - 80 - intensityWidth-8;
+            double availableWidth = lastCapturedWidth - 37 - 80 - intensityWidth-8-16;
             double nameWidth = availableWidth * 20.0 / 100.0;
             double coverageWidth = availableWidth - nameWidth;
             proteinCoverageTable.setColumnWidth("name", (int) nameWidth);

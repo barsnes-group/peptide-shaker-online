@@ -663,7 +663,7 @@ public abstract class GraphComponent extends VerticalLayout {
         this.psmColorScaleLayout = psmColorScale.getVerticalScale(true);
         informationLegend.updatePSMNumberLayout(psmColorScale.getColorScale());
         scaleContainer.addComponent(psmColorScaleLayout);
-        if (quantDs) {
+        if (quantDs && intensityColorScale!=null) {
             if (intensityColorScaleLayout != null) {
                 scaleContainer.removeComponent(intensityColorScaleLayout);
             }

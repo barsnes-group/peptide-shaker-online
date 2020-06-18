@@ -153,7 +153,7 @@ public class GalaxyTransferableFile extends GalaxyFileObject {
                             Zis.close();
                             break;
                         }
-                    } else if (!entry.isDirectory() && (entry.getName().endsWith(galaxyFileObject.getGalaxyId().split("__")[1].replace("reports/", "").replace("data/", ""))) || entry.getName().endsWith(".cui")) //do something with entry  
+                    } else if (!entry.isDirectory() && (entry.getName().endsWith(galaxyFileObject.getGalaxyId().split("__")[1].replace("reports/", "").replace("data/", ""))) || entry.getName().endsWith(".cms")) //do something with entry  
                     {
 
                         try (ReadableByteChannel rbc = Channels.newChannel(Zis)) {
