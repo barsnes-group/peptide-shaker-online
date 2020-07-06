@@ -123,13 +123,11 @@ private boolean suspendListener;
 //                resetHeighlightedProteoforms();
             } else if (clickedComp instanceof Label) {
                 Object data = ((Label) clickedComp).getData();
-                System.out.println("at data "+ data);
                 if (data != null) {
                     selectPeptide(protein.getAccession(), ((Label) clickedComp).getData());
 //                    resetHeighlightedProteoforms();
                 }
-            } else if (clickedComp instanceof VerticalLayout) {
-                  System.out.println("at data 2 "+  ((VerticalLayout) clickedComp).getData());                  
+            } else if (clickedComp instanceof VerticalLayout) {                  
                 selectPeptide(protein.getAccession(), ((VerticalLayout) clickedComp).getData());
 //                resetHeighlightedProteoforms();
 

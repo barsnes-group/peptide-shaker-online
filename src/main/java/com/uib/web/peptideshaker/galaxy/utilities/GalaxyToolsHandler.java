@@ -407,12 +407,13 @@ public abstract class GalaxyToolsHandler {
             WorkflowInputs.WorkflowInput raw_mgf_FileInputData;
 
             if (quant && inputFileIdsList.size() == 1) {
-                workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-Full_workflow_quant_single_RAW.ga");//Galaxy-Workflow-Web-Peptide-Shaker-Multi-MGF-2018.ga
+                workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-Full_workflow_quant_single_RAW_updated_2020.ga");//Galaxy-Workflow-Web-Peptide-Shaker-Multi-MGF-2018.ga
                 raw_mgf_FileInputData = new WorkflowInputs.WorkflowInput(inputFileIdsList.keySet().iterator().next(), WorkflowInputs.InputSourceType.HDA);
 
             } else if (quant && inputFileIdsList.size() > 1) {
                 workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-Full_workflow_quant_single_RAW.ga");//Galaxy-Workflow-Web-Peptide-Shaker-Multi-MGF-2018.ga
                 raw_mgf_FileInputData = prepareWorkflowCollectionList(WorkflowInputs.InputSourceType.HDCA, inputFileIdsList.keySet(), historyId);
+                
             } else if (!quant && inputFileIdsList.size() == 1) {
                 workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-workflow_Single_MGF.ga");
                 raw_mgf_FileInputData = new WorkflowInputs.WorkflowInput(inputFileIdsList.keySet().iterator().next(), WorkflowInputs.InputSourceType.HDA);
@@ -421,8 +422,8 @@ public abstract class GalaxyToolsHandler {
                 raw_mgf_FileInputData = prepareWorkflowCollectionList(WorkflowInputs.InputSourceType.HDCA, inputFileIdsList.keySet(), historyId);
             }
             String jsonWorkflow = readWorkflowFile(workflowFile);
-            jsonWorkflow = jsonWorkflow.replace("2.0.1_SNAPSHOT.8", peptideShaker_Tool.getVersion()).replace("4.0.1_SNAPSHOT.8", search_GUI_Tool.getVersion()).replace("2.0.2.0", moff_Tool.getVersion());
-            jsonWorkflow = jsonWorkflow.replace("Label-SearchGUI Results", projectName + "-SearchGUI Results").replace("Label-PS", projectName + "-PS").replace("Label-MOFF", projectName + "-MOFF").replace("Label-Indexed-MGF", projectName + "-Indexed-MGF").replace("Label-original-input-MGF", projectName + "-original-input-MGF");
+            jsonWorkflow = jsonWorkflow.replace("2.0.0_BETA.8", peptideShaker_Tool.getVersion()).replace("4.0.0_BETA.10", search_GUI_Tool.getVersion()).replace("2.0.3.0", moff_Tool.getVersion());
+            jsonWorkflow = jsonWorkflow.replace("Label-SearchGUI Results", projectName + "-SearchGUI Results").replace("Label-PS", projectName + "-PS").replace("Label-MOFF", projectName + "-MOFF").replace("Label-Indexed-MGF", projectName + "-Indexed-MGF").replace("Label-original-input-MGF", projectName + "-original-input-MGF").replace("Label-MGFINDEX", projectName + "-MGFINDEX");
             /**
              * Search engines options.
              */
@@ -440,8 +441,8 @@ public abstract class GalaxyToolsHandler {
             WorkflowInputs.WorkflowInput workflowInput0 = new WorkflowInputs.WorkflowInput(searchParameterFileId, WorkflowInputs.InputSourceType.HDA);
             WorkflowInputs.WorkflowInput workflowInput1 = new WorkflowInputs.WorkflowInput(fastaFileId, WorkflowInputs.InputSourceType.HDA);
             if (quant) {
-                workflowInputs.setInput("0", workflowInput1);
-                workflowInputs.setInput("1", workflowInput0);
+                workflowInputs.setInput("1", workflowInput1);
+                workflowInputs.setInput("0", workflowInput0);
             } else {
                 workflowInputs.setInput("0", workflowInput0);
                 workflowInputs.setInput("1", workflowInput1);

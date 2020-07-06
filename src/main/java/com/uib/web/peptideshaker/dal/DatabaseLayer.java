@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -19,6 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static junit.framework.Assert.assertEquals;
 
 /**
  * This class represents database layer that interact with mySQL database that
@@ -119,48 +121,54 @@ public class DatabaseLayer {
         String updateFileName = "csf_pr_available_prot_accs.txt";
         try {
             URL downloadableFile = new URL(csfprLink + updateFileName);
-            URLConnection urlConn = downloadableFile.openConnection();
-            urlConn.addRequestProperty("Connection", "keep-alive");
-            InputStream in = urlConn.getInputStream();
-            InputStreamReader r = new InputStreamReader(in);
-            BufferedReader br = new BufferedReader(r);
-            String line = br.readLine();
-            if (version.equalsIgnoreCase("") || (line != null && !line.contains(version))) {
-                version = line.replace("CSF-PR Protein Accession List (", "").replace(")", "");
-                updateStatment = "INSERT INTO `csf_pr_accssion_list_" + version + "` (`Accssion`) VALUES ";//('lozt'), ('bozot');
-                while ((line = br.readLine()) != null) {
-                    csf_pr_acc_list.add(line);
-                    updateStatment += ("(?),");
-                }
-                updateStatment = updateStatment.substring(0, updateStatment.length() - 1) + ";";
-            }
-            if (!csf_pr_acc_list.isEmpty()) {
-                Statement st = conn.createStatement();
-                String statment = "CREATE TABLE IF NOT EXISTS `csf_pr_accssion_list_" + version + "` (\n"
-                        + "  `Accssion` varchar(300) NOT NULL\n"
-                        + ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-                st.executeUpdate(statment);
-                st = conn.createStatement();
-                statment = "TRUNCATE `csf_pr_accssion_list_" + version + "`;";
-                st.executeUpdate(statment);
+            if (testURL(downloadableFile)) {
+                URLConnection urlConn = downloadableFile.openConnection();
 
-                try (PreparedStatement preparedStatment = conn.prepareStatement(updateStatment)) {
-                    int i = 0;
-                    for (String str : csf_pr_acc_list) {
-                        i++;
-                        preparedStatment.setString(i, str);
+                urlConn.setConnectTimeout(30000);
+                urlConn.addRequestProperty("Connection", "keep-alive");
+                InputStream in = urlConn.getInputStream();
+                InputStreamReader r = new InputStreamReader(in);
+                BufferedReader br = new BufferedReader(r);
+                String line = br.readLine();
+                if (version.equalsIgnoreCase("") || (line != null && !line.contains(version))) {
+                    version = line.replace("CSF-PR Protein Accession List (", "").replace(")", "");
+                    updateStatment = "INSERT INTO `csf_pr_accssion_list_" + version + "` (`Accssion`) VALUES ";//('lozt'), ('bozot');
+                    while ((line = br.readLine()) != null) {
+                        csf_pr_acc_list.add(line);
+                        updateStatment += ("(?),");
                     }
-                    preparedStatment.executeUpdate();
+                    updateStatment = updateStatment.substring(0, updateStatment.length() - 1) + ";";
                 }
+                if (!csf_pr_acc_list.isEmpty()) {
+                    Statement st = conn.createStatement();
+                    String statment = "CREATE TABLE IF NOT EXISTS `csf_pr_accssion_list_" + version + "` (\n"
+                            + "  `Accssion` varchar(300) NOT NULL\n"
+                            + ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+                    st.executeUpdate(statment);
+                    st = conn.createStatement();
+                    statment = "TRUNCATE `csf_pr_accssion_list_" + version + "`;";
+                    st.executeUpdate(statment);
 
-            } else {
-                String selectStat = "SELECT * FROM csf_pr_accssion_list_" + version + ";";
-                Statement st = conn.createStatement();
-                ResultSet rs = st.executeQuery(selectStat);
-                while (rs.next()) {
-                    String acc = rs.getString("Accssion");
-                    csf_pr_acc_list.add(acc);
+                    try (PreparedStatement preparedStatment = conn.prepareStatement(updateStatment)) {
+                        int i = 0;
+                        for (String str : csf_pr_acc_list) {
+                            i++;
+                            preparedStatment.setString(i, str);
+                        }
+                        preparedStatment.executeUpdate();
+                    }
+
+                } else {
+                    String selectStat = "SELECT * FROM csf_pr_accssion_list_" + version + ";";
+                    Statement st = conn.createStatement();
+                    ResultSet rs = st.executeQuery(selectStat);
+                    while (rs.next()) {
+                        String acc = rs.getString("Accssion");
+                        csf_pr_acc_list.add(acc);
+                    }
                 }
+            } else {
+                dbEnabled = false;
             }
         } catch (MalformedURLException ex) {
             ex.printStackTrace();
@@ -246,7 +254,7 @@ public class DatabaseLayer {
                 if (!protII.contains(";")) {
                     protII = protII + ";";
                 }
-                edges.add(new String[]{protI,protII});
+                edges.add(new String[]{protI, protII});
             }
 //            System.out.println(" ------------------------------------------");
 //            System.out.println(" ----------------acc list--------------------------");
@@ -362,5 +370,20 @@ public class DatabaseLayer {
             dbEnabled = false;
         }
         return null;
+    }
+
+    private boolean testURL(URL url) {
+
+        try {
+            HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+            urlConn.setConnectTimeout(10000);
+            urlConn.connect();
+
+            assertEquals(HttpURLConnection.HTTP_OK, urlConn.getResponseCode());
+        } catch (IOException e) {
+            System.err.println("Error creating HTTP connection");
+            return false;
+        }
+        return true;
     }
 }

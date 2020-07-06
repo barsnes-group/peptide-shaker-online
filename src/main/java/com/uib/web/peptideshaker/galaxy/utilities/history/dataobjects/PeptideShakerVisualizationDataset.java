@@ -17,6 +17,7 @@ import com.compomics.util.io.file.SerializationUtils;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.advanced.SequenceMatchingParameters;
 import com.uib.web.peptideshaker.galaxy.utilities.history.GalaxyDatasetServingUtil;
+import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.utilities.TableHeaderConstatnts;
 import com.uib.web.peptideshaker.model.core.ModificationMatrix;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.components.RangeColorGenerator;
 import com.uib.web.peptideshaker.presenter.pscomponents.SpectrumInformation;
@@ -139,7 +140,10 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
     private TreeSet<Double> intensitySet;
 //    private TreeSet<Double> logIntensitySet;
     private double topIntensityValue;
-
+    /**
+     * Standard header values for protein, peptides, psm and moff table files
+     */
+    private final TableHeaderConstatnts table_headers;
     /**
      * Output MOFF quant file representation on Online PeptideShaker.
      */
@@ -173,11 +177,16 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
     /**
      * MGF index file map (.cms) files.
      */
-    private final Map<String, GalaxyTransferableFile> MGFFileIndexMap;
+    private final Map<String, File> MGFFileIndexMap;
     /**
-     * Imported MGF index file map (.cms).
+     * Zip Folder contains mgf index files (cui).
      */
-    private final Map<String, CmsFileReader> importedMgfFilesIndexers;
+    private GalaxyTransferableFile mgfIndexFolder;
+    /**
+     * MGF index file map (.cui) files.
+     */
+    private final Map<String, MgfIndex> importedMgfFilesIndexers;
+
     /**
      * Protein evidence options array.
      */
@@ -280,16 +289,16 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
     public String getLinkToShare() {
         if (linkToShare == null) {
             linkToShare = "";
-            if (this.getProjectName() == null || SearchGUIResultFile == null || PeptideShakerResultsFileId == null || SearchGUIResultFile.getOverview() == null) {
+            if (this.getProjectName() == null || SearchGUIResultFile == null || PeptideShakerResultsFileId == null || SearchGUIResultFile.getOverview() == null || mgfIndexFolder == null) {
                 return linkToShare;
             }
             String mgfMap = "";
             mgfMap = inputMGFFiles.keySet().stream().map((str) -> "\\+" + str + "(API:" + inputMGFFiles.get(str).getGalaxyId() + ")").reduce(mgfMap, String::concat);
             mgfMap = mgfMap.replaceFirst("\\+", "");
             if (moff_quant_file != null) {
-                linkToShare = this.getProjectName() + "-_-sgi-_:_-" + SearchGUIResultFile.getGalaxyId() + "-_-pszip-_:_-" + PeptideShakerResultsFileId + "-_-mgf-_:_-" + mgfMap + "-_-sgioverview-_:_-" + SearchGUIResultFile.getOverview() + "-_-quant-_:_-" + this.moff_quant_file.getGalaxyId();
+                linkToShare = this.getProjectName() + "-_-sgi-_:_-" + SearchGUIResultFile.getGalaxyId() + "-_-pszip-_:_-" + PeptideShakerResultsFileId + "-_-mgf-_:_-" + mgfMap + "-_-mgfindexfolder-_:_-" + mgfIndexFolder.getGalaxyId() + "-_-sgioverview-_:_-" + SearchGUIResultFile.getOverview() + "-_-quant-_:_-" + this.moff_quant_file.getGalaxyId();
             } else {
-                linkToShare = this.getProjectName() + "-_-sgi-_:_-" + SearchGUIResultFile.getGalaxyId() + "-_-pszip-_:_-" + PeptideShakerResultsFileId + "-_-mgf-_:_-" + mgfMap + "-_-sgioverview-_:_-" + SearchGUIResultFile.getOverview();
+                linkToShare = this.getProjectName() + "-_-sgi-_:_-" + SearchGUIResultFile.getGalaxyId() + "-_-pszip-_:_-" + PeptideShakerResultsFileId + "-_-mgf-_:_-" + mgfMap + "-_-mgfindexfolder-_:_-" + mgfIndexFolder.getGalaxyId() + "-_-sgioverview-_:_-" + SearchGUIResultFile.getOverview();
             }
 
         }
@@ -323,6 +332,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
         this.galaxyDatasetServingUtil = galaxyDatasetServingUtil;
         this.csf_pr_Accession_List = csf_pr_Accession_List;
         this.uploadedProject = false;
+        this.table_headers = new TableHeaderConstatnts();
     }
 
     /**
@@ -358,6 +368,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
         this.status = "ok";
         PeptideShakerVisualizationDataset.this.setType("User uploaded Project");
         PeptideShakerVisualizationDataset.this.processDataFiles();
+        this.table_headers = new TableHeaderConstatnts();
 
     }
 
@@ -455,9 +466,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      */
     public void setSearchGUIResultFile(GalaxyFileObject searchGUIResultFile) {
         this.SearchGUIResultFile = searchGUIResultFile;
-        if (zip_file != null && this.getStatus().equalsIgnoreCase("ok")) {
-            initMgfIndexFiles();
-        }
+
     }
 
     /**
@@ -465,32 +474,36 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      */
     private void initMgfIndexFiles() {
         MGFFileIndexMap.clear();
-        for (String str : SearchGUIResultFile.getOverview().split("Spectrums:")) {
-            if (str.contains("API:")) {
-                String mgfFileName = str.split("\\(API:")[0].trim().replace(":", "--");
-                String key;
-                if (mgfFileName.endsWith(".mgf")) {
-                    key = "data/" + mgfFileName + ".cms";
-                } else {
-                    //here is the file name error should we call it with id ??
-                    key = "data/" + mgfFileName + ".mgf.cms";
-                }
-                GalaxyFileObject ds = new GalaxyFileObject();
-                ds.setName(this.projectName + "-CMS");
-                ds.setType("MGF Index File");
-                ds.setGalaxyId(zip_file.getGalaxyId() + "__" + key);
-                ds.setHistoryId(zip_file.getHistoryId());
-                ds.setDownloadUrl(galaxyLink + "/api/histories/" + this.getHistoryId() + "/contents/" + zip_file.getGalaxyId() + "/display?key=" + apiKey);
-                GalaxyTransferableFile index_file = new GalaxyTransferableFile(user_folder, ds, true);
-                index_file.setDownloadUrl("to_ext=" + file_ext);
-                MGFFileIndexMap.put(key, index_file);//.split("-")[0] + "-Indexed-MGF"
-                try {
-                    index_file.getFile();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
+        Set<File> mgfIndexFiles = mgfIndexFolder.getFiles();
+        for (File f : mgfIndexFiles) {
+            MGFFileIndexMap.put(f.getName(), f);
         }
+//        for (String str : SearchGUIResultFile.getOverview().split("Spectrums:")) {
+//            if (str.contains("API:")) {
+//                String mgfFileName = str.split("\\(API:")[0].trim().replace(":", "--");
+//                String key;
+//                if (mgfFileName.endsWith(".mgf")) {
+//                    key = "data/" + mgfFileName + ".cms";
+//                } else {
+//                    //here is the file name error should we call it with id ??
+//                    key = "data/" + mgfFileName + ".mgf.cms";
+//                }
+//                GalaxyFileObject ds = new GalaxyFileObject();
+//                ds.setName(this.projectName + "-CMS");
+//                ds.setType("MGF Index File");
+//                ds.setGalaxyId(zip_file.getGalaxyId() + "__" + key);
+//                ds.setHistoryId(zip_file.getHistoryId());
+//                ds.setDownloadUrl(galaxyLink + "/api/histories/" + this.getHistoryId() + "/contents/" + zip_file.getGalaxyId() + "/display?key=" + apiKey);
+//                GalaxyTransferableFile index_file = new GalaxyTransferableFile(user_folder, ds, true);
+//                index_file.setDownloadUrl("to_ext=" + file_ext);
+//                MGFFileIndexMap.put(key, index_file);//.split("-")[0] + "-Indexed-MGF"
+//                try {
+//                    index_file.getFile();
+//                } catch (IOException ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
+//        }
     }
 
     /**
@@ -546,6 +559,17 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
     }
 
     /**
+     * Add MGF index folder that contains cui files to the dataset
+     *
+     * @param mgfIndexFolder MGF file representation on Online PeptideShaker
+     */
+    public void setMgfIndexFolder(GalaxyTransferableFile mgfIndexFolder) {
+
+        this.mgfIndexFolder = mgfIndexFolder;
+
+    }
+
+    /**
      * Set main file type (used for export)
      *
      * @param file_ext export file type.
@@ -566,6 +590,9 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
         PeptideShakerResultsFolderThread = new Thread(() -> {
 //            if (!external) {
             initialiseDataFiles(PeptideShakerResultsFileId);
+//            if (mgfIndexFolder != null) {
+//                initMgfIndexFiles();
+//            }
 //            } else {
 //                initialiseExternalDataFiles(PeptideShakerResultsFileId);
 //            }
@@ -632,10 +659,6 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
         ds.setDownloadUrl(galaxyLink + "/api/histories/" + this.getHistoryId() + "/contents/" + PeptideShakerResultsFileId + "/display?key=" + apiKey);//PeptideShakerResultsFileId
         proteoform_file = new GalaxyTransferableFile(user_folder, ds, true);//true
         proteoform_file.setDownloadUrl("to_ext=" + "txt");
-
-        if (SearchGUIResultFile != null) {
-            initMgfIndexFiles();
-        }
 
     }
 
@@ -957,6 +980,9 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
         PSMFileThread.start();
         PSMFileThread.setPriority(Thread.MIN_PRIORITY);
         PSMFileInitialized = true;
+        if (mgfIndexFolder!=null) {
+            initMgfIndexFiles();
+        }
     }
 
     /**
@@ -1040,33 +1066,33 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             }
         }
         HashMap<String, Integer> psmMoffFileHeaderIndexerMap = new HashMap<>();
-        psmMoffFileHeaderIndexerMap.put("", -1);
-        psmMoffFileHeaderIndexerMap.put("Protein(s)", -1);
-        psmMoffFileHeaderIndexerMap.put("Sequence", -1);
-        psmMoffFileHeaderIndexerMap.put("AAs Before", -1);
-        psmMoffFileHeaderIndexerMap.put("AAs After", -1);
-        psmMoffFileHeaderIndexerMap.put("Position", -1);
-        psmMoffFileHeaderIndexerMap.put("Modified Sequence", -1);
-        psmMoffFileHeaderIndexerMap.put("Variable Modifications", -1);
-        psmMoffFileHeaderIndexerMap.put("Fixed Modifications", -1);
-        psmMoffFileHeaderIndexerMap.put("Spectrum File", -1);
-        psmMoffFileHeaderIndexerMap.put("Spectrum Title", -1);
-//            psmMoffFileHeaderIndexerMap.put("Spectrum scan number", -1);
-        psmMoffFileHeaderIndexerMap.put("RT", -1);
-        psmMoffFileHeaderIndexerMap.put("m/z", -1);
-        psmMoffFileHeaderIndexerMap.put("Measured Charge", -1);
-        psmMoffFileHeaderIndexerMap.put("Identification Charge", -1);
-        psmMoffFileHeaderIndexerMap.put("Theoretical Mass", -1);
-        psmMoffFileHeaderIndexerMap.put("Isotope Number", -1);
-        psmMoffFileHeaderIndexerMap.put("Precursor m/z Error [ppm]", -1);
-        psmMoffFileHeaderIndexerMap.put("Localization Confidence", -1);
-        psmMoffFileHeaderIndexerMap.put("Probabilistic PTM score", -1);
-        psmMoffFileHeaderIndexerMap.put("D-score", -1);
-        psmMoffFileHeaderIndexerMap.put("Confidence [%]", -1);
-        psmMoffFileHeaderIndexerMap.put("Validation", -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.Index, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.Proteins, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.Sequence, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.AAs_Before, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.AAs_After, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.Position, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.Modified_Sequence, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.Variable_Modifications, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.Fixed_Modifications, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.Spectrum_File, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.Spectrum_Title, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.Spectrum_Scan_Number, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.RT, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.MZ, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.Measured_Charge, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.Identification_Charge, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.Theoretical_Mass, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.Isotope_Number, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.Precursor_mz_Error_ppm, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.Localization_Confidence, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.Probabilistic_PTM_score, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.D_score, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.Confidence_Pers, -1);
+        psmMoffFileHeaderIndexerMap.put(table_headers.Validation, -1);
         if (isQuantDataset()) {
 
-            psmMoffFileHeaderIndexerMap.put("intensity", -1);
+            psmMoffFileHeaderIndexerMap.put(table_headers.Intensity, -1);
 
             BufferedReader bufferedReader = null;
             intensitySet = new TreeSet<>();
@@ -1082,7 +1108,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                 line = line.replace("\"", "");
                 int i = 0;
                 for (String str : line.split("\\t")) {
-                    str = str.trim();
+                    str = str.replace(" ", "").toLowerCase();
                     if (psmMoffFileHeaderIndexerMap.containsKey(str)) {
                         psmMoffFileHeaderIndexerMap.replace(str, i);
                     }
@@ -1098,47 +1124,50 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                     PSMObject psm = new PSMObject();
                     innerPSMList.add(psm);
                     psm.setIndex(index++);
-                    for (String acc : arr[psmMoffFileHeaderIndexerMap.get("Protein(s)")].split(",")) {
+                    for (String acc : arr[psmMoffFileHeaderIndexerMap.get(table_headers.Proteins)].split(",")) {
                         psm.addProtein(acc);
                     }
-                    psm.setSequence(arr[psmMoffFileHeaderIndexerMap.get("Sequence")]);
-                    psm.setAasBefore(arr[psmMoffFileHeaderIndexerMap.get("AAs Before")]);
-                    psm.setAasAfter((arr[psmMoffFileHeaderIndexerMap.get("AAs After")]));
-                    psm.setPostions(arr[psmMoffFileHeaderIndexerMap.get("Position")]);
-                    psm.setModifiedSequence(arr[psmMoffFileHeaderIndexerMap.get("Modified Sequence")]);
-                    for (String mod : arr[psmMoffFileHeaderIndexerMap.get("Variable Modifications")].split(",")) {
+                    psm.setSequence(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Sequence)]);
+                    psm.setAasBefore(arr[psmMoffFileHeaderIndexerMap.get(table_headers.AAs_Before)]);
+                    psm.setAasAfter((arr[psmMoffFileHeaderIndexerMap.get(table_headers.AAs_After)]));
+                    psm.setPostions(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Position)]);
+                    psm.setModifiedSequence(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Modified_Sequence)]);
+                    for (String mod : arr[psmMoffFileHeaderIndexerMap.get(table_headers.Variable_Modifications)].split(",")) {
                         psm.addVariableModification(mod);
                     }
-                    for (String mod : arr[psmMoffFileHeaderIndexerMap.get("Fixed Modifications")].split(",")) {
+                    for (String mod : arr[psmMoffFileHeaderIndexerMap.get(table_headers.Fixed_Modifications)].split(",")) {
                         psm.addFixedModification(mod);
                     }
-                    psm.setSpectrumFile(arr[psmMoffFileHeaderIndexerMap.get("Spectrum File")]);
-                    psm.setSpectrumTitle(arr[psmMoffFileHeaderIndexerMap.get("Spectrum Title")]);
+                    psm.setSpectrumFile(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Spectrum_File)]);
+                    psm.setSpectrumTitle(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Spectrum_Title)]);
+                    if (psmMoffFileHeaderIndexerMap.get(table_headers.Spectrum_Scan_Number) != -1 && !arr[psmMoffFileHeaderIndexerMap.get(table_headers.Spectrum_Scan_Number)].equalsIgnoreCase("")) {
+                        psm.setTheoreticalMass(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Spectrum_Scan_Number)]));
+                    }
 //                    psm.setSpectrumScanNumber(arr[psmMoffFileHeaderIndexerMap.get("spectrum scan number")]);
-                    psm.setRT(arr[psmMoffFileHeaderIndexerMap.get("RT")]);
-                    psm.setMZ(arr[psmMoffFileHeaderIndexerMap.get("m/z")]);
-                    psm.setMeasuredCharge((arr[psmMoffFileHeaderIndexerMap.get("Measured Charge")]));
-                    psm.setIdentificationCharge((arr[psmMoffFileHeaderIndexerMap.get("Identification Charge")]));
-                    if (!arr[psmMoffFileHeaderIndexerMap.get("Theoretical Mass")].equalsIgnoreCase("")) {
-                        psm.setTheoreticalMass(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get("Theoretical Mass")]));
+                    psm.setRT(arr[psmMoffFileHeaderIndexerMap.get(table_headers.RT)]);
+                    psm.setMZ(arr[psmMoffFileHeaderIndexerMap.get(table_headers.MZ)]);
+                    psm.setMeasuredCharge((arr[psmMoffFileHeaderIndexerMap.get(table_headers.Measured_Charge)]));
+                    psm.setIdentificationCharge((arr[psmMoffFileHeaderIndexerMap.get(table_headers.Identification_Charge)]));
+                    if (!arr[psmMoffFileHeaderIndexerMap.get(table_headers.Theoretical_Mass)].equalsIgnoreCase("")) {
+                        psm.setTheoreticalMass(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Theoretical_Mass)]));
                     }
-                    if (!arr[psmMoffFileHeaderIndexerMap.get("Isotope Number")].equalsIgnoreCase("")) {
-                        psm.setIsotopeNumber(Integer.parseInt(arr[psmMoffFileHeaderIndexerMap.get("Isotope Number")]));
+                    if (!arr[psmMoffFileHeaderIndexerMap.get(table_headers.Isotope_Number)].equalsIgnoreCase("")) {
+                        psm.setIsotopeNumber(Integer.parseInt(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Isotope_Number)]));
                     }
-                    if (!arr[psmMoffFileHeaderIndexerMap.get("Precursor m/z Error [ppm]")].equalsIgnoreCase("")) {
-                        psm.setPrecursorMZError_PPM(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get("Precursor m/z Error [ppm]")]));
+                    if (!arr[psmMoffFileHeaderIndexerMap.get(table_headers.Precursor_mz_Error_ppm)].equalsIgnoreCase("")) {
+                        psm.setPrecursorMZError_PPM(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Precursor_mz_Error_ppm)]));
                     }
-                    psm.setLocalizationConfidence(arr[psmMoffFileHeaderIndexerMap.get("Localization Confidence")]);
+                    psm.setLocalizationConfidence(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Localization_Confidence)]);
 
-                    psm.setProbabilisticPTMScore((arr[psmMoffFileHeaderIndexerMap.get("Probabilistic PTM score")]));
+                    psm.setProbabilisticPTMScore((arr[psmMoffFileHeaderIndexerMap.get(table_headers.Probabilistic_PTM_score)]));
 
-                    psm.setD_Score((arr[psmMoffFileHeaderIndexerMap.get("D-score")]));
+                    psm.setD_Score((arr[psmMoffFileHeaderIndexerMap.get(table_headers.D_score)]));
 
-                    if (!arr[psmMoffFileHeaderIndexerMap.get("Confidence [%]")].equalsIgnoreCase("")) {
-                        psm.setConfidence(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get("Confidence [%]")]));
+                    if (!arr[psmMoffFileHeaderIndexerMap.get(table_headers.Confidence_Pers)].equalsIgnoreCase("")) {
+                        psm.setConfidence(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Confidence_Pers)]));
                     }
-                    psm.setValidation(arr[psmMoffFileHeaderIndexerMap.get("Validation")]);
-                    double quant = Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get("intensity")]);
+                    psm.setValidation(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Validation)]);
+                    double quant = Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Intensity)]);
                     if (quant > 0) {
                         psm.setIntensity(quant);
                         intensitySet.add(psm.getIntensity());
@@ -1177,63 +1206,64 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             try {//     
                 File f = psm_file.getFile();
                 bufferedReader = new BufferedReader(new FileReader(f), 1024 * 100);
-               
+
                 String line = bufferedReader.readLine();
                 line = line.replace("\"", "");
                 int i = 0;
                 for (String str : line.split("\\t")) {
-                    str = str.trim();
+                    str = str.replace(" ", "").toLowerCase();
                     if (psmMoffFileHeaderIndexerMap.containsKey(str)) {
                         psmMoffFileHeaderIndexerMap.replace(str, i);
                     }
                     i++;
-
                 }
 
                 while ((line = bufferedReader.readLine()) != null) {
                     line = line.replace("\"", "");
                     String[] arr = line.split("\\t");
                     PSMObject psm = new PSMObject();
-                    for (String acc : arr[psmMoffFileHeaderIndexerMap.get("Protein(s)")].split(",")) {
+                    for (String acc : arr[psmMoffFileHeaderIndexerMap.get(table_headers.Proteins)].split(",")) {
                         psm.addProtein(acc);
                     }
-                    psm.setSequence(arr[psmMoffFileHeaderIndexerMap.get("Sequence")]);
-                    psm.setAasBefore(arr[psmMoffFileHeaderIndexerMap.get("AAs Before")]);
-                    psm.setAasAfter((arr[psmMoffFileHeaderIndexerMap.get("AAs After")]));
-                    psm.setPostions(arr[psmMoffFileHeaderIndexerMap.get("Position")]);
-                    psm.setModifiedSequence(arr[psmMoffFileHeaderIndexerMap.get("Modified Sequence")]);
-                    for (String mod : arr[psmMoffFileHeaderIndexerMap.get("Variable Modifications")].split(",")) {
+                    psm.setSequence(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Sequence)]);
+                    psm.setAasBefore(arr[psmMoffFileHeaderIndexerMap.get(table_headers.AAs_Before)]);
+                    psm.setAasAfter((arr[psmMoffFileHeaderIndexerMap.get(table_headers.AAs_After)]));
+                    psm.setPostions(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Position)]);
+                    psm.setModifiedSequence(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Modified_Sequence)]);
+                    for (String mod : arr[psmMoffFileHeaderIndexerMap.get(table_headers.Variable_Modifications)].split(",")) {
                         psm.addVariableModification(mod);
                     }
-                    for (String mod : arr[psmMoffFileHeaderIndexerMap.get("Fixed Modifications")].split(",")) {
+                    for (String mod : arr[psmMoffFileHeaderIndexerMap.get(table_headers.Fixed_Modifications)].split(",")) {
                         psm.addFixedModification(mod);
                     }
-                    psm.setSpectrumFile(arr[psmMoffFileHeaderIndexerMap.get("Spectrum File")]);
-                    psm.setSpectrumTitle(arr[psmMoffFileHeaderIndexerMap.get("Spectrum Title")]);
+                    psm.setSpectrumFile(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Spectrum_File)]);
+                    psm.setSpectrumTitle(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Spectrum_Title)]);
+                    if (psmMoffFileHeaderIndexerMap.get(table_headers.Spectrum_Scan_Number) != -1 && !arr[psmMoffFileHeaderIndexerMap.get(table_headers.Spectrum_Scan_Number)].equalsIgnoreCase("")) {
+                        psm.setTheoreticalMass(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Spectrum_Scan_Number)]));
+                    }
 //                    psm.setSpectrumScanNumber(arr[psmMoffFileHeaderIndexerMap.get("spectrum scan number")]);
-                    psm.setRT(arr[psmMoffFileHeaderIndexerMap.get("RT")]);
-                    psm.setMZ(arr[psmMoffFileHeaderIndexerMap.get("m/z")]);
-                    psm.setMeasuredCharge((arr[psmMoffFileHeaderIndexerMap.get("Measured Charge")]));
-                    psm.setIdentificationCharge((arr[psmMoffFileHeaderIndexerMap.get("Identification Charge")]));
-                    if (!arr[psmMoffFileHeaderIndexerMap.get("Theoretical Mass")].equalsIgnoreCase("")) {
-                        psm.setTheoreticalMass(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get("Theoretical Mass")]));
+                    psm.setRT(arr[psmMoffFileHeaderIndexerMap.get(table_headers.RT)]);
+                    psm.setMZ(arr[psmMoffFileHeaderIndexerMap.get(table_headers.MZ)]);
+                    psm.setMeasuredCharge((arr[psmMoffFileHeaderIndexerMap.get(table_headers.Measured_Charge)]));
+                    psm.setIdentificationCharge((arr[psmMoffFileHeaderIndexerMap.get(table_headers.Identification_Charge)]));
+                    if (!arr[psmMoffFileHeaderIndexerMap.get(table_headers.Theoretical_Mass)].equalsIgnoreCase("")) {
+                        psm.setTheoreticalMass(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Theoretical_Mass)]));
                     }
-                    if (!arr[psmMoffFileHeaderIndexerMap.get("Isotope Number")].equalsIgnoreCase("")) {
-                        psm.setIsotopeNumber(Integer.parseInt(arr[psmMoffFileHeaderIndexerMap.get("Isotope Number")]));
+                    if (!arr[psmMoffFileHeaderIndexerMap.get(table_headers.Isotope_Number)].equalsIgnoreCase("")) {
+                        psm.setIsotopeNumber(Integer.parseInt(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Isotope_Number)]));
                     }
-                    if (!arr[psmMoffFileHeaderIndexerMap.get("Precursor m/z Error [ppm]")].equalsIgnoreCase("")) {
-                        psm.setPrecursorMZError_PPM(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get("Precursor m/z Error [ppm]")]));
+                    if (!arr[psmMoffFileHeaderIndexerMap.get(table_headers.Precursor_mz_Error_ppm)].equalsIgnoreCase("")) {
+                        psm.setPrecursorMZError_PPM(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Precursor_mz_Error_ppm)]));
                     }
-                    psm.setLocalizationConfidence(arr[psmMoffFileHeaderIndexerMap.get("Localization Confidence")]);
+                    psm.setLocalizationConfidence(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Localization_Confidence)]);
 
-                    psm.setProbabilisticPTMScore((arr[psmMoffFileHeaderIndexerMap.get("Probabilistic PTM score")]));
+                    psm.setProbabilisticPTMScore((arr[psmMoffFileHeaderIndexerMap.get(table_headers.Probabilistic_PTM_score)]));
 
-                    psm.setD_Score((arr[psmMoffFileHeaderIndexerMap.get("D-score")]));
-
-                    if (!arr[psmMoffFileHeaderIndexerMap.get("Confidence [%]")].equalsIgnoreCase("")) {
-                        psm.setConfidence(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get("Confidence [%]")]));
+                    psm.setD_Score((arr[psmMoffFileHeaderIndexerMap.get(table_headers.D_score)]));
+                    if (!arr[psmMoffFileHeaderIndexerMap.get(table_headers.Confidence_Pers)].equalsIgnoreCase("")) {
+                        psm.setConfidence(Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Confidence_Pers)]));
                     }
-                    psm.setValidation(arr[psmMoffFileHeaderIndexerMap.get("Validation")]);
+                    psm.setValidation(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Validation)]);
 
                     if (processPeptidesTask.getPSMsMap().containsKey(psm.getModifiedSequence())) {
                         processPeptidesTask.getPSMsMap().get(psm.getModifiedSequence()).add(psm);
@@ -1655,17 +1685,14 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
         for (PSMObject selectedPsm : PSMs) {
             try {
                 if (!importedMgfFilesIndexers.containsKey(selectedPsm.getSpectrumFile())) {
-
-                    CmsFileReader cmsFileIndexReader = new CmsFileReader(MGFFileIndexMap.get("data/" + selectedPsm.getSpectrumFile()+ ".mgf.cms").getFile(), null);
-//                    Object object = SerializationUtils.readObject(MGFFileIndexMap.get("data/" + selectedPsm.getSpectrumFile().replace(":", "--") + ".cms").getFile());
-                    importedMgfFilesIndexers.put(selectedPsm.getSpectrumFile(), cmsFileIndexReader);
-
+                    Object object = SerializationUtils.readObject(MGFFileIndexMap.get(selectedPsm.getSpectrumFile() + ".mgf.cui"));
+                    importedMgfFilesIndexers.put(selectedPsm.getSpectrumFile(), (MgfIndex) object);
                 }
 
-            } catch (IOException ex) {
+            } catch (IOException | ClassNotFoundException ex) {
                 ex.printStackTrace();
             }
-            CmsFileReader mgfIndex = importedMgfFilesIndexers.get(selectedPsm.getSpectrumFile());
+            MgfIndex mgfIndex = importedMgfFilesIndexers.get(selectedPsm.getSpectrumFile());
             String galaxyFileId = "";
             String galaxyHistoryId = "";
             for (GalaxyFileObject ds : inputMGFFiles.values()) {
@@ -1682,10 +1709,9 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             if (mgfIndex == null) {
                 return null;
             }
-            
-            System.out.println("at >>>>>>>>>>>>>>>>>>>>>>>>>>>> bspectrum index " + mgfIndex.getIndex(selectedPsm.getSpectrumTitle()));
+
             Spectrum spectrum = galaxyDatasetServingUtil.getSpectrum(mgfIndex.getIndex(selectedPsm.getSpectrumTitle()), galaxyHistoryId, galaxyFileId, selectedPsm.getSpectrumFile());
-            
+
             int tCharge = 0;
             if (!selectedPsm.getMeasuredCharge().trim().equalsIgnoreCase("")) {
                 try {
@@ -1867,24 +1893,24 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             this.proteinIntensityUniquePeptideMap = new TreeMap<>();
             BufferedReader bufferedReader = null;
             peptideFileHeaderIndexerMap = new HashMap<>();
-            peptideFileHeaderIndexerMap.put("", -1);
-            peptideFileHeaderIndexerMap.put("Protein(s)", -1);
-            peptideFileHeaderIndexerMap.put("Protein Group(s)", -1);
-            peptideFileHeaderIndexerMap.put("#Validated Protein Group(s)", -1);
-            peptideFileHeaderIndexerMap.put("Unique Protein Group", -1);
-            peptideFileHeaderIndexerMap.put("Sequence", -1);
-            peptideFileHeaderIndexerMap.put("Modified Sequence", -1);
-            peptideFileHeaderIndexerMap.put("Position", -1);
-            peptideFileHeaderIndexerMap.put("AAs Before", -1);
-            peptideFileHeaderIndexerMap.put("AAs After", -1);
-            peptideFileHeaderIndexerMap.put("Variable Modifications", -1);
-            peptideFileHeaderIndexerMap.put("Fixed Modifications", -1);
-            peptideFileHeaderIndexerMap.put("Localization Confidence", -1);
-            peptideFileHeaderIndexerMap.put("#Validated PSMs", -1);
-            peptideFileHeaderIndexerMap.put("#PSMs", -1);
-            peptideFileHeaderIndexerMap.put("Confidence [%]", -1);
-            peptideFileHeaderIndexerMap.put("Validation", -1);
-            peptideFileHeaderIndexerMap.put("Quant", -1);
+            peptideFileHeaderIndexerMap.put(table_headers.Index, -1);
+            peptideFileHeaderIndexerMap.put(table_headers.Proteins, -1);
+            peptideFileHeaderIndexerMap.put(table_headers.Protein_Groups, -1);
+            peptideFileHeaderIndexerMap.put(table_headers.Number_Validated_Protein_Groups, -1);
+            peptideFileHeaderIndexerMap.put(table_headers.Unique_Protein_Group, -1);
+            peptideFileHeaderIndexerMap.put(table_headers.Sequence, -1);
+            peptideFileHeaderIndexerMap.put(table_headers.Modified_Sequence, -1);
+            peptideFileHeaderIndexerMap.put(table_headers.Position, -1);
+            peptideFileHeaderIndexerMap.put(table_headers.AAs_Before, -1);
+            peptideFileHeaderIndexerMap.put(table_headers.AAs_After, -1);
+            peptideFileHeaderIndexerMap.put(table_headers.Variable_Modifications, -1);
+            peptideFileHeaderIndexerMap.put(table_headers.Fixed_Modifications, -1);
+            peptideFileHeaderIndexerMap.put(table_headers.Localization_Confidence, -1);
+            peptideFileHeaderIndexerMap.put(table_headers.Number_Validated_PSMs, -1);
+            peptideFileHeaderIndexerMap.put(table_headers.Number_PSMs, -1);
+            peptideFileHeaderIndexerMap.put(table_headers.Confidence_Pers, -1);
+            peptideFileHeaderIndexerMap.put(table_headers.Validation, -1);
+            peptideFileHeaderIndexerMap.put(table_headers.Quant, -1);
             if (uploadedProject) {
                 intensitySet = new TreeSet<>();
             }
@@ -1899,7 +1925,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                 line = line.replace("\"", "");
                 int i = 0;
                 for (String str : line.split("\\t")) {
-                    str = str.trim();
+                    str = str.replace(" ", "").toLowerCase();
                     if (peptideFileHeaderIndexerMap.containsKey(str)) {
                         peptideFileHeaderIndexerMap.replace(str, i);
 
@@ -1910,35 +1936,35 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                     line = line.replace("\"", "");
                     String[] arr = line.split("\\t");
                     PeptideObject peptide = new PeptideObject();
-                    peptide.setProteinGroups(arr[peptideFileHeaderIndexerMap.get("Protein Group(s)")]);
-                    peptide.setSequence(arr[peptideFileHeaderIndexerMap.get("Sequence")]);
-                    peptide.setModifiedSequence(arr[peptideFileHeaderIndexerMap.get("Modified Sequence")]);
-                    peptide.setVariableModifications(arr[peptideFileHeaderIndexerMap.get("Variable Modifications")]);
-                    peptide.setFixedModificationsAsString(arr[peptideFileHeaderIndexerMap.get("Fixed Modifications")]);
-                    peptide.setValidatedPSMsNumber(Integer.parseInt(arr[peptideFileHeaderIndexerMap.get("#Validated PSMs")]));
-                    peptide.setPSMsNumber(Integer.parseInt(arr[peptideFileHeaderIndexerMap.get("#PSMs")]));
-                    peptide.setConfidence(Double.parseDouble(arr[peptideFileHeaderIndexerMap.get("Confidence [%]")]));
-                    peptide.setValidation(arr[peptideFileHeaderIndexerMap.get("Validation")]);
+                    peptide.setProteinGroups(arr[peptideFileHeaderIndexerMap.get(table_headers.Protein_Groups)]);
+                    peptide.setSequence(arr[peptideFileHeaderIndexerMap.get(table_headers.Sequence)]);
+                    peptide.setModifiedSequence(arr[peptideFileHeaderIndexerMap.get(table_headers.Modified_Sequence)]);
+                    peptide.setVariableModifications(arr[peptideFileHeaderIndexerMap.get(table_headers.Variable_Modifications)]);
+                    peptide.setFixedModificationsAsString(arr[peptideFileHeaderIndexerMap.get(table_headers.Fixed_Modifications)]);
+                    peptide.setValidatedPSMsNumber(Integer.parseInt(arr[peptideFileHeaderIndexerMap.get(table_headers.Number_Validated_PSMs)]));
+                    peptide.setPSMsNumber(Integer.parseInt(arr[peptideFileHeaderIndexerMap.get(table_headers.Number_PSMs)]));
+                    peptide.setConfidence(Double.parseDouble(arr[peptideFileHeaderIndexerMap.get(table_headers.Confidence_Pers)]));
+                    peptide.setValidation(arr[peptideFileHeaderIndexerMap.get(table_headers.Validation)]);
                     /**
                      * check if it is uploaded project or imported from galaxy
                      */
                     i = 1;
                     if (uploadedProject) {
                         peptide.setIndex(i++);
-                        if (peptideFileHeaderIndexerMap.get("Quant") != -1) {
-                            peptide.setIntensity(Double.valueOf(arr[peptideFileHeaderIndexerMap.get("Quant")]));
+                        if (peptideFileHeaderIndexerMap.get(table_headers.Quant) != -1) {
+                            peptide.setIntensity(Double.valueOf(arr[peptideFileHeaderIndexerMap.get(table_headers.Quant)]));
                             intensitySet.add(peptide.getIntensity());
                         }
 //                         peptide.setProteins(arr[peptideFileHeaderIndexerMap.get("Protein(s)")]);
                     } else {
-                        peptide.setIndex(Integer.parseInt(arr[peptideFileHeaderIndexerMap.get("")]));
-                        peptide.setProteins(arr[peptideFileHeaderIndexerMap.get("Protein(s)")]);
-                        peptide.setValidatedProteinGroupsNumber(Integer.parseInt(arr[peptideFileHeaderIndexerMap.get("#Validated Protein Group(s)")]));
-                        peptide.setUniqueDatabase(Integer.parseInt(arr[peptideFileHeaderIndexerMap.get("Unique Protein Group")]));
-                        peptide.setPostion(arr[peptideFileHeaderIndexerMap.get("Position")]);
-                        peptide.setAasBefore(arr[peptideFileHeaderIndexerMap.get("AAs Before")]);
-                        peptide.setAasAfter(arr[peptideFileHeaderIndexerMap.get("AAs After")]);
-                        peptide.setLocalizationConfidence(arr[peptideFileHeaderIndexerMap.get("Localization Confidence")]);
+                        peptide.setIndex(Integer.parseInt(arr[peptideFileHeaderIndexerMap.get(table_headers.Index)]));
+                        peptide.setProteins(arr[peptideFileHeaderIndexerMap.get(table_headers.Proteins)]);
+                        peptide.setValidatedProteinGroupsNumber(Integer.parseInt(arr[peptideFileHeaderIndexerMap.get(table_headers.Number_Validated_Protein_Groups)]));
+                        peptide.setUniqueDatabase(Integer.parseInt(arr[peptideFileHeaderIndexerMap.get(table_headers.Unique_Protein_Group)]));
+                        peptide.setPostion(arr[peptideFileHeaderIndexerMap.get(table_headers.Position)]);
+                        peptide.setAasBefore(arr[peptideFileHeaderIndexerMap.get(table_headers.AAs_Before)]);
+                        peptide.setAasAfter(arr[peptideFileHeaderIndexerMap.get(table_headers.AAs_After)]);
+                        peptide.setLocalizationConfidence(arr[peptideFileHeaderIndexerMap.get(table_headers.Localization_Confidence)]);
 
                     }
 
@@ -2023,7 +2049,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                 modificationMatrix = new ModificationMatrix(new LinkedMap<>(modificationMap));
 
                 if (uploadedProject) {
-                    if (peptideFileHeaderIndexerMap.get("Quant") != -1) {
+                    if (peptideFileHeaderIndexerMap.get(table_headers.Quant) != -1) {
                         topIntensityValue = intensitySet.last();
                         calculateQuant(true);
                         quantDataset = true;
@@ -2336,33 +2362,33 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                 line = bufferedReader.readLine();
                 line = line.replace("\"", "");
                 HashMap<String, Integer> proteinFileHeaderIndexerMap = new HashMap<>();
-                proteinFileHeaderIndexerMap.put("", -1);
-                proteinFileHeaderIndexerMap.put("Main Accession", -1);
-                proteinFileHeaderIndexerMap.put("Description", -1);
-                proteinFileHeaderIndexerMap.put("Gene Name", -1);
-                proteinFileHeaderIndexerMap.put("Chromosome", -1);
-                proteinFileHeaderIndexerMap.put("MW [kDa]", -1);
-                proteinFileHeaderIndexerMap.put("Possible Coverage [%]", -1);
-                proteinFileHeaderIndexerMap.put("Coverage [%]", -1);
-                proteinFileHeaderIndexerMap.put("Spectrum Counting", -1);
-                proteinFileHeaderIndexerMap.put("Confidently Localized Modification Sites", -1);
-                proteinFileHeaderIndexerMap.put("#Confidently Localized Modification Sites", -1);
-                proteinFileHeaderIndexerMap.put("Ambiguously Localized Modification Sites", -1);
-                proteinFileHeaderIndexerMap.put("#Ambiguously Localized Modification Sites", -1);
-                proteinFileHeaderIndexerMap.put("Protein Inference", -1);
-                proteinFileHeaderIndexerMap.put("Secondary Accessions", -1);
-                proteinFileHeaderIndexerMap.put("Protein Group", -1);
-                proteinFileHeaderIndexerMap.put("#Validated Peptides", -1);
-                proteinFileHeaderIndexerMap.put("#Peptides", -1);
-                proteinFileHeaderIndexerMap.put("#Unique Peptides", -1);
-                proteinFileHeaderIndexerMap.put("#Validated Unique Peptides", -1);
-                proteinFileHeaderIndexerMap.put("#Validated PSMs", -1);
-                proteinFileHeaderIndexerMap.put("#PSMs", -1);
-                proteinFileHeaderIndexerMap.put("Confidence [%]", -1);
-                proteinFileHeaderIndexerMap.put("Validation", -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Index, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Main_Accession, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Description, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Gene_Name, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Chromosome, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.MW_kDa, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Possible_Coverage_Pers, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Coverage_Pers, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Spectrum_Counting, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Confidently_Localized_Modification_Sites, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Number_Confidently_Localized_Modification_Sites, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Ambiguously_Localized_Modification_Sites, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Number_Ambiguously_Localized_Modification_Sites, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Protein_Inference, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Secondary_Accessions, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Protein_Group, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Number_Validated_Peptides, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Number_Peptides, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Number_Unique_Peptides, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Number_Validated_Unique_Peptides, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Number_Validated_PSMs, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Number_PSMs, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Confidence_Pers, -1);
+                proteinFileHeaderIndexerMap.put(table_headers.Validation, -1);
                 int i = 0;
                 for (String str : line.split("\\t")) {
-                    str = str.trim();
+                    str = str.replace(" ", "").toLowerCase();
                     if (proteinFileHeaderIndexerMap.containsKey(str)) {
                         proteinFileHeaderIndexerMap.replace(str, i);
 
@@ -2377,12 +2403,12 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
 
                     ProteinGroupObject proteinGroup;
                     proteinGroup = new ProteinGroupObject();
-                    proteinGroup.setAccession(arr[proteinFileHeaderIndexerMap.get("Main Accession")]);
+                    proteinGroup.setAccession(arr[proteinFileHeaderIndexerMap.get(table_headers.Main_Accession)]);
                     proteinGroup.setAvailableOn_CSF_PR(csf_pr_Accession_List.contains(proteinGroup.getAccession().trim()));
-                    proteinGroup.setProteinGroup(arr[proteinFileHeaderIndexerMap.get("Protein Group")]);
+                    proteinGroup.setProteinGroup(arr[proteinFileHeaderIndexerMap.get(table_headers.Protein_Group)]);
                     proteinGroup.setProteinGroupKey(proteinGroup.getProteinGroup().replace(" ", "").replace(",", "-_-"));
-                    proteinGroup.setDescription(arr[proteinFileHeaderIndexerMap.get("Description")]);
-                    proteinGroup.setChromosome(arr[proteinFileHeaderIndexerMap.get("Chromosome")]);
+                    proteinGroup.setDescription(arr[proteinFileHeaderIndexerMap.get(table_headers.Description)]);
+                    proteinGroup.setChromosome(arr[proteinFileHeaderIndexerMap.get(table_headers.Chromosome)]);
                     int chrIndex = -1;
                     try {
                         chrIndex = Integer.parseInt(proteinGroup.getChromosome());
@@ -2409,32 +2435,32 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                         chromosomeMap.get(proteinGroup.getChromosomeIndex()).add(proteinGroup.getProteinGroupKey());
                     }
 
-                    proteinGroup.setValidatedPeptidesNumber(Integer.parseInt(arr[proteinFileHeaderIndexerMap.get("#Validated Peptides")]));
+                    proteinGroup.setValidatedPeptidesNumber(Integer.parseInt(arr[proteinFileHeaderIndexerMap.get(table_headers.Number_Validated_Peptides)]));
                     if (proteinGroup.getValidatedPeptidesNumber() > maxPeptideNumber) {
                         maxPeptideNumber = proteinGroup.getValidatedPeptidesNumber();
                     }
-                    proteinGroup.setPeptidesNumber(Integer.parseInt(arr[proteinFileHeaderIndexerMap.get("#Peptides")]));
+                    proteinGroup.setPeptidesNumber(Integer.parseInt(arr[proteinFileHeaderIndexerMap.get(table_headers.Number_Peptides)]));
                     if (!proteinPeptidesNumberMap.containsKey(proteinGroup.getValidatedPeptidesNumber())) {
                         proteinPeptidesNumberMap.put(proteinGroup.getValidatedPeptidesNumber(), new LinkedHashSet<>());
                     }
                     proteinPeptidesNumberMap.get(proteinGroup.getValidatedPeptidesNumber()).add(proteinGroup.getProteinGroupKey());
-                    proteinGroup.setValidatedPSMsNumber(Double.valueOf(arr[proteinFileHeaderIndexerMap.get("#Validated PSMs")]).intValue());
+                    proteinGroup.setValidatedPSMsNumber(Double.valueOf(arr[proteinFileHeaderIndexerMap.get(table_headers.Number_Validated_PSMs)]).intValue());
                     if (proteinGroup.getValidatedPSMsNumber() > maxPsmNumber) {
                         maxPsmNumber = proteinGroup.getValidatedPSMsNumber();
                     }
-                    proteinGroup.setPSMsNumber(Integer.valueOf(arr[proteinFileHeaderIndexerMap.get("#PSMs")]));
+                    proteinGroup.setPSMsNumber(Integer.valueOf(arr[proteinFileHeaderIndexerMap.get(table_headers.Number_PSMs)]));
                     if (!proteinPSMNumberMap.containsKey(proteinGroup.getValidatedPSMsNumber())) {
                         proteinPSMNumberMap.put(proteinGroup.getValidatedPSMsNumber(), new LinkedHashSet<>());
                     }
                     proteinPSMNumberMap.get(proteinGroup.getValidatedPSMsNumber()).add(proteinGroup.getProteinGroupKey());
-                    proteinGroup.setConfidence(Double.valueOf(arr[proteinFileHeaderIndexerMap.get("Confidence [%]")]));
+                    proteinGroup.setConfidence(Double.valueOf(arr[proteinFileHeaderIndexerMap.get(table_headers.Confidence_Pers)]));
 
                     /**
                      * check if it is uploaded project or imported from galaxy
                      */
                     if (uploadedProject) {
                         proteinGroup.setIndex(i++);
-                        proteinGroup.setProteinInference(arr[proteinFileHeaderIndexerMap.get("Protein Inference")].replace("0", "Single Protein").replace("1", "Related").replace("2", "Related & Unrelated").replace("3", "Unrelated"));
+                        proteinGroup.setProteinInference(arr[proteinFileHeaderIndexerMap.get(table_headers.Protein_Inference)].replace("0", "Single Protein").replace("1", "Related").replace("2", "Related & Unrelated").replace("3", "Unrelated"));
 
                         if (proteinGroup.getProteinInference().trim().isEmpty()) {
                             proteinGroup.setProteinInference("No Information");
@@ -2445,7 +2471,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                             }
                             proteinInferenceMap.get(proteinGroup.getProteinInference()).add(proteinGroup.getProteinGroupKey());
                         }
-                        proteinGroup.setValidation(arr[proteinFileHeaderIndexerMap.get("Validation")]);
+                        proteinGroup.setValidation(arr[proteinFileHeaderIndexerMap.get(table_headers.Validation)]);
                         if (proteinGroup.getValidation().trim().isEmpty() || proteinGroup.getValidation().trim().equalsIgnoreCase("-1")) {
                             proteinGroup.setValidation("No Information");
                             proteinValidationMap.get(proteinGroup.getValidation()).add(proteinGroup.getProteinGroupKey());
@@ -2457,33 +2483,33 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                             proteinValidationMap.get(proteinGroup.getValidation()).add(proteinGroup.getProteinGroupKey());
                         }
                     } else {
-                        proteinGroup.setIndex(Integer.valueOf(arr[proteinFileHeaderIndexerMap.get("")]));
-                        proteinGroup.setGeneName(arr[proteinFileHeaderIndexerMap.get("Gene Name")]);
-                        proteinGroup.setMW(Double.valueOf(arr[proteinFileHeaderIndexerMap.get("MW [kDa]")]));
+                        proteinGroup.setIndex(Integer.valueOf(arr[proteinFileHeaderIndexerMap.get(table_headers.Index)]));
+                        proteinGroup.setGeneName(arr[proteinFileHeaderIndexerMap.get(table_headers.Gene_Name)]);
+                        proteinGroup.setMW(Double.valueOf(arr[proteinFileHeaderIndexerMap.get(table_headers.MW_kDa)]));
                         if (proteinGroup.getMW() > maxMW) {
                             maxMW = proteinGroup.getMW();
                         }
-                        proteinGroup.setPossibleCoverage(Double.valueOf(arr[proteinFileHeaderIndexerMap.get("Possible Coverage [%]")]));
-                        proteinGroup.setCoverage(Double.valueOf(arr[proteinFileHeaderIndexerMap.get("Coverage [%]")]));
+                        proteinGroup.setPossibleCoverage(Double.valueOf(arr[proteinFileHeaderIndexerMap.get(table_headers.Possible_Coverage_Pers)]));
+                        proteinGroup.setCoverage(Double.valueOf(arr[proteinFileHeaderIndexerMap.get(table_headers.Coverage_Pers)]));
                         int pc = (int) Math.round(proteinGroup.getCoverage());
                         if (!proteinCoverageMap.containsKey(pc)) {
                             proteinCoverageMap.put(pc, new LinkedHashSet<>());
                         }
                         proteinCoverageMap.get(pc).add(proteinGroup.getProteinGroupKey());
-                        proteinGroup.setSpectrumCounting(Double.valueOf(arr[proteinFileHeaderIndexerMap.get("Spectrum Counting")]));
+                        proteinGroup.setSpectrumCounting(Double.valueOf(arr[proteinFileHeaderIndexerMap.get(table_headers.Spectrum_Counting)]));
                         if (proteinGroup.getSpectrumCounting() > maxMS2Quant) {
                             maxMS2Quant = proteinGroup.getSpectrumCounting();
                         }
-                        if ((arr[proteinFileHeaderIndexerMap.get("Confidently Localized Modification Sites")] + "").trim().equalsIgnoreCase("")) {
+                        if ((arr[proteinFileHeaderIndexerMap.get(table_headers.Confidently_Localized_Modification_Sites)] + "").trim().equalsIgnoreCase("")) {
                             proteinGroup.setConfidentlyLocalizedModificationSites("No Modification");
                         } else {
-                            proteinGroup.setConfidentlyLocalizedModificationSites(arr[proteinFileHeaderIndexerMap.get("Confidently Localized Modification Sites")]);//.split("\\(")[0]);                  
+                            proteinGroup.setConfidentlyLocalizedModificationSites(arr[proteinFileHeaderIndexerMap.get(table_headers.Confidently_Localized_Modification_Sites)]);//.split("\\(")[0]);                  
                         }
-                        proteinGroup.setConfidentlyLocalizedModificationSitesNumber(arr[proteinFileHeaderIndexerMap.get("#Confidently Localized Modification Sites")]);
+                        proteinGroup.setConfidentlyLocalizedModificationSitesNumber(arr[proteinFileHeaderIndexerMap.get(table_headers.Number_Confidently_Localized_Modification_Sites)]);
 
-                        proteinGroup.setAmbiguouslyLocalizedModificationSites(arr[proteinFileHeaderIndexerMap.get("Ambiguously Localized Modification Sites")]);
-                        proteinGroup.setAmbiguouslyLocalizedModificationSitesNumber(arr[proteinFileHeaderIndexerMap.get("#Ambiguously Localized Modification Sites")]);
-                        proteinGroup.setProteinInference(arr[proteinFileHeaderIndexerMap.get("Protein Inference")].replace("Proteins", "").replace("and", "&"));
+                        proteinGroup.setAmbiguouslyLocalizedModificationSites(arr[proteinFileHeaderIndexerMap.get(table_headers.Ambiguously_Localized_Modification_Sites)]);
+                        proteinGroup.setAmbiguouslyLocalizedModificationSitesNumber(arr[proteinFileHeaderIndexerMap.get(table_headers.Number_Ambiguously_Localized_Modification_Sites)]);
+                        proteinGroup.setProteinInference(arr[proteinFileHeaderIndexerMap.get(table_headers.Protein_Inference)].replace("Proteins", "").replace("and", "&"));
 
                         if (proteinGroup.getProteinInference().trim().isEmpty()) {
                             proteinGroup.setProteinInference("No Information");
@@ -2495,11 +2521,11 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                             proteinInferenceMap.get(proteinGroup.getProteinInference()).add(proteinGroup.getProteinGroupKey());
                         }
 
-                        proteinGroup.setSecondaryAccessions(arr[proteinFileHeaderIndexerMap.get("Secondary Accessions")]);
+                        proteinGroup.setSecondaryAccessions(arr[proteinFileHeaderIndexerMap.get(table_headers.Secondary_Accessions)]);
 
-                        proteinGroup.setUniqueNumber(Integer.parseInt(arr[proteinFileHeaderIndexerMap.get("#Unique Peptides")]));
-                        proteinGroup.setValidatedUniqueNumber(Integer.parseInt(arr[proteinFileHeaderIndexerMap.get("#Validated Unique Peptides")]));
-                        proteinGroup.setValidation(arr[proteinFileHeaderIndexerMap.get("Validation")]);
+                        proteinGroup.setUniqueNumber(Integer.parseInt(arr[proteinFileHeaderIndexerMap.get(table_headers.Number_Unique_Peptides)]));
+                        proteinGroup.setValidatedUniqueNumber(Integer.parseInt(arr[proteinFileHeaderIndexerMap.get(table_headers.Number_Validated_Unique_Peptides)]));
+                        proteinGroup.setValidation(arr[proteinFileHeaderIndexerMap.get(table_headers.Validation)]);
                         if (proteinGroup.getValidation().trim().isEmpty()) {
                             proteinGroup.setValidation("No Information");
                             proteinValidationMap.get(proteinGroup.getValidation()).add(proteinGroup.getProteinGroupKey());

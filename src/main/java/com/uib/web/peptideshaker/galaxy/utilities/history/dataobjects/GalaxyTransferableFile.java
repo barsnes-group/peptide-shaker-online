@@ -11,6 +11,8 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -213,5 +215,62 @@ public class GalaxyTransferableFile extends GalaxyFileObject {
 
         return file;
     }
+
+    /**
+     * Get the list of Java File Objects that represents the downloaded file from zip folder 
+     * 
+     *
+     * @return Set of File objects that already downloaded on the user files folder
+     */
+    public Set<File> getFiles() {
+        Set<File> fileSet = new LinkedHashSet<>();
+        FileOutputStream fos = null;
+        try {
+            URL downloadableFile = new URL(galaxyFileObject.getDownloadUrl());
+            URLConnection conn = downloadableFile.openConnection();
+            conn.addRequestProperty("Accept", "*/*");
+            conn.setDoInput(true);
+            ZipInputStream Zis = new ZipInputStream(conn.getInputStream());
+
+            int counter = 0;
+            ZipEntry entry = Zis.getNextEntry();
+            while (entry != null && counter < 10) {
+                if (!entry.isDirectory()) //do something with entry  
+                {
+                    File file = new File(user_folder, entry.getName());
+                    if (!file.exists()) {
+                        file.createNewFile();
+                        try (ReadableByteChannel rbc = Channels.newChannel(Zis)) {
+                            fos = new FileOutputStream(file);
+                            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+                            rbc.close();
+                        }
+                        fileSet.add(file);
+
+                    } else {
+                        fileSet.add(file);
+                    }
+                }
+                entry = Zis.getNextEntry();
+                counter++;
+            }
+            fos.close();
+            Zis.close();
+        } catch (MalformedURLException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            Logger.getLogger(GalaxyTransferableFile.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException ex) {
+                }
+            }
+
+        }
+
+    return fileSet ;
+}
 
 }

@@ -469,6 +469,10 @@ public abstract class GalaxyHistoryHandler {
          */
         private final Map<String, GalaxyTransferableFile> moffFilesMap;
         /**
+         * The main MGF FILE INDEXES (CUI) Map.
+         */
+        private final Map<String, GalaxyTransferableFile> mgfIndexFilesMap;
+        /**
          * The main FASTA File Map.
          */
         private final Map<String, GalaxyFileObject> fastaFilesMap;
@@ -561,6 +565,7 @@ public abstract class GalaxyHistoryHandler {
             this.searchGUIFilesMap = new LinkedHashMap<>();
             this.historiesIds = new HashSet<>();
             this.searchSettingsFilesMap = new LinkedHashMap<>();
+            this.mgfIndexFilesMap = new LinkedHashMap<>();
 
             try {
                 String requestSearching = Page.getCurrent().getLocation().toString();
@@ -600,11 +605,20 @@ public abstract class GalaxyHistoryHandler {
                         externaldataset.setType("Web Peptide Shaker Dataset");
                         externaldataset.setName(project_name);
                         externaldataset.setToShareDataset(true);
+
                         GalaxyFileObject ds = new GalaxyFileObject();
+                        ds.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + "/datasets/" + dsDetails[4].split("-_:_-")[1] + "/display?");
+                        ds.setStatus("ok");
+                        ds.setType("MGF-Index-File");
+                        GalaxyTransferableFile zipFolder = new GalaxyTransferableFile(user_folder, ds, true);
+                        zipFolder.setDownloadUrl(ds.getDownloadUrl());
+                        externaldataset.setMgfIndexFolder(zipFolder);
+
+                         ds = new GalaxyFileObject();
                         ds.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + "/datasets/" + dsDetails[1].split("-_:_-")[1] + "/display?");
                         ds.setStatus("ok");
                         ds.setType("SearchGUI");
-                        ds.setOverview(dsDetails[4].split("-_:_-")[1]);
+                        ds.setOverview(dsDetails[5].split("-_:_-")[1]);
                         externaldataset.setSearchGUIResultFile(ds);
                         externaldataset.setPeptideShakerResultsFileId(dsDetails[2].split("-_:_-")[1], true);
                         externaldataset.setGalaxyId(dsDetails[2].split("-_:_-")[1]);
@@ -656,6 +670,7 @@ public abstract class GalaxyHistoryHandler {
                 String userID = Galaxy_Instance.getUsersClient().getUsers().get(0).getId();
                 usedStorageSpace = galaxyApiInteractiveLayer.getUserMemoryUsage(Galaxy_Instance.getGalaxyUrl(), userID, Galaxy_Instance.getApiKey());
                 results.stream().filter((map) -> map != null && (!((map.get("purged") + "").equalsIgnoreCase("true") || (!historiesIds.contains(map.get("history_id") + "")) || (map.get("deleted") + "").equalsIgnoreCase("true")))).forEachOrdered((Map<String, Object> map) -> {
+
                     if (map.get("name").toString().contains("-original-input")) {
                         toDeleteMap.add(map.get("history_id") + ";" + map.get("id").toString());
                     } else if (map.containsKey("collection_type") && map.get("collection_type").toString().equalsIgnoreCase("list")) {
@@ -681,6 +696,28 @@ public abstract class GalaxyHistoryHandler {
                         if (map.get("state").toString().equalsIgnoreCase("new") || map.get("state").toString().equalsIgnoreCase("running") || map.get("state").toString().equalsIgnoreCase("queued")) {
                             jobsInProgress = true;
                         }
+
+                        if (map.get("extension").toString().equalsIgnoreCase("zip") && map.get("name").toString().endsWith("-MGFINDEX")) {
+                            GalaxyFileObject ds = new GalaxyFileObject();
+                            ds.setName(map.get("name").toString());
+                            ds.setType("MGF-Index-File");
+                            ds.setHistoryId(map.get("history_id") + "");
+                            ds.setGalaxyId(map.get("id").toString());
+                            ds.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + map.get("url") + "/display?");
+                            ds.setStatus(map.get("state") + "");
+                            try {
+                                ds.setCreate_time(df6.parse((map.get("create_time") + "")));
+                            } catch (ParseException ex) {
+                                ex.printStackTrace();
+                            }
+                            GalaxyTransferableFile file = new GalaxyTransferableFile(user_folder, ds, true);
+                            file.setDownloadUrl(ds.getDownloadUrl());
+
+                            this.mgfIndexFilesMap.put(map.get("name").toString().replace("-MGFINDEX", ""), file);
+                            file.setCreate_time(ds.getCreate_time());
+
+                        }
+
                         if (map.get("extension").toString().equalsIgnoreCase("tabular") && map.get("name").toString().endsWith("-MOFF")) {
                             GalaxyFileObject ds = new GalaxyFileObject();
                             ds.setName(map.get("name").toString());
@@ -708,7 +745,7 @@ public abstract class GalaxyHistoryHandler {
                                 jobsInProgress = true;
                             }
                             try {
-                                ds.setCreate_time(df6.parse((map.get("create_time") + "").replace( "_-_",":")));
+                                ds.setCreate_time(df6.parse((map.get("create_time") + "").replace("_-_", ":")));
                             } catch (ParseException ex) {
                                 ex.printStackTrace();
                             }
@@ -734,7 +771,7 @@ public abstract class GalaxyHistoryHandler {
                             ds.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + map.get("url") + "/display?");
                             ds.setStatus(map.get("state") + "");
                             try {
-                                ds.setCreate_time(df6.parse((map.get("create_time") + "").replace( "_-_",":")));
+                                ds.setCreate_time(df6.parse((map.get("create_time") + "").replace("_-_", ":")));
                             } catch (ParseException ex) {
                                 ex.printStackTrace();
                             }
@@ -843,6 +880,9 @@ public abstract class GalaxyHistoryHandler {
                     });
                     moffFilesMap.keySet().stream().filter((key) -> (key.contains(vDs.getProjectName()))).forEachOrdered((key) -> {
                         vDs.setMoff_quant_file(moffFilesMap.get(key));
+                    });
+                    mgfIndexFilesMap.keySet().stream().filter((key) -> (key.contains(vDs.getProjectName()))).forEachOrdered((key) -> {
+                        vDs.setMgfIndexFolder(mgfIndexFilesMap.get(key));
                     });
                 });
 

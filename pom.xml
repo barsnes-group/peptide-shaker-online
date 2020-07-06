@@ -70,6 +70,7 @@
             <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
+
       
         <dependency>
             <groupId>com.vaadin</groupId>
@@ -127,11 +128,7 @@
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
+                </exclusion>               
                 <exclusion>
                     <groupId>it.unimi.dsi</groupId>
                     <artifactId>fastutil</artifactId>

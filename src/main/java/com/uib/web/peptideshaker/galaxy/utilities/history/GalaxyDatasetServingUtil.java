@@ -87,7 +87,6 @@ public class GalaxyDatasetServingUtil {
 
             try (BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"))) {
                 while ((line = bin.readLine()) != null) {
-                    System.out.println("at --**-- line is "+line);
                     JSONObject jsonObject = new JSONObject(line);
                     if (jsonObject != JSONObject.NULL) {
                         Map<String, Object> map = jsonToMap(jsonObject);
