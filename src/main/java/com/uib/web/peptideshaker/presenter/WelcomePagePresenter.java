@@ -70,7 +70,7 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
     /**
      * Connection to galaxy statues label.
      */
-    private final ButtonWithLabel galaxyLloginBtn;
+    private final ButtonWithLabel galaxyLoginBtn;
     /**
      * Galaxy login controls layout.
      */
@@ -139,17 +139,17 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
         mainHeaderPanel.addComponent(headerPanelContentLayout);
         mainHeaderPanel.setMargin(new MarginInfo(false, false, false, false));
 
-        galaxyLloginBtn = new ButtonWithLabel("Galaxy Login<br/><font>Login using API key</font>", 0);
-        galaxyLloginBtn.updateIconResource(new ThemeResource("img/galaxylogocolor.png"));
-        galaxyLloginBtn.addStyleName("galaxylabel");
+        galaxyLoginBtn = new ButtonWithLabel("Galaxy Login<br/><font>Login using API key</font>", 0);
+        galaxyLoginBtn.updateIconResource(new ThemeResource("img/galaxylogocolor.png"));
+        galaxyLoginBtn.addStyleName("galaxylabel");
         if (availableGalaxy) {
-            galaxyLloginBtn.setDescription("Login to Galaxy - API key required");
+            galaxyLoginBtn.setDescription("Login to Galaxy - API key required");
         } else {
-            galaxyLloginBtn.setDescription("Galaxy server is not available");
+            galaxyLoginBtn.setDescription("Galaxy server is not available");
             VaadinSession.getCurrent().setAttribute("psVersion", "offline");
             VaadinSession.getCurrent().setAttribute("searchGUIversion", "offline");
         }
-        galaxyLloginBtn.setEnabled(availableGalaxy);
+        galaxyLoginBtn.setEnabled(availableGalaxy);
 
         HorizontalLayout mainMiddlePanel = new HorizontalLayout();
         mainMiddlePanel.addStyleName("welcomepagebody");
@@ -180,16 +180,16 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
         userOverviewLayout.addComponent(overviewLabel);
 
         Label userLabel = initLeftSideInfoLabel(VaadinIcons.USER.getHtml() + " User ", "<i class='rightsidediv'>Offline</i>");
-         userLabel.addStyleName("headerlabel");
+        userLabel.addStyleName("headerlabel");
         userOverviewLayout.addComponent(userLabel);
 
-        Label dsNumberLabel = initLeftSideInfoLabel("<img src='VAADIN/themes/webpeptideshakertheme/img/venn_icon.png' alt style='width: auto;height:15px;margin-left:-2px;    margin-right: 4px;'>" + " Projects ", "<i></i>");
+        Label dsNumberLabel = initLeftSideInfoLabel("<img src='VAADIN/themes/webpeptideshakertheme/img/venn_icon.png' alt style='width: auto;height:15px;margin-left:-2px;    margin-right: 4px;'>" + " Projects ", "<i>Not Available</i>");
         userOverviewLayout.addComponent(dsNumberLabel);
 
-        Label filesNumberLabel = initLeftSideInfoLabel(VaadinIcons.FILE_TEXT_O.getHtml() + " Files ", "<i></i>");
+        Label filesNumberLabel = initLeftSideInfoLabel(VaadinIcons.FILE_TEXT_O.getHtml() + " Files ", "<i>Not Available</i>");
         userOverviewLayout.addComponent(filesNumberLabel);
 
-        Label usedMemory = initLeftSideInfoLabel(VaadinIcons.CLOUD_O.getHtml() + " Storage ", "<i></i>");
+        Label usedMemory = initLeftSideInfoLabel(VaadinIcons.CLOUD_O.getHtml() + " Storage ", "<i>Not Available</i>");
         userOverviewLayout.addComponent(usedMemory);
 
         Label searchGUI = initLeftSideInfoLabel("<img src='VAADIN/themes/webpeptideshakertheme/img/sgiconHRNSgray21.png' alt style='width: auto;height:15px;margin-left:-2px;    margin-right: 4px;'>" + " SearchGUI ", "<i class='nrightsidediv'>" + VaadinSession.getCurrent().getAttribute("searchGUIversion") + "</i>");
@@ -199,7 +199,7 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
         Label peptideShaker = initLeftSideInfoLabel("<img src='VAADIN/themes/webpeptideshakertheme/img/psiconHRNSgray21.png' alt style='width: auto;height:15px;margin-left:-2px;    margin-right: 4px;'>" + " PeptideShaker ", "<i class='nrightsidediv'>" + VaadinSession.getCurrent().getAttribute("psVersion") + "</i>");
         peptideShaker.setValue(peptideShaker.getValue().replace("<div style='white-space: nowrap;width: 65px;height: 20px;", "<div class='psversstyle' style='white-space: nowrap;width: 65px;height: 20px;"));
         userOverviewLayout.addComponent(peptideShaker);
-        
+
         Label moff = initLeftSideInfoLabel("<img src='VAADIN/themes/webpeptideshakertheme/img/mofficon21.png' alt style='width: auto;height:15px;margin-left:-2px;    margin-right: 4px;'>" + " Moff ", "<i class='nrightsidediv'>" + VaadinSession.getCurrent().getAttribute("moffvirsion") + "</i>");
         moff.setValue(moff.getValue().replace("<div style='white-space: nowrap;width: 65px;height: 20px;", "<div class='psversstyle' style='white-space: nowrap;width: 65px;height: 20px;"));
         userOverviewLayout.addComponent(moff);
@@ -257,7 +257,7 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
         presenteControlButtonsLayout.setWidth(100, Unit.PERCENTAGE);
         presenteControlButtonsLayout.setSpacing(true);
         presenterControlButtonsPanel.addComponent(presenteControlButtonsLayout);
-        presenterControlButtonsPanel.setExpandRatio(presenteControlButtonsLayout, 0.6f);      
+        presenterControlButtonsPanel.setExpandRatio(presenteControlButtonsLayout, 0.6f);
         presenteControlButtonsLayout.setEnabled(true);
         presenteControlButtonsLayout.addStyleName("disableasenable");
         /**
@@ -314,18 +314,18 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
                 return;
             }
 
-            if (galaxyLloginBtn.getData() == null) {
+            if (galaxyLoginBtn.getData() == null) {
                 connectinoWindow.setVisible(true);
             }
         });
-        galaxyLloginBtn.addLayoutClickListener((LayoutEvents.LayoutClickEvent event) -> {
-            if (galaxyLloginBtn.getData() == null) {
+        galaxyLoginBtn.addLayoutClickListener((LayoutEvents.LayoutClickEvent event) -> {
+            if (galaxyLoginBtn.getData() == null) {
                 connectinoWindow.removeStyleName("connectionwindow");
                 connectinoWindow.setStyleName("windowcontainer");
                 connectinoWindow.setVisible(true);
             } else {
                 Notification.show("error in connection..", Notification.Type.ERROR_MESSAGE);
-                 VaadinSession.getCurrent().getSession().setMaxInactiveInterval(10);
+                VaadinSession.getCurrent().getSession().setMaxInactiveInterval(10);
                 Page.getCurrent().reload();
             }
         });
@@ -518,11 +518,12 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
      * Galaxy server
      */
     private void updateConnectionStatusToGalaxy(List<String> userOverviewData) {
+
         connectinoWindow.setClosable(true);
         galaxyLoginConnectionBtnLabel.setVisible(true);
         galaxyLoginLayout.setEnabled(true);
         galaxyLoginLayout.setVisible(true);
-        galaxyLloginBtn.setData(null);
+        galaxyLoginBtn.setData(null);
         connectingLabel.setCaption(null);
 
         if (userOverviewData != null && userOverviewData.get(0).contains("Guest User")) {
@@ -530,19 +531,20 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
             presenteControlButtonsLayout.setEnabled(true);
         } else if (userOverviewData != null && !userOverviewData.get(0).contains("Guest User")) {
             connectinoWindow.setVisible(false);
-            galaxyLloginBtn.updateText("Galaxy Logout");
-            galaxyLloginBtn.setData("connected");
+            galaxyLoginBtn.updateText("Galaxy Logout");
+            galaxyLoginBtn.setData("connected");
             galaxyLoginLayout.setEnabled(false);
             presenteControlButtonsLayout.setEnabled(true);
 
         } else {
             userAPIFeald.setValue(apiErrorMessage);
             userAPIFeald.addStyleName("redfont");
+             Notification.show("Public user is not available", Notification.Type.TRAY_NOTIFICATION);
+           connectinoWindow.setVisible(false);
+            presenteControlButtonsLayout.setEnabled(true);
         }
-
         updateUserOverviewPanel(userOverviewData);
         connectingLabel.setVisible(false);
-
     }
 
     /**
@@ -711,7 +713,7 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
      * presenter buttons
      */
     public void setPresenterControlButtonContainer(AbsoluteLayout presenterBtnsContainer) {
-        presenterBtnsContainer.addComponent(galaxyLloginBtn, "left:50%;top:50%;");
+        presenterBtnsContainer.addComponent(galaxyLoginBtn, "left:50%;top:50%;");
         presenteControlButtonsLayout.addComponent(presenterBtnsContainer);
     }
 

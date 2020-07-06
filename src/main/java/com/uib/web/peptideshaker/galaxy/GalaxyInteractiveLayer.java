@@ -132,10 +132,10 @@ public abstract class GalaxyInteractiveLayer {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("at ---->>>> 135 exception in galaxy connection cought " + e.getMessage());
-            if (VaadinSession.getCurrent().getSession() != null) {
-                VaadinSession.getCurrent().getSession().setMaxInactiveInterval(10);
-            }
-            Page.getCurrent().reload();
+//            if (VaadinSession.getCurrent().getSession() != null) {
+//                VaadinSession.getCurrent().getSession().setMaxInactiveInterval(10);
+//            }
+//            Page.getCurrent().reload();
             return false;
         }
         return true;

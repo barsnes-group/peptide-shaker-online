@@ -63,7 +63,11 @@ public class WebPeptideShakerApp {
         this.Presenter_layer = new PresenterLayer(availableGalaxyServer) {
             @Override
             public List<String> connectToGalaxyServer(String galaxyServerUrl, String userAPI, String userDataFolderUrl) {
-                Model_Layer.connectToGalaxyServer(galaxyServerUrl, userAPI, userDataFolderUrl);
+                boolean connected = Model_Layer.connectToGalaxyServer(galaxyServerUrl, userAPI, userDataFolderUrl);
+                if (!connected) {
+                    return null;
+                }
+                
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException ex) {
@@ -109,7 +113,6 @@ public class WebPeptideShakerApp {
             public int insertDatsetLinkToShare(String dsDetails) {
                 return Model_Layer.insertDatasetSharingLink(dsDetails);
             }
-            
 
         };
     }

@@ -37,6 +37,8 @@ public abstract class PresenterLayer {
      */
     public PresenterLayer(boolean availableGalaxyServer) {
         this.presenterContainer = new PresenterContainer(availableGalaxyServer) {
+            private boolean connectedToGalaxy;
+
             @Override
             public void viewLayout(String viewId) {
                 presentationManager.viewLayout(viewId);
@@ -49,7 +51,11 @@ public abstract class PresenterLayer {
 
             @Override
             public List<String> connectToGalaxyServer(String galaxyServerUrl, String userAPI, String userDataFolderUrl) {
-                return PresenterLayer.this.connectToGalaxyServer(galaxyServerUrl, userAPI, userDataFolderUrl);
+                List<String> userData = PresenterLayer.this.connectToGalaxyServer(galaxyServerUrl, userAPI, userDataFolderUrl);
+                connectedToGalaxy = userData != null;
+                getSearchGUIPeptideShakerToolPresenter().getMainPresenterButton().setEnabled(connectedToGalaxy);
+                getSearchGUIPeptideShakerToolPresenter().getSmallPresenterControlButton().setEnabled(connectedToGalaxy);
+                return userData;
             }
 
             @Override
@@ -86,9 +92,8 @@ public abstract class PresenterLayer {
 
             @Override
             public int insertDatsetLinkToShare(String dsDetails) {
-               return PresenterLayer.this.insertDatsetLinkToShare(dsDetails);
+                return PresenterLayer.this.insertDatsetLinkToShare(dsDetails);
             }
-            
 
         };
         presentationManager = new PresenterManager(presenterContainer.getSubViewButtonsActionContainer(), presenterContainer.getTopMiddleLayoutContainer(), presenterContainer.getPresenterButtonsContainerLayout(), presenterContainer.getSubPresenterButtonsContainer());
@@ -203,7 +208,8 @@ public abstract class PresenterLayer {
      * @return set of Uni-prot protein accessions available on csf-pr
      */
     public abstract Set<String> getCsf_pr_Accession_List();
-     /**
+
+    /**
      * Store and retrieve dataset details index to share in link
      *
      * @param dsDetails encoded dataset details to store in database
