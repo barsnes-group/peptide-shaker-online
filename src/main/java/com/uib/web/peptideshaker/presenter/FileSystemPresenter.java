@@ -162,7 +162,7 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
      * @param historyFilesMap List of available files on Galaxy Server
      * @param jobInProgress Jobs are running
      */
-    public void updateSystemData(Map<String, GalaxyFileObject> historyFilesMap, boolean jobInProgress) {
+    public void updateData(Map<String, GalaxyFileObject> historyFilesMap, boolean jobInProgress) {
         this.historyFilesMap = historyFilesMap;
         this.jobInProgress = jobInProgress;
         if (jobInProgress) {

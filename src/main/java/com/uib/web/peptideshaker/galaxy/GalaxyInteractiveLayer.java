@@ -1,16 +1,15 @@
 package com.uib.web.peptideshaker.galaxy;
 
 import com.compomics.util.parameters.identification.IdentificationParameters;
+import com.github.jmchilton.blend4j.galaxy.GalaxyInstanceFactory;
 import com.uib.web.peptideshaker.galaxy.utilities.GalaxyHistoryHandler;
 import com.uib.web.peptideshaker.galaxy.utilities.GalaxyToolsHandler;
-import com.github.jmchilton.blend4j.galaxy.GalaxyInstance;
-import com.github.jmchilton.blend4j.galaxy.GalaxyInstanceFactory;
 import com.github.jmchilton.blend4j.galaxy.UsersClient;
 import com.github.jmchilton.blend4j.galaxy.beans.User;
+import com.uib.web.peptideshaker.galaxy.client.GalaxyClient;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
-import com.vaadin.server.Page;
 import com.vaadin.server.VaadinSession;
 import java.io.File;
 import java.text.DecimalFormat;
@@ -33,7 +32,7 @@ public abstract class GalaxyInteractiveLayer {
     /**
      * Main Galaxy Server instance.
      */
-    private GalaxyInstance Galaxy_Instance;
+    private GalaxyClient Galaxy_Instance;
     /**
      * Galaxy Server history management system
      */
@@ -72,20 +71,20 @@ public abstract class GalaxyInteractiveLayer {
             }
 
             @Override
-            public void synchronizeDataWithGalaxyServer(Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress, boolean updatePresenterView, Set<String> toDeleteMap) {
+            public void updatePresenterLayer(Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress, boolean updatePresenterView, Set<String> toDeleteMap) {
                 //update history in the system                 
-                GalaxyInteractiveLayer.this.synchronizeDataWithGalaxyServer(historyFilesMap, jobsInProgress, updatePresenterView);
+                GalaxyInteractiveLayer.this.updatePresenterLayer(historyFilesMap, jobsInProgress, updatePresenterView);
                 if (!jobsInProgress && toDeleteMap != null && toolsHandler != null) {
                     toDeleteMap.forEach((galaxyId) -> {
-                        toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), galaxyId.split(";")[0], galaxyId.split(";")[1], true, false);
+                        toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), galaxyId.split(";")[0], galaxyId.split(";")[1]);
                     });
-                    toDeleteMap.clear();
+//                    toDeleteMap.clear();
                 }
             }
 
             @Override
             public String getDatasetSharingLink(int dsKey) {
-               return GalaxyInteractiveLayer.this.getDatasetSharingLink(dsKey);
+                return GalaxyInteractiveLayer.this.getDatasetSharingLink(dsKey);
             }
         };
 
@@ -102,15 +101,16 @@ public abstract class GalaxyInteractiveLayer {
     public boolean connectToGalaxyServer(String galaxyServerUrl, String userAPI, String userDataFolderUrl) {
         try {
             userOverViewList.clear();
-            Galaxy_Instance = GalaxyInstanceFactory.get(galaxyServerUrl, userAPI);
+            Galaxy_Instance = new GalaxyClient(galaxyServerUrl, userAPI);
             Galaxy_Instance.getHistoriesClient().getHistories();
             user_folder = new File(userDataFolderUrl, Galaxy_Instance.getApiKey() + "");
             user_folder.mkdir();
-            historyHandler.connectToGalaxy(Galaxy_Instance, user_folder);
+
+            historyHandler.setGalaxyConnected(Galaxy_Instance, user_folder);
             toolsHandler = new GalaxyToolsHandler(Galaxy_Instance.getToolsClient(), Galaxy_Instance.getWorkflowsClient(), Galaxy_Instance.getHistoriesClient()) {
                 @Override
-                public void synchronizeDataWithGalaxyServer(boolean updatePresenterView) {
-                    historyHandler.updateHistory(updatePresenterView);
+                public void updateGalaxyFileSystem(boolean updatePresenterView) {
+                    historyHandler.forceUpdateGalaxyFileSystem();
                     userOverViewList.set(1, historyHandler.getDatasetsNumber() + "");
                     userOverViewList.set(2, historyHandler.getFilesNumber() + "");
                     try {
@@ -131,11 +131,7 @@ public abstract class GalaxyInteractiveLayer {
             userOverViewList.add(toolsHandler.getPeptideShaker_Tool_Version());
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("at ---->>>> 135 exception in galaxy connection cought " + e.getMessage());
-//            if (VaadinSession.getCurrent().getSession() != null) {
-//                VaadinSession.getCurrent().getSession().setMaxInactiveInterval(10);
-//            }
-//            Page.getCurrent().reload();
+            System.out.println("at Error:  galaxy connection  " + e);
             return false;
         }
         return true;
@@ -185,7 +181,7 @@ public abstract class GalaxyInteractiveLayer {
             return;
         }
         toolsHandler.execute_SearchGUI_PeptideShaker_WorkFlow(projectName, fastaFileId, searchParameterFileId, inputFilesMap, searchEnginesList, historyHandler.getWorkingHistoryId(), searchParameters, quant);
-        toolsHandler.synchronizeDataWithGalaxyServer(true);
+        toolsHandler.updateGalaxyFileSystem(true);
     }
 
     /**
@@ -266,6 +262,9 @@ public abstract class GalaxyInteractiveLayer {
     public boolean uploadToGalaxy(PluploadFile[] toUploadFiles) {
 
         boolean check = toolsHandler.uploadToGalaxy(historyHandler.getWorkingHistoryId(), toUploadFiles);
+        if (check) {
+            historyHandler.forceUpdateGalaxyFileSystem();
+        }
         return check;
     }
 
@@ -278,14 +277,16 @@ public abstract class GalaxyInteractiveLayer {
         if (fileObject.getType().equalsIgnoreCase("Web Peptide Shaker Dataset")) {
             PeptideShakerVisualizationDataset vDs = (PeptideShakerVisualizationDataset) fileObject;
             vDs.getInputMGFFiles().values().forEach((galaxyFile) -> {
-                toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), galaxyFile.getGalaxyId(), true, true);
+                toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), galaxyFile.getGalaxyId());
             });
-            toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getGalaxyId(), true, true);
-            toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getSearchGUIFile().getGalaxyId(), true, true);
+            toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getGalaxyId());
+            toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getSearchGUIFile().getGalaxyId());
 
         } else {
-            toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), fileObject.getHistoryId(), fileObject.getGalaxyId(), true, true);
+            toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), fileObject.getHistoryId(), fileObject.getGalaxyId());
         }
+          historyHandler.forceUpdateGalaxyFileSystem();
+//        historyHandler.updateGalaxyFileSystem(true);
     }
 
     /**
@@ -298,7 +299,7 @@ public abstract class GalaxyInteractiveLayer {
      * @param updatePresenterView open file system view after updating the file
      * system
      */
-    public abstract void synchronizeDataWithGalaxyServer(Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress, boolean updatePresenterView);
+    public abstract void updatePresenterLayer(Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress, boolean updatePresenterView);
 
     /**
      * Get pathway information for accessions list
@@ -316,7 +317,8 @@ public abstract class GalaxyInteractiveLayer {
      * @return set of Uni-prot protein accessions available on csf-pr
      */
     public abstract Set<String> getCsf_pr_Accession_List();
-      /**
+
+    /**
      * Retrieve dataset details from index to share in link
      *
      * @param dsKey dataset public key

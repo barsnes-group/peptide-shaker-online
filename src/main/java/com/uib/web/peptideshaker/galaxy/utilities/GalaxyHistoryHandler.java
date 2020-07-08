@@ -8,20 +8,12 @@ import com.github.jmchilton.blend4j.galaxy.GalaxyInstance;
 import com.github.jmchilton.blend4j.galaxy.HistoriesClient;
 import com.github.jmchilton.blend4j.galaxy.beans.Dataset;
 import com.github.jmchilton.blend4j.galaxy.beans.History;
-import com.github.wolfie.refresher.Refresher;
-import com.uib.web.peptideshaker.PeptidShakerUI;
+import com.uib.web.peptideshaker.galaxy.client.GalaxyClient;
 import com.uib.web.peptideshaker.model.core.LinkUtil;
 import com.vaadin.server.Page;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinService;
-import com.vaadin.server.VaadinServlet;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Notification;
 
-import com.vaadin.ui.UI;
 import java.io.File;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,7 +30,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import javax.servlet.ServletContext;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -55,7 +48,7 @@ public abstract class GalaxyHistoryHandler {
     /**
      * The main Galaxy instance in the system.
      */
-    private GalaxyInstance Galaxy_Instance;
+    private GalaxyClient Galaxy_Instance;
     /**
      * User data files folder.
      */
@@ -81,12 +74,12 @@ public abstract class GalaxyHistoryHandler {
     /**
      * Refresher to keep tracking history state in galaxy.
      */
-    private final Refresher REFRESHER;
+//    private final Refresher REFRESHER;
     /**
      * Refresher listener allow action on adding different actions for the
      * application refresher.
      */
-    private Refresher.RefreshListener refreshlistener;
+//    private Refresher.RefreshListener refreshlistener;
     /**
      * Date formatter to allow reading the creation date of the datasets from
      * the dataset json file.
@@ -95,7 +88,7 @@ public abstract class GalaxyHistoryHandler {
     /**
      * push to update the file system presenter.
      */
-    private boolean updatePresenterView;
+    private boolean visualiseProjectOverviewPresenter;
     /**
      * The alternative class to deal with Galaxy server API through REST
      * services.
@@ -108,28 +101,27 @@ public abstract class GalaxyHistoryHandler {
      *
      */
     public GalaxyHistoryHandler() {
-        REFRESHER = new Refresher();
-        ((PeptidShakerUI) UI.getCurrent()).addExtension(REFRESHER);
+//        REFRESHER = new Refresher();
+//        ((PeptidShakerUI) UI.getCurrent()).addExtension(REFRESHER);
 
-        refreshlistener = (Refresher source) -> {
-            HistoriesClient loopGalaxyHistoriesClient = Galaxy_Instance.getHistoriesClient();
-            List<History> historiesList = Galaxy_Instance.getHistoriesClient().getHistories();
-            boolean ready = false;
-            for (History history : historiesList) {
-                ready = (loopGalaxyHistoriesClient.showHistory(history.getId()).isReady());
-                if (!ready) {
-                    break;
-                }
-            }
-            if (ready) {
-                REFRESHER.removeListener(refreshlistener);
-                updateHistory(updatePresenterView);
-                REFRESHER.setRefreshInterval(1000);
-                updatePresenterView = false;
-                Notification.show("Data is ready to display", Notification.Type.ASSISTIVE_NOTIFICATION);
-            }
-        };
-
+//        refreshlistener = (Refresher source) -> {
+//            HistoriesClient loopGalaxyHistoriesClient = Galaxy_Instance.getHistoriesClient();
+//            List<History> historiesList = Galaxy_Instance.getHistoriesClient().getHistories();
+//            boolean ready = false;
+//            for (History history : historiesList) {
+//                ready = (loopGalaxyHistoriesClient.showHistory(history.getId()).isReady());
+//                if (!ready) {
+//                    break;
+//                }
+//            }
+//            if (ready) {
+//                REFRESHER.removeListener(refreshlistener);
+//                updateHistory(visualiseProjectOverviewPresenter);
+//                REFRESHER.setRefreshInterval(1000);
+//                visualiseProjectOverviewPresenter = false;
+//                Notification.show("Data is ready to display", Notification.Type.ASSISTIVE_NOTIFICATION);
+//            }
+//        };
     }
 
     /**
@@ -146,22 +138,20 @@ public abstract class GalaxyHistoryHandler {
      * @param Galaxy_Instance the main Galaxy instance in the system
      * @param user_folder user folder to store users file temporarily
      */
-    public void connectToGalaxy(GalaxyInstance Galaxy_Instance, File user_folder) {
+    public void setGalaxyConnected(GalaxyClient Galaxy_Instance, File user_folder) {
         this.Galaxy_Instance = Galaxy_Instance;
         this.galaxyDatasetServingUtil = new GalaxyDatasetServingUtil(Galaxy_Instance.getGalaxyUrl(), Galaxy_Instance.getApiKey());
         this.user_folder = user_folder;
-        GalaxyHistoryHandler.this.updateHistory(true);
+        GalaxyHistoryHandler.this.updateGalaxyFileSystem(true);
     }
 
     /**
      * Update galaxy layer file system datasets from Galaxy server.
-     *
-     * @param updatePresenterView open file system view after updating the file
-     * system
      */
-    public void updateHistory(boolean updatePresenterView) {
+    private void updateSystemOverviewData() {
+//        visualiseProjectOverviewPresenter = false;
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-        updateDatasetructureTask = new UpdateDatasetructureTask(updatePresenterView);
+        updateDatasetructureTask = new UpdateDatasetructureTask();
         updateDatasetructureFuture = executorService.submit(updateDatasetructureTask);
         executorService.shutdown();
     }
@@ -294,13 +284,7 @@ public abstract class GalaxyHistoryHandler {
      * included)
      */
     public String getMemoryUsage() {
-        while (!updateDatasetructureFuture.isDone()) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-        }
+
         return updateDatasetructureTask.getUsedStorageSpace();
     }
 
@@ -310,13 +294,6 @@ public abstract class GalaxyHistoryHandler {
      * @return integer number of available files
      */
     public int getFilesNumber() {
-        while (!updateDatasetructureFuture.isDone()) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-        }
         return updateDatasetructureTask.getFilesNumber();
     }
 
@@ -330,11 +307,6 @@ public abstract class GalaxyHistoryHandler {
             return -1;
         }
         while (!updateDatasetructureFuture.isDone()) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
         }
         return updateDatasetructureTask.getDsNumbers();
     }
@@ -413,27 +385,75 @@ public abstract class GalaxyHistoryHandler {
      * server
      * @param jobsInProgress the system currently in progress (jobs still
      * running)
-     * @param updatePresenterView open file system view after updating the file
-     * system
+     * @param visualiseProjectOverviewPresenter open file system view after
+     * updating the file system
      * @param toDeleteMap datasets to delete after finishing work
      */
-    public abstract void synchronizeDataWithGalaxyServer(Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress, boolean updatePresenterView, Set<String> toDeleteMap);
+    public abstract void updatePresenterLayer(Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress, boolean visualiseProjectOverviewPresenter, Set<String> toDeleteMap);
+
+    private int countercallback = 0;
+    private ScheduledExecutorService scheduler;
+    private boolean showNotification;
+
+    public void forceUpdateGalaxyFileSystem() {
+        updateSystemOverviewData();
+        while (!updateDatasetructureFuture.isDone()) {
+        }
+        updatePresenterLayer(updateDatasetructureTask.getHistoryFilesMap(), jobsInProgress, visualiseProjectOverviewPresenter, updateDatasetructureTask.getToDeleteMap());
+    }
 
     /**
      * Following jobs statues on Galaxy server until all jobs are done.
      *
-     * @param updatePresenterView open file system view after updating the file
-     * system
+     * @param visualiseProjectOverviewPresenter open file system view after
+     * updating the file system
      */
-    private void invokeRecheckDataProcessing(boolean updatePresenterView) {
-        int mSecound = 20000;
-        this.updatePresenterView = updatePresenterView;
-        if (refreshlistener != null) {
-            REFRESHER.removeListener(refreshlistener);
-
+    public void updateGalaxyFileSystem(boolean visualiseProjectOverviewPresenter) {
+        this.visualiseProjectOverviewPresenter = visualiseProjectOverviewPresenter;
+        boolean busy = scheduler != null && !scheduler.isShutdown();
+        updateSystemOverviewData();
+        while (!updateDatasetructureFuture.isDone()) {
         }
-        REFRESHER.setRefreshInterval(mSecound);
-        REFRESHER.addListener(refreshlistener);
+        updatePresenterLayer(updateDatasetructureTask.getHistoryFilesMap(), jobsInProgress, visualiseProjectOverviewPresenter, updateDatasetructureTask.getToDeleteMap());
+        if (busy) {
+            return;
+        }
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+        
+        List<History> historiesList = Galaxy_Instance.getHistories();
+        Set<String> historyIds = new HashSet<>();
+        for (History history : historiesList) {
+            historyIds.add(history.getId());
+        }
+        scheduler.scheduleAtFixedRate(() -> {
+            try {
+                boolean ready = false;
+                for (String historyID : historyIds) {
+                    ready = (Galaxy_Instance.isHistoryReady(historyID));
+                    if (!ready) {
+                        showNotification = true;
+                        break;
+                    }
+                }
+                if (ready && showNotification) {
+
+                    while (!updateDatasetructureFuture.isDone()) {
+                    }
+                    updatePresenterLayer(updateDatasetructureTask.getHistoryFilesMap(), false, visualiseProjectOverviewPresenter, updateDatasetructureTask.getToDeleteMap());
+
+                    if (showNotification) {
+                        Notification.show("Data is ready to display", Notification.Type.TRAY_NOTIFICATION);
+                        showNotification = false;
+                    }
+                    scheduler.shutdown();
+                } else if (ready) {
+                    scheduler.shutdown();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                
+            }
+        }, 0, 10, TimeUnit.SECONDS);
 
     }
 
@@ -515,6 +535,10 @@ public abstract class GalaxyHistoryHandler {
             return rawFilesMap;
         }
 
+        public Set<String> getToDeleteMap() {
+            return toDeleteMap;
+        }
+
         public Map<String, GalaxyFileObject> getHistoryFilesMap() {
             return historyFilesMap;
         }
@@ -551,7 +575,7 @@ public abstract class GalaxyHistoryHandler {
         /**
          * error with java.util.ConcurrentModificationException**
          */
-        public UpdateDatasetructureTask(boolean updatePresenterView) {
+        public UpdateDatasetructureTask() {
             jobsInProgress = false;
             this.mgfFilesMap = new LinkedHashMap<>();
             this.indexedMgfFilesMap = new LinkedHashMap<>();
@@ -614,7 +638,7 @@ public abstract class GalaxyHistoryHandler {
                         zipFolder.setDownloadUrl(ds.getDownloadUrl());
                         externaldataset.setMgfIndexFolder(zipFolder);
 
-                         ds = new GalaxyFileObject();
+                        ds = new GalaxyFileObject();
                         ds.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + "/datasets/" + dsDetails[1].split("-_:_-")[1] + "/display?");
                         ds.setStatus("ok");
                         ds.setType("SearchGUI");
@@ -638,10 +662,10 @@ public abstract class GalaxyHistoryHandler {
 
                         historyFilesMap.put(project_name + "_ExternalDS", externaldataset);
 
-                        if (jobsInProgress) {
-                            invokeRecheckDataProcessing(updatePresenterView);
-                        }
-                        synchronizeDataWithGalaxyServer(historyFilesMap, jobsInProgress, updatePresenterView, toDeleteMap);
+//                        if (jobsInProgress) {
+//                            checkGalaxyFileSystem(visualiseProjectOverviewPresenter);
+//                        }
+//                        synchronizeDataWithGalaxyServer(historyFilesMap, jobsInProgress, visualiseProjectOverviewPresenter, toDeleteMap);
                         return;
                     }
                 }
@@ -755,7 +779,7 @@ public abstract class GalaxyHistoryHandler {
                             ds.setHistoryId(map.get("history_id") + "");
                             ds.setGalaxyId(map.get("id").toString());
                             ds.setOverview(map.get("misc_info") + "");
-                            searchGUIFilesMap.put(map.get("name").toString().replace("-SearchGUI Results", ""), ds);
+                            searchGUIFilesMap.put(map.get("name").toString().replace("-SearchGUI-Results", ""), ds);
 
                             try {
                                 ds.setCreate_time(df6.parse((map.get("create_time") + "")));
@@ -902,21 +926,19 @@ public abstract class GalaxyHistoryHandler {
                 historyFilesMap.putAll(indexFilesMap);
                 historyFilesMap.putAll(rawFilesMap);
 
-                if (jobsInProgress) {
-
-                    invokeRecheckDataProcessing(updatePresenterView);
-
-                }
-                synchronizeDataWithGalaxyServer(historyFilesMap, jobsInProgress, updatePresenterView, toDeleteMap);
+//                if (jobsInProgress) {
+//                    checkGalaxyFileSystem(visualiseProjectOverviewPresenter);
+//                }
+//                synchronizeDataWithGalaxyServer(historyFilesMap, jobsInProgress, visualiseProjectOverviewPresenter, toDeleteMap);
             } catch (Exception e) {
                 if (e.toString().contains("Service Temporarily Unavailable")) {
                     Notification.show("Service Temporarily Unavailable", Notification.Type.ERROR_MESSAGE);
                 } else {
                     e.printStackTrace();
-                    if (VaadinSession.getCurrent() != null && VaadinSession.getCurrent().getSession() != null) {
-                        VaadinSession.getCurrent().getSession().setMaxInactiveInterval(10);
-                    }
-                    Page.getCurrent().reload();
+//                    if (VaadinSession.getCurrent() != null && VaadinSession.getCurrent().getSession() != null) {
+//                        VaadinSession.getCurrent().getSession().setMaxInactiveInterval(10);
+//                    }
+//                    Page.getCurrent().reload();
 
                 }
             }

@@ -8,7 +8,6 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.BootstrapFragmentResponse;
 import com.vaadin.server.BootstrapListener;
 import com.vaadin.server.BootstrapPageResponse;
-import com.vaadin.server.Extension;
 import com.vaadin.server.Page;
 import com.vaadin.server.SessionInitEvent;
 import com.vaadin.server.VaadinRequest;
@@ -55,18 +54,10 @@ public class PeptidShakerUI extends UI {
      */
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-     
-          
+
         String brwserApp = Page.getCurrent().getWebBrowser().getBrowserApplication();
         int screenWidth = Page.getCurrent().getBrowserWindowWidth();
         int screenHeigh = Page.getCurrent().getBrowserWindowHeight();
-//        int screenWidth2 = Page.getCurrent().getWebBrowser().getScreenWidth();
-//        int screenHeigh2 = Page.getCurrent().getWebBrowser().getScreenHeight();
-//        System.out.println("*************************************************************************");
-//        System.out.println("at app " + brwserApp);
-//        System.out.println("at  w: " + screenWidth + " |  h: " + screenHeigh);
-//        System.out.println("at w2: " + screenWidth2 + " | h2: " + screenHeigh2);
-//        System.out.println("*************************************************************************");
         portraitScreenMode = screenWidth < screenHeigh;
         /**
          * case of average screen 1000*500
@@ -77,21 +68,8 @@ public class PeptidShakerUI extends UI {
         } else if ((screenWidth < 1349 && screenWidth >= 1000) && (screenHeigh < 742 && screenHeigh >= 500)) {
             PeptidShakerUI.this.addStyleName("averagescreenstyle");
 
-        } //        else if ((screenWidth < 1000) && (screenHeigh < 742 )) {
-        //            smallDeviceStyle = true;
-        //            PeptidShakerUI.this.addStyleName("averagescreenstyle");
-        //            PeptidShakerUI.this.addStyleName("smallscreenstyle");
-        //        } 
-        //       else if ((screenHeigh < 1349 && screenHeigh > 800) && (screenWidth <= 800 && screenWidth > 600)) {
-        //            smallDeviceStyle = true;
-        //            PeptidShakerUI.this.addStyleName("smallscreenstyle");
-        //        }else if (screenHeigh <= 800 || screenWidth <= 600) {
-        //            PeptidShakerUI.this.addStyleName("lowresolutionstyle");
-        //            mobileDeviceStyle = true;
-        //            PeptidShakerUI.this.addStyleName("mobilestyle");
-        //        } 
+        } 
         else if (screenWidth < 1000 || screenHeigh <= 500) {
-//            PeptidShakerUI.this.addStyleName("averagescreenstyle");
             PeptidShakerUI.this.addStyleName("lowresolutionstyle");
             mobileDeviceStyle = true;
             PeptidShakerUI.this.addStyleName("mobilestyle");
@@ -174,10 +152,9 @@ public class PeptidShakerUI extends UI {
                 });
             });
             updateMainStyleMode(mobileDeviceStyle, portraitScreenMode);
-            Page.getCurrent().setTitle("PeptideShaker");
-        } catch (Exception e) {
-            e.printStackTrace();
-
+            Page.getCurrent().setTitle("PeptideShaker Online");
+        } catch (IllegalArgumentException | NullPointerException e) {
+            System.err.println("Error in UI Class : "+e);
         }
 
     }
@@ -204,13 +181,6 @@ public class PeptidShakerUI extends UI {
             notificationWindow.setVisible(false);
         }
     }
-
-    @Override
-    public void addExtension(Extension extension) {
-        super.addExtension(extension);
-
-    }
-
     /**
      * Main application Servlet.
      */
@@ -229,7 +199,6 @@ public class PeptidShakerUI extends UI {
                     public void modifyBootstrapPage(BootstrapPageResponse response) {
                         response.getDocument().head().prependElement("meta").attr("name", "'viewport'").attr("content", "'initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,width=device-width,user-scalable=no'").attr("Set-Cookie", "'cross-site-cookie=name; SameSite=None; Secure'");
                         response.setHeader("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9,application/javascript");
-//                        System.out.println("at headerosss "+response.getRequest().geta.keySet());
                     }
 
                     @Override

@@ -56,7 +56,7 @@ public class WebPeptideShakerApp {
 
             @Override
             public void updateSystemData(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
-                Presenter_layer.updateSystemData(tempHistoryFilesMap, historyFilesMap, jobsInProgress);
+                Presenter_layer.updateProjectOverviewPresenter(tempHistoryFilesMap, historyFilesMap, jobsInProgress);
             }
         };
 
@@ -67,11 +67,11 @@ public class WebPeptideShakerApp {
                 if (!connected) {
                     return null;
                 }
-                
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException ex) {
-                }
+
+//                try {
+////                    Thread.sleep(2000);
+//                } catch (InterruptedException ex) {
+//                }
                 return Model_Layer.getUserOverViewList();
             }
 
@@ -126,30 +126,21 @@ public class WebPeptideShakerApp {
     private boolean checkConnectionToGalaxy(String urlAddress) {
         try {
             URL url = new URL(urlAddress);
+            HttpURLConnection connection;
             if (urlAddress.contains("https")) {
-                HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.connect();
-                int code = connection.getResponseCode();
-                if (code == 404) {
-                    return false;
-                }
+                 connection = (HttpsURLConnection) url.openConnection();                
             } else {
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
+                 connection = (HttpURLConnection) url.openConnection();                
+            }
+            connection.setRequestMethod("GET");
                 connection.connect();
                 int code = connection.getResponseCode();
                 if (code == 404) {
                     return false;
                 }
-            }
 
-        } catch (MalformedURLException ex) {
-            return false;
-        } catch (IOException ex) {
-            return false;
-        } catch (Exception e) {
-            e.printStackTrace();
+        }catch (IOException e) {
+            System.err.println("Error at chck galaxy connection "+e);
             return false;
         }
         return true;

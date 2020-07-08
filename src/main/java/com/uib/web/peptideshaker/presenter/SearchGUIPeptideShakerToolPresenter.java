@@ -130,7 +130,7 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
      *
      * @param historyFilesMap List of available files on Galaxy Server
      */
-    public void updateSystemData(Map<String, GalaxyFileObject> historyFilesMap) {
+    public void updateData(Map<String, GalaxyFileObject> historyFilesMap) {
 
         if (historyFilesMap != null) {
             Map<String, GalaxyTransferableFile> searchSettingFilesMap = new LinkedHashMap<>();

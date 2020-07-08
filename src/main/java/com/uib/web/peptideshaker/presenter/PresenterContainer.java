@@ -193,8 +193,8 @@ public abstract class PresenterContainer extends VerticalLayout {
             @Override
             public boolean uploadToGalaxy(PluploadFile[] toUploadFiles) {
                 boolean check = PresenterContainer.this.uploadToGalaxy(toUploadFiles);
-                fileSystemPresenter.updateSystemData(null, check);
-                searchGUIPeptideShakerToolPresenter.updateSystemData(null);
+                fileSystemPresenter.updateData(null, check);
+                searchGUIPeptideShakerToolPresenter.updateData(null);
                 return check;
 
             }
@@ -221,7 +221,7 @@ public abstract class PresenterContainer extends VerticalLayout {
                     Map<String, GalaxyFileObject> historyFilesMap = new LinkedHashMap<>();
                     fileSystemPresenter.getHistoryFilesMap().remove(ds.getName());
                     historyFilesMap.putAll(fileSystemPresenter.getHistoryFilesMap());
-                    fileSystemPresenter.updateSystemData(historyFilesMap, fileSystemPresenter.isJobInProgress());
+                    fileSystemPresenter.updateData(historyFilesMap, fileSystemPresenter.isJobInProgress());
                 }
             }
 
@@ -273,7 +273,7 @@ public abstract class PresenterContainer extends VerticalLayout {
                 Map<String, GalaxyFileObject> historyFilesMap = new LinkedHashMap<>();
                 historyFilesMap.put(peptideShakerVisualizationDataset.getProjectName(), peptideShakerVisualizationDataset);
                 historyFilesMap.putAll(fileSystemPresenter.getHistoryFilesMap());
-                fileSystemPresenter.updateSystemData(historyFilesMap, fileSystemPresenter.isJobInProgress());
+                fileSystemPresenter.updateData(historyFilesMap, fileSystemPresenter.isJobInProgress());
                 interactivePSPRojectResultsPresenter.setSelectedDataset(peptideShakerVisualizationDataset);
                 viewLayout(interactivePSPRojectResultsPresenter.getViewId());
             }
@@ -329,9 +329,9 @@ public abstract class PresenterContainer extends VerticalLayout {
     public void viewDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
     fileSystemPresenter.viewDataset(peptideShakerVisualizationDataset);
     }
-    public void updateSystemData(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
-        fileSystemPresenter.updateSystemData(tempHistoryFilesMap, jobsInProgress);
-        searchGUIPeptideShakerToolPresenter.updateSystemData(historyFilesMap);
+    public void updateProjectOverviewPresenter(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
+        fileSystemPresenter.updateData(tempHistoryFilesMap, jobsInProgress);
+        searchGUIPeptideShakerToolPresenter.updateData(historyFilesMap);
 
     }
     public abstract void viewLayout(String viewId);

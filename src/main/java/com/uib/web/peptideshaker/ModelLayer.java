@@ -53,7 +53,7 @@ public abstract class ModelLayer {
                 }
 
                 @Override
-                public void synchronizeDataWithGalaxyServer(Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress, boolean updatePresenterView) {
+                public void updatePresenterLayer(Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress, boolean updatePresenterView) {
                     if (historyFilesMap.size() == 1 && historyFilesMap.keySet().iterator().next().contains("_ExternalDS")) {
                         viewDataset((PeptideShakerVisualizationDataset) historyFilesMap.values().iterator().next());
                     } else {

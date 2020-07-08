@@ -137,8 +137,8 @@ public abstract class PresenterLayer {
      * @param historyFilesMap list of already processed files and datasets
      * @param jobsInProgress check if there is still jobs in progress
      */
-    public void updateSystemData(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
-        presenterContainer.updateSystemData(tempHistoryFilesMap, historyFilesMap, jobsInProgress);
+    public void updateProjectOverviewPresenter(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
+        presenterContainer.updateProjectOverviewPresenter(tempHistoryFilesMap, historyFilesMap, jobsInProgress);
 
     }
 
