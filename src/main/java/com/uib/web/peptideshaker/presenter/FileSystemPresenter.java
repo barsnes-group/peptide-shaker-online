@@ -13,6 +13,7 @@ import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -143,9 +144,8 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
 
             @Override
             public int insertDatsetLinkToShare(String dsDetails) {
-              return FileSystemPresenter.this.insertDatsetLinkToShare(dsDetails);
+                return FileSystemPresenter.this.insertDatsetLinkToShare(dsDetails);
             }
-            
 
         };
         container.addComponent(dataLayout);
@@ -165,17 +165,35 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
     public void updateData(Map<String, GalaxyFileObject> historyFilesMap, boolean jobInProgress) {
         this.historyFilesMap = historyFilesMap;
         this.jobInProgress = jobInProgress;
+        if (smallPresenterButton.getStyleName().contains("selectedpresenterbtn")) {
+            UI.getCurrent().accessSynchronously(() -> {
+                updatelayout();
+                UI.getCurrent().push();
+            });
+        } else {
+            updatelayout();
+        }
+    }
+
+    private void updatelayout() {
         if (jobInProgress) {
             smallPresenterButton.updateIconSourceURL("img/globeearthanimation1.gif");
             mainPresenterButton.updateIconResource(new ThemeResource("img/globeearthanimation1.gif"));
             viewDataBtn.updateIconByResource(new ThemeResource("img/globeearthanimation1.gif"));
+            smallPresenterButton.addStyleName("nopadding");
+            mainPresenterButton.addStyleName("nopadding");
+            viewDataBtn.addStyleName("nopadding");
         } else {
             smallPresenterButton.updateIconSourceURL("img/globeearthanimation.png");
             mainPresenterButton.updateIconResource(new ThemeResource("img/globeearthanimation.png"));
             viewDataBtn.updateIconByResource(new ThemeResource("img/globeearthanimation.png"));
+            smallPresenterButton.removeStyleName("nopadding");
+            mainPresenterButton.removeStyleName("nopadding");
+            viewDataBtn.removeStyleName("nopadding");
         }
         if (historyFilesMap != null) {
             this.dataLayout.updateDatasetsTable(historyFilesMap);
+
         }
     }
 
@@ -311,7 +329,8 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
      * @param PeptideShakerDataset selected Peptide Shaker dataset to view
      */
     public abstract void viewDataset(PeptideShakerVisualizationDataset PeptideShakerDataset);
- /**
+
+    /**
      * Store and retrieve dataset details index to share in link
      *
      * @param dsDetails encoded dataset details to store in database

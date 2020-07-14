@@ -11,9 +11,12 @@ import com.uib.web.peptideshaker.presenter.core.SmallSideBtn;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -31,7 +34,7 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
     /**
      * The tools layout side button.
      */
-    protected SmallSideBtn smallPresenterBtn;
+    protected SmallSideBtn smallPresenterButton;
     /**
      * The tools layout side button.
      */
@@ -57,11 +60,11 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
     }
 
     private void initLayout() {
-        smallPresenterBtn = new SmallSideBtn("img/searchguiblue.png");//spectra2.pngimg/searchgui-medium-shadow-2.png
-        smallPresenterBtn.setData(SearchGUIPeptideShakerToolPresenter.this.getViewId());
-        smallPresenterBtn.setDescription("Search and process data (SearchGUI and PeptideShaker)");
-        smallPresenterBtn.addStyleName("smalltoolsbtn");
-        smallPresenterBtn.addStyleName("searchguiicon");
+        smallPresenterButton = new SmallSideBtn("img/searchguiblue.png");//spectra2.pngimg/searchgui-medium-shadow-2.png
+        smallPresenterButton.setData(SearchGUIPeptideShakerToolPresenter.this.getViewId());
+        smallPresenterButton.setDescription("Search and process data (SearchGUI and PeptideShaker)");
+        smallPresenterButton.addStyleName("smalltoolsbtn");
+        smallPresenterButton.addStyleName("searchguiicon");
         mainPresenterBtn = new ButtonWithLabel("Analyze Data</br><font>Search and process data</font>", 1);//spectra2.png
         mainPresenterBtn.setData(SearchGUIPeptideShakerToolPresenter.this.getViewId());
         mainPresenterBtn.updateIconResource(new ThemeResource("img/searchguiblue.png"));//img/workflow3.png
@@ -76,10 +79,10 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
         peptideshakerToolInputForm = new SearchGUIPeptideShakerWorkFlowInputLayout() {
             @Override
             public void executeWorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> inputFilesIdsList, Set<String> searchEnginesList, IdentificationParameters searchParam, boolean quant) {
-                if (quant && inputFilesIdsList.size() > 1) {
-                    Notification.show("Runing work flow with multiple thermo.raw files is not supported", Notification.Type.WARNING_MESSAGE);
-                    return;
-                }
+//                if (quant && inputFilesIdsList.size() > 1) {
+//                    Notification.show("Runing work flow with multiple thermo.raw files is not supported", Notification.Type.WARNING_MESSAGE);
+//                    return;
+//                }
 
                 SearchGUIPeptideShakerToolPresenter.this.execute_SearchGUI_PeptideShaker_WorkFlow(projectName, fastaFileId, searchParameterFileId, inputFilesIdsList, searchEnginesList, searchParam, quant);
                 this.reset();
@@ -125,13 +128,19 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
         this.mainPresenterBtn.setDescription("Search and process data (SearchGUI and PeptideShaker)");
     }
 
+    private Label initBusyUploadPanel() {
+        Label busyUploadPanel = new Label("<img src='VAADIN/themes/webpeptideshakertheme/img/globeearthanimation.gif' alt='' style='width: 17px;top: 10px;background-color: white;position: relative!important;z-index: 3!important;'>", ContentMode.HTML);
+        busyUploadPanel.setSizeFull();
+        busyUploadPanel.setStyleName("busypanel");
+        return busyUploadPanel;
+    }
+
     /**
      * Update Online PeptideShaker files from Galaxy Server
      *
      * @param historyFilesMap List of available files on Galaxy Server
      */
     public void updateData(Map<String, GalaxyFileObject> historyFilesMap) {
-
         if (historyFilesMap != null) {
             Map<String, GalaxyTransferableFile> searchSettingFilesMap = new LinkedHashMap<>();
             Map<String, GalaxyFileObject> fastaFilesMap = new LinkedHashMap<>();
@@ -158,7 +167,16 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
                 }
 
             }
-            peptideshakerToolInputForm.updateForm(searchSettingFilesMap, fastaFilesMap, mgfFilesMap, rawFilesMap);
+            if (smallPresenterButton.getStyleName().contains("selectedpresenterbtn")) {
+                UI.getCurrent().accessSynchronously(() -> {
+                    peptideshakerToolInputForm.updateForm(searchSettingFilesMap, fastaFilesMap, mgfFilesMap, rawFilesMap);
+                    UI.getCurrent().push();
+                });
+
+            } else {
+                peptideshakerToolInputForm.updateForm(searchSettingFilesMap, fastaFilesMap, mgfFilesMap, rawFilesMap);
+            }
+
         }
     }
 
@@ -179,7 +197,7 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
      */
     @Override
     public SmallSideBtn getSmallPresenterControlButton() {
-        return smallPresenterBtn;
+        return smallPresenterButton;
     }
 
     /**
@@ -207,7 +225,7 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
      */
     @Override
     public void minimizeView() {
-        smallPresenterBtn.setSelected(false);
+        smallPresenterButton.setSelected(false);
         mainPresenterBtn.setSelected(false);
         this.addStyleName("hidepanel");
         this.btnContainer.removeStyleName("visible");
@@ -220,7 +238,7 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
     @Override
     public void maximizeView() {
 
-        smallPresenterBtn.setSelected(true);
+        smallPresenterButton.setSelected(true);
         mainPresenterBtn.setSelected(true);
         this.btnContainer.addStyleName("visible");
         this.removeStyleName("hidepanel");

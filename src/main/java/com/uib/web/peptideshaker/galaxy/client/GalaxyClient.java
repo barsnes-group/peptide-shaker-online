@@ -12,6 +12,7 @@ import com.github.jmchilton.blend4j.galaxy.ToolsClient;
 import com.github.jmchilton.blend4j.galaxy.UsersClient;
 import com.github.jmchilton.blend4j.galaxy.WorkflowsClient;
 import com.github.jmchilton.blend4j.galaxy.beans.History;
+import com.github.jmchilton.blend4j.galaxy.beans.HistoryDetails;
 import java.util.List;
 
 /**
@@ -41,14 +42,31 @@ public class GalaxyClient {
 
     }
 
-    public boolean isHistoryReady(String historyId) {
+    public boolean isJobDone(String jobid) {
         try {
-           return getHistoriesClient().showHistory(historyId).isReady();
-           
+            String jobStat = Galaxy_Instance.getJobsClient().showJob(jobid).getState();
+            return jobStat.equalsIgnoreCase("ok");
+
         } catch (Exception e) {
+            System.out.println("at handel exception at check history ready");
             Galaxy_Instance = GalaxyInstanceFactory.get(galaxy_Server_Url, user_API);
         }
-        return getHistoriesClient().showHistory(historyId).isReady();
+        String jobStat = Galaxy_Instance.getJobsClient().showJob(jobid).getState();
+        return jobStat.equalsIgnoreCase("ok");
+
+    }
+
+    public boolean isHistoryReady(String historyId) {
+        try {
+            HistoryDetails h = getHistoriesClient().showHistory(historyId);
+            return h.isReady();
+
+        } catch (Exception e) {
+            System.out.println("at handel exception at check history ready");
+            Galaxy_Instance = GalaxyInstanceFactory.get(galaxy_Server_Url, user_API);
+        }
+        HistoryDetails h = getHistoriesClient().showHistory(historyId);
+        return h.isReady();
 
     }
 

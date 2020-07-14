@@ -15,7 +15,7 @@ import com.vaadin.ui.Component;
  *
  * @author Yehia Farag
  */
-public class PresenterManager  implements LayoutEvents.LayoutClickListener {
+public class PresenterManager implements LayoutEvents.LayoutClickListener {
 
     /**
      * Top layout container.
@@ -32,13 +32,11 @@ public class PresenterManager  implements LayoutEvents.LayoutClickListener {
      */
     private final AbsoluteLayout topMiddleLayoutContainer;
 
-
     /**
      * Presenter buttons container layout container is layout container that
      * contain the small presenter control buttons.
      */
     private final AbsoluteLayout presenterButtonsContainerLayout;
-
 
     public AbsoluteLayout getPresenterButtonsContainerLayout() {
         return presenterButtonsContainerLayout;
@@ -72,9 +70,9 @@ public class PresenterManager  implements LayoutEvents.LayoutClickListener {
     /**
      * Constructor to initialise the layout.
      */
-    public PresenterManager(AbsoluteLayout subViewButtonsActionContainer, AbsoluteLayout topMiddleLayoutContainer, AbsoluteLayout presenterButtonsContainerLayout, AbsoluteLayout subPresenterButtonsContainer) {  
+    public PresenterManager(AbsoluteLayout subViewButtonsActionContainer, AbsoluteLayout topMiddleLayoutContainer, AbsoluteLayout presenterButtonsContainerLayout, AbsoluteLayout subPresenterButtonsContainer) {
         this.subViewButtonsActionContainer = subViewButtonsActionContainer;
-        this.topMiddleLayoutContainer = topMiddleLayoutContainer;    
+        this.topMiddleLayoutContainer = topMiddleLayoutContainer;
         this.presenterButtonsContainerLayout = presenterButtonsContainerLayout;
         this.subPresenterButtonsContainer = subPresenterButtonsContainer;
 
@@ -161,6 +159,7 @@ public class PresenterManager  implements LayoutEvents.LayoutClickListener {
         }
 
     }
+    private LayoutEvents.LayoutClickEvent lastEvent;
 
     /**
      * On click on the side button view the selected layout
@@ -169,6 +168,7 @@ public class PresenterManager  implements LayoutEvents.LayoutClickListener {
      */
     @Override
     public void layoutClick(LayoutEvents.LayoutClickEvent event) {
+        lastEvent = event;
         Component com = event.getComponent();
         String selectedBtnData;
         if (com instanceof SmallSideBtn) {
@@ -202,5 +202,7 @@ public class PresenterManager  implements LayoutEvents.LayoutClickListener {
             }
         }
     }
+
+   
 
 }

@@ -1,17 +1,11 @@
 package com.uib.web.peptideshaker.presenter.core;
 
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.PopupView;
-import com.vaadin.ui.ProgressBar;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.io.File;
 import java.util.LinkedHashSet;
@@ -32,6 +26,7 @@ public abstract class Uploader extends AbsoluteLayout {
     private Plupload uploaderComponent;
     private final Label busyUpload;
     private final Set<String> filterSet;
+    private String uploadedFileName;
 
     /**
      * Initialise upload component
@@ -51,8 +46,6 @@ public abstract class Uploader extends AbsoluteLayout {
         busyUpload.setValue(htmlLoadingImg);
         Uploader.this.addComponent(busyUpload);
         initUploaderComponent();
-//        busyUpload.setVisible(false);
-        uploaderComponent.setVisible(true);
     }
 
     /**
@@ -91,7 +84,7 @@ public abstract class Uploader extends AbsoluteLayout {
          * show notification after file is uploaded*
          */
         uploaderComponent.addFileUploadedListener((PluploadFile file) -> {
-            Notification.show("File uploaded : " + file.getName(), Notification.Type.TRAY_NOTIFICATION);
+            uploadedFileName = file.getName();
         });
         uploaderComponent.setPreventDuplicates(true);
 
@@ -111,10 +104,9 @@ public abstract class Uploader extends AbsoluteLayout {
 
                 uploaderComponent.setUploadPath(userUploadFolder.getAbsolutePath());
             }
-          
+
             uploaderComponent.start();
-//            busyUpload.setVisible(true);
-            uploaderComponent.setVisible(false);
+            setBusy(true);
         });
         uploaderComponent.addUploadStopListener(() -> {
         });
@@ -126,8 +118,8 @@ public abstract class Uploader extends AbsoluteLayout {
         uploaderComponent.addUploadCompleteListener(() -> {
             filesUploaded(uploaderComponent.getUploadedFiles());
             initUploaderComponent();
+            setBusy(true);
         });
-        
 
         /**
          * handle errors
@@ -144,10 +136,18 @@ public abstract class Uploader extends AbsoluteLayout {
      * Set upload is temporary disable
      *
      * @param busy upload in progress
+     * @param notifi show notification
      */
     public void setBusy(boolean busy) {
-//        busyUpload.setVisible(busy);
         uploaderComponent.setVisible(!busy);
+        if (!busy && uploadedFileName != null) {
+            Notification.show("File uploaded : " + uploadedFileName, Notification.Type.TRAY_NOTIFICATION);
+            uploadedFileName = null;
+        }
+    }
+
+    public boolean isBusy() {
+        return uploaderComponent.getStyleName().contains("hidebutton");
     }
 
     /**

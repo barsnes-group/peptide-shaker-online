@@ -13,14 +13,17 @@ import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTran
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.model.UploadedProjectUtility;
 import com.uib.web.peptideshaker.presenter.core.form.Horizontal2Label;
+import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -158,13 +161,12 @@ public abstract class PresenterContainer extends VerticalLayout {
                     VaadinSession.getCurrent().setAttribute("uploaded_projects_" + userAPI, new LinkedHashMap<>());
                 }
                 return PresenterContainer.this.connectToGalaxyServer(galaxyServerUrl, userAPI, userDataFolderUrl);
-              
 
             }
 
             @Override
             public void maximizeView() {
-                List<String>userDataList = getUserOverviewData();
+                List<String> userDataList = getUserOverviewData();
                 if (userDataList != null) {
                     super.updateUserOverviewPanel(userDataList);
                 }
@@ -193,14 +195,16 @@ public abstract class PresenterContainer extends VerticalLayout {
             @Override
             public boolean uploadToGalaxy(PluploadFile[] toUploadFiles) {
                 boolean check = PresenterContainer.this.uploadToGalaxy(toUploadFiles);
+                /**
+                 * Invoke busy history only : active globe
+                 */
                 fileSystemPresenter.updateData(null, check);
-                searchGUIPeptideShakerToolPresenter.updateData(null);
                 return check;
 
             }
 
         };
-        
+
         searchGUIPeptideShakerToolPresenter.getMainPresenterButton().setEnabled(availableGalaxyServer);
         searchGUIPeptideShakerToolPresenter.getSmallPresenterControlButton().setEnabled(availableGalaxyServer);
         if (!availableGalaxyServer) {
@@ -216,7 +220,7 @@ public abstract class PresenterContainer extends VerticalLayout {
                 if (!ds.getType().equalsIgnoreCase("User uploaded Project")) {
                     PresenterContainer.this.deleteDataset(ds);
                 } else {
-                    String apiKey =  VaadinSession.getCurrent().getAttribute("ApiKey")+"";
+                    String apiKey = VaadinSession.getCurrent().getAttribute("ApiKey") + "";
                     ((LinkedHashMap<String, GalaxyFileObject>) VaadinSession.getCurrent().getAttribute("uploaded_projects_" + apiKey)).remove(ds.getName());
                     Map<String, GalaxyFileObject> historyFilesMap = new LinkedHashMap<>();
                     fileSystemPresenter.getHistoryFilesMap().remove(ds.getName());
@@ -253,22 +257,20 @@ public abstract class PresenterContainer extends VerticalLayout {
                 return PresenterContainer.this.insertDatsetLinkToShare(dsDetails);
             }
 
-           
         };
-       
 
         interactivePSPRojectResultsPresenter = new InteractivePSPRojectResultsPresenter(false) {
             @Override
             public boolean[] processVisualizationDataset(String projectName, Map<String, PluploadFile> uploadedFileMap) {
-                return uploadedProjectUtility.processVisualizationDataset(projectName, uploadedFileMap,getCsf_pr_Accession_List());
+                return uploadedProjectUtility.processVisualizationDataset(projectName, uploadedFileMap, getCsf_pr_Accession_List());
             }
 
         };
-        
+
         this.uploadedProjectUtility = new UploadedProjectUtility() {
             @Override
             public void viewUploadedProjectDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
-                String apiKey =  VaadinSession.getCurrent().getAttribute("ApiKey")+"";
+                String apiKey = VaadinSession.getCurrent().getAttribute("ApiKey") + "";
                 ((LinkedHashMap<String, GalaxyFileObject>) VaadinSession.getCurrent().getAttribute("uploaded_projects_" + apiKey)).put(peptideShakerVisualizationDataset.getProjectName(), peptideShakerVisualizationDataset);
                 Map<String, GalaxyFileObject> historyFilesMap = new LinkedHashMap<>();
                 historyFilesMap.put(peptideShakerVisualizationDataset.getProjectName(), peptideShakerVisualizationDataset);
@@ -279,7 +281,6 @@ public abstract class PresenterContainer extends VerticalLayout {
             }
 
         };
- 
 
     }
 
@@ -326,16 +327,20 @@ public abstract class PresenterContainer extends VerticalLayout {
     public WelcomePagePresenter getWelcomePage() {
         return welcomePage;
     }
+
     public void viewDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
-    fileSystemPresenter.viewDataset(peptideShakerVisualizationDataset);
+        fileSystemPresenter.viewDataset(peptideShakerVisualizationDataset);
     }
+
     public void updateProjectOverviewPresenter(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
         fileSystemPresenter.updateData(tempHistoryFilesMap, jobsInProgress);
-        searchGUIPeptideShakerToolPresenter.updateData(historyFilesMap);
-
+        searchGUIPeptideShakerToolPresenter.updateData(historyFilesMap);        
     }
+
     public abstract void viewLayout(String viewId);
+
     public abstract void registerView(ViewableFrame view);
+
     /**
      * Connect the system to Galaxy Server
      *
@@ -344,9 +349,11 @@ public abstract class PresenterContainer extends VerticalLayout {
      * @param userDataFolderUrl main folder for storing users data
      * @return System connected to Galaxy server or not
      */
-    public abstract  List<String> connectToGalaxyServer(String galaxyServerUrl, String userAPI, String userDataFolderUrl);
-    public abstract  List<String> getUserOverviewData();
-     /**
+    public abstract List<String> connectToGalaxyServer(String galaxyServerUrl, String userAPI, String userDataFolderUrl);
+
+    public abstract List<String> getUserOverviewData();
+
+    /**
      * Run Online Peptide-Shaker work-flow
      *
      * @param projectName The project name
@@ -356,7 +363,8 @@ public abstract class PresenterContainer extends VerticalLayout {
      * @param searchEnginesList List of selected search engine names
      */
     public abstract void execute_SearchGUI_PeptideShaker_WorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> mgfIdsList, Set<String> searchEnginesList, IdentificationParameters searchParam, boolean quant);
- /**
+
+    /**
      * Save search settings file into galaxy
      *
      *
@@ -374,15 +382,18 @@ public abstract class PresenterContainer extends VerticalLayout {
      * @return updated files map
      */
     public abstract boolean uploadToGalaxy(PluploadFile[] toUploadFiles);
-     /**
+
+    /**
      * Abstract method to allow customised delete action for files from Galaxy
      * Server
      *
      * @param fileObject the file to be removed from Galaxy Server
      */
     public abstract void deleteDataset(GalaxyFileObject fileObject);
-    public abstract  Set<String> getCsf_pr_Accession_List() ;
- /**
+
+    public abstract Set<String> getCsf_pr_Accession_List();
+
+    /**
      * Store and retrieve dataset details index to share in link
      *
      * @param dsDetails encoded dataset details to store in database

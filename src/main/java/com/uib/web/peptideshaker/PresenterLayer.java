@@ -8,6 +8,9 @@ import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideSha
 import com.uib.web.peptideshaker.presenter.PresenterContainer;
 import com.uib.web.peptideshaker.presenter.PresenterManager;
 import com.uib.web.peptideshaker.presenter.ViewableFrame;
+import com.uib.web.peptideshaker.presenter.core.PopupWindow;
+import com.uib.web.peptideshaker.presenter.core.SmallSideBtn;
+import com.vaadin.ui.UI;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -137,8 +140,10 @@ public abstract class PresenterLayer {
      * @param historyFilesMap list of already processed files and datasets
      * @param jobsInProgress check if there is still jobs in progress
      */
-    public void updateProjectOverviewPresenter(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
+    public void updatePresenter(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
         presenterContainer.updateProjectOverviewPresenter(tempHistoryFilesMap, historyFilesMap, jobsInProgress);
+
+//        presentationManager.viewLayout(presenterContainer.getFileSystemPresenter().getViewId());
 
     }
 

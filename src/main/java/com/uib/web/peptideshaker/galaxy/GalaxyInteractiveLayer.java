@@ -78,7 +78,16 @@ public abstract class GalaxyInteractiveLayer {
                     toDeleteMap.forEach((galaxyId) -> {
                         toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), galaxyId.split(";")[0], galaxyId.split(";")[1]);
                     });
-//                    toDeleteMap.clear();
+                    toDeleteMap.clear();
+                }
+                if (userOverViewList.size() == 3) {
+                    userOverViewList.set(1, historyHandler.getDatasetsNumber() + "");
+                    userOverViewList.set(2, historyHandler.getFilesNumber() + "");
+                    try {
+                        userOverViewList.set(3, dsFormater.format(historyHandler.getMemoryUsage()) + " GB");
+                    } catch (IllegalArgumentException exp) {
+                        userOverViewList.set(3, (historyHandler.getMemoryUsage()) + "");
+                    }
                 }
             }
 
@@ -102,22 +111,16 @@ public abstract class GalaxyInteractiveLayer {
         try {
             userOverViewList.clear();
             Galaxy_Instance = new GalaxyClient(galaxyServerUrl, userAPI);
-            Galaxy_Instance.getHistoriesClient().getHistories();
             user_folder = new File(userDataFolderUrl, Galaxy_Instance.getApiKey() + "");
             user_folder.mkdir();
 
             historyHandler.setGalaxyConnected(Galaxy_Instance, user_folder);
+            //on connection update history
+
             toolsHandler = new GalaxyToolsHandler(Galaxy_Instance.getToolsClient(), Galaxy_Instance.getWorkflowsClient(), Galaxy_Instance.getHistoriesClient()) {
                 @Override
-                public void updateGalaxyFileSystem(boolean updatePresenterView) {
+                public void jobIsExecuted() {
                     historyHandler.forceUpdateGalaxyFileSystem();
-                    userOverViewList.set(1, historyHandler.getDatasetsNumber() + "");
-                    userOverViewList.set(2, historyHandler.getFilesNumber() + "");
-                    try {
-                        userOverViewList.set(3, dsFormater.format(historyHandler.getMemoryUsage()) + " GB");
-                    } catch (IllegalArgumentException exp) {
-                        userOverViewList.set(3, (historyHandler.getMemoryUsage()) + "");
-                    }
                 }
             };
             VaadinSession.getCurrent().setAttribute("ApiKey", Galaxy_Instance.getApiKey());
@@ -181,7 +184,7 @@ public abstract class GalaxyInteractiveLayer {
             return;
         }
         toolsHandler.execute_SearchGUI_PeptideShaker_WorkFlow(projectName, fastaFileId, searchParameterFileId, inputFilesMap, searchEnginesList, historyHandler.getWorkingHistoryId(), searchParameters, quant);
-        toolsHandler.updateGalaxyFileSystem(true);
+
     }
 
     /**
@@ -260,11 +263,10 @@ public abstract class GalaxyInteractiveLayer {
      * @return files are successfully uploaded to Galaxy Server
      */
     public boolean uploadToGalaxy(PluploadFile[] toUploadFiles) {
-
+        /**
+         * upload file to galaxy server
+         */
         boolean check = toolsHandler.uploadToGalaxy(historyHandler.getWorkingHistoryId(), toUploadFiles);
-        if (check) {
-            historyHandler.forceUpdateGalaxyFileSystem();
-        }
         return check;
     }
 
@@ -285,8 +287,8 @@ public abstract class GalaxyInteractiveLayer {
         } else {
             toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), fileObject.getHistoryId(), fileObject.getGalaxyId());
         }
-          historyHandler.forceUpdateGalaxyFileSystem();
-//        historyHandler.updateGalaxyFileSystem(true);
+        historyHandler.forceUpdateGalaxyFileSystem();
+//        historyHandler.jobIsExecuted(true);
     }
 
     /**

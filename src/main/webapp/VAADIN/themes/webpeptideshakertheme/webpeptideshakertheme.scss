@@ -8884,6 +8884,19 @@
 
         max-height:5px
     }
+    .busypanel{
+	background-color:white;
+}
+.busypanel img{
+	left:50%;
+	margin-left:-15px;
+	top:50% !important;
+	margin-top:-15px;
+	min-width:30px;
+}
+.averagescreenstyle .v-slot-bigmenubtn .glubimg.nopadding  .v-image {
+    padding:0px !important; 
+}
 }
 
 

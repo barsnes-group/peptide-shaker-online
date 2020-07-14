@@ -55,8 +55,8 @@ public class WebPeptideShakerApp {
             }
 
             @Override
-            public void updateSystemData(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
-                Presenter_layer.updateProjectOverviewPresenter(tempHistoryFilesMap, historyFilesMap, jobsInProgress);
+            public void updatePresenter(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
+                Presenter_layer.updatePresenter(tempHistoryFilesMap, historyFilesMap, jobsInProgress);
             }
         };
 
@@ -96,7 +96,11 @@ public class WebPeptideShakerApp {
 
             @Override
             public boolean uploadToGalaxy(PluploadFile[] toUploadFiles) {
-                return Model_Layer.uploadDataFiles(toUploadFiles);
+                /**
+                 * upload file to galaxy server
+                 */
+                boolean success = Model_Layer.uploadDataFiles(toUploadFiles);
+                return success;
             }
 
             @Override
@@ -128,19 +132,19 @@ public class WebPeptideShakerApp {
             URL url = new URL(urlAddress);
             HttpURLConnection connection;
             if (urlAddress.contains("https")) {
-                 connection = (HttpsURLConnection) url.openConnection();                
+                connection = (HttpsURLConnection) url.openConnection();
             } else {
-                 connection = (HttpURLConnection) url.openConnection();                
+                connection = (HttpURLConnection) url.openConnection();
             }
             connection.setRequestMethod("GET");
-                connection.connect();
-                int code = connection.getResponseCode();
-                if (code == 404) {
-                    return false;
-                }
+            connection.connect();
+            int code = connection.getResponseCode();
+            if (code == 404) {
+                return false;
+            }
 
-        }catch (IOException e) {
-            System.err.println("Error at chck galaxy connection "+e);
+        } catch (IOException e) {
+            System.err.println("Error at chck galaxy connection " + e);
             return false;
         }
         return true;

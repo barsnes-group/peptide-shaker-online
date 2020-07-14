@@ -22084,3 +22084,18 @@ div.v-layout.v-horizontal.v-widget {
 .webpeptideshakertheme .averagescreenstyle .v-caption.v-caption-compact.v-caption-small.v-caption-inframetable.v-caption-framedpanel.v-caption-no-stripes {
 	max-height: 5px;
 }
+
+.webpeptideshakertheme .busypanel {
+	background-color: white;
+}
+
+.webpeptideshakertheme .busypanel img {
+	left: 50%;
+	margin-left: -15px;
+	top: 50% !important;
+	margin-top: -15px;
+	min-width: 30px;
+}
+.averagescreenstyle .v-slot-bigmenubtn .glubimg.nopadding  .v-image {
+    padding:0px !important; 
+}

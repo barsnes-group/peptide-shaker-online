@@ -60,7 +60,7 @@ public abstract class ModelLayer {
                         Map<String, GalaxyFileObject> tempHistoryFilesMap = new LinkedHashMap<>();
                         tempHistoryFilesMap.putAll(((LinkedHashMap<String, GalaxyFileObject>) VaadinSession.getCurrent().getAttribute("uploaded_projects_" + this.getAPIKey())));
                         tempHistoryFilesMap.putAll(historyFilesMap);
-                        updateSystemData(tempHistoryFilesMap, historyFilesMap, jobsInProgress);
+                        updatePresenter(tempHistoryFilesMap, historyFilesMap, jobsInProgress);
 
                     }
                 }
@@ -86,7 +86,7 @@ public abstract class ModelLayer {
      * @param historyFilesMap list of already processed files and datasets
      * @param jobsInProgress check if there is still jobs in progress
      */
-    public abstract void updateSystemData(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress);
+    public abstract void updatePresenter(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress);
 
     /**
      * Connect the system to Galaxy Server

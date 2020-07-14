@@ -20,6 +20,7 @@ import com.github.jmchilton.blend4j.galaxy.beans.collection.response.CollectionR
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.sun.jersey.api.client.ClientResponse;
 
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinSession;
@@ -410,22 +411,22 @@ public abstract class GalaxyToolsHandler {
         try {
             String basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
             File workflowFile;
-            WorkflowInputs.WorkflowInput raw_mgf_FileInputData;
+            WorkflowInputs.WorkflowInput iputDataFiles;
 
             if (quant && inputFileIdsList.size() == 1) {
                 workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-Full-Pipeline-Workflow-Quant-Single-Input.ga");//Galaxy-Workflow-Web-Peptide-Shaker-Multi-MGF-2018.ga
-                raw_mgf_FileInputData = new WorkflowInputs.WorkflowInput(inputFileIdsList.keySet().iterator().next(), WorkflowInputs.InputSourceType.HDA);
+                iputDataFiles = new WorkflowInputs.WorkflowInput(inputFileIdsList.keySet().iterator().next(), WorkflowInputs.InputSourceType.HDA);
 
             } else if (quant && inputFileIdsList.size() > 1) {
-                workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-Full_workflow_quant_single_RAW.ga");//Galaxy-Workflow-Web-Peptide-Shaker-Multi-MGF-2018.ga
-                raw_mgf_FileInputData = prepareWorkflowCollectionList(WorkflowInputs.InputSourceType.HDCA, inputFileIdsList.keySet(), historyId);
+                workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-Full-Pipeline-Workflow-Quant-Multiple-Input.ga");//Galaxy-Workflow-Web-Peptide-Shaker-Multi-MGF-2018.ga
+                iputDataFiles = prepareWorkflowCollectionList(WorkflowInputs.InputSourceType.HDCA, inputFileIdsList.keySet(), historyId);
 
             } else if (!quant && inputFileIdsList.size() == 1) {
                 workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-workflow_Single_MGF.ga");
-                raw_mgf_FileInputData = new WorkflowInputs.WorkflowInput(inputFileIdsList.keySet().iterator().next(), WorkflowInputs.InputSourceType.HDA);
+                iputDataFiles = new WorkflowInputs.WorkflowInput(inputFileIdsList.keySet().iterator().next(), WorkflowInputs.InputSourceType.HDA);
             } else {
                 workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-workflow_Multi_MGF.ga");
-                raw_mgf_FileInputData = prepareWorkflowCollectionList(WorkflowInputs.InputSourceType.HDCA, inputFileIdsList.keySet(), historyId);
+                iputDataFiles = prepareWorkflowCollectionList(WorkflowInputs.InputSourceType.HDCA, inputFileIdsList.keySet(), historyId);
             }
             String jsonWorkflow = readWorkflowFile(workflowFile);
             jsonWorkflow = jsonWorkflow.replace("2.0.0_BETA.13", peptideShaker_Tool.getVersion()).replace("4.0.0_BETA.12", search_GUI_Tool.getVersion()).replace("2.0.3.0", moff_Tool.getVersion());
@@ -453,26 +454,23 @@ public abstract class GalaxyToolsHandler {
                 workflowInputs.setInput("0", workflowInput0);
                 workflowInputs.setInput("1", workflowInput1);
             }
-            workflowInputs.setInput("2", raw_mgf_FileInputData);
-
+            workflowInputs.setInput("2", iputDataFiles);
+//
             Thread t = new Thread(() -> {
                 galaxyWorkFlowClient.runWorkflow(workflowInputs);
             });
             t.start();
-            galaxyWorkFlowClient.deleteWorkflowRequest(selectedWf.getId());
             while (t.isAlive()) {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
             }
+            galaxyWorkFlowClient.deleteWorkflowRequest(selectedWf.getId());
+            jobIsExecuted();
             return true;
         } catch (Exception e) {
-            System.err.println("Error: workflow invoking error " + e);
+            System.out.println("Error: workflow invoking error " + e);
             if (selectedWf != null) {
                 galaxyWorkFlowClient.deleteWorkflowRequest(selectedWf.getId());
             }
+            jobIsExecuted();
             return false;
         }
     }
@@ -580,31 +578,28 @@ public abstract class GalaxyToolsHandler {
                 if (file.getName().endsWith(".thermo.raw")) {
                     request.setFileType("thermo.raw");
                 }
+               
                 request.setDatasetName(file.getName());
-                List<OutputDataset> results = galaxyToolClient.upload(request).getOutputs();
+                galaxyToolClient.uploadRequest(request);
                 tFile.delete();
-
             }
             try {
-                Thread.sleep(1000);
+                Thread.sleep(3000);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
-            updateGalaxyFileSystem(true);
+            jobIsExecuted();
 
         });
         t.start();
-
         return true;
     }
 
     /**
      * Synchronise and update Online PEptideShaker file system with Galaxy
      * Server.
-     *
-     * @param updatePresenterview push to update presenter layout
      */
-    public abstract void updateGalaxyFileSystem(boolean updatePresenterview);
+    public abstract void jobIsExecuted();
 
     Config config = new Config();
 

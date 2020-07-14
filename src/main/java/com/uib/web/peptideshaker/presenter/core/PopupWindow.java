@@ -47,7 +47,6 @@ public abstract class PopupWindow extends VerticalLayout implements LayoutEvents
                 }
             }
         }; 
-        
         window.center();
         window.setWindowMode(WindowMode.NORMAL);
         window.setStyleName("popupwindow");
