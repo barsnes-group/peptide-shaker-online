@@ -430,8 +430,8 @@ public abstract class GalaxyToolsHandler {
             } else if (quant && inputFileIdsList.size() > 1) {
                 workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-Full-Pipeline-Workflow-Quant-Multiple-Input.ga");//Galaxy-Workflow-Web-Peptide-Shaker-Multi-MGF-2018.ga
                 inputDataFiles = prepareWorkflowCollectionList(WorkflowInputs.InputSourceType.HDCA, inputFileIdsList.keySet(), historyId);
-            } else if (!quant && inputFileIdsList.size() == 1) {
-                workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-workflow_Single_MGF.ga");
+            } else if (inputFileIdsList.size() == 1) {
+                workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-Full-Pipeline-Workflow-Id-Single-Input.ga");
                 inputDataFiles = new WorkflowInputs.WorkflowInput(inputFileIdsList.keySet().iterator().next(), WorkflowInputs.InputSourceType.HDA);
             } else {
                 workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-workflow_Multi_MGF.ga");
@@ -473,6 +473,17 @@ public abstract class GalaxyToolsHandler {
                     payLoad = readJsonFile(file);
                     payLoad = payLoad.replace("\"History_ID\"", "\"" + historyId + "\"").replace("\"Param_File_ID\"", "\"" + workflowInputs.getInputs().get("0").getId() + "\"").replace("\"Fasta_File_ID\"", "\"" + workflowInputs.getInputs().get("1").getId() + "\"").replace("\"Input_List_ID\"", "\"" + workflowInputs.getInputs().get("2").getId() + "\"");
                 }
+            } else {
+                if (inputFileIdsList.size() == 1) {
+                    File file = new File(basepath + "/VAADIN/Single-id-Invoking.json");
+                    payLoad = readJsonFile(file);
+                    payLoad = payLoad.replace("History_ID", historyId).replace("Param_File_ID", workflowInputs.getInputs().get("0").getId()).replace("Fasta_File_ID", workflowInputs.getInputs().get("1").getId()).replace("MGF_MZML_File_ID", workflowInputs.getInputs().get("2").getId());
+                } else {
+                    File file = new File(basepath + "/VAADIN/Multi-id-Invoking.json");
+                    payLoad = readJsonFile(file);
+                    payLoad = payLoad.replace("\"History_ID\"", "\"" + historyId + "\"").replace("\"Param_File_ID\"", "\"" + workflowInputs.getInputs().get("0").getId() + "\"").replace("\"Fasta_File_ID\"", "\"" + workflowInputs.getInputs().get("1").getId() + "\"").replace("\"Input_List_ID\"", "\"" + workflowInputs.getInputs().get("2").getId() + "\"");
+                }
+
             }
 
 //            else if (quant && inputFileIdsList.size() > 1) {
@@ -492,11 +503,11 @@ public abstract class GalaxyToolsHandler {
 
             }
             try {
-                if (quant && inputFileIdsList.size() != 1) {
+                if (inputFileIdsList.size() != 1) {
                     Notification.show(projectName.split("___")[0], "Progress will appear in project overview when process start", Notification.Type.TRAY_NOTIFICATION);
-                } else {
-                    Thread.sleep(5000);
                 }
+                Thread.sleep(10000);
+
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }

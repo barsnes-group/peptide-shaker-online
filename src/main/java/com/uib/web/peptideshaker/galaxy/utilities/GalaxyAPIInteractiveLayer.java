@@ -1,6 +1,7 @@
 package com.uib.web.peptideshaker.galaxy.utilities;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -9,9 +10,11 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.codehaus.jettison.json.JSONException;
@@ -138,8 +141,8 @@ public class GalaxyAPIInteractiveLayer {
             Map<String, Object> datasetMap = (Map<String, Object>) dataList.get(i);
             if ((datasetMap.containsKey("collection_type") && datasetMap.get("deleted").toString().equalsIgnoreCase("false"))) {
 //                if (datasetMap.get("name").toString().endsWith("-Indexed-MGF")) {
-                    Map<String, Object> collectionMap = getCollectionElements(datasetMap.get("url").toString(), galaxyUrl, apiKey);
-                    datasetMap.put("elements", ((List) collectionMap.get("elements")));
+                Map<String, Object> collectionMap = getCollectionElements(datasetMap.get("url").toString(), galaxyUrl, apiKey);
+                datasetMap.put("elements", ((List) collectionMap.get("elements")));
 //                }
             }
             if ((datasetMap.containsKey("collection_type")) && (datasetMap.get("purged") + "").equalsIgnoreCase("true") || (datasetMap.get("deleted") + "").equalsIgnoreCase("true")) {
@@ -234,7 +237,8 @@ public class GalaxyAPIInteractiveLayer {
         }
         return list;
     }
-     /**
+
+    /**
      * Get the user usage of memory on galaxy server
      *
      * @param galaxyUrl web address for galaxy
@@ -242,9 +246,9 @@ public class GalaxyAPIInteractiveLayer {
      * @param apiKey user API key
      * @return the memory usage as string
      */
-    public boolean isJobDone(String galaxyUrl, String jobId, String apiKey) {
+    public boolean isJobDone(String galaxyUrl, String jobId, String apiKey) throws MalformedURLException, ParseException, JSONException, IOException ,FileNotFoundException{
 
-        try {
+   
             URL website = new URL(galaxyUrl + "/api/jobs/" + jobId + "?key=" + apiKey);
             URLConnection conn = website.openConnection();
             conn.addRequestProperty("Accept", "application/json, text/javascript, */*; q=0.01;text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3");
@@ -256,14 +260,70 @@ public class GalaxyAPIInteractiveLayer {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(stringToParse);
             Map<String, Object> dataList = jsonToMap(json);
-            System.out.println("at history ready "+dataList.get("state"));
-            return dataList.get("state").toString().equalsIgnoreCase("ok")||dataList.get("state").toString().equalsIgnoreCase("error")||dataList.get("state").toString().equalsIgnoreCase("paused");
+            System.out.println("at history ready " + dataList.get("state"));
+            return dataList.get("state").toString().equalsIgnoreCase("ok") || dataList.get("state").toString().equalsIgnoreCase("error") || dataList.get("state").toString().equalsIgnoreCase("paused");
+
+        
+    }
+
+    public Set<String> isHistoryReady(String galaxyUrl, String historyId, String apiKey) {
+        Set<String> runningJobs = new HashSet<>();
+        try {
+
+            URL website = new URL(galaxyUrl + "/api/histories/" + historyId + "?key=" + apiKey);
+            URLConnection conn = website.openConnection();
+            conn.addRequestProperty("Accept", "application/json, text/javascript, */*; q=0.01;text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3");
+            
+            String stringToParse;
+            try (BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+                stringToParse = bin.readLine();
+            }
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(stringToParse);
+            Map<String, Object> dataList = jsonToMap(json);
+            String stat = dataList.get("state").toString();
+ for(String key:dataList.keySet())
+                System.out.println("at map id "+ key+"  "+dataList.get(key));
+            dataList = (Map<String, Object>) dataList.get("state_ids");
+            System.out.println("     -----------------------            ");
+            for(String key:dataList.keySet())
+                System.out.println("at stat id "+ key+"  "+dataList.get(key));
+            
+            List<String> jobs = (List<String>) dataList.get("running");
+            runningJobs.addAll(jobs);
+            System.out.println("running "+jobs);
+            jobs = (List<String>) dataList.get("new");
+            System.out.println("new "+jobs);
+            runningJobs.addAll(jobs);
+            jobs = (List<String>) dataList.get("paused");
+            System.out.println("paused "+jobs);
+            runningJobs.addAll(jobs);
+            jobs = (List<String>) dataList.get("queued");
+            runningJobs.addAll(jobs);
+            System.out.println("quwued "+jobs);
+            jobs = (List<String>) dataList.get("upload");
+            runningJobs.addAll(jobs);
+            System.out.println("upload "+jobs);
+
+            jobs = (List<String>) dataList.get("discarded");
+            runningJobs.removeAll(jobs);
+            System.out.println("discard "+jobs);
+            jobs = (List<String>) dataList.get("error");
+            runningJobs.removeAll(jobs);
+            System.out.println("error "+jobs);
+            jobs = (List<String>) dataList.get("ok");
+            runningJobs.removeAll(jobs);
+            System.out.println("ok "+jobs);
+            
+            
+           
+            System.out.println("----------------------------" + stat + "---------------------------------"+runningJobs);
 
         } catch (IOException | JSONException | ParseException e) {
             e.printStackTrace();
         }
 
-        return false;
+        return runningJobs;
     }
 
 }

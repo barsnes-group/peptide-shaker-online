@@ -354,14 +354,11 @@ public abstract class GalaxyHistoryHandler {
         updateDatasetructureFuture = executorService.submit(updateDatasetructureTask);
         while (!updateDatasetructureFuture.isDone()) {
         }
-        executorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("run action invokated");
-                updatePresenterLayer(updateDatasetructureTask.getHistoryFilesMap(), updateDatasetructureTask.isJobRunning(), visualiseProjectOverviewPresenter, updateDatasetructureTask.getToDeleteMap());
-                System.out.println("run action done");
-                System.out.println("---------------------------------------------------------------------------------------------");
-            }
+        executorService.submit(() -> {
+            System.out.println("run action invokated");
+            updatePresenterLayer(updateDatasetructureTask.getHistoryFilesMap(), updateDatasetructureTask.isJobRunning(), visualiseProjectOverviewPresenter, updateDatasetructureTask.getToDeleteMap());
+            System.out.println("run action done");
+            System.out.println("---------------------------------------------------------------------------------------------");
         });
 
         executorService.shutdown();
@@ -379,10 +376,9 @@ public abstract class GalaxyHistoryHandler {
      * updating the file system
      */
     private void followGalaxyJobs() {
-        System.out.println("invoke follow jobs "+ updateDatasetructureTask.getRunningJobSet());
         if (scheduler == null) {
             scheduler = Executors.newSingleThreadScheduledExecutor();
-
+            Set<String> jobsToIgnoe = new HashSet<>();
             Runnable followUpGalaxy = new Runnable() {
                 private boolean busy;
                 private int counter = 0;
@@ -398,11 +394,21 @@ public abstract class GalaxyHistoryHandler {
                         Set<String> tempSet = new HashSet<>(updateDatasetructureTask.getRunningJobSet());
 
                         for (String jobId : tempSet) {
-                            if (galaxyApiInteractiveLayer.isJobDone(Galaxy_Instance.getGalaxyUrl(), jobId, Galaxy_Instance.getApiKey())) {//invoke update
-                                oneJobISDone();
+                            if (jobsToIgnoe.contains(jobId)) {
+                                continue;
+                            }
+                            try {
+                                if (galaxyApiInteractiveLayer.isJobDone(Galaxy_Instance.getGalaxyUrl(), jobId, Galaxy_Instance.getApiKey())) {//invoke update
+                                    jobsToIgnoe.clear();
+                                    oneJobISDone();
+                                }
+                            } catch (java.io.FileNotFoundException ex) {
+                                jobsToIgnoe.add(jobId);
+                                continue;
                             }
                         }
                         if (updateDatasetructureTask.isInvokeTracker() && tempSet.isEmpty()) {
+                            jobsToIgnoe.clear();
                             oneJobISDone();
                         }
 
@@ -410,20 +416,26 @@ public abstract class GalaxyHistoryHandler {
                         System.out.println("at Error : follow galaxy job " + e);
                     }
                     busy = false;
+                    System.out.println("-----scedule is running-----" + (counter++));
 
-                    System.out.println("-----scedule is running-----" + (counter++) + "  " + UI.getCurrent().isClosing() + "   " + UI.getCurrent().isResponsive());
-
-                    if (VaadinSession.getCurrent() == null || VaadinSession.getCurrent().getSession() == null) {
-                        System.out.println("vaadin session is expired");
-                        schedulerFuture.cancel(true);
-                        scheduler.shutdown();
-                    }
                 }
             };
+
+            ScheduledFuture oldSchedulerFuture = (ScheduledFuture) VaadinSession.getCurrent().getAttribute("schedulerfuture");
+            if (oldSchedulerFuture != null) {
+                System.out.println("oldSchedulerFuture schedulerfuture termonated " + oldSchedulerFuture.cancel(true));
+            }
+            ScheduledExecutorService oldScheduler = (ScheduledExecutorService) VaadinSession.getCurrent().getAttribute("scheduler");
+            if (oldScheduler != null) {
+                oldScheduler.shutdown();
+                System.out.println("at oldScheduler scheduler shoutdown ");
+            }
 
             schedulerFuture = scheduler.scheduleAtFixedRate(followUpGalaxy, 0, 20, TimeUnit.SECONDS);
             VaadinSession.getCurrent().getSession().setAttribute("scheduler", scheduler);
             VaadinSession.getCurrent().getSession().setAttribute("schedulerfuture", schedulerFuture);
+            VaadinSession.getCurrent().setAttribute("scheduler", scheduler);
+            VaadinSession.getCurrent().setAttribute("schedulerfuture", schedulerFuture);
 //            scheduler.shutdown();
         }
 //        schedulerFuture = scheduler.scheduleAtFixedRate(() -> {
@@ -610,7 +622,7 @@ public abstract class GalaxyHistoryHandler {
             this.cuiGalaxyIdsMap = new LinkedHashMap<>();
             this.moffGalaxyIdsMap = new LinkedHashMap<>();
             this.indexedMgfGalaxyIdsMap = new LinkedHashMap<>();
-            this.invokeTracker=false;
+            this.invokeTracker = false;
             try {
                 String requestSearching = Page.getCurrent().getLocation().toString();
                 if (requestSearching.contains("toShare_-_")) {
@@ -689,6 +701,7 @@ public abstract class GalaxyHistoryHandler {
                 if (historiesList.isEmpty()) {
                     galaxyHistoriesClient.create(new History("Online-PeptideShaker-History"));
                     workingHistory = galaxyHistoriesClient.create(new History("Online-PeptideShaker-Job-History"));
+                    historiesList = galaxyHistoriesClient.getHistories();
                 } else {
                     for (History h : historiesList) {
                         if (h.getName().equalsIgnoreCase("Online-PeptideShaker-Job-History")) {
@@ -697,11 +710,17 @@ public abstract class GalaxyHistoryHandler {
                     }
                     if (workingHistory == null) {
                         workingHistory = Galaxy_Instance.getHistoriesClient().create(new History("Online-PeptideShaker-Job-History"));
+                        historiesList = galaxyHistoriesClient.getHistories();
                     }
                 }
-                historiesList = galaxyHistoriesClient.getHistories();
+//                
                 for (History history : historiesList) {
+                    if (history.isDeleted()) {
+                        continue;
+                    }
                     historiesIds.add(history.getId());
+                    runningJobSet.addAll(galaxyApiInteractiveLayer.isHistoryReady(Galaxy_Instance.getGalaxyUrl(), history.getId(), Galaxy_Instance.getApiKey()));
+                    System.out.println("at check II is history busy " + runningJobSet.size());
 
                 }
                 List<Map<String, Object>> results = galaxyApiInteractiveLayer.getDatasetIdList(Galaxy_Instance.getGalaxyUrl(), Galaxy_Instance.getApiKey());//sresp.getResults();
@@ -725,16 +744,19 @@ public abstract class GalaxyHistoryHandler {
                         }
 
                     }
+//                    if (map.get("extension").toString().equalsIgnoreCase("thermo.raw") || map.get("extension").toString().equalsIgnoreCase("mgf") || map.get("extension").toString().equalsIgnoreCase("mzml")) {
 
+//                        System.out.println("at check II is history busy " + galaxyApiInteractiveLayer.isHistoryReady(Galaxy_Instance.getGalaxyUrl(), map.get("history_id").toString(), Galaxy_Instance.getApiKey()));
+//                    }
                     if (map.containsKey("state") && (map.get("state").toString().equalsIgnoreCase("new") || map.get("state").toString().equalsIgnoreCase("running") || map.get("state").toString().equalsIgnoreCase("queued"))) {
-                        HistoryContentsProvenance hprov = Galaxy_Instance.getHistoriesClient().showProvenance(map.get("history_id") + "", map.get("id") + "");                       
-                        if (map.get("extension").toString().equalsIgnoreCase("thermo.raw") ||  !hprov.getToolId().equalsIgnoreCase("upload1")) {
-                            runningJobSet.add(hprov.getJobId());
+                        HistoryContentsProvenance hprov = Galaxy_Instance.getHistoriesClient().showProvenance(map.get("history_id") + "", map.get("id") + "");
+                        if (map.get("extension").toString().equalsIgnoreCase("thermo.raw") || !hprov.getToolId().equalsIgnoreCase("upload1")) {
+//                            runningJobSet.add(hprov.getJobId());
                         }
 
                     } else if (map.containsKey("state") && map.get("state").toString().equalsIgnoreCase("error")) {
                         HistoryContentsProvenance hprov = Galaxy_Instance.getHistoriesClient().showProvenance(map.get("history_id") + "", map.get("id") + "");
-                        runningJobSet.remove(hprov.getJobId());
+//                        runningJobSet.remove(hprov.getJobId());
                     }
                     String name = map.get("name").toString();
                     if (!map.containsKey("collection_type") && ((name.endsWith("-original-input") || ((name.contains("moFF") && name.endsWith(": log")))))) {
@@ -866,6 +888,7 @@ public abstract class GalaxyHistoryHandler {
 
                     } else if (map.containsKey("collection_type") && (map.get("name").toString().equalsIgnoreCase("collection"))) {
                         invokeTracker = true;
+                        System.out.println("at check I is history busy " + galaxyApiInteractiveLayer.isHistoryReady(Galaxy_Instance.getGalaxyUrl(), map.get("history_id").toString(), Galaxy_Instance.getApiKey()));
 
                     } else if (map.get("extension").toString().equalsIgnoreCase("tabular") && map.get("name").toString().endsWith("-MOFF")) {
                         String dsName = map.get("name").toString().replace("-MOFF", "");

@@ -22100,6 +22100,7 @@ div.v-layout.v-horizontal.v-widget {
 .webpeptideshakertheme .averagescreenstyle .v-slot-bigmenubtn .glubimg.nopadding .v-image {
 	padding: 0px !important;
 }
-.v-select-optiongroup-controllercombobox{
-	display:inline-flex !important;
+
+.webpeptideshakertheme .v-select-optiongroup-controllercombobox {
+	display: inline-flex !important;
 }

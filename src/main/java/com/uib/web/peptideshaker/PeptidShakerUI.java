@@ -24,6 +24,8 @@ import com.vaadin.ui.Window;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
@@ -57,7 +59,15 @@ public class PeptidShakerUI extends UI {
      */
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-
+        ScheduledFuture schedulerFuture = (ScheduledFuture) VaadinSession.getCurrent().getAttribute("schedulerfuture");
+        if (schedulerFuture != null) {
+            System.out.println("at schedulerfuture termonated " + schedulerFuture.cancel(true));
+        }
+        ScheduledExecutorService scheduler = (ScheduledExecutorService) VaadinSession.getCurrent().getAttribute("scheduler");
+        if (scheduler != null) {
+            scheduler.shutdown();
+            System.out.println("at scheduler shoutdown ");
+        }
         String brwserApp = Page.getCurrent().getWebBrowser().getBrowserApplication();
         int screenWidth = Page.getCurrent().getBrowserWindowWidth();
         int screenHeigh = Page.getCurrent().getBrowserWindowHeight();
@@ -71,8 +81,7 @@ public class PeptidShakerUI extends UI {
         } else if ((screenWidth < 1349 && screenWidth >= 1000) && (screenHeigh < 742 && screenHeigh >= 500)) {
             PeptidShakerUI.this.addStyleName("averagescreenstyle");
 
-        } 
-        else if (screenWidth < 1000 || screenHeigh <= 500) {
+        } else if (screenWidth < 1000 || screenHeigh <= 500) {
             PeptidShakerUI.this.addStyleName("lowresolutionstyle");
             mobileDeviceStyle = true;
             PeptidShakerUI.this.addStyleName("mobilestyle");
@@ -157,11 +166,11 @@ public class PeptidShakerUI extends UI {
             updateMainStyleMode(mobileDeviceStyle, portraitScreenMode);
             Page.getCurrent().setTitle("PeptideShaker Online");
         } catch (IllegalArgumentException | NullPointerException e) {
-            System.err.println("Error in UI Class : "+e);
+            System.err.println("Error in UI Class : " + e);
         }
-        try{
-        UI.getCurrent().getConnectorTracker().cleanConnectorMap();
-        }catch(Exception e){
+        try {
+            UI.getCurrent().getConnectorTracker().cleanConnectorMap();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -189,6 +198,7 @@ public class PeptidShakerUI extends UI {
             notificationWindow.setVisible(false);
         }
     }
+
     /**
      * Main application Servlet.
      */
