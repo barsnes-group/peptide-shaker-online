@@ -1,0 +1,99 @@
+{
+    "new_history_name": null,
+    "history_id": "History_ID",
+    "resource_params": {},
+    "replacement_params": {},
+    "parameters": {
+        "0": {
+            "input": {
+                "values": [{
+                        "src": "hda",
+                        "tags": [],
+                        "keep": false,
+                        "id": "Param_File_ID"
+                    }],
+                "batch": false
+            }
+        },
+        "1": {
+            "input": {
+                "values": [{
+                        "src": "hda",
+                        "tags": [],
+                        "keep": false,
+                        "id": "Fasta_File_ID"
+                    }],
+                "batch": false
+            }
+        },
+        "2": {
+            "input": {
+                "values": [{
+                        "src": "hdca",
+                        "tags": [],
+                        "id": "Input_List_ID"
+                    }],
+                "batch": false
+            }
+        },
+        "3": {
+            "output_format": "0",
+            "zlib_boolean": "true",
+            "peakpicking_boolean": "true",
+            "ignore_instrument_errors_boolean": "true",
+            "output_metadata_selector": "off"
+        },
+        "4": {
+            "join_identifier": "_"
+        },
+        "5": {
+        },
+        "6": {
+            "optional_main_parameters|input_optional_identification_parameters": null,
+            "optional_main_parameters|input_fasta_file": null,
+            "optional_main_parameters|input_optional_spectrum_files": null,
+            "exporting_options|zip_conditional|zip_output_boolean": "true",
+            "exporting_options|zip_conditional|export_reports_when_zip": "true",
+            "exporting_options|zip_conditional|export_mgf_when_zip": "true",
+            "exporting_options|mzidentml_conditional|mzidentml_creation": "false",
+            "exporting_options|followup_conditional|followup_conditional_selector": "yes",
+            "exporting_options|followup_conditional|followup_export_spectra": "off",
+            "exporting_options|followup_conditional|followup_export_accession_numbers": "off",
+            "exporting_options|followup_conditional|followup_export_sequences": "off",
+            "exporting_options|followup_conditional|followup_export_proteoforms": "on",
+            "exporting_options|followup_conditional|followup_export_progenesis_conditional|followup_export_progenesis_selector": "off",
+            "exporting_options|followup_conditional|followup_export_inclusion_list_conditional|followup_export_inclusion_list_selector": "off",
+            "exporting_options|output_reports": ["4", "7", "10"]
+        },
+        "7": {
+            "task|task_selector": "moff",
+            "task|ident_input|input_type_selector": "generic",
+            "task|ident_input|remove_header": "true",
+            "task|ident_input|peptide": "3",
+            "task|ident_input|prot": "2",
+            "task|ident_input|mod_peptide": "7",
+            "task|ident_input|rt": "12",
+            "task|ident_input|mz": "13",
+            "task|ident_input|mass": "16",
+            "task|ident_input|charge": "14",
+            "task|msms_input|input_type_selector": "raw",
+            "task|tol": "10.0",
+            "task|mbr": "off",
+            "task|xic_length": "3.0",
+            "task|rt_peak_win": "1.0",
+            "task|rt_peak_win_match": "1.2",
+            "task|match_filter|filter_flags": "nofilter",
+            "task|peptide_summary": "false"
+        },
+        "8": {
+            "join_identifier": "_"
+        },
+        "9": {
+            "convert_from": "s",
+            "strip": "true",
+            "condense": "true"
+        }
+    },
+    "parameters_normalized": true,
+    "batch": true
+}

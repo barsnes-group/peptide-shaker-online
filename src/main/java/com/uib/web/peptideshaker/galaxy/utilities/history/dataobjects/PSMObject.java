@@ -179,6 +179,15 @@ public class PSMObject {
      * PSM tool-tip text value.
      */
     private String tooltip;
+    private String proteinsAsString;
+
+    public String getProteinsAsString() {
+        return proteinsAsString;
+    }
+
+    public void setProteinsAsString(String proteinsAsString) {
+        this.proteinsAsString = proteinsAsString;
+    }
 
     /**
      * Constructor to initialise the main data structure.

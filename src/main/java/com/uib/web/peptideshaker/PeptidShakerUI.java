@@ -159,6 +159,11 @@ public class PeptidShakerUI extends UI {
         } catch (IllegalArgumentException | NullPointerException e) {
             System.err.println("Error in UI Class : "+e);
         }
+        try{
+        UI.getCurrent().getConnectorTracker().cleanConnectorMap();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
 
     }
 

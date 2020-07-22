@@ -5,6 +5,7 @@ import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideSha
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.ProteinGroupObject;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.components.RangeColorGenerator;
 import com.uib.web.peptideshaker.presenter.core.graph.GraphComponent;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import graphmatcher.NetworkGraphComponent;
 import graphmatcher.NetworkGraphEdge;
@@ -14,6 +15,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * this class represents interactive graph layout
@@ -44,11 +47,11 @@ public abstract class GraphsContainerComponent extends VerticalLayout {
         GraphsContainerComponent.this.setSizeFull();
         graphComponent = new GraphComponent() {
             @Override
-            public void selectedItem(Set<Object> selectedItems, Set<Object> selectedChildsItems) {
-//                if (graphComponent.isVisible()) {
-                GraphsContainerComponent.this.selectedItem(selectedItems, selectedChildsItems, false);
-                GraphsContainerComponent.this.updateProteoformGraphData(selectedItems);
-//                }
+            public void selectedItem(Set<Object> selectedItems, Set<Object> selectedChildsItems, boolean updateProteform) {
+                GraphsContainerComponent.this.selectedItem(selectedItems, selectedChildsItems, false);// 
+                if (updateProteform) {
+                    GraphsContainerComponent.this.updateProteoformGraphData(selectedItems);
+                }
             }
 
             @Override
@@ -121,7 +124,6 @@ public abstract class GraphsContainerComponent extends VerticalLayout {
         }
         ProteinGroupObject protein = peptideShakerVisualizationDataset.getProtein(selectedProteinId);
         peptides.addAll(peptideShakerVisualizationDataset.getPeptides(selectedProteinId));
-
         Set<String> tunrelatedProt = new LinkedHashSet<>();
         maxPsms = 0;
         peptides.stream().map((peptide) -> {
@@ -144,7 +146,6 @@ public abstract class GraphsContainerComponent extends VerticalLayout {
         tunrelatedProt.forEach((unrelated) -> {
             fillUnrelatedProteinsAndPeptides(unrelated, peptideShakerVisualizationDataset.getProtein(unrelated));
         });
-
         proteinNodes.putAll(unrelatedProt);
         peptidesNodes.putAll(unrelatedPeptides);
 
@@ -160,11 +161,13 @@ public abstract class GraphsContainerComponent extends VerticalLayout {
     }
 
     private void updateProteoformGraphData(Set<Object> proteinsIds) {
+
         if (proteinsPathwayNewtorkGraph == null) {
             return;
         }
         Map<String, ProteinGroupObject> proteoformProteinNodes = new LinkedHashMap<>();
         ProteinGroupObject protein;
+
         for (Object protId : proteinsIds) {
             if (!proteinNodes.containsKey(protId.toString())) {
                 protein = peptideShakerVisualizationDataset.getProtein(protId.toString());

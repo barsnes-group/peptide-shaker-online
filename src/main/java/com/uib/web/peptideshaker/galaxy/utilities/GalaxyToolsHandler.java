@@ -20,6 +20,7 @@ import com.github.jmchilton.blend4j.galaxy.beans.collection.response.CollectionR
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.oracle.jrockit.jfr.DataType;
 import com.sun.jersey.api.client.ClientResponse;
 
 import com.vaadin.server.VaadinService;
@@ -184,8 +185,11 @@ public abstract class GalaxyToolsHandler {
             String moffVersion = VaadinSession.getCurrent().getAttribute("moffvirsion") + "";
             for (ToolSection secion : toolSections) {
                 List<Tool> tools = secion.getElems();
+                if (tools == null) {
+                    continue;
+                }
                 for (Tool tool : tools) {
-                    if (tool.getName() == null) {
+                    if (tool == null || tool.getName() == null) {
                         continue;
                     } else if (tool.getName().equalsIgnoreCase("Search GUI") && tool.getVersion().equalsIgnoreCase(SGVersion)) {
                         search_GUI_Tool = tool;
@@ -235,7 +239,7 @@ public abstract class GalaxyToolsHandler {
 
         String basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
         File file = new File(basepath + "/VAADIN/Galaxy-Workflow-convertMGF.ga");
-        String json = readWorkflowFile(file).replace("updated_MGF", peptideShakerViewID);
+        String json = readJsonFile(file).replace("updated_MGF", peptideShakerViewID);
         Workflow selectedWf = galaxyWorkFlowClient.importWorkflow(json);
 
         try {
@@ -316,10 +320,9 @@ public abstract class GalaxyToolsHandler {
      * @param file the input file
      * @return the JSON string of the file content
      */
-    private String readWorkflowFile(File file) {
+    private String readJsonFile(File file) {
         String json = "";
         String line;
-
         try {
             FileReader fileReader = new FileReader(file);
             try ( // Always wrap FileReader in BufferedReader.
@@ -328,6 +331,7 @@ public abstract class GalaxyToolsHandler {
                     json += (line);
                 }
                 // Always close files.
+                bufferedReader.close();
             }
         } catch (FileNotFoundException ex) {
             System.out.println("Unable to open file '" + "'");
@@ -345,16 +349,21 @@ public abstract class GalaxyToolsHandler {
      * @param historyId The Galaxy Server History ID where the file belong
      * @param dsId The file (galaxy dataset) ID on Galaxy Server
      */
-    public void deleteDataset(String galaxyURL, String historyId, String dsId) {
+    public void deleteDataset(String galaxyURL, String historyId, String dsId, boolean collection) {
         try {
             if (dsId == null || historyId == null || galaxyURL == null) {
                 return;
             }
             String userAPIKey = VaadinSession.getCurrent().getAttribute("ApiKey") + "";
-            String cookiesRequestProperty = VaadinSession.getCurrent().getAttribute("cookies") + "";
-            URL url = new URL(galaxyURL + "/api/histories/" + historyId + "/contents/datasets/" + dsId + "?key=" + userAPIKey);
+            String datatype;
+            if (collection) {
+                datatype = "dataset_collections";
+            } else {
+                datatype = "datasets";
+            }
+
+            URL url = new URL(galaxyURL + "/api/histories/" + historyId + "/contents/" + datatype + "/" + dsId + "?key=" + userAPIKey);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.addRequestProperty("Cookie", cookiesRequestProperty);
             conn.addRequestProperty("Accept-Encoding", "gzip, deflate, sdch, br");
             conn.addRequestProperty("Accept-Language", "ar,en-US;q=0.8,en;q=0.6,en-GB;q=0.4");
             conn.addRequestProperty("Cache-Control", "no-cache");
@@ -383,6 +392,7 @@ public abstract class GalaxyToolsHandler {
                     jsonString.append(line);
                 }
             }
+            System.out.println("to delete " + collection + " " + dsId + "  " + conn.getResponseMessage());
             conn.disconnect();
         } catch (MalformedURLException ex) {
             ex.printStackTrace();
@@ -406,31 +416,30 @@ public abstract class GalaxyToolsHandler {
      * @param quant full quant pipe-line
      * @return invoking the workflow is successful
      */
-    public boolean execute_SearchGUI_PeptideShaker_WorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Map<String, String> inputFileIdsList, Set<String> searchEnginesList, String historyId, IdentificationParameters searchParameters, boolean quant) {
+    public boolean execute_SearchGUI_PeptideShaker_WorkFlow(String galaxyUrl, String projectName, String fastaFileId, String searchParameterFileId, Map<String, String> inputFileIdsList, Set<String> searchEnginesList, String historyId, IdentificationParameters searchParameters, boolean quant) {
         Workflow selectedWf = null;
         try {
             String basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
             File workflowFile;
-            WorkflowInputs.WorkflowInput iputDataFiles;
+            WorkflowInputs.WorkflowInput inputDataFiles;
 
             if (quant && inputFileIdsList.size() == 1) {
                 workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-Full-Pipeline-Workflow-Quant-Single-Input.ga");//Galaxy-Workflow-Web-Peptide-Shaker-Multi-MGF-2018.ga
-                iputDataFiles = new WorkflowInputs.WorkflowInput(inputFileIdsList.keySet().iterator().next(), WorkflowInputs.InputSourceType.HDA);
+                inputDataFiles = new WorkflowInputs.WorkflowInput(inputFileIdsList.keySet().iterator().next(), WorkflowInputs.InputSourceType.HDA);
 
             } else if (quant && inputFileIdsList.size() > 1) {
                 workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-Full-Pipeline-Workflow-Quant-Multiple-Input.ga");//Galaxy-Workflow-Web-Peptide-Shaker-Multi-MGF-2018.ga
-                iputDataFiles = prepareWorkflowCollectionList(WorkflowInputs.InputSourceType.HDCA, inputFileIdsList.keySet(), historyId);
-
+                inputDataFiles = prepareWorkflowCollectionList(WorkflowInputs.InputSourceType.HDCA, inputFileIdsList.keySet(), historyId);
             } else if (!quant && inputFileIdsList.size() == 1) {
                 workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-workflow_Single_MGF.ga");
-                iputDataFiles = new WorkflowInputs.WorkflowInput(inputFileIdsList.keySet().iterator().next(), WorkflowInputs.InputSourceType.HDA);
+                inputDataFiles = new WorkflowInputs.WorkflowInput(inputFileIdsList.keySet().iterator().next(), WorkflowInputs.InputSourceType.HDA);
             } else {
                 workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-workflow_Multi_MGF.ga");
-                iputDataFiles = prepareWorkflowCollectionList(WorkflowInputs.InputSourceType.HDCA, inputFileIdsList.keySet(), historyId);
+                inputDataFiles = prepareWorkflowCollectionList(WorkflowInputs.InputSourceType.HDCA, inputFileIdsList.keySet(), historyId);
             }
-            String jsonWorkflow = readWorkflowFile(workflowFile);
+            String jsonWorkflow = readJsonFile(workflowFile);
             jsonWorkflow = jsonWorkflow.replace("2.0.0_BETA.13", peptideShaker_Tool.getVersion()).replace("4.0.0_BETA.12", search_GUI_Tool.getVersion()).replace("2.0.3.0", moff_Tool.getVersion());
-            jsonWorkflow = jsonWorkflow.replace("Label-SearchGUI-Results", projectName + "-SearchGUI-Results").replace("Label-PS", projectName + "-PS").replace("Label-MOFF", projectName + "-MOFF").replace("Label-Indexed-MGF", projectName + "-Indexed-MGF").replace("Label-MGF", projectName + "-MGF").replace("Label-Indexed-MGF-CUI", projectName + "-Indexed-MGF-CUI");
+            jsonWorkflow = jsonWorkflow.replace("Label-SearchGUI-Results", projectName + "-SearchGUI-Results").replace("Label-PS", projectName + "-PS").replace("Label-MOFF", projectName + "-MOFF").replace("Label-Indexed-MGF", projectName + "-Indexed-MGF").replace("Label-MGF", projectName + "-MGF").replace("Label-Indexed-MGF-CUI", projectName + "-Indexed-MGF-CUI").replace("Label-original-input-MGF", projectName + "-original-input-MGF");
             /**
              * Search engines options.
              */
@@ -448,19 +457,48 @@ public abstract class GalaxyToolsHandler {
             WorkflowInputs.WorkflowInput workflowInput0 = new WorkflowInputs.WorkflowInput(searchParameterFileId, WorkflowInputs.InputSourceType.HDA);
             WorkflowInputs.WorkflowInput workflowInput1 = new WorkflowInputs.WorkflowInput(fastaFileId, WorkflowInputs.InputSourceType.HDA);
             if (quant) {
-                workflowInputs.setInput("1", workflowInput1);
-                workflowInputs.setInput("0", workflowInput0);
-            } else {
-                workflowInputs.setInput("0", workflowInput0);
-                workflowInputs.setInput("1", workflowInput1);
+                workflowInputs.setInput("2", inputDataFiles);//fasta file
+                workflowInputs.setInput("1", workflowInput1);//search param
+                workflowInputs.setInput("0", workflowInput0);//spectra
             }
-            workflowInputs.setInput("2", iputDataFiles);
+            payLoad = "";
+            if (quant) {
+                if (inputFileIdsList.size() == 1) {
+                    File file = new File(basepath + "/VAADIN/Single-Quant-Invoking.json");
+                    payLoad = readJsonFile(file);
+                    payLoad = payLoad.replace("History_ID", historyId).replace("Param_File_ID", workflowInputs.getInputs().get("0").getId()).replace("Fasta_File_ID", workflowInputs.getInputs().get("1").getId()).replace("Raw_File_ID", workflowInputs.getInputs().get("2").getId());
+                } else {
+
+                    File file = new File(basepath + "/VAADIN/Multi-Quant-Invoking.json");
+                    payLoad = readJsonFile(file);
+                    payLoad = payLoad.replace("\"History_ID\"", "\"" + historyId + "\"").replace("\"Param_File_ID\"", "\"" + workflowInputs.getInputs().get("0").getId() + "\"").replace("\"Fasta_File_ID\"", "\"" + workflowInputs.getInputs().get("1").getId() + "\"").replace("\"Input_List_ID\"", "\"" + workflowInputs.getInputs().get("2").getId() + "\"");
+                }
+            }
+
+//            else if (quant && inputFileIdsList.size() > 1) {
+//             workflowInputs.setInput("0",iputDataFiles );//fasta file
+//                workflowInputs.setInput("2", workflowInput1);//search param
+//                workflowInputs.setInput("1", workflowInput0);//spectra
+//            } else {
+//                workflowInputs.setInput("0", workflowInput0);
+//                workflowInputs.setInput("1", workflowInput1);
+//            }
 //
             Thread t = new Thread(() -> {
-                galaxyWorkFlowClient.runWorkflow(workflowInputs);
+                boolean check = invokeWorkflow(galaxyUrl, historyId, workflowInputs, inputFileIdsList.size() == 1, quant);
             });
             t.start();
             while (t.isAlive()) {
+
+            }
+            try {
+                if (quant && inputFileIdsList.size() != 1) {
+                    Notification.show(projectName.split("___")[0], "Progress will appear in project overview when process start", Notification.Type.TRAY_NOTIFICATION);
+                } else {
+                    Thread.sleep(5000);
+                }
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
             }
             galaxyWorkFlowClient.deleteWorkflowRequest(selectedWf.getId());
             jobIsExecuted();
@@ -578,7 +616,7 @@ public abstract class GalaxyToolsHandler {
                 if (file.getName().endsWith(".thermo.raw")) {
                     request.setFileType("thermo.raw");
                 }
-               
+
                 request.setDatasetName(file.getName());
                 galaxyToolClient.uploadRequest(request);
                 tFile.delete();
@@ -600,29 +638,55 @@ public abstract class GalaxyToolsHandler {
      * Server.
      */
     public abstract void jobIsExecuted();
+    String payLoad = "";
 
-    Config config = new Config();
-
-    private void updateMGFDatasetDataType(String datasetId, String apiKey) {
+    /**
+     * Delete files (galaxy datasets) from Galaxy server
+     *
+     * @param galaxyURL Galaxy Server web address
+     * @param workflowId The Galaxy Server History ID where the file belong
+     * @param dsId The file (galaxy dataset) ID on Galaxy Server
+     */
+    private boolean invokeWorkflow(String galaxyURL, String historyId, WorkflowInputs workflowInputs, boolean quant, boolean single) {
         try {
 
-            Client client = ClientBuilder.newClient();
+            String userAPIKey = VaadinSession.getCurrent().getAttribute("ApiKey") + "";
+            URL url = new URL(galaxyURL + "/api/workflows/" + workflowInputs.getWorkflowId() + "/invocations" + "?key=" + userAPIKey);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//            conn.addRequestProperty("Accept-Encoding", "gzip, deflate");
+//            conn.addRequestProperty("Accept-Language", "ar,en-US;q=0.8,en;q=0.6,en-GB;q=0.4");
+//            conn.setRequestProperty("Accept", "application/json, text/javascript, */*; q=0.01");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.addRequestProperty("Host", "158.39.74.194");
+            conn.addRequestProperty("Content-Length", "2522");
+//            conn.addRequestProperty("DNT", "1");
+//            conn.addRequestProperty("X-Requested-With", "XMLHttpRequest");
+//            conn.addRequestProperty("Pragma", "no-cache");
+//            conn.addRequestProperty("Referer", galaxyURL + "/workflows/run?id=" + workflowInputs.getWorkflowId());
 
-            ///api/datasets/?key=" + apiKey16e792953f5b45dbdatatype: tabular
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("datatype", "tabular");
-            jsonObject.addProperty("dataset_id", "16e792953f5b45db");
-            jsonObject.addProperty("operation", "datatype");
-            Response response = client.target(config.getFullUrl("api/dataset/set_edit?dataset_id=" + URLEncoder.encode(datasetId, StandardCharsets.UTF_8.toString()) + "&key=" + URLEncoder.encode(apiKey, StandardCharsets.UTF_8.toString()))).request(MediaType.APPLICATION_JSON_TYPE).put(Entity.entity(jsonObject, MediaType.APPLICATION_JSON));
-            if (response.getStatus() != Response.Status.OK.getStatusCode()) {
-                System.out.println("'error " + response.getStatus());
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            try (OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream(), "UTF-8")) {
+                writer.write(payLoad);
             }
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(GalaxyToolsHandler.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(GalaxyToolsHandler.class.getName()).log(Level.SEVERE, null, ex);
+            conn.connect();
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                StringBuilder jsonString = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) {
+                    jsonString.append(line);
+                }
+            }
+            int stat = conn.getResponseCode();
+            conn.disconnect();
+            return stat == 200;
+        } catch (MalformedURLException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+
         }
-
+        return false;
     }
-
 }

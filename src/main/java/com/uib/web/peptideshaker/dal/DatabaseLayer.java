@@ -15,11 +15,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import static junit.framework.Assert.assertEquals;
 
 /**
@@ -52,6 +52,7 @@ public class DatabaseLayer {
     private String dbPassword;
     private Connection conn = null;
     private boolean dbEnabled = true;
+    private String servertimezone = "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 
     /**
      * Initialise the database layer.
@@ -95,7 +96,7 @@ public class DatabaseLayer {
         try {
             if (conn == null || conn.isClosed()) {
                 Class.forName(dbDriver).newInstance();
-                conn = DriverManager.getConnection(dbURL + dbName, dbUserName, dbPassword);
+                conn = DriverManager.getConnection(dbURL + dbName + servertimezone, dbUserName, dbPassword);
             }
             if (conn == null) {
                 dbEnabled = false;
@@ -114,7 +115,8 @@ public class DatabaseLayer {
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             dbEnabled = false;
-            Logger.getLogger(DatabaseLayer.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("at Error at database connection 117: " + ex);
+            return csf_pr_acc_list;
         }
         //check file on csfpr
         String csfprLink = VaadinSession.getCurrent().getAttribute("csfprLink") + "";
@@ -171,13 +173,17 @@ public class DatabaseLayer {
                 dbEnabled = false;
             }
         } catch (MalformedURLException ex) {
-            ex.printStackTrace();
+            dbEnabled = false;
+            System.out.println("at Error at database connection 176: " + ex);
+            return csf_pr_acc_list;
         } catch (IOException | SQLException ex) {
             dbEnabled = false;
-            ex.printStackTrace();
+            System.out.println("at Error at database connection 180: " + ex);
+            return csf_pr_acc_list;
         } catch (Exception ex) {
             dbEnabled = false;
-            ex.printStackTrace();
+            System.out.println("at Error at database connection 185: " + ex);
+            return csf_pr_acc_list;
         }
 
         return csf_pr_acc_list;
@@ -198,77 +204,61 @@ public class DatabaseLayer {
             }
             if (conn == null || conn.isClosed()) {
                 Class.forName(dbDriver).newInstance();
-                conn = DriverManager.getConnection(dbURL + dbName, dbUserName, dbPassword);
+                conn = DriverManager.getConnection(dbURL + dbName + servertimezone, dbUserName, dbPassword);
             }
-            String selectstatment = "SELECT `edge_index` FROM `accessionindex`  where ";
-            for (String str : proteinAcc) {
-                if (str.trim().equalsIgnoreCase("")) {
+
+            for (String acc : proteinAcc) {
+                if (acc.trim().equalsIgnoreCase("")) {
                     continue;
                 }
-                selectstatment = selectstatment + "`uniprot_acc`=? or ";
-            }
-            if (selectstatment.endsWith("where ")) {
-                return edges;
-            }
-            selectstatment = selectstatment.substring(0, selectstatment.length() - 4) + ";";
-            PreparedStatement selectNameStat = conn.prepareStatement(selectstatment);
-            int indexer = 1;
-            for (String str : proteinAcc) {
-                if (str.trim().equalsIgnoreCase("")) {
-                    continue;
+                String selectstatment = "SELECT `edge_index` FROM `accessionindex`  where `uniprot_acc`=? ;";
+                PreparedStatement selectNameStat = conn.prepareStatement(selectstatment);
+                selectNameStat.setString(1, acc);
+                ResultSet rs = selectNameStat.executeQuery();
+                Set<Integer> indexes = new HashSet<>();
+                while (rs.next()) {
+                    indexes.add(rs.getInt("edge_index"));
                 }
-                selectNameStat.setString(indexer++, str);
-            }
-            ResultSet rs = selectNameStat.executeQuery();
-            Set<Integer> lines = new HashSet<>();
-            while (rs.next()) {
-                lines.add(rs.getInt("edge_index"));
-            }
-            selectNameStat.close();
-            rs.close();
-            Set<Integer> indexes = new HashSet<>();
+                selectNameStat.close();
+                rs.close();
+                List<Integer> list = new ArrayList<>(indexes);
+                int step = Math.min(15, list.size() - 1);
+                int start = 0;
+                while (true) {
+                    Set<Integer> subSet = new LinkedHashSet<>(list.subList(start, step));
+                    start = step + 1;
+                    if (start == list.size()) {
+                        break;
+                    }
+                    step = Math.min(step + 15, list.size() - 1);
+                    selectstatment = "SELECT * FROM `edges`  where ";
+                    for (Integer i : subSet) {
+                        selectstatment = selectstatment + "`edge_index`=? or ";
+                    }
+                    selectstatment = selectstatment.substring(0, selectstatment.length() - 4) + ";";
+                    selectNameStat = conn.prepareStatement(selectstatment);
+                    int indexer = 1;
+                    for (Integer i : subSet) {
+                        selectNameStat.setInt(indexer++, i);
+                    }
+                    rs = selectNameStat.executeQuery();
+                    while (rs.next()) {
+                        String protI = rs.getString(2).trim();
+                        String protII = rs.getString(3).trim();
+                        edges.add(new String[]{protI, protII});
+                    }
 
-            for (int index : lines) {
-                indexes.add(index);
-
-            }
-//            System.out.println("at total indexe for "+proteinAcc+"  "+indexes+"" );
-            selectstatment = "SELECT * FROM `edges`  where ";
-            for (Integer i : indexes) {
-                selectstatment = selectstatment + "`edge_index`=? or ";
-
-            }
-            selectstatment = selectstatment.substring(0, selectstatment.length() - 4) + ";";
-            selectNameStat = conn.prepareStatement(selectstatment);
-            indexer = 1;
-            for (Integer i : indexes) {
-                selectNameStat.setInt(indexer++, i);
-            }
-            rs = selectNameStat.executeQuery();
-            while (rs.next()) {
-                String protI = rs.getString(2).trim();
-                String protII = rs.getString(3).trim();
-                if (!protI.contains(";")) {
-                    protI = protI + ";";
                 }
-                if (!protII.contains(";")) {
-                    protII = protII + ";";
-                }
-                edges.add(new String[]{protI, protII});
+
             }
-//            System.out.println(" ------------------------------------------");
-//            System.out.println(" ----------------acc list--------------------------");
-//            System.out.println(proteinAcc);
-//            System.out.println(" ------------------------------------------");
-//            int counter = 1;
-//            for (String[] strArr : edges) {
-//                for (String str : strArr) {
-//                    System.out.print(" - " + str + "-");
-//                }
-//                System.out.println();
-//                System.out.println("****************************" + "****************************");
-//            }
-//            System.out.println(" ------------------------------------------");
+            edges.stream().map((arr) -> {
+                if (!arr[0].contains(";")) {
+                    arr[0] = arr[0] + ";";
+                }
+                return arr;
+            }).filter((arr) -> (!arr[1].contains(";"))).forEachOrdered((arr) -> {
+                arr[1] = arr[1] + ";";
+            });
             return edges;
 
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | SQLException e) {
@@ -294,7 +284,7 @@ public class DatabaseLayer {
             }
             if (conn == null || conn.isClosed()) {
                 Class.forName(dbDriver).newInstance();
-                conn = DriverManager.getConnection(dbURL + dbName, dbUserName, dbPassword);
+                conn = DriverManager.getConnection(dbURL + dbName + servertimezone, dbUserName, dbPassword);
             }
             /**
              * if nothing available insert and get the index
@@ -327,7 +317,7 @@ public class DatabaseLayer {
             }
             if (conn == null || conn.isClosed()) {
                 Class.forName(dbDriver).newInstance();
-                conn = DriverManager.getConnection(dbURL + dbName, dbUserName, dbPassword);
+                conn = DriverManager.getConnection(dbURL + dbName + servertimezone, dbUserName, dbPassword);
             }
             String selectstatment = "SELECT * FROM `datasetsharing` where `ds_details` = (?);";
             PreparedStatement preparedStatment = conn.prepareStatement(selectstatment);
@@ -356,7 +346,7 @@ public class DatabaseLayer {
             }
             if (conn == null || conn.isClosed()) {
                 Class.forName(dbDriver).newInstance();
-                conn = DriverManager.getConnection(dbURL + dbName, dbUserName, dbPassword);
+                conn = DriverManager.getConnection(dbURL + dbName + servertimezone, dbUserName, dbPassword);
             }
             String selectstatment = "SELECT * FROM `datasetsharing` WHERE `ds_index` = ?";
             PreparedStatement preparedStatment = conn.prepareStatement(selectstatment);

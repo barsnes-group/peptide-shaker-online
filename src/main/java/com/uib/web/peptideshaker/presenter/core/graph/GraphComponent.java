@@ -316,7 +316,7 @@ public abstract class GraphComponent extends VerticalLayout {
         addExtension(downloader);
 
         exportBtn.addClickListener((Button.ClickEvent event) -> {
-            StreamResource graphStreamResource = generateImg(liveWidth+20, liveHeight+20);
+            StreamResource graphStreamResource = generateImg(liveWidth + 20, liveHeight + 20);
             downloader.setFileDownloadResource(graphStreamResource);
             downloader.download();
 
@@ -454,6 +454,7 @@ public abstract class GraphComponent extends VerticalLayout {
             proteinPeptideGraphWrapper.setVisible(!proteoformLayerContainer.isVisible());
             if (proteoformLayerContainer.isVisible()) {
                 updateProteinsMode("Proteoform");
+                selectedItem(selectedProteins, selectedPeptides, graphsControl.getValue().toString().equalsIgnoreCase("Proteoform"));
             } else {
                 proteinsControl.setValue(lastSelected);
                 updateProteinsMode("Protein-Peptide");
@@ -661,9 +662,11 @@ public abstract class GraphComponent extends VerticalLayout {
             scaleContainer.removeComponent(psmColorScaleLayout);
         }
         this.psmColorScaleLayout = psmColorScale.getVerticalScale(true);
+
         informationLegend.updatePSMNumberLayout(psmColorScale.getColorScale());
+
         scaleContainer.addComponent(psmColorScaleLayout);
-        if (quantDs && intensityColorScale!=null) {
+        if (quantDs && intensityColorScale != null) {
             if (intensityColorScaleLayout != null) {
                 scaleContainer.removeComponent(intensityColorScaleLayout);
             }
@@ -699,7 +702,7 @@ public abstract class GraphComponent extends VerticalLayout {
 
     private void selectNodes(Object[] ids) {
         redrawSelection(ids, true);
-        selectedItem(selectedProteins, selectedPeptides);
+        selectedItem(selectedProteins, selectedPeptides, graphsControl.getValue().toString().equalsIgnoreCase("Proteoform"));
     }
 
     private void selectAll() {
@@ -898,16 +901,16 @@ public abstract class GraphComponent extends VerticalLayout {
             if (peptidesNodes.containsKey(node)) {
                 g2d.setPaint(nodesMap.get(node).getCurrentActiveColor());
 
-                circle = new Ellipse2D.Double((int) graphLayout.getX(node) - 10 + 20, graphLayout.getY(node) - 10 + 20, 20, 20);                
+                circle = new Ellipse2D.Double((int) graphLayout.getX(node) - 10 + 20, graphLayout.getY(node) - 10 + 20, 20, 20);
                 g2d.setPaint(nodesMap.get(node).getCurrentActiveColor());
             } else {
 //               
-                circle = new Ellipse2D.Double((int) graphLayout.getX(node) - 20 + 20, graphLayout.getY(node) - 20 + 20, 40, 40);               
+                circle = new Ellipse2D.Double((int) graphLayout.getX(node) - 20 + 20, graphLayout.getY(node) - 20 + 20, 40, 40);
                 g2d.setPaint(nodesMap.get(node).getCurrentActiveColor());
             }
             return circle;
         }).map((circle) -> {
-            
+
             g2d.fill(circle);
             return circle;
         }).forEachOrdered((circle) -> {
@@ -962,7 +965,7 @@ public abstract class GraphComponent extends VerticalLayout {
         return new Line2D.Double(x1, y1, x2, y2);
     }
 
-    public abstract void selectedItem(Set<Object> selectedParentItems, Set<Object> selectedChildsItems);
+    public abstract void selectedItem(Set<Object> selectedParentItems, Set<Object> selectedChildsItems, boolean updateProteform);
 
     public abstract void updateProteinsMode(String modeType);
 

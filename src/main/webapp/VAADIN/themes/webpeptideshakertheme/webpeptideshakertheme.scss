@@ -751,7 +751,7 @@
         top: 150px !important;
         width: 112px !important;
         z-index: 3 !important;
-        position: fixed !important;
+        position: absolute !important;
         overflow: visible;
     }
     .v-slot-rightsidebtncontainer {
@@ -8266,7 +8266,7 @@
     .averagescreenstyle .subviewbuttonsactioncontainer {
         top: 190px !important;
         width: 54px !important;
-        left: 5px;
+        left: -5px;
     }
     .averagescreenstyle .viewframe {
         padding: 5px !important;
@@ -8896,6 +8896,9 @@
 }
 .averagescreenstyle .v-slot-bigmenubtn .glubimg.nopadding  .v-image {
     padding:0px !important; 
+}
+.v-select-optiongroup-controllercombobox{
+	display:inline-flex !important;
 }
 }
 

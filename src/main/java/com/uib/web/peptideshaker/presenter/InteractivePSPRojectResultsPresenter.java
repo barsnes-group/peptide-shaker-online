@@ -18,6 +18,7 @@ import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import java.util.Iterator;
 import java.util.Map;
@@ -282,34 +283,41 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
 
             return;
         }
+        UI.getCurrent().accessSynchronously(new Runnable() {
+            @Override
+            public void run() {
+                smallPresenterBtn.setSelected(true);
+                mainPresenterBtn.setSelected(true);
+                datasetVisulizationLevelContainer.setMargin(new MarginInfo(false, false, false, false));
+                maximisedMode = true;
+                viewControlButtonContainer.addStyleName("visible");
+                if (dataprocessFuture == null) {
+                    datasetsOverviewBtn.setId("suspend");
+                    datasetsOverviewBtn.setEnabled(false);
+                    datasetsOverviewBtn.setDescription("Select project or upload your own project data");
+                    datasetsOverviewBtn.addStyleName("inactive");
+                    selectSubviewButton(uploadOwnDataBtn);
+                    removeStyleName("hidepanel");
+                    return;
 
-        smallPresenterBtn.setSelected(true);
-        mainPresenterBtn.setSelected(true);
-        datasetVisulizationLevelContainer.setMargin(new MarginInfo(false, false, false, false));
-        this.maximisedMode = true;
-        this.viewControlButtonContainer.addStyleName("visible");
-        if (dataprocessFuture == null) {
-            datasetsOverviewBtn.setId("suspend");
-            datasetsOverviewBtn.setEnabled(false);
-            datasetsOverviewBtn.setDescription("Select project or upload your own project data");
-            datasetsOverviewBtn.addStyleName("inactive");
-            selectSubviewButton(uploadOwnDataBtn);
-            this.removeStyleName("hidepanel");
-            return;
+                }
+                datasetsOverviewBtn.setId(null);
+                datasetsOverviewBtn.setEnabled(true);
+                while (!dataprocessFuture.isDone()) {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ex) {
 
-        }
-        datasetsOverviewBtn.setId(null);
-        datasetsOverviewBtn.setEnabled(true);
-        while (!dataprocessFuture.isDone()) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ex) {
+                    }
+                }
+                removeStyleName("hidepanel");
+                selectSubviewButton(datasetsOverviewBtn);
+                datasetsOverviewBtn.removeStyleName("inactive");
 
+                UI.getCurrent().push();
             }
-        }
-        this.removeStyleName("hidepanel");
-        selectSubviewButton(datasetsOverviewBtn);
-        datasetsOverviewBtn.removeStyleName("inactive");
+        });
+
     }
 
     /**

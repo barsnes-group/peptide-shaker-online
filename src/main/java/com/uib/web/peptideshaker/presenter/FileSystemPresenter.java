@@ -7,6 +7,7 @@ import com.uib.web.peptideshaker.presenter.layouts.DataViewLayout;
 import com.uib.web.peptideshaker.presenter.core.ButtonWithLabel;
 import com.uib.web.peptideshaker.presenter.core.SmallSideBtn;
 import com.vaadin.event.LayoutEvents;
+import com.vaadin.server.Page;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.AbsoluteLayout;
@@ -165,14 +166,19 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
     public void updateData(Map<String, GalaxyFileObject> historyFilesMap, boolean jobInProgress) {
         this.historyFilesMap = historyFilesMap;
         this.jobInProgress = jobInProgress;
-        if (smallPresenterButton.getStyleName().contains("selectedpresenterbtn")) {
-            UI.getCurrent().accessSynchronously(() -> {
+//        if (smallPresenterButton.getStyleName().contains("selectedpresenterbtn")) {
+        UI.getCurrent().access(new Runnable() {
+            @Override
+            public void run() {
                 updatelayout();
-                UI.getCurrent().push();
-            });
-        } else {
-            updatelayout();
-        }
+                try {
+                    UI.getCurrent().push();
+                } catch (Exception e) {
+                    Page.getCurrent().reload();
+                }
+            }
+        });
+
     }
 
     private void updatelayout() {
@@ -195,6 +201,8 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
             this.dataLayout.updateDatasetsTable(historyFilesMap);
 
         }
+        System.out.println("push is activated");
+
     }
 
     /**

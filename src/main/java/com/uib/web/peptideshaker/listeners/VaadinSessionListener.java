@@ -3,6 +3,8 @@ package com.uib.web.peptideshaker.listeners;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
@@ -21,22 +23,31 @@ public class VaadinSessionListener implements HttpSessionListener {
 
     @Override
     public void sessionDestroyed(HttpSessionEvent hse) {
-        try { 
-        String userDataFolderUrl = hse.getSession().getAttribute("userDataFolderUrl").toString();
-        File user_folder = new File(userDataFolderUrl);
-       if (user_folder.exists()) {
-            for (File tFile : user_folder.listFiles()) {               
-                    deletFile(tFile);     
+        try {
+            String userDataFolderUrl = hse.getSession().getAttribute("userDataFolderUrl") + "";
+            File user_folder = new File(userDataFolderUrl);
+            if (user_folder.exists()) {
+                for (File tFile : user_folder.listFiles()) {
+                    deletFile(tFile);
+                }
             }
-        }
-         Files.deleteIfExists(user_folder.toPath());
-        System.out.println("at session is ready to distroy ..Good bye...folder (" + user_folder.getName() + " are cleaned ("  + ") and folder exist (" + user_folder.exists() + ")");
+            Files.deleteIfExists(user_folder.toPath());
+            System.out.println("at session is ready to distroy ..Good bye...folder (" + user_folder.getName() + " are cleaned (" + ") and folder exist (" + user_folder.exists() + ")");
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        ScheduledFuture schedulerFuture = (ScheduledFuture) hse.getSession().getAttribute("schedulerfuture");
+        if (schedulerFuture != null) {
+            System.out.println("at schedulerfuture termonated " + schedulerFuture.cancel(true));
+        }
+        ScheduledExecutorService scheduler = (ScheduledExecutorService) hse.getSession().getAttribute("scheduler");
+        if (scheduler != null) { 
+            scheduler.shutdown();
+            System.out.println("at scheduler shoutdown " );
+        }
     }
-    
-        private void deletFile(File file) throws IOException {
+
+    private void deletFile(File file) throws IOException {
         if (file.isDirectory()) {
             deleteDirectory(file);
         } else {
@@ -51,12 +62,10 @@ public class VaadinSessionListener implements HttpSessionListener {
             if (tFile.isDirectory()) {
                 deleteDirectory(tFile);
             } else {
-               Files.deleteIfExists(tFile.toPath());
+                Files.deleteIfExists(tFile.toPath());
             }
         }
         Files.deleteIfExists(file.toPath());
     }
-
-  
 
 }

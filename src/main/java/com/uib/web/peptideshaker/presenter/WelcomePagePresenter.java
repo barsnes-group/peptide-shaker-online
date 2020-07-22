@@ -30,7 +30,6 @@ import com.vaadin.ui.themes.ValoTheme;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.vaadin.alump.gofullscreen.FullScreenButton;
 
 /**
  * This class represents the welcome page for Online PeptideShaker
@@ -519,6 +518,10 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
      */
     private void updateConnectionStatusToGalaxy(List<String> userOverviewData) {
 
+        UI.getCurrent().accessSynchronously(new Runnable() {
+            @Override
+            public void run() {
+            
         connectinoWindow.setClosable(true);
         galaxyLoginConnectionBtnLabel.setVisible(true);
         galaxyLoginLayout.setEnabled(true);
@@ -545,6 +548,9 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
         }
         updateUserOverviewPanel(userOverviewData);
         connectingLabel.setVisible(false);
+        UI.getCurrent().push();
+        }
+        });
     }
 
     /**

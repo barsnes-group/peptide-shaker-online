@@ -146,6 +146,7 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
             Map<String, GalaxyFileObject> fastaFilesMap = new LinkedHashMap<>();
             Map<String, GalaxyFileObject> mgfFilesMap = new LinkedHashMap<>();
             Map<String, GalaxyFileObject> rawFilesMap = new LinkedHashMap<>();
+             Map<String, GalaxyFileObject> mzMLFilesMap = new LinkedHashMap<>();
             for (String fileKey : historyFilesMap.keySet()) {
                 GalaxyFileObject fileObject = historyFilesMap.get(fileKey);
                 String type = fileObject.getType();
@@ -164,17 +165,20 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
                     case "Thermo.raw":
                         rawFilesMap.put(fileKey, fileObject);
                         break;
+                         case "mzML":
+                        mzMLFilesMap.put(fileKey, fileObject);
+                        break;
                 }
 
             }
             if (smallPresenterButton.getStyleName().contains("selectedpresenterbtn")) {
                 UI.getCurrent().accessSynchronously(() -> {
-                    peptideshakerToolInputForm.updateForm(searchSettingFilesMap, fastaFilesMap, mgfFilesMap, rawFilesMap);
+                    peptideshakerToolInputForm.updateForm(searchSettingFilesMap, fastaFilesMap, mgfFilesMap, rawFilesMap,mzMLFilesMap);
                     UI.getCurrent().push();
                 });
 
             } else {
-                peptideshakerToolInputForm.updateForm(searchSettingFilesMap, fastaFilesMap, mgfFilesMap, rawFilesMap);
+                peptideshakerToolInputForm.updateForm(searchSettingFilesMap, fastaFilesMap, mgfFilesMap, rawFilesMap,mzMLFilesMap);
             }
 
         }

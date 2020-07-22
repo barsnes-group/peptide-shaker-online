@@ -6,6 +6,7 @@ import com.vaadin.server.Resource;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import java.util.Map;
 
@@ -122,12 +123,18 @@ public class DropDownList extends AbsoluteLayout {
             return;
         }
         try {
-            list.select(objectId);
-            list.setData(list.getValue());
-            lastSelectedId = objectId;
+            UI.getCurrent().access(new Runnable() {
+                @Override
+                public void run() {
+                    list.select(objectId);
+                    list.setData(list.getValue());
+                    lastSelectedId = objectId;
+                    UI.getCurrent().push();
+                }
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
-            Page.getCurrent().reload();
         }
 
     }

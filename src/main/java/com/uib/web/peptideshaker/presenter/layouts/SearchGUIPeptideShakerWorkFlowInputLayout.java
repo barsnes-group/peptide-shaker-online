@@ -23,12 +23,12 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 import java.io.File;
 import java.io.IOException;
@@ -40,8 +40,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import pl.exsio.plupload.PluploadFile;
 
 /**
@@ -64,6 +62,10 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
      * MGF file list available for user to select from.
      */
     private final Set<String> _mgfFileList;
+    /**
+     * mzML file list available for user to select from.
+     */
+    private final Set<String> _mzMLFileList;
     /**
      * Raw file list available for user to select from.
      */
@@ -112,9 +114,11 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
     private AbsoluteLayout inputDataFilesContainer;
     private Uploader mgf_raw_dataUploader;
     private VerticalLayout rawDataListLayout;
+    private VerticalLayout mzMLDataListLayout;
     private VerticalLayout mgfDataListLayout;
     private LayoutClickListener rawClickListener;
     private LayoutClickListener mgfClickListener;
+    private LayoutClickListener mzMLClickListener;
     private Uploader fastaFileUploader;
     private int indexer = 0;
     private final float[] expandingRatio = new float[]{5f, 5f, 58f, 25f, 8f};
@@ -129,7 +133,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         fastaFileIdToNameMap = new LinkedHashMap<>();
         _mgfFileList = new LinkedHashSet<>();
         _rawFileList = new LinkedHashSet<>();
-
+        _mzMLFileList = new LinkedHashSet<>();
     }
 
     /**
@@ -221,26 +225,45 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         rawMgfController.setStyleName("controllercombobox");
         rawMgfController.addItem("rawFiles");
         rawMgfController.addItem("mgfFiles");
+        rawMgfController.addItem("mzMLFiles");
+        
         rawMgfController.setHeight(26, Unit.PERCENTAGE);
         rawMgfController.setHtmlContentAllowed(true);
         rawMgfController.setItemCaption("rawFiles", "Raw File(s)");
         rawMgfController.setItemCaption("mgfFiles", "MGF File(s)");
+        rawMgfController.setItemCaption("mzMLFiles", "mzML File(s)");
         spectrumFileContainer.addComponent(rawMgfController, "left:15px;top:15px;right:150px");
         rawMgfController.addValueChangeListener((Property.ValueChangeEvent event) -> {
-            mgfDataListLayout.setVisible(rawMgfController.getValue().toString().equalsIgnoreCase("mgfFiles"));
-            if (mgfDataListLayout.isVisible()) {
-                _rawFileList.clear();
-            } else {
-                _mgfFileList.clear();
+            String selectedValue = rawMgfController.getValue().toString();
+            _mgfFileList.clear();
+            _rawFileList.clear();
+            switch (selectedValue) {
+                case "mgfFiles":
+                    mzMLDataListLayout.setVisible(false);
+                    rawDataListLayout.setVisible(false);
+                    mgfDataListLayout.setVisible(true);
+                    break;
+                case "mzMLFiles":
+                    mzMLDataListLayout.setVisible(true);
+                    rawDataListLayout.setVisible(false);
+                    mgfDataListLayout.setVisible(false);
+                    break;
+                case "rawFiles":
+                    mzMLDataListLayout.setVisible(false);
+                    rawDataListLayout.setVisible(true);
+                    mgfDataListLayout.setVisible(false);
+                    break;
             }
+
             updateMgfFilesTable();
             updateRawFilesTable();
+            updateMzMLFilesTable();
         });
         inputDataFilesContainer = new AbsoluteLayout();
         inputDataFilesContainer.setHeight(100, Unit.PERCENTAGE);
         inputDataFilesContainer.setWidth(100, Unit.PERCENTAGE);
         inputDataFilesContainer.setStyleName("inputdatafilecontainer");
-        spectrumFileContainer.addComponent(inputDataFilesContainer, "left:15px;top:83px;right:15px;bottom:10px");
+        spectrumFileContainer.addComponent(inputDataFilesContainer, "left:15px;top:52px;right:15px;bottom:10px");
         mgf_raw_dataUploader = new Uploader() {
             @Override
             public void filesUploaded(PluploadFile[] uploadedFiles) {
@@ -249,6 +272,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         };
         mgf_raw_dataUploader.addUploaderFilter("mgf");
         mgf_raw_dataUploader.addUploaderFilter("thermo.raw");
+         mgf_raw_dataUploader.addUploaderFilter("mzml");
         inputDataFilesContainer.addComponent(mgf_raw_dataUploader, "right:5px;top:-40px");
 
         rawDataListLayout = new VerticalLayout();
@@ -257,18 +281,15 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         rawDataListLayout.setStyleName("astablelayout");
         inputDataFilesContainer.addComponent(rawDataListLayout, "top:0px;");
 
-        mgfDataListLayout = new VerticalLayout() {
-            @Override
-            public void setVisible(boolean visible) {
-                rawDataListLayout.setVisible(!visible);
-                super.setVisible(visible); //To change body of generated methods, choose Tools | Templates.
-            }
-
-        };
+        mgfDataListLayout = new VerticalLayout();
         mgfDataListLayout.setSizeFull();
         mgfDataListLayout.setStyleName("astablelayout");
-
         inputDataFilesContainer.addComponent(mgfDataListLayout, "top:0px;");
+        mzMLDataListLayout = new VerticalLayout();
+        mzMLDataListLayout.setSizeFull();
+        mgfDataListLayout.setStyleName("astablelayout");
+        inputDataFilesContainer.addComponent(mzMLDataListLayout, "top:0px;");
+
         rawMgfController.select("rawFiles");
 
         /**
@@ -339,49 +360,16 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
             updateMgfFilesTable();
         };
 
-    }
+        mzMLClickListener = (LayoutEvents.LayoutClickEvent event) -> {
+            String id = event.getComponent().getId();
+            if (_mzMLFileList.contains(id)) {
+                _mzMLFileList.remove(id);
+            } else {
+                _mzMLFileList.add(id);
+            }
 
-    private void addTempSpectrumFile(String fileName) {
-        System.out.println("at file uploaded " + fileName);
-        StatusLabel statusLabel = new StatusLabel();
-        statusLabel.setStatus("running");
-
-        Label nameLabel = new Label(fileName);
-        Label type = new Label();
-        type.setContentMode(ContentMode.HTML);
-        if (fileName.endsWith(".mgf")) {
-            type.setValue("<b>MGF</b>");
-            type.setDescription("MGF");
-            type.setValue("<b>MGF</b>");
-            type.setDescription("MGF");
-            RadioButton selectionRadioBtn = new RadioButton("") {
-                @Override
-                public void selectItem(Object itemId) {
-
-                }
-            };
-            HorizontalLayout rowLayout = initializeRowData(new Component[]{new Label((mgfDataListLayout.getComponentCount() + 1) + ""), selectionRadioBtn, nameLabel, type, statusLabel}, false);
-            rowLayout.setEnabled(false);
-            mgfDataListLayout.addComponent(rowLayout);
-
-        } else if (fileName.endsWith(".mzml")) {
-            type.setValue("<b>MZML</b>");
-            type.setDescription("MZML");
-        } else {
-            type.setValue("<b>RAW</b>");
-            type.setDescription("RAW");
-            RadioButton selectionRadioBtn = new RadioButton("") {
-                @Override
-                public void selectItem(Object itemId) {
-
-                }
-            };
-            HorizontalLayout rowLayout = initializeRowData(new Component[]{new Label((rawDataListLayout.getComponentCount() + 1) + ""), selectionRadioBtn, nameLabel, type, statusLabel}, false);
-            rowLayout.setEnabled(false);
-            rawDataListLayout.addComponent(rowLayout);
-
-        }
-
+            updateMzMLFilesTable();
+        };
     }
 
     /**
@@ -430,8 +418,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         fastaFileUploader = new Uploader() {
             @Override
             public void filesUploaded(PluploadFile[] uploadedFiles) {
-                setBusyUploadFastaFiles(true);
-                boolean id = uploadToGalaxy(uploadedFiles);
+                uploadToGalaxy(uploadedFiles);
             }
 
         };
@@ -456,7 +443,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
             }
         };
 
-        fastaFileList.addStyleName("v-caption-on-left");;
+        fastaFileList.addStyleName("v-caption-on-left");
         fastaFileList.setWidth(100, Unit.PERCENTAGE);
         fastaFileList.addUploadBtn(fastaFileUploader);
         fastaFileList.setReadOnly(true);
@@ -604,8 +591,10 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
             } else {
                 searchEngines.setRequired(false, "");
             }
-            if (_projectNameField.getValue() == null || _projectNameField.getValue().trim().equalsIgnoreCase("") || !_projectNameField.getValue().matches("^((?=[A-Za-z0-9@])(?![_\\\\-]).)*$")) {
+            _projectNameField.setValue(_projectNameField.getValue().replace("-", "_"));
+            if (_projectNameField.getValue() == null || _projectNameField.getValue().trim().equalsIgnoreCase("") || !_projectNameField.getValue().matches("^((?=[A-Za-z0-9@_])(?![åäö\\\\-]).)*$")) {
                 _projectNameField.addStyleName("errorstyle");
+                Notification.show("Please use alphabets, numbers and '_' only ", Notification.Type.TRAY_NOTIFICATION);
                 return;
             } else {
                 _projectNameField.removeStyleName("errorstyle");
@@ -614,8 +603,9 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
             String fastFileId = this.getFastaFileId();
             Set<String> spectrumIds = _mgfFileList;
             Set<String> rawIds = _rawFileList;
+            Set<String> mzmlIds = _mzMLFileList;
             Set<String> searchEnginesIds = searchEngines.getSelectedValue();
-            String projectName = _projectNameField.getValue().replace(" ", "_").replace("-", "_") + "___" + (new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss").format(new Timestamp(System.currentTimeMillis()))).replace(":", "_-_");
+            String projectName = _projectNameField.getValue().replace(" ", "_").replace("-", "_") + "___" + (new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss").format(new Timestamp(System.currentTimeMillis()))).replace(":", "_-_").replace("-original-input", "-input");
 
             searchEngines.setRequired(false, "Select at least 1 search engine");
             Map<String, Boolean> selectedSearchEngines = new HashMap<>();
@@ -623,12 +613,14 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
                 selectedSearchEngines.put(paramId, searchEngines.getSelectedValue().contains(paramId));
             });
             String searchParamerterId = _searchSettingsMap.get(_searchSettingsFileList.getSelectedValue()).getGalaxyId();
-            if (_rawFileList.isEmpty()) {
+            if (!_rawFileList.isEmpty()) {
+                executeWorkFlow(projectName, fastFileId, searchParamerterId, rawIds, searchEnginesIds, _searchParameterForm.getSearchParameters(), true);
+            } else if (!_mgfFileList.isEmpty()) {
+
                 executeWorkFlow(projectName, fastFileId, searchParamerterId, spectrumIds, searchEnginesIds, _searchParameterForm.getSearchParameters(), false);
             } else {
-                executeWorkFlow(projectName, fastFileId, searchParamerterId, rawIds, searchEnginesIds, _searchParameterForm.getSearchParameters(), true);
+                executeWorkFlow(projectName, fastFileId, searchParamerterId, mzmlIds, searchEnginesIds, _searchParameterForm.getSearchParameters(), true);
             }
-//            projectSupHeader.setValue("existProject");
         });
         return executeWorkFlowBtn;
     }
@@ -653,7 +645,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
                         _searchParameterForm.updateForms(searchParamUtil);
                         _searchParameterFormContainer.setPopupVisible(true);
                     } catch (IOException ex) {
-                        ex.printStackTrace();
+                        System.err.println("Error: IOException at line : 655 " + ex);
                     }
                     return;
                 }
@@ -673,8 +665,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
                     }
                     searchSettingInfo.setValue(descrip);
                 } catch (IOException ex) {
-                    ex.printStackTrace();
-                    return;
+                    System.err.println("Error: IOException at line : 666 " + ex);
                 }
             }
         }
@@ -707,8 +698,9 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
      * @param fastaFilesMap FASTA files map
      * @param mgfFilesMap MGF file map
      * @param rawFilesMap Raw file map
+     * @param mzMLFilesMap mzML files map
      */
-    public void updateForm(Map<String, GalaxyTransferableFile> searchSettingsMap, Map<String, GalaxyFileObject> fastaFilesMap, Map<String, GalaxyFileObject> mgfFilesMap, Map<String, GalaxyFileObject> rawFilesMap) {
+    public void updateForm(Map<String, GalaxyTransferableFile> searchSettingsMap, Map<String, GalaxyFileObject> fastaFilesMap, Map<String, GalaxyFileObject> mgfFilesMap, Map<String, GalaxyFileObject> rawFilesMap, Map<String, GalaxyFileObject> mzMLFilesMap) {
 
         this._searchSettingsMap = searchSettingsMap;
         this.updateFastaFileList(fastaFilesMap);
@@ -724,23 +716,45 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         _searchSettingsFileList.setItemIcon("Add new", VaadinIcons.FILE_ADD);
         Map<String, String> mgfFileIdToNameMap = new LinkedHashMap<>();
 
-//        if (rawDataListLayout.getComponentCount() != rawFilesMap.size() && mgf_raw_dataUploader.isBusy() || (mgfDataListLayout.getComponentCount() != mgfFilesMap.size() && mgf_raw_dataUploader.isBusy())) {
-//            mgf_raw_dataUploader.setBusy(false, true);
-//
-//        }
         indexer = 1;
         mgfDataListLayout.removeAllComponents();
         rawDataListLayout.removeAllComponents();
+        mzMLDataListLayout.removeAllComponents();
         spectrumFileUploaderBusy = false;
+
+        mzMLFilesMap.keySet().forEach((id) -> {
+
+            GalaxyFileObject ds = mzMLFilesMap.get(id);
+            mgfFileIdToNameMap.put(id, ds.getName());
+            StatusLabel statusLabel = new StatusLabel();
+            statusLabel.setStatus("ok");
+            Label nameLabel = new Label(ds.getName());
+            Label type = new Label();
+            type.setValue("<b>" + ds.getType() + "</b>");
+            type.setContentMode(ContentMode.HTML);
+            type.setDescription(ds.getType());
+            RadioButton selectionRadioBtn = new RadioButton(id) {
+                @Override
+                public void selectItem(Object itemId) {
+
+                }
+            };
+
+            HorizontalLayout rowLayout = initializeRowData(new Component[]{new Label(indexer + ""), selectionRadioBtn, nameLabel, type, statusLabel}, false);
+            rowLayout.setId(id);
+            rowLayout.addLayoutClickListener(mzMLClickListener);
+            mzMLDataListLayout.addComponent(rowLayout);
+            indexer++;
+
+        });
+        indexer = 1;
+
         mgfFilesMap.keySet().forEach((id) -> {
 
             GalaxyFileObject ds = mgfFilesMap.get(id);
             mgfFileIdToNameMap.put(id, ds.getName());
             StatusLabel statusLabel = new StatusLabel();
-            statusLabel.setStatus(ds.getStatus());
-            if (!ds.getStatus().equalsIgnoreCase("ok")) {
-                spectrumFileUploaderBusy = true;
-            }
+            statusLabel.setStatus("ok");
             Label nameLabel = new Label(ds.getName());
             Label type = new Label();
             type.setValue("<b>" + ds.getType() + "</b>");
@@ -761,7 +775,6 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
 
         });
         indexer = 1;
-
         rawFilesMap.keySet().forEach((id) -> {
             GalaxyFileObject ds = rawFilesMap.get(id);
             StatusLabel statusLabel = new StatusLabel();
@@ -784,18 +797,18 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
             HorizontalLayout rowLayout = initializeRowData(new Component[]{new Label(indexer + ""), selectionRadioBtn, nameLabel, type, statusLabel}, false);
             rowLayout.setId(id);
             rowLayout.addLayoutClickListener(rawClickListener);
-
             rawDataListLayout.addComponent(rowLayout);
             indexer++;
         }
         );
-//        UI.getCurrent().accessSynchronously(() -> {
-        updateMgfFilesTable();
-        updateRawFilesTable();
-        mgf_raw_dataUploader.setBusy(spectrumFileUploaderBusy);
-//            UI.getCurrent().push();
 
-//        });
+        UI.getCurrent().accessSynchronously(() -> {
+            updateMgfFilesTable();
+            updateRawFilesTable();
+            updateMzMLFilesTable();
+            mgf_raw_dataUploader.setBusy(spectrumFileUploaderBusy);
+            UI.getCurrent().push();
+        });
     }
 
     /**
@@ -850,10 +863,8 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
      * @param fastaFilesMap Map of FASTA files galaxy ID and FASTA Files dataset
      */
     public void updateFastaFileList(Map<String, GalaxyFileObject> fastaFilesMap) {
-//        if (fastaFileIdToNameMap != null && fastaFileIdToNameMap.size() != fastaFilesMap.size()) {
-//            fastaFileUploader.setBusy(true);
-//            _fastaFileInputLayout.setEnabled(false);
-//        }
+
+        fastaFileUploaderBusy = false;
         fastaFileIdToNameMap = new LinkedHashMap<>();
         String selectedId = "";
         for (String id : fastaFilesMap.keySet()) {
@@ -864,6 +875,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         }
         this._fastaFileInputLayout.updateList(fastaFileIdToNameMap);
         this._fastaFileInputLayout.setSelected(selectedId);
+        fastaFileUploader.setBusy(fastaFileUploaderBusy);
 
     }
 
@@ -934,6 +946,19 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
 
     }
 
+    private void updateMzMLFilesTable() {
+        Iterator<Component> itr = mzMLDataListLayout.iterator();
+        while (itr.hasNext()) {
+            HorizontalLayout raw = (HorizontalLayout) itr.next();
+            if (_mzMLFileList.contains(raw.getId() + "")) {
+                raw.addStyleName("selectedraw");
+            } else {
+                raw.removeStyleName("selectedraw");
+            }
+        }
+
+    }
+
     private void updateRawFilesTable() {
         Iterator<Component> itr = rawDataListLayout.iterator();
         while (itr.hasNext()) {
@@ -946,37 +971,13 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         }
     }
 
-    private void setBusyUploadSpectrumFiles(boolean busy) {
-
-//        spectrumFileContainer.removeAllComponents();
-//        executeWorkFlowBtn.setEnabled(!busy);
-//        if (busy) {
-//            spectrumFileContainer.addComponent(initBusyUploadPanel());
-//        } else {
-//            spectrumFileContainer.addComponent(inputDataFilesContainer, "left:15px;top:83px;right:15px;bottom:10px");
-//            
-//
-//        }
-    }
-
-    private void setBusyUploadFastaFiles(boolean busy) {
-
-//        busyWindow.setVisible(busy);
-//        fastaFileContainer.removeAllComponents();
-//        executeWorkFlowBtn.setEnabled(!busy);
-//        if (busy) {
-//            fastaFileContainer.addComponent(initBusyUploadPanel());
-//        } else {
-//            fastaFileContainer.addComponent(_fastaFileInputLayout, "left:15px;top:15px;right:15px");
-//        }
-    }
-
     /**
      * Reset all input form to default
      */
     public void reset() {
         _rawFileList.clear();
         _mgfFileList.clear();
+        _mzMLFileList.clear();
         rawMgfController.select("rawFiles");
         updateRawFilesTable();
         this._projectNameField.clear();

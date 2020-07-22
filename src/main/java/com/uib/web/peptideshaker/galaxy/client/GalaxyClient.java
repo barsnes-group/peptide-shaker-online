@@ -45,7 +45,8 @@ public class GalaxyClient {
     public boolean isJobDone(String jobid) {
         try {
             String jobStat = Galaxy_Instance.getJobsClient().showJob(jobid).getState();
-            return jobStat.equalsIgnoreCase("ok");
+            System.out.println("at job stat is "+jobStat);
+            return jobStat.equalsIgnoreCase("ok") || jobStat.equalsIgnoreCase("error") ||jobStat.equalsIgnoreCase("paused")  ;
 
         } catch (Exception e) {
             System.out.println("at handel exception at check history ready");
@@ -53,20 +54,6 @@ public class GalaxyClient {
         }
         String jobStat = Galaxy_Instance.getJobsClient().showJob(jobid).getState();
         return jobStat.equalsIgnoreCase("ok");
-
-    }
-
-    public boolean isHistoryReady(String historyId) {
-        try {
-            HistoryDetails h = getHistoriesClient().showHistory(historyId);
-            return h.isReady();
-
-        } catch (Exception e) {
-            System.out.println("at handel exception at check history ready");
-            Galaxy_Instance = GalaxyInstanceFactory.get(galaxy_Server_Url, user_API);
-        }
-        HistoryDetails h = getHistoriesClient().showHistory(historyId);
-        return h.isReady();
 
     }
 
@@ -116,6 +103,10 @@ public class GalaxyClient {
         }
         return Galaxy_Instance.getHistoriesClient().getHistories();
 
+    }
+    private boolean checkHistoryReady(){
+    
+    return true;
     }
 
 }

@@ -13948,7 +13948,7 @@ div.v-layout.v-horizontal.v-widget {
 	top: 150px !important;
 	width: 112px !important;
 	z-index: 3 !important;
-	position: fixed !important;
+	position: absolute !important;
 	overflow: visible;
 }
 
@@ -21447,7 +21447,7 @@ div.v-layout.v-horizontal.v-widget {
 .webpeptideshakertheme .averagescreenstyle .subviewbuttonsactioncontainer {
 	top: 190px !important;
 	width: 54px !important;
-	left: 5px;
+	left: -5px;
 }
 
 .webpeptideshakertheme .averagescreenstyle .viewframe {
@@ -22096,6 +22096,10 @@ div.v-layout.v-horizontal.v-widget {
 	margin-top: -15px;
 	min-width: 30px;
 }
-.averagescreenstyle .v-slot-bigmenubtn .glubimg.nopadding  .v-image {
-    padding:0px !important; 
+
+.webpeptideshakertheme .averagescreenstyle .v-slot-bigmenubtn .glubimg.nopadding .v-image {
+	padding: 0px !important;
+}
+.v-select-optiongroup-controllercombobox{
+	display:inline-flex !important;
 }

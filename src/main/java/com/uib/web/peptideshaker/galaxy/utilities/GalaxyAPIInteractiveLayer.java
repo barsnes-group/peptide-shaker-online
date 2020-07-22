@@ -136,13 +136,13 @@ public class GalaxyAPIInteractiveLayer {
         int dsSize = dataList.size();
         for (int i = 0; i < dsSize; i++) {
             Map<String, Object> datasetMap = (Map<String, Object>) dataList.get(i);
-            if ((datasetMap.containsKey("collection_type") && datasetMap.get("collection_type").toString().equalsIgnoreCase("list") && datasetMap.get("deleted").toString().equalsIgnoreCase("false"))) {
-                if (datasetMap.get("name").toString().endsWith("-Indexed-MGF")) {
+            if ((datasetMap.containsKey("collection_type") && datasetMap.get("deleted").toString().equalsIgnoreCase("false"))) {
+//                if (datasetMap.get("name").toString().endsWith("-Indexed-MGF")) {
                     Map<String, Object> collectionMap = getCollectionElements(datasetMap.get("url").toString(), galaxyUrl, apiKey);
                     datasetMap.put("elements", ((List) collectionMap.get("elements")));
-                }
+//                }
             }
-            if ((datasetMap.containsKey("collection_type") && datasetMap.get("collection_type").toString().equalsIgnoreCase("list")) && (!datasetMap.get("name").toString().endsWith("-Indexed-MGF")) || (datasetMap.get("purged") + "").equalsIgnoreCase("true") || (datasetMap.get("deleted") + "").equalsIgnoreCase("true")) {
+            if ((datasetMap.containsKey("collection_type")) && (datasetMap.get("purged") + "").equalsIgnoreCase("true") || (datasetMap.get("deleted") + "").equalsIgnoreCase("true")) {
                 continue;
             }
             if ((datasetMap.get("extension") + "").equalsIgnoreCase("searchgui_archive")) {
@@ -233,6 +233,37 @@ public class GalaxyAPIInteractiveLayer {
             list.add(value);
         }
         return list;
+    }
+     /**
+     * Get the user usage of memory on galaxy server
+     *
+     * @param galaxyUrl web address for galaxy
+     * @param userId user id
+     * @param apiKey user API key
+     * @return the memory usage as string
+     */
+    public boolean isJobDone(String galaxyUrl, String jobId, String apiKey) {
+
+        try {
+            URL website = new URL(galaxyUrl + "/api/jobs/" + jobId + "?key=" + apiKey);
+            URLConnection conn = website.openConnection();
+            conn.addRequestProperty("Accept", "application/json, text/javascript, */*; q=0.01;text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3");
+
+            String stringToParse;
+            try (BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+                stringToParse = bin.readLine();
+            }
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(stringToParse);
+            Map<String, Object> dataList = jsonToMap(json);
+            System.out.println("at history ready "+dataList.get("state"));
+            return dataList.get("state").toString().equalsIgnoreCase("ok")||dataList.get("state").toString().equalsIgnoreCase("error")||dataList.get("state").toString().equalsIgnoreCase("paused");
+
+        } catch (IOException | JSONException | ParseException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
 }

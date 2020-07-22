@@ -41,7 +41,7 @@ public abstract class DatasetOverviewLayout extends VerticalLayout {
     /**
      * The post translational modifications factory.
      */
-    private final ModificationFactory PTM =  ModificationFactory.getInstance();
+    private final ModificationFactory PTM = ModificationFactory.getInstance();
     /**
      * Convenience array for forward ion type selection.
      */
@@ -113,8 +113,8 @@ public abstract class DatasetOverviewLayout extends VerticalLayout {
         upperPanel.addComponent(searchEnginesLabel);
 
         int index = 1;
-        for (String mgf : dataset.getInputMGFFiles().keySet()) {
-            Horizontal2Label mgfFile = new Horizontal2Label("MGF File " + index + " :", dataset.getInputMGFFiles().get(mgf).getName().replace(dataset.getName(), "").replace("-" + index + "-MGFFile", "").replaceFirst("-", ""));
+        for (String inputFileName : dataset.getInputDataFiles()) {
+            Horizontal2Label mgfFile = new Horizontal2Label("Input File " + index + " :", inputFileName);
             upperPanel.addComponent(mgfFile);
             index++;
         }
@@ -194,8 +194,8 @@ public abstract class DatasetOverviewLayout extends VerticalLayout {
 
 //            Map<String, Object> json_Precursor_options_Objects = jsonToMap(new JSONObject(parameters.get("precursor_options").toString()));
         ion = ionsList.get(parameters.getSearchParameters().getForwardIons().get(0)) + " , " + ionsList.get(parameters.getSearchParameters().getRewindIons().get(0));//json_Precursor_options_Objects.get("forward_ion") + " , " + json_Precursor_options_Objects.get("reverse_ion");
-        precursor_ion = parameters.getSearchParameters().getPrecursorAccuracy()+"";//parameters.getSearchParameters().json_Precursor_options_Objects.get("precursor_ion_tol") + " " + json_Precursor_options_Objects.get("precursor_ion_tol_units").toString().replace("1", "ppm").replace("2", "Da");
-        fragment_tol = parameters.getSearchParameters().getFragmentIonAccuracyInDaltons()+"Da";// json_Precursor_options_Objects.get("fragment_tol") + " Da";
+        precursor_ion = parameters.getSearchParameters().getPrecursorAccuracy() + "";//parameters.getSearchParameters().json_Precursor_options_Objects.get("precursor_ion_tol") + " " + json_Precursor_options_Objects.get("precursor_ion_tol_units").toString().replace("1", "ppm").replace("2", "Da");
+        fragment_tol = parameters.getSearchParameters().getFragmentIonAccuracyInDaltons() + "Da";// json_Precursor_options_Objects.get("fragment_tol") + " Da";
         _charge = parameters.getSearchParameters().getMinChargeSearched() + " to " + parameters.getSearchParameters().getMaxChargeSearched();//json_Precursor_options_Objects.get("min_charge") + " to " + json_Precursor_options_Objects.get("max_charge");
         iso = parameters.getSearchParameters().getMinIsotopicCorrection() + " to " + parameters.getSearchParameters().getMaxIsotopicCorrection();//json_Precursor_options_Objects.get("min_isotope") + " to " + json_Precursor_options_Objects.get("max_isotope");
         Horizontal2Label digestionList = new Horizontal2Label("Digestion :", digestion);

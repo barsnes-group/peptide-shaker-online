@@ -62,7 +62,7 @@ public class GalaxyDatasetServingUtil {
      * @param MGFFileName The MGF file name
      * @return MSnSpectrum spectrum object
      */
-    public Spectrum getSpectrum(long startIndex, String historyId, String MGFGalaxyID, String MGFFileName) {
+    public Spectrum getSpectrum(long startIndex, String historyId, String MGFGalaxyID, String MGFFileName, int charge) {
         try {
             StringBuilder locationBuilder = new StringBuilder(galaxyLink + "/api/histories/" + historyId + "/contents/" + MGFGalaxyID + "/display?");
             params[1].value = (startIndex - 11) + "";
@@ -72,7 +72,7 @@ public class GalaxyDatasetServingUtil {
                 }
                 locationBuilder.append(params[i].name).append('=').append(params[i].value);
             }
-            String location = locationBuilder.toString();//         
+            String location = locationBuilder.toString();
             URL website = new URL(location);
             URLConnection conn = website.openConnection();
             conn.addRequestProperty("Accept", "application/json, text/javascript, */*; q=0.01");
@@ -114,6 +114,7 @@ public class GalaxyDatasetServingUtil {
                                 e.printStackTrace();
                             }
                         } else if (line.startsWith("CHARGE")) {
+                            System.out.println("at charge line " + line);
                             precursorCharges = parseCharges(line);
                         } else if (line.startsWith("PEPMASS")) {
                             String temp = line.substring(line.indexOf("=") + 1);
@@ -167,6 +168,9 @@ public class GalaxyDatasetServingUtil {
                             // ion series not implemented
                         } else if (line.startsWith("END")) {
 
+                            if (precursorCharges == null) {
+                                precursorCharges = new int[]{charge};
+                            }
                             Precursor precursor;
                             if (rt1 != -1 && rt2 != -1) {
                                 precursor = new Precursor(precursorMz, precursorIntensity, precursorCharges, rt1, rt2);
