@@ -557,7 +557,6 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
         for (GalaxyTransferableFile f : cuiFileSet) {
             try {
                 cuiFileMap.put(f.getName(), f.getFile());
-                System.out.println("at cui file names " + f.getName());
             } catch (IOException ex) {
                 System.out.println("Error: init cui files map : " + ex);
             }

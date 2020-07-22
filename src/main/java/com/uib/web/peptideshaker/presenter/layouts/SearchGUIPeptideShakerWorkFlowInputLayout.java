@@ -226,7 +226,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         rawMgfController.addItem("rawFiles");
         rawMgfController.addItem("mgfFiles");
         rawMgfController.addItem("mzMLFiles");
-        
+
         rawMgfController.setHeight(26, Unit.PERCENTAGE);
         rawMgfController.setHtmlContentAllowed(true);
         rawMgfController.setItemCaption("rawFiles", "Raw File(s)");
@@ -272,7 +272,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         };
         mgf_raw_dataUploader.addUploaderFilter("mgf");
         mgf_raw_dataUploader.addUploaderFilter("thermo.raw");
-         mgf_raw_dataUploader.addUploaderFilter("mzml");
+        mgf_raw_dataUploader.addUploaderFilter("mzml");
         inputDataFilesContainer.addComponent(mgf_raw_dataUploader, "right:5px;top:-40px");
 
         rawDataListLayout = new VerticalLayout();
@@ -579,7 +579,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
             } else {
                 _fastaFileInputLayout.removeStyleName("errorstyle");
             }
-            if (_mgfFileList.isEmpty() && _rawFileList.isEmpty()) {
+            if (_mgfFileList.isEmpty() && _rawFileList.isEmpty() && _mzMLFileList.isEmpty()) {
                 inputDataFilesContainer.addStyleName("errorstyle");
                 return;
             } else {
@@ -619,7 +619,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
 
                 executeWorkFlow(projectName, fastFileId, searchParamerterId, spectrumIds, searchEnginesIds, _searchParameterForm.getSearchParameters(), false);
             } else {
-                executeWorkFlow(projectName, fastFileId, searchParamerterId, mzmlIds, searchEnginesIds, _searchParameterForm.getSearchParameters(), true);
+                executeWorkFlow(projectName, fastFileId, searchParamerterId, mzmlIds, searchEnginesIds, _searchParameterForm.getSearchParameters(), false);
             }
         });
         return executeWorkFlowBtn;

@@ -201,7 +201,6 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
             this.dataLayout.updateDatasetsTable(historyFilesMap);
 
         }
-        System.out.println("push is activated");
 
     }
 

@@ -246,24 +246,21 @@ public class GalaxyAPIInteractiveLayer {
      * @param apiKey user API key
      * @return the memory usage as string
      */
-    public boolean isJobDone(String galaxyUrl, String jobId, String apiKey) throws MalformedURLException, ParseException, JSONException, IOException ,FileNotFoundException{
+    public boolean isJobDone(String galaxyUrl, String jobId, String apiKey) throws MalformedURLException, ParseException, JSONException, IOException, FileNotFoundException {
 
-   
-            URL website = new URL(galaxyUrl + "/api/jobs/" + jobId + "?key=" + apiKey);
-            URLConnection conn = website.openConnection();
-            conn.addRequestProperty("Accept", "application/json, text/javascript, */*; q=0.01;text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3");
+        URL website = new URL(galaxyUrl + "/api/jobs/" + jobId + "?key=" + apiKey);
+        URLConnection conn = website.openConnection();
+        conn.addRequestProperty("Accept", "application/json, text/javascript, */*; q=0.01;text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3");
 
-            String stringToParse;
-            try (BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
-                stringToParse = bin.readLine();
-            }
-            JSONParser parser = new JSONParser();
-            JSONObject json = (JSONObject) parser.parse(stringToParse);
-            Map<String, Object> dataList = jsonToMap(json);
-            System.out.println("at history ready " + dataList.get("state"));
-            return dataList.get("state").toString().equalsIgnoreCase("ok") || dataList.get("state").toString().equalsIgnoreCase("error") || dataList.get("state").toString().equalsIgnoreCase("paused");
+        String stringToParse;
+        try (BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+            stringToParse = bin.readLine();
+        }
+        JSONParser parser = new JSONParser();
+        JSONObject json = (JSONObject) parser.parse(stringToParse);
+        Map<String, Object> dataList = jsonToMap(json);
+        return dataList.get("state").toString().equalsIgnoreCase("ok") || dataList.get("state").toString().equalsIgnoreCase("error") || dataList.get("state").toString().equalsIgnoreCase("paused");
 
-        
     }
 
     public Set<String> isHistoryReady(String galaxyUrl, String historyId, String apiKey) {
@@ -273,7 +270,7 @@ public class GalaxyAPIInteractiveLayer {
             URL website = new URL(galaxyUrl + "/api/histories/" + historyId + "?key=" + apiKey);
             URLConnection conn = website.openConnection();
             conn.addRequestProperty("Accept", "application/json, text/javascript, */*; q=0.01;text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3");
-            
+
             String stringToParse;
             try (BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
                 stringToParse = bin.readLine();
@@ -281,43 +278,24 @@ public class GalaxyAPIInteractiveLayer {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(stringToParse);
             Map<String, Object> dataList = jsonToMap(json);
-            String stat = dataList.get("state").toString();
- for(String key:dataList.keySet())
-                System.out.println("at map id "+ key+"  "+dataList.get(key));
             dataList = (Map<String, Object>) dataList.get("state_ids");
-            System.out.println("     -----------------------            ");
-            for(String key:dataList.keySet())
-                System.out.println("at stat id "+ key+"  "+dataList.get(key));
-            
             List<String> jobs = (List<String>) dataList.get("running");
             runningJobs.addAll(jobs);
-            System.out.println("running "+jobs);
             jobs = (List<String>) dataList.get("new");
-            System.out.println("new "+jobs);
             runningJobs.addAll(jobs);
             jobs = (List<String>) dataList.get("paused");
-            System.out.println("paused "+jobs);
             runningJobs.addAll(jobs);
             jobs = (List<String>) dataList.get("queued");
             runningJobs.addAll(jobs);
-            System.out.println("quwued "+jobs);
             jobs = (List<String>) dataList.get("upload");
             runningJobs.addAll(jobs);
-            System.out.println("upload "+jobs);
 
             jobs = (List<String>) dataList.get("discarded");
             runningJobs.removeAll(jobs);
-            System.out.println("discard "+jobs);
             jobs = (List<String>) dataList.get("error");
             runningJobs.removeAll(jobs);
-            System.out.println("error "+jobs);
             jobs = (List<String>) dataList.get("ok");
             runningJobs.removeAll(jobs);
-            System.out.println("ok "+jobs);
-            
-            
-           
-            System.out.println("----------------------------" + stat + "---------------------------------"+runningJobs);
 
         } catch (IOException | JSONException | ParseException e) {
             e.printStackTrace();

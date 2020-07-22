@@ -434,7 +434,7 @@ public abstract class GalaxyToolsHandler {
                 workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-Full-Pipeline-Workflow-Id-Single-Input.ga");
                 inputDataFiles = new WorkflowInputs.WorkflowInput(inputFileIdsList.keySet().iterator().next(), WorkflowInputs.InputSourceType.HDA);
             } else {
-                workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-workflow_Multi_MGF.ga");
+                workflowFile = new File(basepath + "/VAADIN/Galaxy-Workflow-Full-Pipeline-Workflow-Id-Multiple-Input.ga");
                 inputDataFiles = prepareWorkflowCollectionList(WorkflowInputs.InputSourceType.HDCA, inputFileIdsList.keySet(), historyId);
             }
             String jsonWorkflow = readJsonFile(workflowFile);
@@ -454,13 +454,12 @@ public abstract class GalaxyToolsHandler {
             workflowInputs.setWorkflowId(selectedWf.getId());
             workflowInputs.setDestination(new WorkflowInputs.ExistingHistory(historyId));
 
-            WorkflowInputs.WorkflowInput workflowInput0 = new WorkflowInputs.WorkflowInput(searchParameterFileId, WorkflowInputs.InputSourceType.HDA);
+            WorkflowInputs.WorkflowInput workflowInput0 = new WorkflowInputs.WorkflowInput(searchParameterFileId, WorkflowInputs.InputSourceType.HDA); 
+            workflowInputs.setInput("0", workflowInput0);
             WorkflowInputs.WorkflowInput workflowInput1 = new WorkflowInputs.WorkflowInput(fastaFileId, WorkflowInputs.InputSourceType.HDA);
-            if (quant) {
-                workflowInputs.setInput("2", inputDataFiles);//fasta file
-                workflowInputs.setInput("1", workflowInput1);//search param
-                workflowInputs.setInput("0", workflowInput0);//spectra
-            }
+           workflowInputs.setInput("1", workflowInput1);            
+            workflowInputs.setInput("2", inputDataFiles);
+
             payLoad = "";
             if (quant) {
                 if (inputFileIdsList.size() == 1) {
@@ -515,6 +514,7 @@ public abstract class GalaxyToolsHandler {
             jobIsExecuted();
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Error: workflow invoking error " + e);
             if (selectedWf != null) {
                 galaxyWorkFlowClient.deleteWorkflowRequest(selectedWf.getId());

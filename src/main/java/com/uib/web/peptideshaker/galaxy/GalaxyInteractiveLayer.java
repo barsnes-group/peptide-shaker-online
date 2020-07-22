@@ -73,7 +73,6 @@ public abstract class GalaxyInteractiveLayer {
             @Override
             public void updatePresenterLayer(Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress, boolean updatePresenterView, Set<String> toDeleteMap) {
                 //update history in the system                 
-                System.out.println("at before update presenter is jobs still in progress " + jobsInProgress);
                 GalaxyInteractiveLayer.this.updatePresenterLayer(historyFilesMap, jobsInProgress, updatePresenterView);
                 if (!jobsInProgress && toDeleteMap != null && toolsHandler != null) {
                     toDeleteMap.forEach((galaxyId) -> {
@@ -279,19 +278,22 @@ public abstract class GalaxyInteractiveLayer {
     public void deleteDataset(GalaxyFileObject fileObject) {
         if (fileObject.getType().equalsIgnoreCase("Web Peptide Shaker Dataset")) {
             PeptideShakerVisualizationDataset vDs = (PeptideShakerVisualizationDataset) fileObject;
-            for (GalaxyTransferableFile moffId : vDs.getMoff_quant_file()) {
-                toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), moffId.getGalaxyId(), false);
+            if (vDs.isQuantDataset()) {
+                vDs.getMoff_quant_file().forEach((moffId) -> {
+                    toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), moffId.getGalaxyId(), false);
+                });
+                toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getMoffGalaxyId(), true);
             }
             toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getMoffGalaxyId(), true);
-            for (GalaxyTransferableFile moffId : vDs.getCuiFileSet()) {
-                toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), moffId.getGalaxyId(), false);
+            for (GalaxyTransferableFile cuiFile : vDs.getCuiFileSet()) {
+                toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), cuiFile.getGalaxyId(), false);
             }
             toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getCuiListGalaxyId(), true);
-            for (GalaxyFileObject moffId : vDs.getIndexedMGFFilesMap().values()) {
-                toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), moffId.getGalaxyId(), false);
+            for (GalaxyFileObject indexedMGF : vDs.getIndexedMGFFilesMap().values()) {
+                toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), indexedMGF.getGalaxyId(), false);
             }
             toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getIndexedMgfGalaxyId(), true);
-            toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getMoffGalaxyId(), true);
+            
             toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getGalaxyId(), false);
             toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getSearchGUIFile().getGalaxyId(), false);
 

@@ -9,12 +9,13 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.BootstrapFragmentResponse;
 import com.vaadin.server.BootstrapListener;
 import com.vaadin.server.BootstrapPageResponse;
+import com.vaadin.server.DefaultErrorHandler;
+import static com.vaadin.server.DefaultErrorHandler.doDefault;
 import com.vaadin.server.Page;
 import com.vaadin.server.SessionInitEvent;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
-import com.vaadin.shared.communication.PushMode;
 import com.vaadin.shared.communication.PushMode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.shared.ui.window.WindowMode;
@@ -173,6 +174,18 @@ public class PeptidShakerUI extends UI {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        UI.getCurrent().setErrorHandler(new DefaultErrorHandler() {
+            @Override
+            public void error(com.vaadin.server.ErrorEvent event) {
+                // Find the final cause
+
+                // Display the error message in a custom fashion
+                System.out.println("at cought error in error handler");
+
+                // Do the default error handling (optional)
+                doDefault(event);
+            }
+        });
 
     }
 
