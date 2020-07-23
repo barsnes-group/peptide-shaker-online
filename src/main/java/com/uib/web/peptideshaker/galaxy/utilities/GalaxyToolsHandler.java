@@ -392,7 +392,6 @@ public abstract class GalaxyToolsHandler {
                     jsonString.append(line);
                 }
             }
-            System.out.println("to delete " + collection + " " + dsId + "  " + conn.getResponseMessage());
             conn.disconnect();
         } catch (MalformedURLException ex) {
             ex.printStackTrace();
@@ -511,7 +510,7 @@ public abstract class GalaxyToolsHandler {
                 ex.printStackTrace();
             }
             galaxyWorkFlowClient.deleteWorkflowRequest(selectedWf.getId());
-            jobIsExecuted();
+            jobIsExecuted((quant&&(inputFileIdsList.size() != 1)));
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -519,7 +518,7 @@ public abstract class GalaxyToolsHandler {
             if (selectedWf != null) {
                 galaxyWorkFlowClient.deleteWorkflowRequest(selectedWf.getId());
             }
-            jobIsExecuted();
+            jobIsExecuted(false);
             return false;
         }
     }
@@ -637,7 +636,7 @@ public abstract class GalaxyToolsHandler {
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
-            jobIsExecuted();
+            jobIsExecuted(false);
 
         });
         t.start();
@@ -647,8 +646,9 @@ public abstract class GalaxyToolsHandler {
     /**
      * Synchronise and update Online PEptideShaker file system with Galaxy
      * Server.
+     * @param keepfollow invoke history tracker
      */
-    public abstract void jobIsExecuted();
+    public abstract void jobIsExecuted(boolean keepfollow);
     String payLoad = "";
 
     /**
@@ -668,7 +668,7 @@ public abstract class GalaxyToolsHandler {
 //            conn.addRequestProperty("Accept-Language", "ar,en-US;q=0.8,en;q=0.6,en-GB;q=0.4");
 //            conn.setRequestProperty("Accept", "application/json, text/javascript, */*; q=0.01");
             conn.setRequestProperty("Content-Type", "application/json");
-            conn.addRequestProperty("Host", "158.39.74.194");
+            conn.addRequestProperty("Host", galaxyURL.replace("http://", ""));
             conn.addRequestProperty("Content-Length", "2522");
 //            conn.addRequestProperty("DNT", "1");
 //            conn.addRequestProperty("X-Requested-With", "XMLHttpRequest");

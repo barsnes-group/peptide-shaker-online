@@ -8885,21 +8885,83 @@
         max-height:5px
     }
     .busypanel{
-	background-color:white;
-}
-.busypanel img{
-	left:50%;
-	margin-left:-15px;
-	top:50% !important;
-	margin-top:-15px;
-	min-width:30px;
-}
-.averagescreenstyle .v-slot-bigmenubtn .glubimg.nopadding  .v-image {
-    padding:0px !important; 
-}
-.v-select-optiongroup-controllercombobox{
-	display:inline-flex !important;
-}
+        background-color:white;
+    }
+    .busypanel img{
+        left:50%;
+        margin-left:-15px;
+        top:50% !important;
+        margin-top:-15px;
+        min-width:30px;
+    }
+    .averagescreenstyle .v-slot-bigmenubtn .glubimg.nopadding  .v-image {
+        padding:0px !important; 
+    }
+    .v-select-optiongroup-controllercombobox{
+        display:inline-flex !important;
+    }
+
+
+    .modificationlistpanel  .v-select optiongroup {
+        background:white !important;
+    }
+
+    .modificationlistpanel .v-select-optiongroup   {
+        border-color:transparent !important;
+        color:gray !important;
+        font-size:12px !important;
+        padding-left:10px;
+        padding-top:5px;
+        overflow:auto !important;
+
+    }
+    .v-panel-content-modificationlistpanel.v-scrollable ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+    }
+
+    .v-panel-content-modificationlistpanel.v-scrollable ::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px grey;
+        border-radius: 8px;
+    }
+
+    .v-panel-content-modificationlistpanel.v-scrollable ::-webkit-scrollbar-thumb {
+        background: #bad5f2;
+        border-radius: 8px;
+    }
+
+    .v-panel-content-modificationlistpanel.v-scrollable ::-webkit-scrollbar-thumb:hover {
+        background: #347cce;
+    }
+    :root .modificationlistpanel .v-checkbox > input ~ label:before, :root .modificationlistpanel .v-checkbox > input ~ label:after {
+
+        width: 15px;
+        height: 15px;
+        font-size: 10px;
+        text-align: center;
+        line-height:15px;
+        margin-top:3px;
+    }
+
+    :root .modificationlistpanel .v-checkbox > input:checked ~ label, :root .modificationlistpanel .v-checkbox > input:checked ~ label {
+        color:black !important;
+        font-weight:bold;
+        border-bottom:1px solid lightgray;
+    }
+
+    .modificationlistpanel .v-checkbox.v-select-option {
+        max-height:21px;
+    }
+    .modificationlistpanel .v-checkbox.v-select-option label{
+
+        overflow: hidden;
+        white-space: nowrap !important;
+        max-height:21px;
+        max-width:100% !important;
+        text-overflow:ellipsis;
+
+    }
+
 }
 
 

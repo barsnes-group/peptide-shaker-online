@@ -1,18 +1,29 @@
 package com.uib.web.peptideshaker.presenter.core.filtercharts.filters;
 
+import com.itextpdf.text.pdf.codec.Base64;
 import com.uib.web.peptideshaker.model.core.ModificationMatrix;
 import com.uib.web.peptideshaker.presenter.core.FilterButton;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.RegistrableFilter;
 import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.SelectionManager;
+import com.vaadin.data.Property;
 import com.vaadin.event.LayoutEvents;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.themes.ValoTheme;
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import org.jfree.chart.encoders.ImageEncoder;
+import org.jfree.chart.encoders.ImageEncoderFactory;
+import org.jfree.chart.encoders.ImageFormat;
 
 /**
  * This class represents Modifications filter theat support both interactive
@@ -47,7 +58,7 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
      * Venn diagram to represent limited number of data intersections .
      */
     private final VennDiagram vennDiagram;
-    
+
     public ModificationsFilter(String title, String filterId, SelectionManager Selection_Manager) {
         this.filterId = filterId;
         this.Selection_Manager = Selection_Manager;
@@ -72,75 +83,136 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
         resetFilterbtn.addStyleName("btninframe");
         resetFilterbtn.addStyleName("modificationfilterreset");
         ModificationsFilter.this.addComponent(resetFilterbtn, "right:14px;top:-1px;");
-        
+
         this.matrixDiagram = new MatrixDiagramRedraw() {
             @Override
             public void setMainAppliedFilter(boolean mainAppliedFilter) {
                 ModificationsFilter.this.setMainAppliedFilter(mainAppliedFilter);
             }
-            
+
             @Override
             public void applyFilter(Set<Integer> columnIndexs) {
                 ModificationsFilter.this.applyFilter(columnIndexs);
             }
-            
+
+            @Override
+            public void setVisibleScrollbar(boolean visible) {
+                modificationFilterPanel.setVisible(visible);
+                if (visible) {
+                    if (matrixDiagram.getBarChartX() > 0) {
+                        System.out.println("update width " + matrixDiagram.getBarChartX());
+                        modificationFilterPanel.setWidth((matrixDiagram.getBarChartX()), Unit.PIXELS);
+                    }
+                    modificationFilterPanel.setHeight((matrixDiagram.getBarEndY()), Unit.PIXELS);
+                }
+
+            }
+
         };
         ModificationsFilter.this.addComponent(matrixDiagram, "left:10px;top:30px;right:10px;bottom:10px;");
         matrixDiagram.setVisible(false);
-       
+
         this.vennDiagram = new VennDiagram() {
             @Override
             public void compleateLoading(boolean done) {
                 vennDiagram.setVisible(done);
                 matrixDiagram.setVisible(!done);
-                
+                modificationFilterPanel.setVisible(!done);
+
             }
-            
+
             @Override
             public void applyFilter(Set<Integer> columnIndexs) {
                 ModificationsFilter.this.applyFilter(columnIndexs);
             }
-            
+
         };
         ModificationsFilter.this.addComponent(vennDiagram, "left:0px;top:0px;");
-        
+
+        modificationOptionGroup = initModificationSelectionList();
+        modificationFilterPanel = new Panel(modificationOptionGroup);
+        modificationFilterPanel.setSizeUndefined();
+        modificationFilterPanel.setStyleName("modificationlistpanel");
+        ModificationsFilter.this.addComponent(modificationFilterPanel, "left:10px;top:30px;");
+
     }
-    
-    public void initializeFilterData(ModificationMatrix modificationMatrix, Map<String, Color> dataColors, Set<Object> selectedCategories, int totalNumber) {
-        matrixDiagram.initializeFilterData(modificationMatrix, dataColors, selectedCategories, totalNumber);
-        vennDiagram.initializeFilterData(modificationMatrix, dataColors, selectedCategories, totalNumber);
-        
+    private final Panel modificationFilterPanel;
+    private final OptionGroup modificationOptionGroup;
+
+    private OptionGroup initModificationSelectionList() {
+
+        OptionGroup modificationOptionGroup = new OptionGroup("Select an option");
+        modificationOptionGroup.setSizeFull();
+        modificationOptionGroup.setNullSelectionAllowed(true);
+        modificationOptionGroup.setImmediate(true);
+        modificationOptionGroup.setMultiSelect(true);
+        modificationOptionGroup.addValueChangeListener((event) -> {
+            Set<String> selection = (Set<String>) modificationOptionGroup.getValue();
+            if (selection == null || selection.isEmpty()) {
+                selection = new LinkedHashSet<>();
+                for (Object Id : modificationOptionGroup.getItemIds()) {
+                    selection.add(Id.toString());
+                }
+            }
+            updateModificationMatrixDiagram(selection);
+
+        });
+
+        return modificationOptionGroup;
     }
-    
+
+    private void updateModificationMatrixDiagram(Set<String> selection) {
+        matrixDiagram.updateViewedModifications(selection);
+
+    }
+
+    private void populateModificationOptionGroup(Map<String, Color> modificationsColorMap) {
+        modificationOptionGroup.removeAllItems();
+        for (String modification : modificationsColorMap.keySet()) {
+            modificationOptionGroup.addItem(modification);
+            modificationOptionGroup.setItemIcon(modification, new ExternalResource(colorToIconResource(modificationsColorMap.get(modification))));
+
+        }
+
+    }
+
+    public void initializeFilterData(ModificationMatrix modificationMatrix, Map<String, Color> modificationsColorMap, Set<Object> selectedCategories, int totalNumber) {
+        matrixDiagram.initializeFilterData(modificationMatrix, modificationsColorMap, selectedCategories, totalNumber);
+        vennDiagram.initializeFilterData(modificationMatrix, modificationsColorMap, selectedCategories, totalNumber);
+        populateModificationOptionGroup(modificationsColorMap);
+
+    }
+
     @Override
     public void suspendFilter(boolean suspend) {
     }
-    
+
     @Override
     public void redrawChart() {
 //        matrixDiagram.redrawChart();
     }
-    
+
     @Override
     public String getFilterId() {
         return filterId;
     }
-    
+
     @Override
     public void updateFilterSelection(Set<Comparable> selectedItems, Set<Comparable> selectedCategories, boolean topFilter, boolean singleProteinsFilter, boolean selfAction) {
-        
-        matrixDiagram.updateFilterSelection(selectedItems, selectedCategories, topFilter, singleProteinsFilter, selfAction);
+
+        Map<String, Color> modifications = matrixDiagram.updateFilterSelection(selectedItems, selectedCategories, topFilter, singleProteinsFilter, selfAction);
         vennDiagram.updateFilterSelection(selectedItems, selectedCategories, topFilter, singleProteinsFilter, selfAction);
-        
+        populateModificationOptionGroup(modifications);
+
     }
-    
+
     @Override
     public void selectionChange(String type) {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     public void applyFilter(Set<Integer> columnIndexs) {
-        
+
         Set<Comparable> appliedFilter = matrixDiagram.filterAction(columnIndexs);
         if (columnIndexs == null || columnIndexs.isEmpty() || columnIndexs.size() == vennDiagram.getModificationMatrix().getCalculatedColumns().size()) {
             vennDiagram.resetFilter();
@@ -148,10 +220,10 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
             Selection_Manager.setSelection("dataset_filter_selection", new LinkedHashSet<>(), null, filterId);
             return;
         }
-        
+
         Selection_Manager.setSelection("dataset_filter_selection", appliedFilter, null, filterId);
     }
-    
+
     private void setMainAppliedFilter(boolean mainAppliedFilter) {
         resetFilterbtn.setVisible(mainAppliedFilter);
         if (mainAppliedFilter) {
@@ -159,6 +231,29 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
         } else {
             this.removeStyleName("highlightfilter");
         }
-        
+
+    }
+
+    private String colorToIconResource(Color c) {
+
+        BufferedImage image = new BufferedImage(12, 12, BufferedImage.TYPE_INT_RGB);
+        Graphics g2d = image.createGraphics();
+        //draw sequence line
+
+        g2d.setColor(c);
+        g2d.fillRect(0, 0, 11, 11);
+        g2d.setColor(Color.BLACK);
+        g2d.drawRect(0, 0, 11, 11);
+        byte[] imageData = null;
+        try {
+            ImageEncoder in = ImageEncoderFactory.newInstance(ImageFormat.PNG, 1);
+            imageData = in.encode(image);
+        } catch (IOException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        String base64 = Base64.encodeBytes(imageData);
+        base64 = "data:image/png;base64," + base64;
+        //total chain coverage     
+        return base64;
     }
 }

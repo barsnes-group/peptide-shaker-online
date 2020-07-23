@@ -591,7 +591,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
             } else {
                 searchEngines.setRequired(false, "");
             }
-            _projectNameField.setValue(_projectNameField.getValue().replace("-", "_"));
+            _projectNameField.setValue(_projectNameField.getValue().replace("-", "_").replace(" ", "_"));
             if (_projectNameField.getValue() == null || _projectNameField.getValue().trim().equalsIgnoreCase("") || !_projectNameField.getValue().matches("^((?=[A-Za-z0-9@_])(?![åäö\\\\-]).)*$")) {
                 _projectNameField.addStyleName("errorstyle");
                 Notification.show("Please use alphabets, numbers and '_' only ", Notification.Type.TRAY_NOTIFICATION);
@@ -656,7 +656,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
                         _searchParameters = IdentificationParameters.getIdentificationParameters(file);
                     }
                     String descrip = "Fixed:" + _searchParameters.getSearchParameters().getModificationParameters().getFixedModifications() + "</br>Variable:" + _searchParameters.getSearchParameters().getModificationParameters().getVariableModifications() + "<br/>Fragment Tolerance:" + _searchParameters.getSearchParameters().getFragmentIonAccuracyInDaltons();
-                    descrip = descrip.replace("[", "").replace("]", "");
+                    descrip = descrip.replace("[", "").replace("]", "").replace("null", "No modifications");
                     for (String mod : _searchParameterForm.getUpdatedModiList().keySet()) {
                         if (descrip.contains(mod)) {
                             descrip = descrip.replace(mod, _searchParameterForm.getUpdatedModiList().get(mod));

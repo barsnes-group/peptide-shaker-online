@@ -1275,7 +1275,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                             for (PSMObject psm : processPeptidesTask.getPSMsMap().get(mod_seq)) {
                                 if (psm.getProteinsAsString().equalsIgnoreCase(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Prot)]) && psm.getRT().equals(arr[psmMoffFileHeaderIndexerMap.get(table_headers.RT)]) && psm.getMZ().equalsIgnoreCase(arr[psmMoffFileHeaderIndexerMap.get(table_headers.mz)]) && psm.getMeasuredCharge().equalsIgnoreCase(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Charge)]) && psm.getTheoreticalMass() == Double.valueOf(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Mass)])) {
                                     double intensity = Double.parseDouble(arr[psmMoffFileHeaderIndexerMap.get(table_headers.Intensity)]);
-                                    if (psm.getIntensity() != intensity && psm.getIntensity() != -10000.0) {
+                                    if (psm.getIntensity() != intensity && psm.getIntensity() != -10000.0 && intensity!=-1) {
                                         System.out.println("at psm numbers for " + mod_seq + "  is" + psm.getSpectrumTitle() + "  " + psm.getIntensity() + "  --  " + intensity);
                                         System.out.println("---------------------------------------------------------------");
                                     }
@@ -1289,7 +1289,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                             }
 
                         } else {
-                            System.out.println("----->>>>>this mod-seq not exist " + mod_seq);
+                            System.out.println("----->>>>>this mod-seq not exist " + mod_seq+"   "+ processPeptidesTask.getPSMsMap().containsKey(mod_seq.replace("I", "L"))+"   "+ processPeptidesTask.getPSMsMap().containsKey(mod_seq.replace("L", "I")));
                         }
                     }
 //

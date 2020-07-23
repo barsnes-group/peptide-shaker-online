@@ -119,8 +119,8 @@ public abstract class GalaxyInteractiveLayer {
 
             toolsHandler = new GalaxyToolsHandler(Galaxy_Instance.getToolsClient(), Galaxy_Instance.getWorkflowsClient(), Galaxy_Instance.getHistoriesClient()) {
                 @Override
-                public void jobIsExecuted() {
-                    historyHandler.forceUpdateGalaxyFileSystem();
+                public void jobIsExecuted(boolean keepfollow) {
+                    historyHandler.forceUpdateGalaxyFileSystem(keepfollow);
                 }
             };
             VaadinSession.getCurrent().setAttribute("ApiKey", Galaxy_Instance.getApiKey());
@@ -279,28 +279,43 @@ public abstract class GalaxyInteractiveLayer {
         if (fileObject.getType().equalsIgnoreCase("Web Peptide Shaker Dataset")) {
             PeptideShakerVisualizationDataset vDs = (PeptideShakerVisualizationDataset) fileObject;
             if (vDs.isQuantDataset()) {
-                vDs.getMoff_quant_file().forEach((moffId) -> {
-                    toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), moffId.getGalaxyId(), false);
-                });
-                toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getMoffGalaxyId(), true);
+                if (vDs.getMoff_quant_file()!=null && !vDs.getMoff_quant_file().isEmpty()) {
+                    vDs.getMoff_quant_file().forEach((moffId) -> {
+                        toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), moffId.getGalaxyId(), false);
+                    });
+                }
+                if (vDs.getMoffGalaxyId() != null) {
+                    toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getMoffGalaxyId(), true);
+                }
             }
-            toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getMoffGalaxyId(), true);
-            for (GalaxyTransferableFile cuiFile : vDs.getCuiFileSet()) {
-                toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), cuiFile.getGalaxyId(), false);
+
+            if (vDs.getCuiFileSet()!=null && !vDs.getCuiFileSet().isEmpty()) {
+                for (GalaxyTransferableFile cuiFile : vDs.getCuiFileSet()) {
+                    toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), cuiFile.getGalaxyId(), false);
+                }
             }
-            toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getCuiListGalaxyId(), true);
-            for (GalaxyFileObject indexedMGF : vDs.getIndexedMGFFilesMap().values()) {
-                toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), indexedMGF.getGalaxyId(), false);
+            if (vDs.getCuiListGalaxyId() != null) {
+                toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getCuiListGalaxyId(), true);
             }
-            toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getIndexedMgfGalaxyId(), true);
-            
-            toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getGalaxyId(), false);
-            toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getSearchGUIFile().getGalaxyId(), false);
+            if (vDs.getIndexedMGFFilesMap()!=null && !vDs.getIndexedMGFFilesMap().isEmpty()) {
+                for (GalaxyFileObject indexedMGF : vDs.getIndexedMGFFilesMap().values()) {
+                    toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), indexedMGF.getGalaxyId(), false);
+                }
+            }
+            if (vDs.getIndexedMgfGalaxyId() != null) {
+                toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getIndexedMgfGalaxyId(), true);
+            }
+            if (vDs.getGalaxyId() != null) {
+                toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getGalaxyId(), false);
+            }
+            if (vDs.getSearchGUIFile()!=null && vDs.getSearchGUIFile().getGalaxyId() != null) {
+                toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getSearchGUIFile().getGalaxyId(), false);
+            }
 
         } else {
             toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), fileObject.getHistoryId(), fileObject.getGalaxyId(), false);
         }
-        historyHandler.forceUpdateGalaxyFileSystem();
+        historyHandler.forceUpdateGalaxyFileSystem(false);
 //        historyHandler.jobIsExecuted(true);
     }
 

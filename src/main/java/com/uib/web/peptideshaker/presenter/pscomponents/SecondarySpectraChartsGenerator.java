@@ -205,7 +205,7 @@ public class SecondarySpectraChartsGenerator {
 
     }
     int count = 0;
-
+ImageEncoder in = ImageEncoderFactory.newInstance(ImageFormat.PNG, 1);
     private String drawImage(JPanel panel) {
         panel.revalidate();
         panel.repaint();

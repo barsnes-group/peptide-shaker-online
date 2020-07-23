@@ -115,7 +115,7 @@ public abstract class GalaxyHistoryHandler {
         this.Galaxy_Instance = Galaxy_Instance;
         this.galaxyDatasetServingUtil = new GalaxyDatasetServingUtil(Galaxy_Instance.getGalaxyUrl(), Galaxy_Instance.getApiKey());
         this.user_folder = user_folder;
-        forceUpdateGalaxyFileSystem();
+        forceUpdateGalaxyFileSystem(false);
     }
 
     /**
@@ -347,10 +347,10 @@ public abstract class GalaxyHistoryHandler {
     private ScheduledExecutorService scheduler;
     private ScheduledFuture schedulerFuture;
 
-    public void forceUpdateGalaxyFileSystem() {
+    public void forceUpdateGalaxyFileSystem(boolean keepfollow) {
 
         ExecutorService executorService = Executors.newFixedThreadPool(2);
-        updateDatasetructureTask = new UpdateDatasetructureTask();
+        updateDatasetructureTask = new UpdateDatasetructureTask(keepfollow);
         updateDatasetructureFuture = executorService.submit(updateDatasetructureTask);
         while (!updateDatasetructureFuture.isDone()) {
         }
@@ -367,6 +367,7 @@ public abstract class GalaxyHistoryHandler {
      * updating the file system
      */
     private void followGalaxyJobs() {
+
         if (scheduler == null) {
             scheduler = Executors.newSingleThreadScheduledExecutor();
             Set<String> jobsToIgnoe = new HashSet<>();
@@ -376,14 +377,13 @@ public abstract class GalaxyHistoryHandler {
 
                 @Override
                 public void run() {
-                    if (!updateDatasetructureTask.isJobRunning() || busy || !updateDatasetructureTask.isInvokeTracker()) {
+                    if ((!updateDatasetructureTask.isJobRunning()&& !updateDatasetructureTask.isInvokeTracker()) || busy ) {
                         return;
                     }
                     busy = true;
                     try {
 
                         Set<String> tempSet = new HashSet<>(updateDatasetructureTask.getRunningJobSet());
-
                         for (String jobId : tempSet) {
                             if (jobsToIgnoe.contains(jobId)) {
                                 continue;
@@ -399,14 +399,14 @@ public abstract class GalaxyHistoryHandler {
                                 continue;
                             }
                         }
-                        if (updateDatasetructureTask.isInvokeTracker() && tempSet.isEmpty()) {
+                        if (updateDatasetructureTask.isInvokeTracker()) {
+                            updateDatasetructureTask.updateRunningJobSet();
+                        }
+                        if (jobsToIgnoe.size() == tempSet.size() && !jobsToIgnoe.isEmpty()) {
                             jobsToIgnoe.clear();
                             oneJobISDone();
                         }
-                        if (jobsToIgnoe.size() == tempSet.size()) {
-                            jobsToIgnoe.clear();
-                            oneJobISDone();
-                        }
+                        
 
                     } catch (Exception e) {
                         System.out.println("at Error : follow galaxy job " + e);
@@ -465,7 +465,7 @@ public abstract class GalaxyHistoryHandler {
     }
 
     private void oneJobISDone() {
-        forceUpdateGalaxyFileSystem();
+        forceUpdateGalaxyFileSystem(false);
 
     }
 
@@ -592,6 +592,20 @@ public abstract class GalaxyHistoryHandler {
         public Set<String> getRunningJobSet() {
             return runningJobSet;
         }
+
+        public void updateRunningJobSet() {
+            if (runningJobSet.isEmpty()) {
+                List<History> historiesList = Galaxy_Instance.getHistoriesClient().getHistories();
+                for (History history : historiesList) {
+                    if (history.isDeleted()) {
+                        continue;
+                    }
+                    historiesIds.add(history.getId());
+                    runningJobSet.addAll(galaxyApiInteractiveLayer.isHistoryReady(Galaxy_Instance.getGalaxyUrl(), history.getId(), Galaxy_Instance.getApiKey()));
+                }
+
+            }
+        }
         /**
          * Set of currently running jobs on galaxy with error.
          */
@@ -605,7 +619,7 @@ public abstract class GalaxyHistoryHandler {
         /**
          * error with java.util.ConcurrentModificationException**
          */
-        private UpdateDatasetructureTask() {
+        private UpdateDatasetructureTask(boolean keepfollow) {
             this.mgfFilesMap = new LinkedHashMap<>();
             this.indexedMgfFilesMap = new LinkedHashMap<>();
             this.rawFilesMap = new LinkedHashMap<>();
@@ -625,7 +639,7 @@ public abstract class GalaxyHistoryHandler {
             this.cuiGalaxyIdsMap = new LinkedHashMap<>();
             this.moffGalaxyIdsMap = new LinkedHashMap<>();
             this.indexedMgfGalaxyIdsMap = new LinkedHashMap<>();
-            this.invokeTracker = false;
+            this.invokeTracker = keepfollow;
             try {
                 String requestSearching = Page.getCurrent().getLocation().toString();
                 if (requestSearching.contains("toShare_-_")) {
@@ -888,7 +902,7 @@ public abstract class GalaxyHistoryHandler {
                         }
 
                     } else if (map.containsKey("collection_type") && (map.get("name").toString().equalsIgnoreCase("collection"))) {
-                       } else if (map.get("extension").toString().equalsIgnoreCase("tabular") && map.get("name").toString().endsWith("-MOFF")) {
+                    } else if (map.get("extension").toString().equalsIgnoreCase("tabular") && map.get("name").toString().endsWith("-MOFF")) {
                         String dsName = map.get("name").toString().replace("-MOFF", "");
                         if (!MoffFilesMap.containsKey(dsName)) {
                             MoffFilesMap.put(dsName, new HashSet<>());
@@ -1077,6 +1091,9 @@ public abstract class GalaxyHistoryHandler {
                 historyFilesMap.putAll(indexFilesMap);
                 historyFilesMap.putAll(rawFilesMap);
                 jobRunning = (!runningJobSet.isEmpty());
+                if (jobRunning) {
+                    invokeTracker = false;
+                }
                 if (jobRunning || invokeTracker) {
                     followGalaxyJobs();
                 }
@@ -1084,7 +1101,7 @@ public abstract class GalaxyHistoryHandler {
             } catch (Exception e) {
                 if (e.toString().contains("Service Temporarily Unavailable")) {
                     Notification.show("Service Temporarily Unavailable", Notification.Type.ERROR_MESSAGE);
-                } else {                    
+                } else {
                     System.err.println("Error:  galaxy history handler error" + e);
                     Page.getCurrent().reload();
                 }

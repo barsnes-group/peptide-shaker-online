@@ -9,8 +9,7 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.BootstrapFragmentResponse;
 import com.vaadin.server.BootstrapListener;
 import com.vaadin.server.BootstrapPageResponse;
-import com.vaadin.server.DefaultErrorHandler;
-import static com.vaadin.server.DefaultErrorHandler.doDefault;
+import com.vaadin.server.ErrorHandler;
 import com.vaadin.server.Page;
 import com.vaadin.server.SessionInitEvent;
 import com.vaadin.server.VaadinRequest;
@@ -168,24 +167,21 @@ public class PeptidShakerUI extends UI {
             Page.getCurrent().setTitle("PeptideShaker Online");
         } catch (IllegalArgumentException | NullPointerException e) {
             System.err.println("Error in UI Class : " + e);
+            e.printStackTrace();
         }
         try {
             UI.getCurrent().getConnectorTracker().cleanConnectorMap();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        UI.getCurrent().setErrorHandler(new DefaultErrorHandler() {
+       VaadinSession.getCurrent().setErrorHandler(new ErrorHandler() {
             @Override
             public void error(com.vaadin.server.ErrorEvent event) {
-                // Find the final cause
-
-                // Display the error message in a custom fashion
-                System.out.println("at cought error in error handler");
-
-                // Do the default error handling (optional)
-                doDefault(event);
+                System.out.println("at ----------- error handler is working ------------------- ");
+                event.getThrowable().printStackTrace();
             }
-        });
+       }
+       );  
 
     }
 
