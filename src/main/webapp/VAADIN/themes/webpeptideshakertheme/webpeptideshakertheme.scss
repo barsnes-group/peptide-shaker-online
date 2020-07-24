@@ -8961,6 +8961,70 @@
         text-overflow:ellipsis;
 
     }
+    .modificationlistpanel.v-panel-modificationlistpanel{
+	padding-top:0px !important;
+}
+.modificationlistpanel .v-panel-captionwrap{
+	
+	position:absolute !important;
+	margin-top:10px !important;
+	width:100% !important;
+}
+
+.modificationlistpanel .v-panel-nocaption.v-panel-nocaption-modificationlistpanel{
+
+	max-width:20px;
+	max-height:20px;
+	float:right;
+	padding-right:20px;
+}
+.modificationlistpanel .Vaadin-Icons{
+	border:1px solid lightgray;
+	width:20px;
+	height:20px;
+	line-height:20px;
+	font-size:15px;
+	text-align:center;
+	color:gray;
+	border-radius:4px;
+	cursor:pointer !important;
+
+}
+.modificationlistpanel .Vaadin-Icons{
+	border:1px solid lightgray;
+	background-color:whitesmoke;
+	width:20px;
+	height:20px;
+	line-height:20px;
+	font-size:15px;
+	text-align:center;
+	color:gray;
+	border-radius:4px;
+	z-index:5;
+	position:relative!important;
+
+}
+.modificationlistpanel .Vaadin-Icons:hover{
+	border-color:gray !important;
+	background-color:lightgray;
+	color:black;
+
+
+}
+.v-panel-modificationlistpanel.v-panel-compressmodpanel {
+	max-height:42px;
+	max-width:47px;
+	padding-left:4px;
+	overflow:hidden !important;
+}
+.v-panel-modificationlistpanel.v-panel-compressmodpanel  .v-select-optiongroup {
+	display:none;
+	overflow:hidden !important;
+}
+.averagescreenstyle .btnlayout {
+	padding: 3px;
+	margin-top: 4px;
+}
 
 }
 

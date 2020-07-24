@@ -314,7 +314,7 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
                 selectSubviewButton(datasetsOverviewBtn);
                 datasetsOverviewBtn.removeStyleName("inactive");
 
-                UI.getCurrent().push();
+//                UI.getCurrent().push();
             }
         });
 

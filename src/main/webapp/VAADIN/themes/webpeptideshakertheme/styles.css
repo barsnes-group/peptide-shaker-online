@@ -22163,3 +22163,69 @@ div.v-layout.v-horizontal.v-widget {
 	max-width: 100% !important;
 	text-overflow: ellipsis;
 }
+
+.webpeptideshakertheme .modificationlistpanel.v-panel-modificationlistpanel {
+	padding-top: 0px !important;
+}
+
+.webpeptideshakertheme .modificationlistpanel .v-panel-captionwrap {
+	position: absolute !important;
+	margin-top: 10px !important;
+	width: 100% !important;
+}
+
+.webpeptideshakertheme .modificationlistpanel .v-panel-nocaption.v-panel-nocaption-modificationlistpanel {
+	max-width: 20px;
+	max-height: 20px;
+	float: right;
+	padding-right: 20px;
+}
+
+.webpeptideshakertheme .modificationlistpanel .Vaadin-Icons {
+	border: 1px solid lightgray;
+	width: 20px;
+	height: 20px;
+	line-height: 20px;
+	font-size: 15px;
+	text-align: center;
+	color: gray;
+	border-radius: 4px;
+	cursor: pointer !important;
+}
+
+.webpeptideshakertheme .modificationlistpanel .Vaadin-Icons {
+	border: 1px solid lightgray;
+	background-color: whitesmoke;
+	width: 20px;
+	height: 20px;
+	line-height: 20px;
+	font-size: 15px;
+	text-align: center;
+	color: gray;
+	border-radius: 4px;
+	z-index: 5;
+	position: relative !important;
+}
+
+.webpeptideshakertheme .modificationlistpanel .Vaadin-Icons:hover {
+	border-color: gray !important;
+	background-color: lightgray;
+	color: black;
+}
+
+.webpeptideshakertheme .v-panel-modificationlistpanel.v-panel-compressmodpanel {
+	max-height: 42px;
+	max-width: 47px;
+	padding-left: 4px;
+	overflow: hidden !important;
+}
+
+.webpeptideshakertheme .v-panel-modificationlistpanel.v-panel-compressmodpanel .v-select-optiongroup {
+	display: none;
+	overflow: hidden !important;
+}
+
+.webpeptideshakertheme .averagescreenstyle .btnlayout {
+	padding: 3px;
+	margin-top: 4px;
+}

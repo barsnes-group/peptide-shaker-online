@@ -7,9 +7,12 @@ import com.uib.web.peptideshaker.presenter.core.filtercharts.RegistrableFilter;
 import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.SelectionManager;
 import com.vaadin.data.Property;
 import com.vaadin.event.LayoutEvents;
+import com.vaadin.event.MouseEvents;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
@@ -100,7 +103,6 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
                 modificationFilterPanel.setVisible(visible);
                 if (visible) {
                     if (matrixDiagram.getBarChartX() > 0) {
-                        System.out.println("update width " + matrixDiagram.getBarChartX());
                         modificationFilterPanel.setWidth((matrixDiagram.getBarChartX()), Unit.PIXELS);
                     }
                     modificationFilterPanel.setHeight((matrixDiagram.getBarEndY()), Unit.PIXELS);
@@ -129,12 +131,44 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
         };
         ModificationsFilter.this.addComponent(vennDiagram, "left:0px;top:0px;");
 
+        Button minimiseExpandBtn = new Button();
+        minimiseExpandBtn.setStyleName(ValoTheme.BUTTON_ICON_ONLY);
+
         modificationOptionGroup = initModificationSelectionList();
-        modificationFilterPanel = new Panel(modificationOptionGroup);
+        modificationFilterPanel = new Panel(modificationOptionGroup) {
+            @Override
+            public void setVisible(boolean visible) {
+                minimiseExpandBtn.setVisible(visible);
+                super.setVisible(visible);
+
+            }
+
+        };
         modificationFilterPanel.setSizeUndefined();
         modificationFilterPanel.setStyleName("modificationlistpanel");
         ModificationsFilter.this.addComponent(modificationFilterPanel, "left:10px;top:30px;");
+          modificationFilterPanel.addClickListener(new MouseEvents.ClickListener() {
+            @Override
+            public void click(MouseEvents.ClickEvent event) {
+                 int y = event.getRelativeY();
+                 if (modificationFilterPanel.getStyleName().contains("compressmodpanel")) {
+                    modificationFilterPanel.removeStyleName("compressmodpanel");
+                    modificationFilterPanel.setIcon(VaadinIcons.ANGLE_DOUBLE_UP);
+                }
+                 else if (y >= 11 && y <= 33) {
+                    int x = event.getRelativeX();
+                    int startX = (int) modificationFilterPanel.getWidth() - x;
+                    if (startX >= 17 && startX <= 39) {
+                        modificationFilterPanel.addStyleName("compressmodpanel");
+                        modificationFilterPanel.setIcon(VaadinIcons.FILTER);
+                    }
 
+                }
+                
+            }
+        });
+        modificationFilterPanel.setIcon(VaadinIcons.FILTER);
+        modificationFilterPanel.addStyleName("compressmodpanel");
     }
     private final Panel modificationFilterPanel;
     private final OptionGroup modificationOptionGroup;
@@ -202,7 +236,9 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
 
         Map<String, Color> modifications = matrixDiagram.updateFilterSelection(selectedItems, selectedCategories, topFilter, singleProteinsFilter, selfAction);
         vennDiagram.updateFilterSelection(selectedItems, selectedCategories, topFilter, singleProteinsFilter, selfAction);
-        populateModificationOptionGroup(modifications);
+        if (!selfAction) {
+            populateModificationOptionGroup(modifications);
+        }
 
     }
 
