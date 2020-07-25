@@ -141,7 +141,7 @@ public class GalaxyAPIInteractiveLayer {
             Map<String, Object> datasetMap = (Map<String, Object>) dataList.get(i);
             if ((datasetMap.containsKey("collection_type") && datasetMap.get("deleted").toString().equalsIgnoreCase("false"))) {
 //                if (datasetMap.get("name").toString().endsWith("-Indexed-MGF")) {
-                Map<String, Object> collectionMap = getCollectionElements(datasetMap.get("url").toString(), galaxyUrl, apiKey);
+                Map<String, Object> collectionMap = getCollectionElements(datasetMap.get("url").toString (), galaxyUrl, apiKey);
                 datasetMap.put("elements", ((List) collectionMap.get("elements")));
 //                }
             }

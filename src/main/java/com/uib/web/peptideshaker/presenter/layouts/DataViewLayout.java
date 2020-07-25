@@ -1,6 +1,5 @@
 package com.uib.web.peptideshaker.presenter.layouts;
 
-import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.uib.web.peptideshaker.model.core.ClipboardUtil;
@@ -11,18 +10,23 @@ import com.uib.web.peptideshaker.presenter.core.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.StatusLabel;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.FileDownloader;
 import com.vaadin.server.Page;
+import com.vaadin.server.StreamResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -139,12 +143,12 @@ public abstract class DataViewLayout extends Panel {
             Component infoLabel;
             StatusLabel statusLabel = new StatusLabel();
             statusLabel.setStatus(ds.getStatus());
+
             ActionLabel downloadLabel = new ActionLabel(VaadinIcons.DOWNLOAD_ALT, "Download File") {
                 @Override
                 public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                    Page.getCurrent().open(ds.getDownloadUrl(), "", false);
+                    Page.getCurrent().open(ds.getDownloadUrl()+"to_ext="+ds.getType().toLowerCase(), "download='file'", true);
                 }
-
             };
             ActionLabel deleteLabel = new ActionLabel(VaadinIcons.TRASH, "Delete File") {
                 @Override
@@ -154,7 +158,6 @@ public abstract class DataViewLayout extends Panel {
 
             };
             HorizontalLayout rowLayout;
-
             if (ds.getType().equalsIgnoreCase("User uploaded Project")) {
                 nameLabel = new ActionLabel(VaadinIcons.CLUSTER, ds.getName().split("___")[0], "Uploaded Project results ") {
                     @Override

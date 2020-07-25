@@ -377,7 +377,7 @@ public abstract class GalaxyHistoryHandler {
 
                 @Override
                 public void run() {
-                    if ((!updateDatasetructureTask.isJobRunning()&& !updateDatasetructureTask.isInvokeTracker()) || busy ) {
+                    if ((!updateDatasetructureTask.isJobRunning() && !updateDatasetructureTask.isInvokeTracker()) || busy) {
                         return;
                     }
                     busy = true;
@@ -406,7 +406,6 @@ public abstract class GalaxyHistoryHandler {
                             jobsToIgnoe.clear();
                             oneJobISDone();
                         }
-                        
 
                     } catch (Exception e) {
                         System.out.println("at Error : follow galaxy job " + e);

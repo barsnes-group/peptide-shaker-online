@@ -131,7 +131,7 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
                     if (protein3DStructurePanel.getLastSelectedAccession() != null && !protein3DStructurePanel.getLastSelectedAccession().toString().equalsIgnoreCase(protein.getAccession())) {
                         initialized3D = false;
                     }
-                    protein3DStructurePanel.updatePanel(protein.getAccession(), protein.getSequence(), proteinPeptides.values());
+                    protein3DStructurePanel.updatePanel(protein.getAccession(), protein.getSequence(), proteinPeptides.values(),proteinoverviewBtn.getStyleName().contains("selectedbiglbtn"));
 
                 } else {
                     protein3DStructurePanel.reset();

@@ -76,7 +76,7 @@ public abstract class FileOverviewLayout extends VerticalLayout {
 
         Horizontal2Label createdLabel = new Horizontal2Label("Created :", dataset.getCreate_time());
         upperPanel.addComponent(createdLabel);
-        Horizontal2Label sizeLabel = new Horizontal2Label("Size    :", dsFormater.format(dataset.getSize())+" MB");
+        Horizontal2Label sizeLabel = new Horizontal2Label("State    :", dataset.getStatus()+"");
         upperPanel.addComponent(sizeLabel);
         Horizontal2Label formatLabel = new Horizontal2Label("Format  :", dataset.getType());
         upperPanel.addComponent(formatLabel);

@@ -1,6 +1,7 @@
 package com.uib.web.peptideshaker.presenter.core;
 
 import com.vaadin.event.LayoutEvents;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
@@ -59,6 +60,14 @@ public abstract class ActionLabel extends HorizontalLayout implements LayoutEven
         ActionLabel.this.addLayoutClickListener(ActionLabel.this);
 
     }
+    public void setdownloadLink(String url,String fileName){
+        label.setContentMode(ContentMode.HTML);
+        label.setValue("<a href='"+url+"' download='"+fileName+"' target='_blank' > to hide text </a>");
+        label.setStyleName(ValoTheme.BUTTON_SMALL);
+//        label.setIcon(null);
+    
+    }
+    
 
     /**
      * Initialise label

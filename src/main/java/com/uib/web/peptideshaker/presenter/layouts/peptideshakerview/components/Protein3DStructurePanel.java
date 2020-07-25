@@ -212,23 +212,24 @@ public class Protein3DStructurePanel extends AbsoluteLayout {
         uniprotLabel.setVisible(true);
     }
 
-       public void redrawCanvas(){
+    public void redrawCanvas() {
         liteMOL3DComponent.redrawCanvas();
-}
+    }
+
     public Object getLastSelectedAccession() {
         return lastSelectedAccession;
     }
 
-    public void updatePanel(Object accession, String proteinSequence, Collection<PeptideObject> proteinPeptides) {
+    public void updatePanel(Object accession, String proteinSequence, Collection<PeptideObject> proteinPeptides, boolean showNotifications) {
         this.lastSelectedAccession = accession;
         this.lastSelectedProteinSequence = proteinSequence;
         this.uniprotLabel.setValue("UniProt: " + lastSelectedAccession);
         this.proteinPeptides = proteinPeptides;
-        loadData(lastSelectedAccession, lastSelectedProteinSequence);
+        loadData(lastSelectedAccession, lastSelectedProteinSequence, showNotifications);
 
     }
 
-    private void loadData(Object accessionObject, String proteinSequence) {
+    private void loadData(Object accessionObject, String proteinSequence, boolean showNotifications) {
         if (accessionObject == null) {
             return;
         }
@@ -245,7 +246,9 @@ public class Protein3DStructurePanel extends AbsoluteLayout {
 
             });
             if (pdbMatchesSelect.getItemIds() == null) {
-                Notification.show("No visualization available ", Notification.Type.TRAY_NOTIFICATION);
+                if (showNotifications) {
+                    Notification.show("No visualization available ", Notification.Type.TRAY_NOTIFICATION);
+                }
                 reset();
                 return;
             }
@@ -257,7 +260,9 @@ public class Protein3DStructurePanel extends AbsoluteLayout {
             pdbMatchesSelect.setValue(pdbMachSelectValue);
 
         } else {
-            Notification.show("No visualization available ", Notification.Type.TRAY_NOTIFICATION);
+            if (showNotifications) {
+                Notification.show("No visualization available ", Notification.Type.TRAY_NOTIFICATION);
+            }
             reset();
         }
 
