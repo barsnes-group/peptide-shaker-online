@@ -598,13 +598,13 @@ public class SpectrumPlot extends AbsoluteLayout {
     private SpectrumMatch spectrumMatch;
     private Thread selectedSpectrumThread;
 
-    public void selectedSpectrum(Spectrum currentSpectrum, SequenceProvider sequanceProvider, String charge, double fragmentIonAccuracy, IdentificationParameters identificationParameters, SpectrumMatch spectrumMatch) {
+    public void selectedSpectrum(Spectrum currentSpectrum, SequenceProvider sequenceProvider, String charge, double fragmentIonAccuracy, IdentificationParameters identificationParameters, SpectrumMatch spectrumMatch) {
         mainSizeReporter.removeResizeListener(compResizeListener);
         this.identificationParameters = identificationParameters;
         this.currentSpectrum = currentSpectrum;
         this.fragmentIonAccuracy = fragmentIonAccuracy;
         this.spectrumMatch = spectrumMatch;
-        this.sequenceProvider = sequanceProvider;
+        this.sequenceProvider = sequenceProvider;
         if (spectrumPanel != null) {
             spectrumPanel.reset();
             if (selectedSpectrumThread.isAlive()) {

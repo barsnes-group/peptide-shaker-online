@@ -235,14 +235,15 @@ public abstract class PSMViewComponent extends VerticalLayout {
         if (spectrumInformationMap == null) {
             return;
         }
-        System.out.println("at table cleared and items coming "+psms.size());
         psms.stream().map((psm) -> {
             return psm;
         }).forEachOrdered((psm) -> {
             fragWidth = Math.max(fragWidth, psm.getSequence().length() * 17 + 100);
             String psmTooltip = "";
             for (String str : tooltip.split("</br>")) {
-                if (str.contains("Intensity:")) {
+                 if (str.contains("Intensity:")&&  psm.getIntensity()==-10000.0)
+                     psmTooltip = tooltip.replace(str, "");
+                 else if (str.contains("Intensity:")) {
                     psmTooltip = tooltip.replace(str, "Intensity: " + psm.getIntensity());
                     break;
                 }
@@ -280,7 +281,7 @@ public abstract class PSMViewComponent extends VerticalLayout {
             };
             ValidationLabel validation = new ValidationLabel(psm.getValidation());
             this.psmOverviewTable.addItem(new Object[]{index++, chartGenerator.getSequenceFragmentationChart(), chartGenerator.getMassErrorPlot(), new ColorLabelWithPopupTooltip(psm.getIntensity(), psm.getIntensityColor(), psm.getIntensityPercentage()), chargeLabel, mzErrorLabel, confidentLabel, validation}, psm.getIndex());
-            System.out.println("at table cleared and items added  "+index+"  "+psm.getIndex());
+          
         });
         this.psmOverviewTable.setSortContainerPropertyId("confidence");
         this.psmOverviewTable.setSortAscending(false);

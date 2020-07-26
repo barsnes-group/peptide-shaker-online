@@ -48,6 +48,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.client.Client;
@@ -453,10 +457,10 @@ public abstract class GalaxyToolsHandler {
             workflowInputs.setWorkflowId(selectedWf.getId());
             workflowInputs.setDestination(new WorkflowInputs.ExistingHistory(historyId));
 
-            WorkflowInputs.WorkflowInput workflowInput0 = new WorkflowInputs.WorkflowInput(searchParameterFileId, WorkflowInputs.InputSourceType.HDA); 
+            WorkflowInputs.WorkflowInput workflowInput0 = new WorkflowInputs.WorkflowInput(searchParameterFileId, WorkflowInputs.InputSourceType.HDA);
             workflowInputs.setInput("0", workflowInput0);
             WorkflowInputs.WorkflowInput workflowInput1 = new WorkflowInputs.WorkflowInput(fastaFileId, WorkflowInputs.InputSourceType.HDA);
-           workflowInputs.setInput("1", workflowInput1);            
+            workflowInputs.setInput("1", workflowInput1);
             workflowInputs.setInput("2", inputDataFiles);
 
             payLoad = "";
@@ -500,17 +504,18 @@ public abstract class GalaxyToolsHandler {
             while (t.isAlive()) {
 
             }
-            try {
-                if (inputFileIdsList.size() != 1) {
-                    Notification.show(projectName.split("___")[0], "Progress will appear in project overview when process start", Notification.Type.TRAY_NOTIFICATION);
-                }
-                Thread.sleep(10000);
-
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
+            if (inputFileIdsList.size() != 1) {
+                Notification.show(projectName.split("___")[0], "Progress will appear in projects overview when process start", Notification.Type.TRAY_NOTIFICATION);
             }
-            galaxyWorkFlowClient.deleteWorkflowRequest(selectedWf.getId());
-            jobIsExecuted((quant&&(inputFileIdsList.size() != 1)));
+            final String workFlowId = selectedWf.getId();
+            ScheduledExecutorService exe = Executors.newSingleThreadScheduledExecutor();
+            ScheduledFuture f = exe.schedule(() -> {
+                galaxyWorkFlowClient.deleteWorkflowRequest(workFlowId);
+                jobIsExecuted((quant && (inputFileIdsList.size() != 1)));
+            }, 10, TimeUnit.SECONDS);
+            exe.shutdown();
+            while (!f.isDone()) {
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -631,13 +636,11 @@ public abstract class GalaxyToolsHandler {
                 galaxyToolClient.uploadRequest(request);
                 tFile.delete();
             }
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-            jobIsExecuted(false);
-
+            ScheduledExecutorService exe = Executors.newSingleThreadScheduledExecutor();
+            exe.schedule(() -> {
+                jobIsExecuted(false);
+            }, 3, TimeUnit.SECONDS);
+            exe.shutdown();
         });
         t.start();
         return true;
@@ -646,6 +649,7 @@ public abstract class GalaxyToolsHandler {
     /**
      * Synchronise and update Online PEptideShaker file system with Galaxy
      * Server.
+     *
      * @param keepfollow invoke history tracker
      */
     public abstract void jobIsExecuted(boolean keepfollow);

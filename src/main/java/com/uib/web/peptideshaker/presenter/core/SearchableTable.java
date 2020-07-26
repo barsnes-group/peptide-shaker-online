@@ -69,6 +69,7 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
         Button exportBtn = new Button(VaadinIcons.FILE_TABLE);
         exportBtn.setStyleName(ValoTheme.BUTTON_ICON_ONLY);
         exportBtn.addStyleName("exportbtn");
+        exportBtn.setDescription("Export protein table");
         exportBtn.setWidth(20, Unit.PIXELS);
         exportBtn.setHeight(20, Unit.PIXELS);
         searchContainer.addComponent(exportBtn);
@@ -95,6 +96,7 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
         searchBtn.setWidth(20, Unit.PIXELS);
         searchBtn.setHeight(20, Unit.PIXELS);
         searchContainer.addComponent(searchBtn);
+        searchBtn.setDescription("Search");
         searchContainer.setComponentAlignment(searchBtn, Alignment.TOP_RIGHT);
         searchBtn.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
@@ -117,6 +119,7 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
         nextBtn.setHeight(20, Unit.PIXELS);
         searchContainer.addComponent(nextBtn);
         searchContainer.setComponentAlignment(nextBtn, Alignment.TOP_RIGHT);
+        nextBtn.setDescription("Select next result");
 
         searchResultsLabel = new Label("0 of 0");
         searchContainer.addComponent(searchResultsLabel);

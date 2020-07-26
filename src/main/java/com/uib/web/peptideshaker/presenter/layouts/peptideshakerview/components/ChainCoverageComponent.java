@@ -49,20 +49,7 @@ public class ChainCoverageComponent {
 
         this.chainCoverageWebComponent = new Protein3DStructureCoverage();
         this.chainCoverageWebComponent.setSizeFull();
-//        
-//        SizeReporter imageSizeReporter = new SizeReporter(chainCoverageWebComponent);
-//        imageSizeReporter.addResizeListener((ComponentResizeEvent event) -> {
-//            if (event.getWidth() <= 200) {
-//                try {
-//                    Thread.sleep(2000);
-//                } catch (InterruptedException ex) {
-//                }
-//            }
-//            this.compWidth = event.getWidth();
-//            this.layoutToPercentageFactor = (double) (compWidth - 52) / (double) this.proteinSequenceLength;
-////            this.correctFactor = (double) (compWidth - 52) / (double) this.proteinSequenceLength;
-//            drawImage(lasteSelectedChain);
-//        });
+
 
     }
 

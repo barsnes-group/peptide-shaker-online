@@ -61,6 +61,7 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
 
     private void initLayout() {
         smallPresenterButton = new SmallSideBtn("img/searchguiblue.png");//spectra2.pngimg/searchgui-medium-shadow-2.png
+       
         smallPresenterButton.setData(SearchGUIPeptideShakerToolPresenter.this.getViewId());
         smallPresenterButton.setDescription("Search and process data (SearchGUI and PeptideShaker)");
         smallPresenterButton.addStyleName("smalltoolsbtn");

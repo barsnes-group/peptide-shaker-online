@@ -33,7 +33,7 @@ public class PTMLocalizationPanel extends PopupWindow {
         Label title = new Label("PTM Localization");
         AbsoluteLayout container = new AbsoluteLayout();
         container.setStyleName("popuppanelmaincontainer");
-        container.setWidth(600, Unit.PIXELS);
+        container.setWidth(300, Unit.PIXELS);
         container.setHeight(256, Unit.PIXELS);
 
         VerticalLayout subContainer = new VerticalLayout();

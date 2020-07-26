@@ -7,11 +7,13 @@ import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideSha
 import com.vaadin.ui.VerticalLayout;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import javax.net.ssl.HttpsURLConnection;
 import pl.exsio.plupload.PluploadFile;
 
@@ -28,14 +30,19 @@ public class WebPeptideShakerApp {
      * @return main user interface container
      */
     public VerticalLayout getApplicationUserInterface() {
+        while (!presenterFuture.isDone()) {
+        }
         return Presenter_layer.getPresenterContainer();
     }
 
-    private final PresenterLayer Presenter_layer;
+    private PresenterLayer Presenter_layer;
     /**
      * The Main data access layer that deal with the system files and data.
      */
-    private final ModelLayer Model_Layer;
+    private ModelLayer Model_Layer;
+    private Future presenterFuture;
+    private Future modelFuture;
+    private boolean availableGalaxyServer;
 
     /**
      * Constructor to initialise the application.
@@ -46,79 +53,124 @@ public class WebPeptideShakerApp {
         /**
          * Check galaxy available online or run system in offline galaxy mode.
          */
-        boolean availableGalaxyServer = checkConnectionToGalaxy(galaxyUrl);
+        availableGalaxyServer = checkConnectionToGalaxy(galaxyUrl);
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-        this.Model_Layer = new ModelLayer(availableGalaxyServer) {
+        modelFuture = executorService.submit(new Runnable() {
             @Override
-            public void viewDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
-                Presenter_layer.viewDataset(peptideShakerVisualizationDataset);
-            }
+            public void run() {
+                Model_Layer = new ModelLayer(availableGalaxyServer) {
+                    @Override
+                    public void viewDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
+                        try {
+                            while (!presenterFuture.isDone()) {
+                            }
+                            Presenter_layer.viewDataset(peptideShakerVisualizationDataset);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
 
+                    @Override
+                    public void updatePresenter(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
+                        while (!presenterFuture.isDone()) {
+                        }
+                        Presenter_layer.updatePresenter(tempHistoryFilesMap, historyFilesMap, jobsInProgress);
+                    }
+                };
+            }
+        });
+
+        presenterFuture = executorService.submit(new Runnable() {
             @Override
-            public void updatePresenter(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
-                Presenter_layer.updatePresenter(tempHistoryFilesMap, historyFilesMap, jobsInProgress);
+            public void run() {
+                Presenter_layer = new PresenterLayer(availableGalaxyServer) {
+                    @Override
+                    public List<String> connectToGalaxyServer(String galaxyServerUrl, String userAPI, String userDataFolderUrl) {
+                        while (!modelFuture.isDone()) {
+                        }
+
+                        boolean connected = Model_Layer.connectToGalaxyServer(galaxyServerUrl, userAPI, userDataFolderUrl);
+                        if (!connected) {
+                            return null;
+                        }
+                        return Model_Layer.getUserOverViewList();
+                    }
+
+                    @Override
+                    public List<String> getUserOverviewData() {
+
+                        while (!modelFuture.isDone()) {
+                        }
+                        if (Model_Layer != null) {
+                            return Model_Layer.getUserOverViewList();
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public void execute_SearchGUI_PeptideShaker_WorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> inputFilesIdsList, Set<String> searchEnginesList, IdentificationParameters searchParameters, boolean quant) {
+                        while (!modelFuture.isDone()) {
+                        }
+                        Model_Layer.execute_SearchGUI_PeptideShaker_WorkFlow(projectName, fastaFileId, searchParameterFileId, inputFilesIdsList, searchEnginesList, searchParameters, quant);
+
+                    }
+
+                    @Override
+                    public Map<String, GalaxyTransferableFile> saveSearchGUIParameters(IdentificationParameters searchParameters, boolean isNew) {
+                        while (!modelFuture.isDone()) {
+                        }
+                        return Model_Layer.saveSearchGUIParameters(searchParameters, isNew);
+                    }
+
+                    @Override
+                    public boolean uploadToGalaxy(PluploadFile[] toUploadFiles) {
+                        while (!modelFuture.isDone()) {
+                        }
+
+                        /**
+                         * upload file to galaxy server
+                         */
+                        boolean success = Model_Layer.uploadDataFiles(toUploadFiles);
+                        return success;
+                    }
+
+                    @Override
+                    public void deleteDataset(GalaxyFileObject fileObject) {
+                        while (!modelFuture.isDone()) {
+                        }
+                        Model_Layer.deleteDataset(fileObject);
+                    }
+
+                    @Override
+                    public Set<String> getCsf_pr_Accession_List() {
+                        while (!modelFuture.isDone()) {
+                        }
+                        return Model_Layer.getCsf_pr_Accession_List();
+                    }
+
+                    @Override
+                    public int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey) {
+                        while (!modelFuture.isDone()) {
+                        }
+                        return Model_Layer.insertDatasetSharingLink(dsDetails, dsUniqueKey);
+                    }
+
+                };
+
             }
-        };
+     
+              
+        });
+    }
 
-        this.Presenter_layer = new PresenterLayer(availableGalaxyServer) {
-            @Override
-            public List<String> connectToGalaxyServer(String galaxyServerUrl, String userAPI, String userDataFolderUrl) {
-                boolean connected = Model_Layer.connectToGalaxyServer(galaxyServerUrl, userAPI, userDataFolderUrl);
-                if (!connected) {
-                    return null;
-                }
+    public void loginAsGuest() {
+        while (!presenterFuture.isDone()) {
+        }
+        if (availableGalaxyServer) {
+            Presenter_layer.loginAsGuest();
+        }
 
-//                try {
-////                    Thread.sleep(2000);
-//                } catch (InterruptedException ex) {
-//                }
-                return Model_Layer.getUserOverViewList();
-            }
-
-            @Override
-            public List<String> getUserOverviewData() {
-                if (Model_Layer != null) {
-                    return Model_Layer.getUserOverViewList();
-                }
-                return null;
-            }
-
-            @Override
-            public void execute_SearchGUI_PeptideShaker_WorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> inputFilesIdsList, Set<String> searchEnginesList, IdentificationParameters searchParameters, boolean quant) {
-                Model_Layer.execute_SearchGUI_PeptideShaker_WorkFlow(projectName, fastaFileId, searchParameterFileId, inputFilesIdsList, searchEnginesList, searchParameters, quant);
-
-            }
-
-            @Override
-            public Map<String, GalaxyTransferableFile> saveSearchGUIParameters(IdentificationParameters searchParameters, boolean isNew) {
-                return Model_Layer.saveSearchGUIParameters(searchParameters, isNew);
-            }
-
-            @Override
-            public boolean uploadToGalaxy(PluploadFile[] toUploadFiles) {
-                /**
-                 * upload file to galaxy server
-                 */
-                boolean success = Model_Layer.uploadDataFiles(toUploadFiles);
-                return success;
-            }
-
-            @Override
-            public void deleteDataset(GalaxyFileObject fileObject) {
-                Model_Layer.deleteDataset(fileObject);
-            }
-
-            @Override
-            public Set<String> getCsf_pr_Accession_List() {
-                return Model_Layer.getCsf_pr_Accession_List();
-            }
-
-            @Override
-            public int insertDatsetLinkToShare(String dsDetails) {
-                return Model_Layer.insertDatasetSharingLink(dsDetails);
-            }
-
-        };
     }
 
     /**

@@ -49,15 +49,21 @@ public abstract class PresenterLayer {
 
             @Override
             public void registerView(ViewableFrame view) {
-                presentationManager.registerView(view);
+                UI.getCurrent().access(() -> {
+                    presentationManager.registerView(view);
+                });
+
             }
 
             @Override
             public List<String> connectToGalaxyServer(String galaxyServerUrl, String userAPI, String userDataFolderUrl) {
                 List<String> userData = PresenterLayer.this.connectToGalaxyServer(galaxyServerUrl, userAPI, userDataFolderUrl);
                 connectedToGalaxy = userData != null;
-                getSearchGUIPeptideShakerToolPresenter().getMainPresenterButton().setEnabled(connectedToGalaxy);
-                getSearchGUIPeptideShakerToolPresenter().getSmallPresenterControlButton().setEnabled(connectedToGalaxy);
+                if (getSearchGUIPeptideShakerToolPresenter().getMainPresenterButton().isEnabled()) {
+                    getSearchGUIPeptideShakerToolPresenter().getMainPresenterButton().setEnabled(connectedToGalaxy);
+                    getSearchGUIPeptideShakerToolPresenter().getSmallPresenterControlButton().setEnabled(connectedToGalaxy);
+                }
+
                 return userData;
             }
 
@@ -94,8 +100,8 @@ public abstract class PresenterLayer {
             }
 
             @Override
-            public int insertDatsetLinkToShare(String dsDetails) {
-                return PresenterLayer.this.insertDatsetLinkToShare(dsDetails);
+            public int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey) {
+                return PresenterLayer.this.insertDatsetLinkToShare(dsDetails, dsUniqueKey);
             }
 
         };
@@ -107,6 +113,10 @@ public abstract class PresenterLayer {
         presentationManager.registerView(presenterContainer.getInteractivePSPRojectResultsPresenter());
         presentationManager.setSideButtonsVisible(true);
 
+    }
+
+    public void loginAsGuest() {
+        presenterContainer.loginAsGuest();
     }
 
     /**
@@ -126,8 +136,10 @@ public abstract class PresenterLayer {
      */
     public void viewDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
         presenterContainer.viewDataset(peptideShakerVisualizationDataset);
-        for (String btn : presentationManager.getPresenterBtnsMap().keySet()) {
-            presentationManager.getPresenterBtnsMap().get(btn).setEnabled(false);
+        if (peptideShakerVisualizationDataset.isToShareDataset()) {
+            for (String btn : presentationManager.getPresenterBtnsMap().keySet()) {
+                presentationManager.getPresenterBtnsMap().get(btn).setEnabled(false);
+            }
         }
     }
 
@@ -144,7 +156,6 @@ public abstract class PresenterLayer {
         presenterContainer.updateProjectOverviewPresenter(tempHistoryFilesMap, historyFilesMap, jobsInProgress);
 
 //        presentationManager.viewLayout(presenterContainer.getFileSystemPresenter().getViewId());
-
     }
 
     /**
@@ -218,8 +229,9 @@ public abstract class PresenterLayer {
      * Store and retrieve dataset details index to share in link
      *
      * @param dsDetails encoded dataset details to store in database
+     * @param dsUniqueKey
      * @return dataset public key
      */
-    public abstract int insertDatsetLinkToShare(String dsDetails);
+    public abstract int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey);
 
 }

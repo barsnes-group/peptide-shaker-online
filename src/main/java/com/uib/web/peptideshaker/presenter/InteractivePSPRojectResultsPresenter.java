@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import pl.exsio.plupload.PluploadFile;
 
 /**
@@ -285,7 +287,8 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
         }
         UI.getCurrent().accessSynchronously(new Runnable() {
             @Override
-            public void run() {
+            public void run() { 
+                
                 smallPresenterBtn.setSelected(true);
                 mainPresenterBtn.setSelected(true);
                 datasetVisulizationLevelContainer.setMargin(new MarginInfo(false, false, false, false));
@@ -304,17 +307,21 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
                 datasetsOverviewBtn.setId(null);
                 datasetsOverviewBtn.setEnabled(true);
                 while (!dataprocessFuture.isDone()) {
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException ex) {
-
-                    }
                 }
                 removeStyleName("hidepanel");
                 selectSubviewButton(datasetsOverviewBtn);
                 datasetsOverviewBtn.removeStyleName("inactive");
 
-//                UI.getCurrent().push();
+                ScheduledExecutorService exe = Executors.newSingleThreadScheduledExecutor();
+                Future f = exe.schedule(() -> {
+                    UI.getCurrent().push();
+                   UI.getCurrent().removeStyleName("busybrocess");
+                   
+                }, 5, TimeUnit.SECONDS);
+                exe.shutdown();
+                while (!f.isDone()) {
+                }
+                
             }
         });
 
@@ -383,7 +390,8 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
      * dataset
      */
     public void setSelectedDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
+       
+        ExecutorService executorService = Executors.newFixedThreadPool(4);
         Runnable runnableTask = () -> {
             mainPresenterBtn.setEnabled(peptideShakerVisualizationDataset != null);
             smallPresenterBtn.setEnabled(peptideShakerVisualizationDataset != null);
@@ -409,19 +417,20 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
         executorService.submit(runnableTask2);
         executorService.submit(runnableTask3);
         executorService.shutdown();
+        UI.getCurrent().addStyleName("busybrocess");
+        
         while (!dataprocessFuture.isDone()) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ex) {
 
-            }
         }
         uploadOwnDataBtn.updateIconByHTMLCode(VaadinIcons.FILE_TEXT_O.getHtml() + "<div class='overlayicon'>" + VaadinIcons.ARROW_CIRCLE_UP_O.getHtml() + "</div>");
         maximisedMode = false;
+        
         this.maximizeView();
+        
 
     }
 
+    private boolean allJobsAreDone=false;
     /**
      * Visualise dataset
      *

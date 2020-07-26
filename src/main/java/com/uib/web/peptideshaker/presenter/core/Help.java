@@ -9,14 +9,12 @@ import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PopupView;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  *
- * @author y-mok
+ * @author Yehia Farag
  */
 public class Help extends AbsoluteLayout {
 
@@ -25,6 +23,7 @@ public class Help extends AbsoluteLayout {
     public Help(String text, String noteText ,int width,int height) {
         Help.this.setHeight(40, Unit.PIXELS);
         Help.this.setStyleName("infopopupcontainer");
+        Help.this.setDescription("Information");
 
         AbsoluteLayout closableLayout = new AbsoluteLayout();
         closableLayout.setStyleName("infolayout");

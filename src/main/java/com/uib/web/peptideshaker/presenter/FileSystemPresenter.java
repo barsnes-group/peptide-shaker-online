@@ -5,6 +5,7 @@ import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFile
 import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
 import com.uib.web.peptideshaker.presenter.layouts.DataViewLayout;
 import com.uib.web.peptideshaker.presenter.core.ButtonWithLabel;
+import com.uib.web.peptideshaker.presenter.core.Help;
 import com.uib.web.peptideshaker.presenter.core.SmallSideBtn;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.Page;
@@ -115,6 +116,9 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
         titleLabel.setStyleName("frametitle");
         titleLabel.addStyleName("maintitleheader");
         dataViewFrameContent.addComponent(titleLabel, "left:40px;top:13px");
+         Help helpBtn = new Help("<h1>Projects Overview</h1>Users can check the available ready to visualise datasets, get an overview for the processed data, check the dataset processing statues and have access for the dataset sharing links where users can visulize the dataset using dataset link.<br/>Also users can delete datasets and input files.", "",400,150);
+        dataViewFrameContent.addComponent(helpBtn, "left:178;top:0px");
+        
         dataViewFrameContent.addComponent(dataContainerLayout);
         viewDataBtn.setSelected(true);
 
@@ -144,8 +148,8 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
             }
 
             @Override
-            public int insertDatsetLinkToShare(String dsDetails) {
-                return FileSystemPresenter.this.insertDatsetLinkToShare(dsDetails);
+            public int insertDatsetLinkToShare(String dsDetails,String dsUniqueKey) {
+                return FileSystemPresenter.this.insertDatsetLinkToShare(dsDetails,dsUniqueKey);
             }
 
         };
@@ -341,7 +345,8 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
      * Store and retrieve dataset details index to share in link
      *
      * @param dsDetails encoded dataset details to store in database
+     * @param dsUniqueKey
      * @return dataset public key
      */
-    public abstract int insertDatsetLinkToShare(String dsDetails);
+    public abstract int insertDatsetLinkToShare(String dsDetails,String dsUniqueKey);
 }

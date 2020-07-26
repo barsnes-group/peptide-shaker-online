@@ -169,6 +169,7 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
         });
         modificationFilterPanel.setIcon(VaadinIcons.FILTER);
         modificationFilterPanel.addStyleName("compressmodpanel");
+        modificationFilterPanel.setDescription("Select modifications");
     }
     private final Panel modificationFilterPanel;
     private final OptionGroup modificationOptionGroup;

@@ -22225,7 +22225,42 @@ div.v-layout.v-horizontal.v-widget {
 	overflow: hidden !important;
 }
 
-.webpeptideshakertheme .averagescreenstyle .btnlayout {
+.webpeptideshakertheme .btnlayout {
 	padding: 3px;
 	margin-top: 4px;
+	margin-left: 5px;
+	z-index: 5 !important;
+	position: relative !important;
+}
+
+.webpeptideshakertheme .v-horizontallayout-minhight30 .v-horizontallayout .v-absolutelayout-infopopupcontainer {
+	width: 40px !important;
+	margin-top: -5px;
+	margin-left: -15px;
+}
+
+.webpeptideshakertheme .v-horizontallayout-minhight30 .v-horizontallayout .v-absolutelayout-infopopupcontainer .v-icon {
+	font-size: 17px !important;
+}
+
+.webpeptideshakertheme .v-absolutelayout-wrapper-infopopup {
+	top: 5px !important;
+}
+
+.webpeptideshakertheme .averagescreenstyle .v-absolutelayout-wrapper-infopopup {
+	top: 0px !important;
+}
+.v-ui.uicontainer.busybrocess .v-loading-indicator{
+	display: block !important;	
+	width:100% !important;
+        height:100% !important;
+        background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.v-ui.uicontainer.busybrocess .v-loading-indicator[style*="none"]:before {
+	display: block !important;
+}
+
+.v-ui.uicontainer.busybrocess .v-loading-indicator[style*="none"] {
+	opacity:1;
 }

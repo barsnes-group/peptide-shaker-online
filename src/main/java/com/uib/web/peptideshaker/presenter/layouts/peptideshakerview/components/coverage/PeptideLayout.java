@@ -69,7 +69,7 @@ public class PeptideLayout extends AbsoluteLayout implements Comparable<PeptideL
         Map<String, String> modificationsTooltip = new HashMap<>();
 
         for (ModificationMatch mod : peptide.getVariableModifications()) {
-          
+
             Color c = new Color(ModificationFactory.getDefaultColor(mod.getModification()));
             Label modification = new Label("<div  style='background:rgb(" + c.getRed() + "," + c.getGreen() + "," + c.getBlue() + ");;width: 100%;height: 100%;'></div>", ContentMode.HTML);
             modification.setSizeFull();
@@ -119,8 +119,9 @@ public class PeptideLayout extends AbsoluteLayout implements Comparable<PeptideL
         PeptideLayout.this.addComponent(intensityLayout);
         intensityLayout.setData(peptide.getModifiedSequence());
 //        psmNumberLayout.setStyleName("basicpeptidemodification");
-
-        tooltip += "</br>Intensity: " + peptide.getIntensity() + "";
+        if (peptide.getIntensity()> 0) {
+            tooltip += "</br>Intensity: " + peptide.getIntensity() + "";
+        }
 
         Label intensityColorLabel = new Label("<div style='background:" + peptide.getIntensityColor() + "; width:100%;height:100%;'></div>", ContentMode.HTML);
         intensityColorLabel.setSizeFull();

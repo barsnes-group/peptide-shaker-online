@@ -4,6 +4,7 @@ import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
 import com.uib.web.peptideshaker.presenter.core.DropDownList;
+import com.uib.web.peptideshaker.presenter.core.Help;
 import com.uib.web.peptideshaker.presenter.core.MultiSelectOptionGroup;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.RadioButton;
@@ -161,6 +162,8 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         titleLabel.setStyleName("frametitle");
         titleLabel.addStyleName("maintitleheader");
         container.addComponent(titleLabel, "left:40px;top:13px");
+        Help helpBtn = new Help("<h1>Analyze Data (create new projects)</h1>Users can upload their data files (FASTA files, Spectrum input files) and process their data using SearchGUI and visualize the result dataset.</br>Currently the supported Spectrum input files are (MGF and mzML) for identification datastes and (therm.raw) files for quantification datasets.", "", 400, 155);
+        container.addComponent(helpBtn, "left:143px;top:0px");
 
         AbsoluteLayout mainContainerLayout = new AbsoluteLayout();
         mainContainerLayout.setSizeFull();
@@ -690,6 +693,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         searchEnginesList.put("Novor (Select for non-commercial use only)", "Novor");
         return searchEnginesList;
     }
+    private  boolean numberChanged;
 
     /**
      * Update the tools input forms
@@ -715,7 +719,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         _searchSettingsFileList.setSelected(selectedId);
         _searchSettingsFileList.setItemIcon("Add new", VaadinIcons.FILE_ADD);
         Map<String, String> mgfFileIdToNameMap = new LinkedHashMap<>();
-
+        numberChanged = numberChanged || ((mzMLDataListLayout.getComponentCount() < mzMLFilesMap.size()) || (mgfDataListLayout.getComponentCount() < mgfFilesMap.size()) || (rawDataListLayout.getComponentCount() < rawFilesMap.size()));
         indexer = 1;
         mgfDataListLayout.removeAllComponents();
         rawDataListLayout.removeAllComponents();
@@ -803,11 +807,16 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         );
 
         UI.getCurrent().accessSynchronously(() -> {
+
             updateMgfFilesTable();
             updateRawFilesTable();
             updateMzMLFilesTable();
-            mgf_raw_dataUploader.setBusy(spectrumFileUploaderBusy);
-            UI.getCurrent().push();
+            if (mgf_raw_dataUploader.isBusy() && !spectrumFileUploaderBusy && numberChanged) {
+                mgf_raw_dataUploader.setBusy(spectrumFileUploaderBusy);
+                UI.getCurrent().push();
+                numberChanged=false;
+            }
+
         });
     }
 

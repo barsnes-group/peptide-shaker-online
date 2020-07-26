@@ -11,7 +11,7 @@ import com.uib.web.peptideshaker.presenter.layouts.advancedsearchsettings.PTMLoc
 import com.uib.web.peptideshaker.presenter.layouts.advancedsearchsettings.PeptideVariantsPanel;
 import com.uib.web.peptideshaker.presenter.layouts.advancedsearchsettings.ProteinInferencePanel;
 import com.uib.web.peptideshaker.presenter.layouts.advancedsearchsettings.QualityControlPanel;
-import com.uib.web.peptideshaker.presenter.layouts.advancedsearchsettings.SequanceMatchingPanel;
+import com.uib.web.peptideshaker.presenter.layouts.advancedsearchsettings.SequenceMatchingPanel;
 import com.uib.web.peptideshaker.presenter.layouts.advancedsearchsettings.SpectrumAnnotationPanel;
 import com.uib.web.peptideshaker.presenter.layouts.advancedsearchsettings.ValidationLevelsPanel;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -30,7 +30,7 @@ public class AdvancedSearchSettings extends VerticalLayout {
     private final PopupWindow popupAdvancedSettingLayout;
     private IdentificationParameters webSearchParam;
     private SpectrumAnnotationPanel spectrumAnnotationPanel;
-    private SequanceMatchingPanel sequanceMatchingPanel;
+    private SequenceMatchingPanel sequenceMatchingPanel;
     private ImportFiltersPanel importFilters;
     private ValidationLevelsPanel validationLevel;
     private FractionAnalysisPanel fractionAnalysis;
@@ -80,8 +80,8 @@ public class AdvancedSearchSettings extends VerticalLayout {
         spectrumAnnotationPanel = new SpectrumAnnotationPanel();
         subContainer.addComponent(spectrumAnnotationPanel);
 
-        sequanceMatchingPanel = new SequanceMatchingPanel();
-        subContainer.addComponent(sequanceMatchingPanel);
+        sequenceMatchingPanel = new SequenceMatchingPanel();
+        subContainer.addComponent(sequenceMatchingPanel);
         peptideVariants = new PeptideVariantsPanel();
         peptideVariants.setEnabled(false);
         peptideVariants.addStyleName("disablefont");
@@ -120,7 +120,7 @@ public class AdvancedSearchSettings extends VerticalLayout {
         this.webSearchParam = searchParameters;
         if (webSearchParam != null) {
             spectrumAnnotationPanel.updateGUI(searchParameters);
-            sequanceMatchingPanel.updateGUI(searchParameters);
+            sequenceMatchingPanel.updateGUI(searchParameters);
             importFilters.updateGUI(searchParameters);
             validationLevel.updateGUI(searchParameters);
             fractionAnalysis.updateGUI(searchParameters);

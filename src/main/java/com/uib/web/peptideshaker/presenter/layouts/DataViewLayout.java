@@ -255,7 +255,7 @@ public abstract class DataViewLayout extends Panel {
                 String link = ((PeptideShakerVisualizationDataset) ds).getLinkToShare();
                 int dsKey = -1;
                 if (link != null) {
-                    dsKey = insertDatsetLinkToShare(linkUtil.encrypt(link));
+                    dsKey = insertDatsetLinkToShare(linkUtil.encrypt(link),linkUtil.encrypt(ds.getName()+"-_-"+ds.getGalaxyId()));
                     String appName = VaadinSession.getCurrent().getAttribute("appName") + "";
                     String url = Page.getCurrent().getLocation().toString().split(appName)[0] + appName + "/";
                     String encryptedDsKey = linkUtil.encrypt(dsKey + "");
@@ -375,7 +375,8 @@ public abstract class DataViewLayout extends Panel {
      * Store and retrieve dataset details index to share in link
      *
      * @param dsDetails encoded dataset details to store in database
+     * @param dsUniqueKey
      * @return dataset public key
      */
-    public abstract int insertDatsetLinkToShare(String dsDetails);
+    public abstract int insertDatsetLinkToShare(String dsDetails,String dsUniqueKey);
 }

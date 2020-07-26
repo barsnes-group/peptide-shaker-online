@@ -55,7 +55,8 @@ public abstract class ModelLayer {
                 @Override
                 public void updatePresenterLayer(Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress, boolean updatePresenterView) {
                     if (historyFilesMap.size() == 1 && historyFilesMap.keySet().iterator().next().contains("_ExternalDS")) {
-                        viewDataset((PeptideShakerVisualizationDataset) historyFilesMap.values().iterator().next());
+                       PeptideShakerVisualizationDataset psDs =  (PeptideShakerVisualizationDataset) historyFilesMap.values().iterator().next();
+                        viewDataset(psDs);
                     } else {
                         Map<String, GalaxyFileObject> tempHistoryFilesMap = new LinkedHashMap<>();
                         tempHistoryFilesMap.putAll(((LinkedHashMap<String, GalaxyFileObject>) VaadinSession.getCurrent().getAttribute("uploaded_projects_" + this.getAPIKey())));
@@ -173,9 +174,10 @@ public abstract class ModelLayer {
      * Store and retrieve dataset details index to share in link
      *
      * @param dsDetails encoded dataset details to store in database
+     * @param dsUniqueKey
      * @returndataset details public key
      */
-    public int insertDatasetSharingLink(String dsDetails) {
-        return Database_Layer.insertDatasetSharingLink(dsDetails);
+    public int insertDatasetSharingLink(String dsDetails,String dsUniqueKey) {
+        return Database_Layer.insertDatasetSharingLink(dsDetails,dsUniqueKey);
     }
 }

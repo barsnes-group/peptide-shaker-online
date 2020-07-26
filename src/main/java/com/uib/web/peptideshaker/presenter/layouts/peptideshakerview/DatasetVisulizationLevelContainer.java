@@ -6,6 +6,7 @@ import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideSha
 
 import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
 import com.uib.web.peptideshaker.presenter.core.FilterButton;
+import com.uib.web.peptideshaker.presenter.core.Help;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
 import com.uib.web.peptideshaker.presenter.layouts.SearchParametersForm;
 import com.vaadin.event.LayoutEvents;
@@ -70,6 +71,11 @@ public class DatasetVisulizationLevelContainer extends HorizontalLayout {
         headerLabel.setWidthUndefined();
         topLeftLabelContainer.setSpacing(true);
         topLeftLabelContainer.addComponent(headerLabel);
+        
+         Help helpBtn = new Help("<h1>Datset Visualization</h1>Users visualise the selected datasets and interact with it.<br/>The dataset visulization has three main levels<br/>  1.Dataset level: include proteins table and dataset filters.</br>  2.Protein level: visulaisation of protein details and related proteins including the peptide coverage and 3D visulisation.</br>  3.Peptide level: visulization of peptide details include available peptide-to-spectrum matches and spectrum visulizaion chart.", "",400,175);
+        topLeftLabelContainer.addComponent(helpBtn);
+        
+        
 
         FilterButton removeFilterIcon = new FilterButton() {
             @Override
@@ -129,11 +135,11 @@ public class DatasetVisulizationLevelContainer extends HorizontalLayout {
     public void selectDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
 
         headerLabel.setLabelValue("Dataset: " + peptideShakerVisualizationDataset.getProjectName().split("___")[0]);
-        if (!peptideShakerVisualizationDataset.isUploadedProject()) {
+        if (!peptideShakerVisualizationDataset.isUploadedProject() && ! peptideShakerVisualizationDataset.isToShareDataset()) {
             SearchParametersForm dsOverview = new SearchParametersForm((PeptideShakerVisualizationDataset) peptideShakerVisualizationDataset, true) {
                 @Override
                 public void saveSearchingFile(IdentificationParameters searchParameters, boolean isNew) {
-                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
                 }
 
                 @Override

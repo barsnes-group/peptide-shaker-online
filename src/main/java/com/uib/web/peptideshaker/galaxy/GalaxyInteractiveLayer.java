@@ -73,7 +73,9 @@ public abstract class GalaxyInteractiveLayer {
             @Override
             public void updatePresenterLayer(Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress, boolean updatePresenterView, Set<String> toDeleteMap) {
                 //update history in the system                 
+               
                 GalaxyInteractiveLayer.this.updatePresenterLayer(historyFilesMap, jobsInProgress, updatePresenterView);
+                
                 if (!jobsInProgress && toDeleteMap != null && toolsHandler != null) {
                     toDeleteMap.forEach((galaxyId) -> {
                         toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), galaxyId.split(";")[0], galaxyId.split(";")[1], galaxyId.split(";").length == 3);

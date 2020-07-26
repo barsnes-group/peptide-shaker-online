@@ -272,13 +272,15 @@ public class DatabaseLayer {
      * Store and retrieve dataset details index to share in link
      *
      * @param dsDetails encoded dataset details to store in database
+     * @param dsUniqueKey dataset unique key
      * @returndataset details public key
      */
-    public int insertDatasetSharingLink(String dsDetails) {
+    public int insertDatasetSharingLink(String dsDetails,String dsUniqueKey) {
         /**
          * select dsDetails
          */
         try {
+            System.out.println("at databased enabled : "+dbEnabled);
             if (!dbEnabled) {
                 return -1;
             }
@@ -289,9 +291,11 @@ public class DatabaseLayer {
             /**
              * if nothing available insert and get the index
              */
-            String insertstatment = "INSERT INTO `datasetsharing` (`ds_details`) VALUES (?);";
+            
+            String insertstatment = "INSERT INTO `datasetsharing` (`ds_details`, `ds_name`) VALUES (?,?);";
             PreparedStatement preparedStatment = conn.prepareStatement(insertstatment, Statement.RETURN_GENERATED_KEYS);
             preparedStatment.setString(1, dsDetails);
+             preparedStatment.setString(2, dsUniqueKey);
             preparedStatment.executeUpdate();
             ResultSet rs = preparedStatment.getGeneratedKeys();
             while (rs.next()) {
@@ -301,6 +305,7 @@ public class DatabaseLayer {
             String message = e.getLocalizedMessage();
             return (getDatasetSharingLink(dsDetails));
         }
+         System.out.println("at err else happend we return -1: ");
         return -1;
     }
 
@@ -311,6 +316,7 @@ public class DatabaseLayer {
      * @return dataset public key
      */
     private int getDatasetSharingLink(String dsDetails) {
+        System.out.println("at sharing link exist invoked");
         try {
             if (!dbEnabled) {
                 return -1;

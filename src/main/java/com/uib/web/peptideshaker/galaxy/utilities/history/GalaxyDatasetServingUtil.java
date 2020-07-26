@@ -110,11 +110,9 @@ public class GalaxyDatasetServingUtil {
                             try {
                                 spectrumTitle = URLDecoder.decode(spectrumTitle, "utf-8");
                             } catch (UnsupportedEncodingException e) {
-                                System.out.println("An exception was thrown when trying to decode an mgf title: " + spectrumTitle);
-                                e.printStackTrace();
+                                System.out.println("Error: 113 :An exception was thrown when trying to decode an mgf title: " + spectrumTitle+"  "+e);
                             }
                         } else if (line.startsWith("CHARGE")) {
-                            System.out.println("at charge line " + line);
                             precursorCharges = parseCharges(line);
                         } else if (line.startsWith("PEPMASS")) {
                             String temp = line.substring(line.indexOf("=") + 1);

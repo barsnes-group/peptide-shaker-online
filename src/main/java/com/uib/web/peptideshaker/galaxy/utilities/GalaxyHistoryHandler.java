@@ -7,15 +7,14 @@ import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFile
 import com.github.jmchilton.blend4j.galaxy.HistoriesClient;
 import com.github.jmchilton.blend4j.galaxy.beans.Dataset;
 import com.github.jmchilton.blend4j.galaxy.beans.History;
-import com.github.jmchilton.blend4j.galaxy.beans.HistoryContentsProvenance;
 import com.uib.web.peptideshaker.galaxy.client.GalaxyClient;
 import com.uib.web.peptideshaker.model.core.LinkUtil;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.UI;
 
 import java.io.File;
+import java.net.URLDecoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,10 +35,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import javax.servlet.http.HttpSession;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 /**
  * This class represents Galaxy history (galaxy file system) in Peptide-Shaker
@@ -640,74 +639,99 @@ public abstract class GalaxyHistoryHandler {
             this.indexedMgfGalaxyIdsMap = new LinkedHashMap<>();
             this.invokeTracker = keepfollow;
             try {
-                String requestSearching = Page.getCurrent().getLocation().toString();
-                if (requestSearching.contains("toShare_-_")) {
+                String requestToShare = Page.getCurrent().getLocation().toString();
+                if (requestToShare.contains("toShare_-_")) {
                     int dsKey = -1;
                     final LinkUtil linkUtil = new LinkUtil();
-                    if (requestSearching.split("toShare_-_").length > 1) {
+                    if (requestToShare.split("toShare_-_").length > 1) {
                         try {
-                            String dsKeyAsString = requestSearching.split("toShare_-_")[1];
+                            String dsKeyAsString = requestToShare.split("toShare_-_")[1];
                             dsKey = Integer.valueOf(linkUtil.decrypt(dsKeyAsString));
                         } catch (NumberFormatException e) {
+                            e.printStackTrace();
                         }
                     }
                     String encodedDsDetails = getDatasetSharingLink(dsKey);
                     if (encodedDsDetails != null) {
-                        String deCrypted = linkUtil.decrypt(encodedDsDetails);
-                        String[] dsDetails = deCrypted.split("-_-");
-                        String project_name = dsDetails[0];
-                        PeptideShakerVisualizationDataset externaldataset = new PeptideShakerVisualizationDataset(project_name, user_folder, Galaxy_Instance.getGalaxyUrl(), Galaxy_Instance.getApiKey(), galaxyDatasetServingUtil, getCsf_pr_Accession_List()) {
+                        String deCrypted = URLDecoder.decode(linkUtil.decrypt(encodedDsDetails), "UTF-8");
+                        JSONParser parser = new JSONParser();
+                        org.json.simple.JSONObject json = (org.json.simple.JSONObject) parser.parse(deCrypted);
+                        Map<String, Object> dsInformationMap = jsonToMap(json);
+                        PeptideShakerVisualizationDataset externaldataset = new PeptideShakerVisualizationDataset(dsInformationMap.get("dsName").toString(), user_folder, Galaxy_Instance.getGalaxyUrl(), dsInformationMap.get("apiKey").toString(), galaxyDatasetServingUtil, getCsf_pr_Accession_List()) {
                             @Override
                             public Set<String[]> getPathwayEdges(Set<String> proteinAcc) {
                                 return GalaxyHistoryHandler.this.getPathwayEdges(proteinAcc);
                             }
                         };
-                        dsDetails[3] = dsDetails[3].replace("mgf-_:_-\\", "");
-                        for (String indexedmgf : dsDetails[3].split("\\+")) {
-                            GalaxyFileObject ds = new GalaxyFileObject();
-                            ds.setName(indexedmgf.split("\\(API:")[0]);
-                            ds.setType("MGF");
-                            ds.setGalaxyId(indexedmgf.split("\\(API:")[1].replace(")", ""));
-                            ds.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + "/datasets/" + ds.getGalaxyId() + "/display");
-                            ds.setStatus("ok");
-//                            externaldataset.addMgfFiles(ds.getName(), ds);
-
-                        }
-                        externaldataset.setStatus("ok", true);
-                        externaldataset.setType("Web Peptide Shaker Dataset");
-                        externaldataset.setName(project_name);
-                        externaldataset.setToShareDataset(true);
+                        externaldataset.setHistoryId(dsInformationMap.get("ps_history").toString());
+                        externaldataset.setPeptideShakerResultsFileId(dsInformationMap.get("ps").toString(), true);
+                        externaldataset.setGalaxyId(dsInformationMap.get("ps").toString());
+                        externaldataset.setStatus("ok");
+                        externaldataset.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + "/api/histories/" + externaldataset.getHistoryId() + "/contents/" + externaldataset.getGalaxyId() + "/display?key=" + dsInformationMap.get("apiKey").toString());
 
                         GalaxyFileObject ds = new GalaxyFileObject();
-                        ds.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + "/datasets/" + dsDetails[4].split("-_:_-")[1] + "/display?");
-                        ds.setStatus("ok");
-                        ds.setType("MGF-Index-File");
-                        GalaxyTransferableFile zipFolder = new GalaxyTransferableFile(user_folder, ds, true);
-                        zipFolder.setDownloadUrl(ds.getDownloadUrl());
-//                        externaldataset.setMgfIndexFolder(zipFolder);
-
-                        ds = new GalaxyFileObject();
-                        ds.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + "/datasets/" + dsDetails[1].split("-_:_-")[1] + "/display?");
+                        ds.setHistoryId(dsInformationMap.get("ps_history").toString());
+                        ds.setGalaxyId(dsInformationMap.get("sqi").toString());
+                        ds.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + "/api/histories/" + ds.getHistoryId() + "/contents/" + ds.getGalaxyId() + "/display?key=" + dsInformationMap.get("apiKey").toString());
                         ds.setStatus("ok");
                         ds.setType("SearchGUI");
-                        ds.setOverview(dsDetails[5].split("-_:_-")[1]);
+                        ds.setOverview(dsInformationMap.get("overviewSGUI").toString());
                         externaldataset.setSearchGUIResultFile(ds);
-                        externaldataset.setPeptideShakerResultsFileId(dsDetails[2].split("-_:_-")[1], true);
-                        externaldataset.setGalaxyId(dsDetails[2].split("-_:_-")[1]);
-                        externaldataset.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + "/datasets/" + dsDetails[2].split("-_:_-")[1] + "/display?to_ext=zip");
-                        if (deCrypted.contains("-_-quant-_:_-")) {
-                            ds = new GalaxyFileObject();
-                            ds.setName(project_name);
-                            ds.setType("MOFF Quant");
-                            ds.setGalaxyId(deCrypted.split("-_-quant-_:_-")[1]);
-                            ds.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + "/datasets/" + deCrypted.split("-_-quant-_:_-")[1] + "/display?");
-                            ds.setStatus("ok");
 
+                        Set<GalaxyTransferableFile> cuiSet = new LinkedHashSet<>();
+                        Map<String, String> cuiFileIdMap = (Map<String, String>) dsInformationMap.get("cuiSet");
+                        for (String galaxyId : cuiFileIdMap.keySet()) {
+                            ds = new GalaxyFileObject();
+                            ds.setName(cuiFileIdMap.get(galaxyId));
+                            ds.setType("CUI");
+                            ds.setHistoryId(externaldataset.getHistoryId());
+                            ds.setGalaxyId(galaxyId);
+                            ds.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + "/api/histories/" + ds.getHistoryId() + "/contents/" + ds.getGalaxyId() + "/display?key=" + dsInformationMap.get("apiKey").toString());
+                            ds.setStatus("ok");
                             GalaxyTransferableFile file = new GalaxyTransferableFile(user_folder, ds, false);
                             file.setDownloadUrl(ds.getDownloadUrl());
-//                            externaldataset.setMoff_quant_file(file);
+                            cuiSet.add(file);
+
                         }
-                        historyFilesMap.put(project_name + "_ExternalDS", externaldataset);
+                        externaldataset.setCuiFiles(dsInformationMap.get("cui").toString(), cuiSet);
+
+                        Set<GalaxyFileObject> indexedMGFSet = new LinkedHashSet<>();
+                        Map<String, String> indexedMGFFileIdMap = (Map<String, String>) dsInformationMap.get("cuiSet");
+                        for (String galaxyId : indexedMGFFileIdMap.keySet()) {
+                            ds = new GalaxyFileObject();
+                            ds.setName(indexedMGFFileIdMap.get(galaxyId));
+                            ds.setType("Indexed-MGF");
+                            ds.setStatus("ok");
+                            ds.setHistoryId(externaldataset.getHistoryId());
+                            ds.setGalaxyId(galaxyId);
+                            ds.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + "/api/histories/" + ds.getHistoryId() + "/contents/" + ds.getGalaxyId() + "/display?key=" + dsInformationMap.get("apiKey").toString());
+                            indexedMGFSet.add(ds);
+                        }
+
+                        externaldataset.setIndexedMgfFiles(dsInformationMap.get("mgf").toString(), indexedMGFSet);
+
+                        if (dsInformationMap.containsKey("moffid")) {
+
+                            Set<GalaxyTransferableFile> moffSet = new LinkedHashSet<>();
+                            Map<String, String> moffFileIdMap = (Map<String, String>) dsInformationMap.get("moffSet");
+                            for (String galaxyId : moffFileIdMap.keySet()) {
+                                ds = new GalaxyFileObject();
+                                ds.setName(moffFileIdMap.get(galaxyId));
+                                ds.setType("MOFF Quant");
+                                ds.setHistoryId(externaldataset.getHistoryId());
+                                ds.setGalaxyId(galaxyId);
+                                ds.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + "/api/histories/" + ds.getHistoryId() + "/contents/" + ds.getGalaxyId() + "/display?key=" + dsInformationMap.get("apiKey").toString());
+                                ds.setStatus("ok");
+                                GalaxyTransferableFile file = new GalaxyTransferableFile(user_folder, ds, false);
+                                file.setDownloadUrl(ds.getDownloadUrl());
+                                moffSet.add(file);
+
+                            }
+
+                            externaldataset.setMoff_quant_files(dsInformationMap.get("moffid").toString(), moffSet);
+                        }
+                        externaldataset.setToShareDataset(true);
+                        historyFilesMap.put(externaldataset.getProjectName() + "_ExternalDS", externaldataset);
                         return;
                     }
                 }
@@ -1087,7 +1111,7 @@ public abstract class GalaxyHistoryHandler {
                 if (e.toString().contains("Service Temporarily Unavailable")) {
                     Notification.show("Service Temporarily Unavailable", Notification.Type.ERROR_MESSAGE);
                 } else {
-                    System.err.println("Error:  galaxy history handler error" + e);
+                    System.err.println("Error:  galaxy history handler error " + e);
                     Page.getCurrent().reload();
                 }
             }
@@ -1145,5 +1169,51 @@ public abstract class GalaxyHistoryHandler {
      * @return encoded dataset details to visualise
      */
     public abstract String getDatasetSharingLink(int dsKey);
+
+    /**
+     * Convert JSON object to Java readable map
+     *
+     * @param object JSON object to be converted
+     * @return Java Hash map has all the data
+     * @throws JSONException in case of error in reading JSON file
+     */
+    private Map<String, Object> jsonToMap(org.json.simple.JSONObject object) throws JSONException {
+        Map<String, Object> map = new HashMap<>();
+
+        Iterator<String> keysItr = object.keySet().iterator();
+        while (keysItr.hasNext()) {
+            String key = keysItr.next();
+            Object value = object.get(key);
+
+            if (value instanceof org.json.simple.JSONArray) {
+                value = toList((org.json.simple.JSONArray) value);
+            } else if (value instanceof org.json.simple.JSONObject) {
+                value = jsonToMap((org.json.simple.JSONObject) value);
+            }
+            map.put(key, value);
+        }
+        return map;
+    }
+
+    /**
+     * Convert JSON object to Java readable list
+     *
+     * @param object JSON object to be converted
+     * @return Java List has all the data
+     * @throws JSONException in case of error in reading JSON file
+     */
+    private List<Object> toList(org.json.simple.JSONArray array) throws JSONException {
+        List<Object> list = new ArrayList<>();
+        for (int i = 0; i < array.size(); i++) {
+            Object value = array.get(i);
+            if (value instanceof org.json.simple.JSONArray) {
+                value = toList((org.json.simple.JSONArray) value);
+            } else if (value instanceof org.json.simple.JSONObject) {
+                value = jsonToMap((org.json.simple.JSONObject) value);
+            }
+            list.add(value);
+        }
+        return list;
+    }
 
 }

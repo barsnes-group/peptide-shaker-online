@@ -86,7 +86,6 @@ public class LinkUtil {
     public String decrypt(String encstr) {
 
         if (encstr.length() > 12) {
-
             String cipher = encstr.substring(12);
             return indecrypt(new String(Base64.decodeBase64(cipher)));
 

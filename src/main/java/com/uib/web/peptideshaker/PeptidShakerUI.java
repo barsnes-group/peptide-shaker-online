@@ -174,14 +174,21 @@ public class PeptidShakerUI extends UI {
         } catch (Exception e) {
             e.printStackTrace();
         }
-       VaadinSession.getCurrent().setErrorHandler(new ErrorHandler() {
+        VaadinSession.getCurrent().setErrorHandler(new ErrorHandler() {
             @Override
             public void error(com.vaadin.server.ErrorEvent event) {
                 System.out.println("at ----------- error handler is working ------------------- ");
                 event.getThrowable().printStackTrace();
+//                Page.getCurrent().reload();
             }
-       }
-       );  
+        }
+        );
+        String requestToShare = Page.getCurrent().getLocation().toString();
+        if (!requestToShare.contains("toShare_-_") || true) {
+            webPeptideShakerApp.loginAsGuest();
+            System.out.println("at login as guest is already done");
+           
+        }
 
     }
 

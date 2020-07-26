@@ -96,7 +96,7 @@ public class QualityControlPanel extends PopupWindow {
             generalSettingsQualityControl.unselect("confidenceCheck");
         }
 
-        super.setLabelValue(VaadinIcons.COG.getHtml() + " Quality Control (beta)" + "<center>" + webSearchParameters.getIdValidationParameters().getValidationQCParameters().getShortDescription() + "</center>");
+        super.setLabelValue(VaadinIcons.COG.getHtml() + " Quality Control " + "<center>" + webSearchParameters.getIdValidationParameters().getValidationQCParameters().getShortDescription() + "</center>");
 
     }
 
@@ -109,7 +109,7 @@ public class QualityControlPanel extends PopupWindow {
         if (visible && webSearchParameters != null) {
             updateGUI(webSearchParameters);
         } else if (webSearchParameters != null) {
-            super.setLabelValue(VaadinIcons.COG.getHtml() + " Quality Control (beta)" + "<center>" + webSearchParameters.getIdValidationParameters().getValidationQCParameters().getShortDescription() + "</center>");
+            super.setLabelValue(VaadinIcons.COG.getHtml() + " Quality Control " + "<center>" + webSearchParameters.getIdValidationParameters().getValidationQCParameters().getShortDescription() + "</center>");
         }
         super.setPopupVisible(visible); //To change body of generated methods, choose Tools | Templates.
     }

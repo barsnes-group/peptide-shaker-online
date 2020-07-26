@@ -337,11 +337,13 @@ public class DatasetVisulizationLevelComponent extends AbsoluteLayout implements
             quantOptions.addItem("All Peptides");
             quantOptions.addItem("Unique Peptides");
             quantOptions.setValue("All Peptides");
+           
             quantOptions.addValueChangeListener((Property.ValueChangeEvent event) -> {
                 updateQuantValues((quantOptions.getValue().toString().equals("All Peptides")));
             });
 
             proteinTableContainer.addServiceButton(service);
+            service.setDescription("Select protein quantification based on unique/all peptides");
         }
 
     }

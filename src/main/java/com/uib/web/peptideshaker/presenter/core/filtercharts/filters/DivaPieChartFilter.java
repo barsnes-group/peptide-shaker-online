@@ -18,6 +18,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.awt.BasicStroke;
@@ -193,12 +194,15 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
                     sizeChanged(width, height);
                 });
 
-        Page.getCurrent().addBrowserWindowResizeListener(new Page.BrowserWindowResizeListener() {
-            @Override
-            public void browserWindowResized(Page.BrowserWindowResizeEvent event) {
-                updateComponentSize();
-            }
+        UI.getCurrent().access(() -> {
+            Page.getCurrent().addBrowserWindowResizeListener(new Page.BrowserWindowResizeListener() {
+                @Override
+                public void browserWindowResized(Page.BrowserWindowResizeEvent event) {
+                    updateComponentSize();
+                }
+            });
         });
+       
         initChart();
         resetFilterBtn = new FilterButton() {
             @Override

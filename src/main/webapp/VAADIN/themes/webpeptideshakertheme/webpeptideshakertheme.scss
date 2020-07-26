@@ -8823,7 +8823,7 @@
     }
     .importfiltersubcontainer .v-slot-align-center .v-textfield-align-center  {
 
-        padding-right: 32px;
+        /*padding-right: 32px;*/
         postion:relative;
     }
     .v-filterselect-suggestpopup [class$="suggestmenu"] {
@@ -8962,70 +8962,106 @@
 
     }
     .modificationlistpanel.v-panel-modificationlistpanel{
-	padding-top:0px !important;
-}
-.modificationlistpanel .v-panel-captionwrap{
-	
-	position:absolute !important;
-	margin-top:10px !important;
+        padding-top:0px !important;
+    }
+    .modificationlistpanel .v-panel-captionwrap{
+
+        position:absolute !important;
+        margin-top:10px !important;
+        width:100% !important;
+    }
+
+    .modificationlistpanel .v-panel-nocaption.v-panel-nocaption-modificationlistpanel{
+
+        max-width:20px;
+        max-height:20px;
+        float:right;
+        padding-right:20px;
+    }
+    .modificationlistpanel .Vaadin-Icons{
+        border:1px solid lightgray;
+        width:20px;
+        height:20px;
+        line-height:20px;
+        font-size:15px;
+        text-align:center;
+        color:gray;
+        border-radius:4px;
+        cursor:pointer !important;
+
+    }
+    .modificationlistpanel .Vaadin-Icons{
+        border:1px solid lightgray;
+        background-color:whitesmoke;
+        width:20px;
+        height:20px;
+        line-height:20px;
+        font-size:15px;
+        text-align:center;
+        color:gray;
+        border-radius:4px;
+        z-index:5;
+        position:relative!important;
+
+    }
+    .modificationlistpanel .Vaadin-Icons:hover{
+        border-color:gray !important;
+        background-color:lightgray;
+        color:black;
+
+
+    }
+    .v-panel-modificationlistpanel.v-panel-compressmodpanel {
+        max-height:42px;
+        max-width:47px;
+        padding-left:4px;
+        overflow:hidden !important;
+    }
+    .v-panel-modificationlistpanel.v-panel-compressmodpanel  .v-select-optiongroup {
+        display:none;
+        overflow:hidden !important;
+    }
+
+
+    .btnlayout {
+        padding: 3px;
+        margin-top: 4px;
+        margin-left: 5px;
+        z-index:5 !important;
+        position:relative !important; 
+    }
+    .v-horizontallayout-minhight30 .v-horizontallayout .v-absolutelayout-infopopupcontainer{
+        width:40px !important;
+        margin-top:-5px;
+        margin-left:-15px;
+
+    }
+
+    .v-horizontallayout-minhight30 .v-horizontallayout .v-absolutelayout-infopopupcontainer .v-icon{
+        font-size:17px !important;
+    }
+
+    .v-absolutelayout-wrapper-infopopup{
+        top:5px !important;
+    }
+    .averagescreenstyle .v-absolutelayout-wrapper-infopopup{
+        top:0px !important;
+    }
+    .v-ui.uicontainer.busybrocess .v-loading-indicator{
+	display: block !important;	
 	width:100% !important;
+	height:100% !important;
+        
+            background-color: rgba(0, 0, 0, 0.6) !important;
 }
 
-.modificationlistpanel .v-panel-nocaption.v-panel-nocaption-modificationlistpanel{
-
-	max-width:20px;
-	max-height:20px;
-	float:right;
-	padding-right:20px;
-}
-.modificationlistpanel .Vaadin-Icons{
-	border:1px solid lightgray;
-	width:20px;
-	height:20px;
-	line-height:20px;
-	font-size:15px;
-	text-align:center;
-	color:gray;
-	border-radius:4px;
-	cursor:pointer !important;
-
-}
-.modificationlistpanel .Vaadin-Icons{
-	border:1px solid lightgray;
-	background-color:whitesmoke;
-	width:20px;
-	height:20px;
-	line-height:20px;
-	font-size:15px;
-	text-align:center;
-	color:gray;
-	border-radius:4px;
-	z-index:5;
-	position:relative!important;
-
-}
-.modificationlistpanel .Vaadin-Icons:hover{
-	border-color:gray !important;
-	background-color:lightgray;
-	color:black;
-
-
-}
-.v-panel-modificationlistpanel.v-panel-compressmodpanel {
-	max-height:42px;
-	max-width:47px;
-	padding-left:4px;
-	overflow:hidden !important;
-}
-.v-panel-modificationlistpanel.v-panel-compressmodpanel  .v-select-optiongroup {
-	display:none;
-	overflow:hidden !important;
-}
-.averagescreenstyle .btnlayout {
-	padding: 3px;
-	margin-top: 4px;
+.v-ui.uicontainer.busybrocess .v-loading-indicator[style*="none"]:before {
+	display: block !important;
 }
 
+.v-ui.uicontainer.busybrocess .v-loading-indicator[style*="none"] {
+	opacity:1;
+}
 }
 
 

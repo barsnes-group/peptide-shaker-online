@@ -399,9 +399,7 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
                 Runnable task = () -> {
                     connectinoWindow.removeStyleName("windowcontainer");
                     connectinoWindow.setStyleName("connectionwindow");
-
                     List<String> userOverviewData = connectToGalaxy(userAPIFeald.getValue(), viewId);
-                    System.out.println("at update user data :-D " + userOverviewData);
                     updateConnectionStatusToGalaxy(userOverviewData);
                 };
                 if (executorService.isShutdown()) {
@@ -481,21 +479,26 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
             userOverviewPanel.addStyleName("hidecontent");
 
         }
-        if (availableGalaxy) {
-            this.loginAsGuest();
-        }
+       
 
     }
 
     /**
      * Log in to galaxy as guest (test user API key).
      */
-    private void loginAsGuest() {
+    public void loginAsGuest() {
+        String caption= "<b style=\"color:#cd6e1d !important\">Guest User <i>(public data)</i></b>";
+        
+        String requestToShare = Page.getCurrent().getLocation().toString();
+        if (requestToShare.contains("toShare_-_") ) {
+            caption="<b style=\"color:#cd6e1d !important\">Retrieving Dataset Information</i></b>";       
+        
+        }
         galaxyLoginConnectionBtnLabel.setVisible(false);
         connectinoWindow.setVisible(true);
         galaxyLoginLayout.setVisible(false);
         connectinoWindow.setClosable(false);
-        connectingLabel.setCaption("<b style=\"color:#cd6e1d !important\">Guest User <i>(public data)</i></b>");
+        connectingLabel.setCaption(caption);
         connectingLabel.setVisible(true);
         Runnable task = () -> {
             connectinoWindow.removeStyleName("windowcontainer");

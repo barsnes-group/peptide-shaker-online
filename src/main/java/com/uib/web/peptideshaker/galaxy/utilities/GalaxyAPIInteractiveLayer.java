@@ -30,6 +30,11 @@ import org.json.simple.parser.ParseException;
  * @author Yehia Farag
  */
 public class GalaxyAPIInteractiveLayer {
+    
+    public void populateCollection(String collectionId){
+    
+    
+    }
 
     /**
      * Get list of datasets ids on galaxy server

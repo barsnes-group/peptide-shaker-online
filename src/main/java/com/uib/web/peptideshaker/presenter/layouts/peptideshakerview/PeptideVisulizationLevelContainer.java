@@ -21,7 +21,7 @@ import java.util.Set;
  *
  */
 public class PeptideVisulizationLevelContainer extends HorizontalLayout implements RegistrableFilter {
-    
+
     private final AbsoluteLayout container;
     private final Label headerLabel;
     private final SelectionManager Selection_Manager;
@@ -36,26 +36,26 @@ public class PeptideVisulizationLevelContainer extends HorizontalLayout implemen
      * @param psmViewBtn
      */
     public PeptideVisulizationLevelContainer(SelectionManager Selection_Manager, PresenterSubViewSideBtn psmViewBtn) {
-        
+
         PeptideVisulizationLevelContainer.this.setSizeFull();
         PeptideVisulizationLevelContainer.this.setSpacing(true);
         PeptideVisulizationLevelContainer.this.setMargin(false);
         PeptideVisulizationLevelContainer.this.setStyleName("psmView");
         PeptideVisulizationLevelContainer.this.addStyleName("transitionallayout");
-        
+
         this.Selection_Manager = Selection_Manager;
         this.psmViewBtn = psmViewBtn;
-        
+
         container = new AbsoluteLayout();
         container.setSizeFull();
         PeptideVisulizationLevelContainer.this.addComponent(container);
-        
+
         HorizontalLayout topLabelContainer = new HorizontalLayout();
         topLabelContainer.setHeight(30, Unit.PIXELS);
         topLabelContainer.setWidth(100, Unit.PERCENTAGE);
         topLabelContainer.addStyleName("minhight30");
         container.addComponent(topLabelContainer);
-        
+
         HorizontalLayout topLeftLabelContainer = new HorizontalLayout();
         topLeftLabelContainer.setWidth(100, Unit.PERCENTAGE);
         topLeftLabelContainer.setHeight(100, Unit.PERCENTAGE);
@@ -92,13 +92,13 @@ public class PeptideVisulizationLevelContainer extends HorizontalLayout implemen
         middleContainer.setSizeFull();
         middleContainer.setSpacing(true);
         container.addComponent(middleContainer, "left:0px ; top:30px");
-        
+
         psmViewComponent = new PSMViewComponent() {
             @Override
             public Map<Object, SpectrumInformation> getSpectrumInformationMap(List<PSMObject> psms) {
                 return peptideShakerVisualizationDataset.getSelectedSpectrumData(psms, Selection_Manager.getSelectedPeptide());
             }
-            
+
         };
         psmViewComponent.setThumbImage(this.psmViewBtn.getBtnThumbIconImage());
         middleContainer.addComponent(psmViewComponent);
@@ -146,55 +146,58 @@ public class PeptideVisulizationLevelContainer extends HorizontalLayout implemen
 //        viewTableBtn.addClickListener(viewControlListener);
 //        viewSpectraChartBtn.addClickListener(viewControlListener);
     }
-    
+
     public void selectDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
         this.peptideShakerVisualizationDataset = peptideShakerVisualizationDataset;
     }
-    
+
     @Override
     public String getFilterId() {
         return "PSM";
     }
-    
+
     @Override
     public void updateFilterSelection(Set<Comparable> selection, Set<Comparable> selectedCategories, boolean topFilter, boolean singleFilter, boolean selfAction) {
-        
+
     }
-    
+
     @Override
     public void selectionChange(String type) {
         if (type.equalsIgnoreCase("peptide_selection") && !peptideShakerVisualizationDataset.isUploadedProject()) {
-            
+
             if (Selection_Manager.getSelectedPeptide() != null) {
+                if (!peptideShakerVisualizationDataset.getProjectName().contains("SingleQuant") || !Selection_Manager.getSelectedPeptide().getModifiedSequence().equalsIgnoreCase("NH2-LYGSAGPPPTGEEDTAEKDEL-COOH")) {
+                    return;
+                }
                 headerLabel.setValue("Peptide Spectrum Matches (" + Selection_Manager.getSelectedPeptide().getModifiedSequence() + ")");
                 headerLabel.setDescription(Selection_Manager.getSelectedPeptide().getTooltip());
                 String psmTooltip = "";
                 for (String str : Selection_Manager.getSelectedPeptide().getTooltip().split("</br>")) {
-                    if(str.contains("#PSMs:")){
-                        psmTooltip = Selection_Manager.getSelectedPeptide().getTooltip().replace(str+"</br>", "");
+                    if (str.contains("#PSMs:")) {
+                        psmTooltip = Selection_Manager.getSelectedPeptide().getTooltip().replace(str + "</br>", "");
                         break;
                     }
                 }
-                
+
                 this.psmViewComponent.updateView(peptideShakerVisualizationDataset.getPSM(Selection_Manager.getSelectedPeptide().getModifiedSequence()), psmTooltip, Selection_Manager.getSelectedPeptide().getModifiedSequence().length(), peptideShakerVisualizationDataset.isQuantDataset());
             } else {
                 headerLabel.setValue("Peptide Spectrum Matches");
                 this.psmViewBtn.updateIconByResource(null);
                 headerLabel.setDescription("");
             }
-            
+
         } else {
             headerLabel.setValue("Peptide Spectrum Matches");
             this.psmViewBtn.updateIconByResource(null);
             headerLabel.setDescription("");
         }
     }
-    
+
     @Override
     public void redrawChart() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public void suspendFilter(boolean suspend) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

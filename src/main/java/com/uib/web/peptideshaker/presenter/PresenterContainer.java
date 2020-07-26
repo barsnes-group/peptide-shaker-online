@@ -144,6 +144,7 @@ public abstract class PresenterContainer extends VerticalLayout {
             Page.getCurrent().reload();
         });
 
+        
         /**
          * landing page initialisation.
          *
@@ -173,6 +174,7 @@ public abstract class PresenterContainer extends VerticalLayout {
                 super.maximizeView();
             }
         };
+
         welcomePage.setPresenterControlButtonContainer(presenterButtonsContainerLayout);
 
         searchGUIPeptideShakerToolPresenter = new SearchGUIPeptideShakerToolPresenter() {
@@ -205,8 +207,10 @@ public abstract class PresenterContainer extends VerticalLayout {
 
         };
 
-        searchGUIPeptideShakerToolPresenter.getMainPresenterButton().setEnabled(availableGalaxyServer);
-        searchGUIPeptideShakerToolPresenter.getSmallPresenterControlButton().setEnabled(availableGalaxyServer);
+        if (getSearchGUIPeptideShakerToolPresenter().getMainPresenterButton().isEnabled()) {
+            searchGUIPeptideShakerToolPresenter.getMainPresenterButton().setEnabled(availableGalaxyServer);
+            searchGUIPeptideShakerToolPresenter.getSmallPresenterControlButton().setEnabled(availableGalaxyServer);
+        }
         if (!availableGalaxyServer) {
             Notification.show("Galaxy server is not available", Notification.Type.TRAY_NOTIFICATION);
             searchGUIPeptideShakerToolPresenter.getMainPresenterButton().setDescription("Galaxy server is not available");
@@ -231,17 +235,17 @@ public abstract class PresenterContainer extends VerticalLayout {
 
             @Override
             public void viewDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
-                if (peptideShakerVisualizationDataset != null) {
-                    if ((this.getData() + "").equalsIgnoreCase(peptideShakerVisualizationDataset.getProjectName())) {
-                        viewLayout(interactivePSPRojectResultsPresenter.getViewId());
-                        return;
-                    }
-                    this.setData(peptideShakerVisualizationDataset.getProjectName());
+                if (peptideShakerVisualizationDataset == null) {
+                    return;
                 }
+                if ((this.getData() + "").equalsIgnoreCase(peptideShakerVisualizationDataset.getProjectName())) {
+                    viewLayout(interactivePSPRojectResultsPresenter.getViewId());
+                    return;
+                }
+                this.setData(peptideShakerVisualizationDataset.getProjectName());
                 interactivePSPRojectResultsPresenter = new InteractivePSPRojectResultsPresenter(peptideShakerVisualizationDataset.isToShareDataset()) {
                     @Override
                     public boolean[] processVisualizationDataset(String projectName, Map<String, PluploadFile> uploadedFileMap) {
-
                         return uploadedProjectUtility.processVisualizationDataset(projectName, uploadedFileMap, getCsf_pr_Accession_List());
                     }
 
@@ -253,8 +257,8 @@ public abstract class PresenterContainer extends VerticalLayout {
             }
 
             @Override
-            public int insertDatsetLinkToShare(String dsDetails) {
-                return PresenterContainer.this.insertDatsetLinkToShare(dsDetails);
+            public int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey) {
+                return PresenterContainer.this.insertDatsetLinkToShare(dsDetails, dsUniqueKey);
             }
 
         };
@@ -282,6 +286,10 @@ public abstract class PresenterContainer extends VerticalLayout {
 
         };
 
+    }
+
+    public void loginAsGuest() {
+        welcomePage.loginAsGuest();
     }
 
     public HorizontalLayout getMainComponentContainer() {
@@ -334,7 +342,7 @@ public abstract class PresenterContainer extends VerticalLayout {
 
     public void updateProjectOverviewPresenter(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
         fileSystemPresenter.updateData(tempHistoryFilesMap, jobsInProgress);
-        searchGUIPeptideShakerToolPresenter.updateData(historyFilesMap);        
+        searchGUIPeptideShakerToolPresenter.updateData(historyFilesMap);
     }
 
     public abstract void viewLayout(String viewId);
@@ -397,8 +405,9 @@ public abstract class PresenterContainer extends VerticalLayout {
      * Store and retrieve dataset details index to share in link
      *
      * @param dsDetails encoded dataset details to store in database
+     * @param dsUniqueKey
      * @return dataset public key
      */
-    public abstract int insertDatsetLinkToShare(String dsDetails);
+    public abstract int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey);
 
 }
