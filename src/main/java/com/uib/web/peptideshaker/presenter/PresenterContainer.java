@@ -166,6 +166,14 @@ public abstract class PresenterContainer extends VerticalLayout {
             }
 
             @Override
+            public void viewToShareDataset() {
+                 String galaxyServerUrl = VaadinSession.getCurrent().getAttribute("galaxyServerUrl").toString();
+                String userDataFolderUrl = VaadinSession.getCurrent().getAttribute("userDataFolderUrl").toString();
+                PresenterContainer.this.viewToShareDataset(galaxyServerUrl,userDataFolderUrl);
+            }
+            
+
+            @Override
             public void maximizeView() {
                 List<String> userDataList = getUserOverviewData();
                 if (userDataList != null) {
@@ -291,7 +299,10 @@ public abstract class PresenterContainer extends VerticalLayout {
     public void loginAsGuest() {
         welcomePage.loginAsGuest();
     }
+ public void retriveToShareDataset() {
+         welcomePage.retriveToShareDataset();
 
+    }
     public HorizontalLayout getMainComponentContainer() {
         return mainComponentContainer;
     }
@@ -358,6 +369,14 @@ public abstract class PresenterContainer extends VerticalLayout {
      * @return System connected to Galaxy server or not
      */
     public abstract List<String> connectToGalaxyServer(String galaxyServerUrl, String userAPI, String userDataFolderUrl);
+    
+    /**
+     * Connect the system to Galaxy Server
+     *
+     * @param galaxyServerUrl the address of Galaxy Server
+     * @param userDataFolderUrl main folder for storing users data
+     */
+    public abstract void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl);
 
     public abstract List<String> getUserOverviewData();
 

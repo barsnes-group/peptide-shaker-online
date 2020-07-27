@@ -392,6 +392,7 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
      */
     public void setSelectedDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
         this.peptideShakerVisualizationDataset = peptideShakerVisualizationDataset;
+        System.out.println("at is to share ds? "+peptideShakerVisualizationDataset.isToShareDataset());
         ExecutorService executorService = Executors.newFixedThreadPool(4);
         Runnable runnableTask = () -> {
             mainPresenterBtn.setEnabled(peptideShakerVisualizationDataset != null);

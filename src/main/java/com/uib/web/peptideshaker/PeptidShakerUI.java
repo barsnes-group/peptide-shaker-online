@@ -19,6 +19,7 @@ import com.vaadin.shared.communication.PushMode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import java.io.IOException;
@@ -186,9 +187,15 @@ public class PeptidShakerUI extends UI {
         }
         );
         String requestToShare = Page.getCurrent().getLocation().toString();
-        if (!requestToShare.contains("toShare_-_") || true) {
-            webPeptideShakerApp.loginAsGuest();
 
+        if (requestToShare.contains(".error")) {
+            webPeptideShakerApp.loginAsGuest();
+            Notification.show("Error", "Not valid sharing link", Notification.Type.TRAY_NOTIFICATION);
+
+        } else if (!requestToShare.contains("toShare_-_")) {
+            webPeptideShakerApp.loginAsGuest();
+        } else if (requestToShare.contains("toShare_-_")) {
+            webPeptideShakerApp.retriveToShareDataset();
         }
 
     }

@@ -68,6 +68,11 @@ public abstract class PresenterLayer {
             }
 
             @Override
+            public void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl) {
+                 PresenterLayer.this.viewToShareDataset(galaxyServerUrl, userDataFolderUrl);
+            }
+
+            @Override
             public List<String> getUserOverviewData() {
                 return PresenterLayer.this.getUserOverviewData();
             }
@@ -119,6 +124,11 @@ public abstract class PresenterLayer {
         presenterContainer.loginAsGuest();
     }
 
+    public void retriveToShareDataset() {
+        presenterContainer.retriveToShareDataset();
+
+    }
+
     /**
      * Get presenter container
      *
@@ -167,6 +177,13 @@ public abstract class PresenterLayer {
      * @return System connected to Galaxy server or not
      */
     public abstract List<String> connectToGalaxyServer(String galaxyServerUrl, String userAPI, String userDataFolderUrl);
+    /**
+     * Connect the system to Galaxy Server
+     *
+     * @param galaxyServerUrl the address of Galaxy Server
+     * @param userDataFolderUrl main folder for storing users data
+     */
+    public abstract void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl);
 
     /**
      * Get user statues for the left panel at the welcome page

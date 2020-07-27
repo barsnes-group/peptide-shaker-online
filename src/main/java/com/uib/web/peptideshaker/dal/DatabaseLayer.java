@@ -280,7 +280,6 @@ public class DatabaseLayer {
          * select dsDetails
          */
         try {
-            System.out.println("at databased enabled : "+dbEnabled);
             if (!dbEnabled) {
                 return -1;
             }
@@ -316,7 +315,6 @@ public class DatabaseLayer {
      * @return dataset public key
      */
     private int getDatasetSharingLink(String dsDetails) {
-        System.out.println("at sharing link exist invoked");
         try {
             if (!dbEnabled) {
                 return -1;

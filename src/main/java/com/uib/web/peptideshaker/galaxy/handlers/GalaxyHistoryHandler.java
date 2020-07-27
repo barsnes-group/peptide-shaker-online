@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.galaxy.utilities;
+package com.uib.web.peptideshaker.galaxy.handlers;
 
 import com.uib.web.peptideshaker.galaxy.utilities.history.GalaxyDatasetServingUtil;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
@@ -8,6 +8,7 @@ import com.github.jmchilton.blend4j.galaxy.HistoriesClient;
 import com.github.jmchilton.blend4j.galaxy.beans.Dataset;
 import com.github.jmchilton.blend4j.galaxy.beans.History;
 import com.uib.web.peptideshaker.galaxy.client.GalaxyClient;
+import com.uib.web.peptideshaker.galaxy.utilities.GalaxyAPIInteractiveLayer;
 import com.uib.web.peptideshaker.model.core.LinkUtil;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinSession;
@@ -116,6 +117,24 @@ public abstract class GalaxyHistoryHandler {
         this.user_folder = user_folder;
         forceUpdateGalaxyFileSystem(false);
     }
+
+    private String userDataFolderUrl;
+    private String galaxyServerUrl;
+
+    /**
+     * Connect the system to Galaxy Server
+     *
+     * @param galaxyServerUrl the address of Galaxy Server
+     * @param userDataFolderUrl main folder for storing users data
+     */
+    public void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl) {
+        this.userDataFolderUrl = userDataFolderUrl;
+        this.galaxyServerUrl = galaxyServerUrl;
+        forceUpdateGalaxyFileSystem(false);
+
+    }
+
+    ;
 
     /**
      * Get map of available PeptideShaker visualisation datasets.
@@ -657,7 +676,12 @@ public abstract class GalaxyHistoryHandler {
                         JSONParser parser = new JSONParser();
                         org.json.simple.JSONObject json = (org.json.simple.JSONObject) parser.parse(deCrypted);
                         Map<String, Object> dsInformationMap = jsonToMap(json);
-                        PeptideShakerVisualizationDataset externaldataset = new PeptideShakerVisualizationDataset(dsInformationMap.get("dsName").toString(), user_folder, Galaxy_Instance.getGalaxyUrl(), dsInformationMap.get("apiKey").toString(), galaxyDatasetServingUtil, getCsf_pr_Accession_List()) {
+
+                        user_folder = new File(userDataFolderUrl, dsInformationMap.get("apiKey").toString());
+                        user_folder.mkdir();
+                        galaxyDatasetServingUtil = new GalaxyDatasetServingUtil(galaxyServerUrl, dsInformationMap.get("apiKey").toString());
+
+                        PeptideShakerVisualizationDataset externaldataset = new PeptideShakerVisualizationDataset(dsInformationMap.get("dsName").toString(), user_folder, galaxyServerUrl, dsInformationMap.get("apiKey").toString(), galaxyDatasetServingUtil, getCsf_pr_Accession_List()) {
                             @Override
                             public Set<String[]> getPathwayEdges(Set<String> proteinAcc) {
                                 return GalaxyHistoryHandler.this.getPathwayEdges(proteinAcc);
@@ -667,12 +691,12 @@ public abstract class GalaxyHistoryHandler {
                         externaldataset.setPeptideShakerResultsFileId(dsInformationMap.get("ps").toString(), true);
                         externaldataset.setGalaxyId(dsInformationMap.get("ps").toString());
                         externaldataset.setStatus("ok");
-                        externaldataset.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + "/api/histories/" + externaldataset.getHistoryId() + "/contents/" + externaldataset.getGalaxyId() + "/display?key=" + dsInformationMap.get("apiKey").toString());
+                        externaldataset.setDownloadUrl(galaxyServerUrl + "/api/histories/" + externaldataset.getHistoryId() + "/contents/" + externaldataset.getGalaxyId() + "/display?key=" + dsInformationMap.get("apiKey").toString());
 
                         GalaxyFileObject ds = new GalaxyFileObject();
                         ds.setHistoryId(dsInformationMap.get("ps_history").toString());
                         ds.setGalaxyId(dsInformationMap.get("sqi").toString());
-                        ds.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + "/api/histories/" + ds.getHistoryId() + "/contents/" + ds.getGalaxyId() + "/display?key=" + dsInformationMap.get("apiKey").toString());
+                        ds.setDownloadUrl(galaxyServerUrl + "/api/histories/" + ds.getHistoryId() + "/contents/" + ds.getGalaxyId() + "/display?key=" + dsInformationMap.get("apiKey").toString());
                         ds.setStatus("ok");
                         ds.setType("SearchGUI");
                         ds.setOverview(dsInformationMap.get("overviewSGUI").toString());
@@ -686,7 +710,7 @@ public abstract class GalaxyHistoryHandler {
                             ds.setType("CUI");
                             ds.setHistoryId(externaldataset.getHistoryId());
                             ds.setGalaxyId(galaxyId);
-                            ds.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + "/api/histories/" + ds.getHistoryId() + "/contents/" + ds.getGalaxyId() + "/display?key=" + dsInformationMap.get("apiKey").toString());
+                            ds.setDownloadUrl(galaxyServerUrl + "/api/histories/" + ds.getHistoryId() + "/contents/" + ds.getGalaxyId() + "/display?key=" + dsInformationMap.get("apiKey").toString());
                             ds.setStatus("ok");
                             GalaxyTransferableFile file = new GalaxyTransferableFile(user_folder, ds, false);
                             file.setDownloadUrl(ds.getDownloadUrl());
@@ -704,7 +728,7 @@ public abstract class GalaxyHistoryHandler {
                             ds.setStatus("ok");
                             ds.setHistoryId(externaldataset.getHistoryId());
                             ds.setGalaxyId(galaxyId);
-                            ds.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + "/api/histories/" + ds.getHistoryId() + "/contents/" + ds.getGalaxyId() + "/display?key=" + dsInformationMap.get("apiKey").toString());
+                            ds.setDownloadUrl(galaxyServerUrl + "/api/histories/" + ds.getHistoryId() + "/contents/" + ds.getGalaxyId() + "/display?key=" + dsInformationMap.get("apiKey").toString());
                             indexedMGFSet.add(ds);
                         }
 
@@ -720,7 +744,7 @@ public abstract class GalaxyHistoryHandler {
                                 ds.setType("MOFF Quant");
                                 ds.setHistoryId(externaldataset.getHistoryId());
                                 ds.setGalaxyId(galaxyId);
-                                ds.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + "/api/histories/" + ds.getHistoryId() + "/contents/" + ds.getGalaxyId() + "/display?key=" + dsInformationMap.get("apiKey").toString());
+                                ds.setDownloadUrl(galaxyServerUrl + "/api/histories/" + ds.getHistoryId() + "/contents/" + ds.getGalaxyId() + "/display?key=" + dsInformationMap.get("apiKey").toString());
                                 ds.setStatus("ok");
                                 GalaxyTransferableFile file = new GalaxyTransferableFile(user_folder, ds, false);
                                 file.setDownloadUrl(ds.getDownloadUrl());
@@ -734,6 +758,8 @@ public abstract class GalaxyHistoryHandler {
                         historyFilesMap.put(externaldataset.getProjectName() + "_ExternalDS", externaldataset);
                         return;
                     }
+                    Page.getCurrent().open(requestToShare.split("toShare_-_")[0] + ".error", "");
+                    return;
                 }
 
                 HistoriesClient galaxyHistoriesClient = Galaxy_Instance.getHistoriesClient();
@@ -1112,7 +1138,7 @@ public abstract class GalaxyHistoryHandler {
                     Notification.show("Service Temporarily Unavailable", Notification.Type.ERROR_MESSAGE);
                 } else {
                     System.err.println("Error:  galaxy history handler error " + e);
-                    Page.getCurrent().reload();
+                    e.printStackTrace();
                 }
             }
 

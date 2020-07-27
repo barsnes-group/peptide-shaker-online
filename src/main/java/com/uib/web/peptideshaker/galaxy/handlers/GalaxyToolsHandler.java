@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.galaxy.utilities;
+package com.uib.web.peptideshaker.galaxy.handlers;
 
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.fasterxml.jackson.databind.ObjectMapper;

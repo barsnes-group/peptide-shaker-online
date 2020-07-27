@@ -98,6 +98,13 @@ public class WebPeptideShakerApp {
                     }
 
                     @Override
+                    public void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl) {
+                           while (!modelFuture.isDone()) {
+                        }
+                        Model_Layer.viewToShareDataset(galaxyServerUrl, userDataFolderUrl);
+                    }
+
+                    @Override
                     public List<String> getUserOverviewData() {
 
                         while (!modelFuture.isDone()) {
@@ -169,6 +176,14 @@ public class WebPeptideShakerApp {
         }
         if (availableGalaxyServer) {
             Presenter_layer.loginAsGuest();
+        }
+
+    }
+     public void retriveToShareDataset() {
+        while (!presenterFuture.isDone()) {
+        }
+        if (availableGalaxyServer) {
+            Presenter_layer.retriveToShareDataset();
         }
 
     }

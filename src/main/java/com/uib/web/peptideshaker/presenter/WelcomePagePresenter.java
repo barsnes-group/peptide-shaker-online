@@ -30,6 +30,9 @@ import com.vaadin.ui.themes.ValoTheme;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class represents the welcome page for Online PeptideShaker
@@ -490,11 +493,6 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
     public void loginAsGuest() {
         String caption = "<b style=\"color:#cd6e1d !important\">Guest User <i>(public data)</i></b>";
 
-        String requestToShare = Page.getCurrent().getLocation().toString();
-        if (requestToShare.contains("toShare_-_")) {
-            caption = "<b style=\"color:#cd6e1d !important\">Retrieving Dataset Information</i></b>";
-
-        }
         galaxyLoginConnectionBtnLabel.setVisible(false);
         connectinoWindow.setVisible(true);
         galaxyLoginLayout.setVisible(false);
@@ -512,6 +510,34 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
         }
         executorService.submit(task);
         executorService.shutdown();
+    }
+
+    public void retriveToShareDataset() {
+        String caption = "<b style=\"color:#cd6e1d !important\">Retrieving Dataset Information</i></b>";
+        galaxyLoginConnectionBtnLabel.setVisible(false);
+        connectinoWindow.setVisible(true);
+        galaxyLoginLayout.setVisible(false);
+        connectinoWindow.setClosable(false);
+        connectingLabel.setCaption(caption);
+        connectingLabel.setVisible(true);
+        Runnable task = () -> {
+            connectinoWindow.removeStyleName("windowcontainer");
+            connectinoWindow.setStyleName("connectionwindow");
+            viewToShareDataset();
+
+        };
+        if (executorService.isShutdown()) {
+            executorService = Executors.newSingleThreadExecutor();
+        }
+        executorService.submit(task);
+        ScheduledExecutorService scd = Executors.newSingleThreadScheduledExecutor();
+        scd.schedule(() -> {
+            connectinoWindow.setVisible(false);
+        }, 5, TimeUnit.SECONDS);
+        scd.shutdown();
+
+        executorService.shutdown();
+
     }
 
     /**
@@ -671,6 +697,12 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
      * connect to Galaxy Server
      */
     public abstract List<String> connectToGalaxy(String userAPI, String presenterId);
+
+    /**
+     * View dataset that is shared by link.
+     *
+     */
+    public abstract void viewToShareDataset();
 
     /**
      * Create unified labels for the user overview panel

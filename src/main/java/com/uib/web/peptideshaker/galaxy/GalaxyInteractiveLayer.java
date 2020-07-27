@@ -2,8 +2,8 @@ package com.uib.web.peptideshaker.galaxy;
 
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.github.jmchilton.blend4j.galaxy.GalaxyInstanceFactory;
-import com.uib.web.peptideshaker.galaxy.utilities.GalaxyHistoryHandler;
-import com.uib.web.peptideshaker.galaxy.utilities.GalaxyToolsHandler;
+import com.uib.web.peptideshaker.galaxy.handlers.GalaxyHistoryHandler;
+import com.uib.web.peptideshaker.galaxy.handlers.GalaxyToolsHandler;
 import com.github.jmchilton.blend4j.galaxy.UsersClient;
 import com.github.jmchilton.blend4j.galaxy.beans.User;
 import com.uib.web.peptideshaker.galaxy.client.GalaxyClient;
@@ -141,6 +141,16 @@ public abstract class GalaxyInteractiveLayer {
         }
         return true;
     }
+     /**
+     * Connect the system to Galaxy Server
+     *
+     * @param galaxyServerUrl the address of Galaxy Server
+     * @param userDataFolderUrl main folder for storing users data
+     */
+    public void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl){              
+            historyHandler.viewToShareDataset(galaxyServerUrl, userDataFolderUrl);
+
+    };
 
     /**
      * Get user API key for galaxy server

@@ -103,6 +103,18 @@ public abstract class ModelLayer {
         }
         return false;
     }
+    /**
+     * Connect the system to Galaxy Server
+     *
+     * @param galaxyServerUrl the address of Galaxy Server
+     * @param userDataFolderUrl main folder for storing users data
+     */
+    public void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl){
+     if (Galaxy_Interactive_Layer != null) {
+             this.Galaxy_Interactive_Layer.viewToShareDataset(galaxyServerUrl, userDataFolderUrl);
+        }
+    
+    };
 
     /**
      * Get user overview information list for welcome page left panel

@@ -1742,7 +1742,8 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             String galaxyFileId = "";
             String galaxyHistoryId = "";
             for (GalaxyFileObject ds : indexedMGFFilesMap.values()) {
-                if (ds.getName().equalsIgnoreCase(selectedPsm.getSpectrumFile().replace("original-input-MGF", "Indexed-MGF"))) {
+                System.out.println("at ds "+ds.getName()+"  "+selectedPsm.getSpectrumFile());
+                if (ds.getName().equalsIgnoreCase(selectedPsm.getSpectrumFile())) {
                     galaxyFileId = ds.getGalaxyId();
                     galaxyHistoryId = ds.getHistoryId();
                     break;
@@ -1756,17 +1757,17 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                 return null;
             }
             long index = 0;
-            if (selectedPsm.getSpectrumTitle().contains("scan=6769")) {
+            if (selectedPsm.getSpectrumTitle().contains("scan=6769ttt")) {
                 index = 13833838;
-            } else if (selectedPsm.getSpectrumTitle().contains("scan=6612")) {
+            } else if (selectedPsm.getSpectrumTitle().contains("scan=6612ttt")) {
                 index = 13162541;
-            } else if (selectedPsm.getSpectrumTitle().contains("scan=6689")) {
+            } else if (selectedPsm.getSpectrumTitle().contains("scan=6689ttt")) {
                 index = 13499177;
-            } else if (selectedPsm.getSpectrumTitle().contains("scan=6750")) {
+            } else if (selectedPsm.getSpectrumTitle().contains("scan=6750tttt")) {
                 index = 13499177;
-            } else if (selectedPsm.getSpectrumTitle().contains("scan=6849")) {
+            } else if (selectedPsm.getSpectrumTitle().contains("scan=6849tttt")) {
                 index = 14122145;
-            } else if (selectedPsm.getSpectrumTitle().contains("scan=6652")) {
+            } else if (selectedPsm.getSpectrumTitle().contains("scan=6652ttt")) {
                 index = 13334512;
             } else {
 //                System.out.println("selectedPsm.getSpectrumTitle() " + selectedPsm.getSpectrumTitle());//mgfIndex.getIndex(selectedPsm.getSpectrumTitle())
