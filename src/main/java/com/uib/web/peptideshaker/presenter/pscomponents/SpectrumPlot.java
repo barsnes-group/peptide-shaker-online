@@ -43,6 +43,7 @@ import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.Slider;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.awt.Color;
@@ -293,14 +294,16 @@ public class SpectrumPlot extends AbsoluteLayout {
             }
             updatedComponentWidth = event.getWidth();
             updatedComponentHeight = event.getHeight();
-            if (this.waitingTimer == null) {
+
+            if (this.waitingTimer == null && identificationParameters != null) {
                 /* Start waiting for DELAY to elapse. */
+
                 this.waitingTimer = new Timer(DELAY, (ActionEvent ae) -> {
-                    reDraw();
+                    UI.getCurrent().access(this::reDraw);
                 });
                 this.waitingTimer.setRepeats(false);
                 this.waitingTimer.start();
-            } else {
+            } else if (waitingTimer != null) {
                 /* Event came too soon, swallow it by resetting the timer.. */
                 this.waitingTimer.restart();
             }
@@ -442,6 +445,8 @@ public class SpectrumPlot extends AbsoluteLayout {
     private void reDraw() {
         int w = /*mainSizeReporter.getWidth()*/ updatedComponentWidth;
         int h = /*mainSizeReporter.getHeight()*/ updatedComponentHeight - 50;
+        selectionCanvasContainer.setWidth(w, Unit.PIXELS);
+        selectionCanvasContainer.setHeight(h, Unit.PIXELS);
         if (w <= 0 || h <= 0) {
             return;
         }
@@ -449,8 +454,7 @@ public class SpectrumPlot extends AbsoluteLayout {
         if (selectionCanvas != null) {
             selectionCanvasContainer.removeAllComponents();
         }
-        selectionCanvasContainer.setWidth(w,Unit.PIXELS);        
-        selectionCanvasContainer.setHeight(h,Unit.PIXELS);
+
         selectionCanvas = initSelectionCanvas(w, h);
         selectionCanvas.addStyleName("psmplotstyle");
         selectionCanvasContainer.addComponent(selectionCanvas);
@@ -677,7 +681,7 @@ public class SpectrumPlot extends AbsoluteLayout {
                 spectrumPanel.setBackgroundPeakWidth(1f);
                 spectrumPanel.setMaxPadding(50);
             }
-            reDraw();
+            UI.getCurrent().access(this::reDraw);
             mainSizeReporter.addResizeListener(compResizeListener);
         });
         selectedSpectrumThread.start();

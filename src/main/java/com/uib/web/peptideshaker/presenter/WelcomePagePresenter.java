@@ -304,7 +304,9 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
         connectinoWindow.setStyleName("connectionwindow");
         connectinoWindow.center();
         connectinoWindow.setWindowMode(WindowMode.NORMAL);
-        UI.getCurrent().addWindow(connectinoWindow);
+        if (!UI.getCurrent().getWindows().contains(connectinoWindow)) {
+            UI.getCurrent().addWindow(connectinoWindow);
+        }
         connectinoWindow.setVisible(false);
 
         presenterControlButtonsPanel.addLayoutClickListener((LayoutEvents.LayoutClickEvent event) -> {
@@ -479,7 +481,6 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
             userOverviewPanel.addStyleName("hidecontent");
 
         }
-       
 
     }
 
@@ -487,12 +488,12 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
      * Log in to galaxy as guest (test user API key).
      */
     public void loginAsGuest() {
-        String caption= "<b style=\"color:#cd6e1d !important\">Guest User <i>(public data)</i></b>";
-        
+        String caption = "<b style=\"color:#cd6e1d !important\">Guest User <i>(public data)</i></b>";
+
         String requestToShare = Page.getCurrent().getLocation().toString();
-        if (requestToShare.contains("toShare_-_") ) {
-            caption="<b style=\"color:#cd6e1d !important\">Retrieving Dataset Information</i></b>";       
-        
+        if (requestToShare.contains("toShare_-_")) {
+            caption = "<b style=\"color:#cd6e1d !important\">Retrieving Dataset Information</i></b>";
+
         }
         galaxyLoginConnectionBtnLabel.setVisible(false);
         connectinoWindow.setVisible(true);
@@ -524,35 +525,35 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
         UI.getCurrent().accessSynchronously(new Runnable() {
             @Override
             public void run() {
-            
-        connectinoWindow.setClosable(true);
-        galaxyLoginConnectionBtnLabel.setVisible(true);
-        galaxyLoginLayout.setEnabled(true);
-        galaxyLoginLayout.setVisible(true);
-        galaxyLoginBtn.setData(null);
-        connectingLabel.setCaption(null);
 
-        if (userOverviewData != null && userOverviewData.get(0).contains("Guest User")) {
-            connectinoWindow.setVisible(false);
-            presenteControlButtonsLayout.setEnabled(true);
-        } else if (userOverviewData != null && !userOverviewData.get(0).contains("Guest User")) {
-            connectinoWindow.setVisible(false);
-            galaxyLoginBtn.updateText("Galaxy Logout");
-            galaxyLoginBtn.setData("connected");
-            galaxyLoginLayout.setEnabled(false);
-            presenteControlButtonsLayout.setEnabled(true);
+                connectinoWindow.setClosable(true);
+                galaxyLoginConnectionBtnLabel.setVisible(true);
+                galaxyLoginLayout.setEnabled(true);
+                galaxyLoginLayout.setVisible(true);
+                galaxyLoginBtn.setData(null);
+                connectingLabel.setCaption(null);
 
-        } else {
-            userAPIFeald.setValue(apiErrorMessage);
-            userAPIFeald.addStyleName("redfont");
-             Notification.show("Public user is not available", Notification.Type.TRAY_NOTIFICATION);
-           connectinoWindow.setVisible(false);
-            presenteControlButtonsLayout.setEnabled(true);
-        }
-        updateUserOverviewPanel(userOverviewData);
-        connectingLabel.setVisible(false);
-        UI.getCurrent().push();
-        }
+                if (userOverviewData != null && userOverviewData.get(0).contains("Guest User")) {
+                    connectinoWindow.setVisible(false);
+                    presenteControlButtonsLayout.setEnabled(true);
+                } else if (userOverviewData != null && !userOverviewData.get(0).contains("Guest User")) {
+                    connectinoWindow.setVisible(false);
+                    galaxyLoginBtn.updateText("Galaxy Logout");
+                    galaxyLoginBtn.setData("connected");
+                    galaxyLoginLayout.setEnabled(false);
+                    presenteControlButtonsLayout.setEnabled(true);
+
+                } else {
+                    userAPIFeald.setValue(apiErrorMessage);
+                    userAPIFeald.addStyleName("redfont");
+                    Notification.show("Public user is not available", Notification.Type.TRAY_NOTIFICATION);
+                    connectinoWindow.setVisible(false);
+                    presenteControlButtonsLayout.setEnabled(true);
+                }
+                updateUserOverviewPanel(userOverviewData);
+                connectingLabel.setVisible(false);
+                UI.getCurrent().push();
+            }
         });
     }
 

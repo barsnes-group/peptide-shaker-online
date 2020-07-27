@@ -1,12 +1,12 @@
 package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.ui.VerticalLayout;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import litemol.LiteMolComponent;
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * This class provides an abstraction layer for LiteMOL 3D protein structure

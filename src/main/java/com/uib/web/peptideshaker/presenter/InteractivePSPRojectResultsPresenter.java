@@ -282,18 +282,17 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
     @Override
     public void maximizeView() {
         if (maximisedMode) {
-
             return;
         }
         UI.getCurrent().accessSynchronously(new Runnable() {
             @Override
-            public void run() { 
-                
+            public void run() {
                 smallPresenterBtn.setSelected(true);
                 mainPresenterBtn.setSelected(true);
                 datasetVisulizationLevelContainer.setMargin(new MarginInfo(false, false, false, false));
                 maximisedMode = true;
                 viewControlButtonContainer.addStyleName("visible");
+
                 if (dataprocessFuture == null) {
                     datasetsOverviewBtn.setId("suspend");
                     datasetsOverviewBtn.setEnabled(false);
@@ -314,14 +313,15 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
 
                 ScheduledExecutorService exe = Executors.newSingleThreadScheduledExecutor();
                 Future f = exe.schedule(() -> {
-                    UI.getCurrent().push();
-                   UI.getCurrent().removeStyleName("busybrocess");
-                   
+                    UI.getCurrent().removeStyleName("busybrocess");
+                    if (peptideShakerVisualizationDataset.isToShareDataset()) {
+                        UI.getCurrent().push();
+                    }
                 }, 5, TimeUnit.SECONDS);
                 exe.shutdown();
                 while (!f.isDone()) {
                 }
-                
+
             }
         });
 
@@ -382,6 +382,7 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
     public ButtonWithLabel getMainPresenterButton() {
         return mainPresenterBtn;
     }
+    private PeptideShakerVisualizationDataset peptideShakerVisualizationDataset;
 
     /**
      * Activate PeptideShaker dataset visualisation upon user selection
@@ -390,7 +391,7 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
      * dataset
      */
     public void setSelectedDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
-       
+        this.peptideShakerVisualizationDataset = peptideShakerVisualizationDataset;
         ExecutorService executorService = Executors.newFixedThreadPool(4);
         Runnable runnableTask = () -> {
             mainPresenterBtn.setEnabled(peptideShakerVisualizationDataset != null);
@@ -418,19 +419,17 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
         executorService.submit(runnableTask3);
         executorService.shutdown();
         UI.getCurrent().addStyleName("busybrocess");
-        
         while (!dataprocessFuture.isDone()) {
 
         }
         uploadOwnDataBtn.updateIconByHTMLCode(VaadinIcons.FILE_TEXT_O.getHtml() + "<div class='overlayicon'>" + VaadinIcons.ARROW_CIRCLE_UP_O.getHtml() + "</div>");
         maximisedMode = false;
-        
         this.maximizeView();
-        
 
     }
 
-    private boolean allJobsAreDone=false;
+    private boolean allJobsAreDone = false;
+
     /**
      * Visualise dataset
      *

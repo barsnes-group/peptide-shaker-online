@@ -100,7 +100,9 @@ public class PeptidShakerUI extends UI {
             notificationWindow.setWindowMode(WindowMode.NORMAL);
             notificationWindow.setDraggable(false);
             notificationWindow.setResizable(false);
-            UI.getCurrent().addWindow(notificationWindow);
+            if (!UI.getCurrent().getWindows().contains(notificationWindow)) {
+                UI.getCurrent().addWindow(notificationWindow);
+            }
             notificationWindow.setVisible(false);
             notificationWindow.setContent(notification);
 
@@ -186,8 +188,7 @@ public class PeptidShakerUI extends UI {
         String requestToShare = Page.getCurrent().getLocation().toString();
         if (!requestToShare.contains("toShare_-_") || true) {
             webPeptideShakerApp.loginAsGuest();
-            System.out.println("at login as guest is already done");
-           
+
         }
 
     }

@@ -55,14 +55,12 @@ public abstract class PopupWindow extends VerticalLayout implements LayoutEvents
         window.setResizable(false);
         window.setDraggable(false);
         window.setVisible(false);
-        try{
-        UI.getCurrent().addWindow(window);
-        }catch(Exception e){
+      
         UI.getCurrent().access(() -> {
             UI.getCurrent().addWindow(window);
         });
         
-        }
+        
     }
     
     public void setClosable(boolean closable){

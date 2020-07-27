@@ -1,6 +1,5 @@
 package litemol;
 
-import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.ui.AbstractJavaScriptComponent;
 import elemental.json.JsonArray;

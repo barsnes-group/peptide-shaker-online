@@ -1,6 +1,7 @@
 package com.uib.web.peptideshaker.galaxy.utilities;
 
 import com.compomics.util.parameters.identification.IdentificationParameters;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.github.jmchilton.blend4j.galaxy.HistoriesClient;
@@ -44,7 +45,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
