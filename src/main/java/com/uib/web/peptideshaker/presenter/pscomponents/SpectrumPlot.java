@@ -43,6 +43,7 @@ import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.Slider;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -75,6 +76,7 @@ public class SpectrumPlot extends AbsoluteLayout {
     private final Image plot;
     private Image plotThumbImage;
     private SelectioncanvasComponent selectionCanvas;
+    private final VerticalLayout selectionCanvasContainer;
     private final Slider levelSlider;
     private final Slider annotationAccuracySlider;
     private WebSpectrumPanel spectrumPanel;
@@ -160,6 +162,8 @@ public class SpectrumPlot extends AbsoluteLayout {
 //        
 //
 //        SpectrumPlot.this.addComponent(selectionCanvas, "left:0px;bottom:40px");
+        selectionCanvasContainer = new VerticalLayout();
+        SpectrumPlot.this.addComponent(selectionCanvasContainer, "left:0px;top:0px; bottom:40px");
 
         annotationAccuracySlider = new Slider();
         annotationAccuracySlider.setMax(100);
@@ -273,10 +277,8 @@ public class SpectrumPlot extends AbsoluteLayout {
         SimpleFileDownloader downloader = new SimpleFileDownloader();
         addExtension(downloader);
 
-        
-
-         MenuBar.Command exportCommand = (MenuItem selectedItem) -> {
-             StreamResource graphStreamResource = generateImg(1500, 500);
+        MenuBar.Command exportCommand = (MenuItem selectedItem) -> {
+            StreamResource graphStreamResource = generateImg(1500, 500);
             downloader.setFileDownloadResource(graphStreamResource);
             downloader.download();
         };
@@ -342,7 +344,8 @@ public class SpectrumPlot extends AbsoluteLayout {
         String resUrl = drawImage(jpanel, false);
         plot.setSource(new ExternalResource(resUrl));
     }
- private StreamResource generateImg(int width, int height) {       
+
+    private StreamResource generateImg(int width, int height) {
 
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
 
@@ -352,10 +355,10 @@ public class SpectrumPlot extends AbsoluteLayout {
         g2.setPaint(Color.WHITE);
         g2.fillRect(2, 2, width - 4, height - 4);
         g2.setPaint(Color.GRAY);
-       int dw =  spectrumPanel.getSize().width;
-        int dh =  spectrumPanel.getSize().width;
-        spectrumPanel.setSize(width, height);       
-       spectrumPanel.paint(g2);
+        int dw = spectrumPanel.getSize().width;
+        int dh = spectrumPanel.getSize().width;
+        spectrumPanel.setSize(width, height);
+        spectrumPanel.paint(g2);
 
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -364,12 +367,12 @@ public class SpectrumPlot extends AbsoluteLayout {
             StreamResource graphAsImageResource = new StreamResource(() -> {
                 return new ByteArrayInputStream(touseImageData);
             }, "spectrum.png");
-             spectrumPanel.setSize(dw, dh);  
+            spectrumPanel.setSize(dw, dh);
             return graphAsImageResource;
         } catch (IOException e) {
             System.out.println(e.getLocalizedMessage());
         }
-         spectrumPanel.setSize(dw, dh);  
+        spectrumPanel.setSize(dw, dh);
         return null;
 
     }
@@ -444,11 +447,13 @@ public class SpectrumPlot extends AbsoluteLayout {
         }
 
         if (selectionCanvas != null) {
-            SpectrumPlot.this.removeComponent(selectionCanvas);
+            selectionCanvasContainer.removeAllComponents();
         }
+        selectionCanvasContainer.setWidth(w,Unit.PIXELS);        
+        selectionCanvasContainer.setHeight(h,Unit.PIXELS);
         selectionCanvas = initSelectionCanvas(w, h);
         selectionCanvas.addStyleName("psmplotstyle");
-        SpectrumPlot.this.addComponent(selectionCanvas, "left:0px;top:0px; bottom:40px");
+        selectionCanvasContainer.addComponent(selectionCanvas);
         selectionCanvas.setSize(w, h, false);
         if (spectrumPanel != null) {
             spectrumPanel.setSize(w, h);
@@ -482,16 +487,16 @@ public class SpectrumPlot extends AbsoluteLayout {
         ModificationParameters modificationParameters = identificationParameters.getSearchParameters().getModificationParameters();
         SequenceMatchingParameters modificationSequenceMatchingParameters = identificationParameters.getModificationLocalizationParameters().getSequenceMatchingParameters();
         identificationParameters.setAnnotationParameters(annotationParameters);
-        
+
         specificAnnotationParameters = annotationParameters.getSpecificAnnotationParameters(
-                        spectrumMatch.getSpectrumFile(),
-                        spectrumMatch.getSpectrumTitle(),
-                        peptideAssumption,
-                        modificationParameters,
-                        sequenceProvider,
-                        modificationSequenceMatchingParameters,
-                        spectrumAnnotator
-                );
+                spectrumMatch.getSpectrumFile(),
+                spectrumMatch.getSpectrumTitle(),
+                peptideAssumption,
+                modificationParameters,
+                sequenceProvider,
+                modificationSequenceMatchingParameters,
+                spectrumAnnotator
+        );
 
         if (!defaultAnnotationInUse) {
             specificAnnotationParameters.getIonTypes().get(IonType.PEPTIDE_FRAGMENT_ION).clear();
@@ -553,13 +558,13 @@ public class SpectrumPlot extends AbsoluteLayout {
         spectrumPanel.removeAllReferenceAreasYAxis();
         spectrumPanel.setDeltaMassWindow(accuracy);
         IonMatch[] annotations = spectrumAnnotator.getSpectrumAnnotation(
-                annotationParameters, 
-                specificAnnotationParameters, 
+                annotationParameters,
+                specificAnnotationParameters,
                 spectrumMatch.getSpectrumFile(),
                 spectrumMatch.getSpectrumTitle(),
-                currentSpectrum, 
+                currentSpectrum,
                 currentPeptide,
-                modificationParameters, 
+                modificationParameters,
                 sequenceProvider,
                 modificationSequenceMatchingParameters
         );

@@ -22018,7 +22018,6 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .importfiltersubcontainer .v-slot-align-center .v-textfield-align-center {
-	padding-right: 32px;
 	postion: relative;
 }
 
@@ -22250,17 +22249,18 @@ div.v-layout.v-horizontal.v-widget {
 .webpeptideshakertheme .averagescreenstyle .v-absolutelayout-wrapper-infopopup {
 	top: 0px !important;
 }
-.v-ui.uicontainer.busybrocess .v-loading-indicator{
-	display: block !important;	
-	width:100% !important;
-        height:100% !important;
-        background-color: rgba(0, 0, 0, 0.6) !important;
+
+.webpeptideshakertheme .v-ui.uicontainer.busybrocess .v-loading-indicator {
+	display: block !important;
+	width: 100% !important;
+	height: 100% !important;
+	background-color: rgba(0, 0, 0, 0.6) !important;
 }
 
-.v-ui.uicontainer.busybrocess .v-loading-indicator[style*="none"]:before {
+.webpeptideshakertheme .v-ui.uicontainer.busybrocess .v-loading-indicator[style*="none"]:before {
 	display: block !important;
 }
 
-.v-ui.uicontainer.busybrocess .v-loading-indicator[style*="none"] {
-	opacity:1;
+.webpeptideshakertheme .v-ui.uicontainer.busybrocess .v-loading-indicator[style*="none"] {
+	opacity: 1;
 }
