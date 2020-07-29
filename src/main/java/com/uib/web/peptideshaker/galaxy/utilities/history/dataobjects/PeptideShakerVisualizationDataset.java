@@ -1730,7 +1730,6 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                 if (!importedMgfIndexObjectMap.containsKey(selectedPsm.getSpectrumFile())) {
                     Object object = SerializationUtils.readObject(cuiFileMap.get(selectedPsm.getSpectrumFile()));
                     importedMgfIndexObjectMap.put(selectedPsm.getSpectrumFile(), (MgfIndex) object);
-                    System.out.println("selected psm imported");
                 }
 
             } catch (IOException | ClassNotFoundException ex) {
@@ -1741,7 +1740,6 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             String galaxyFileId = "";
             String galaxyHistoryId = "";
             for (GalaxyFileObject ds : indexedMGFFilesMap.values()) {
-                System.out.println("at ds "+ds.getName()+"  "+selectedPsm.getSpectrumFile());
                 if (ds.getName().equalsIgnoreCase(selectedPsm.getSpectrumFile())) {
                     galaxyFileId = ds.getGalaxyId();
                     galaxyHistoryId = ds.getHistoryId();
@@ -1756,19 +1754,21 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                 return null;
             }
             long index = 0;
-            if (selectedPsm.getSpectrumTitle().contains("scan=6769ttt")) {
+            if (false || selectedPsm.getSpectrumTitle().contains("scan=6769ttt")) {
                 index = 13833838;
-            } else if (selectedPsm.getSpectrumTitle().contains("scan=6612ttt")) {
-                index = 13162541;
-            } else if (selectedPsm.getSpectrumTitle().contains("scan=6689ttt")) {
-                index = 13499177;
-            } else if (selectedPsm.getSpectrumTitle().contains("scan=6750tttt")) {
-                index = 13499177;
-            } else if (selectedPsm.getSpectrumTitle().contains("scan=6849tttt")) {
-                index = 14122145;
-            } else if (selectedPsm.getSpectrumTitle().contains("scan=6652ttt")) {
-                index = 13334512;
-            } else {
+            } 
+//            else if (selectedPsm.getSpectrumTitle().contains("scan=6612ttt")) {
+//                index = 13162541;
+//            } else if (selectedPsm.getSpectrumTitle().contains("scan=6689ttt")) {
+//                index = 13499177;
+//            } else if (selectedPsm.getSpectrumTitle().contains("scan=6750tttt")) {
+//                index = 13499177;
+//            } else if (selectedPsm.getSpectrumTitle().contains("scan=6849tttt")) {
+//                index = 14122145;
+//            } else if (selectedPsm.getSpectrumTitle().contains("scan=6652ttt")) {
+//                index = 13334512;
+//            } 
+            else {
 //                System.out.println("selectedPsm.getSpectrumTitle() " + selectedPsm.getSpectrumTitle());//mgfIndex.getIndex(selectedPsm.getSpectrumTitle())
                 continue;
             }
