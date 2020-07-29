@@ -81,7 +81,7 @@ public abstract class UserUploadFilesContainer extends HorizontalLayout {
         titleLabel.setStyleName("frametitle");
         titleLabel.addStyleName("maintitleheader");
         container.addComponent(titleLabel, "left:40px;top:13px");
-        Help helpBtn = new Help("<h1>Upload / Visualize Projects</h1>Users can upload and visualise their own processed files ( FASTA, protein and  peptide files )the format of the protein and peptide files should follow the sample files format <a href='/VAADIN/sample_files.zip' download>[download sample files]</a>.\n"
+        Help helpBtn = new Help("<h1>Upload / Visualize Projects</h1>Users can upload and visualise their own processed files ( FASTA, protein and  peptide files )the format of the protein and peptide files should follow the sample files format <a href='VAADIN/sample_files.zip' download>[download sample files]</a>.\n"
                 + "please note that the files will be automatically deleted after the session expire.", "",400,150);
         container.addComponent(helpBtn, "left:265px;top:0px");
 

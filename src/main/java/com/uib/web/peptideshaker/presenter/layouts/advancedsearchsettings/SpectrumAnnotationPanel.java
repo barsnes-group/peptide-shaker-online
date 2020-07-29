@@ -47,6 +47,7 @@ public class SpectrumAnnotationPanel extends PopupWindow {
     private final ComboBox list;
     private final GridLayout peakMatchingContainer;
     private IdentificationParameters webSearchParameters;
+    private final VerticalLayout subContainer;
     private final AbsoluteLayout subSubContainer;
     private ArrayList<NeutralLoss> possibleNeutralLosses;
     /**
@@ -60,19 +61,15 @@ public class SpectrumAnnotationPanel extends PopupWindow {
         container.setStyleName("popuppanelmaincontainer");
         container.setWidth(500, Unit.PIXELS);
         container.setHeight(476, Unit.PIXELS);
-        
-        
-         Label title = new Label("Spectrum Annotation");
+
+        Label title = new Label("Spectrum Annotation");
         container.addComponent(title, "left:10px;top:10px;right:10px;bottom:50px;");
-        
-        
-        VerticalLayout subContainer = new VerticalLayout();
+
+        subContainer = new VerticalLayout();
         subContainer.setSizeFull();
         subContainer.setSpacing(true);
         subContainer.setStyleName("popuppanelcontainer");
-        
-        
-        
+
         container.addComponent(subContainer, "left:10px;top:40px;right:10px;bottom:50px;");
         ionTypesList = new MultiSelectOptionGroup("", false) {
             @Override
@@ -104,7 +101,7 @@ public class SpectrumAnnotationPanel extends PopupWindow {
         ionTypes.put("Related", "Related");
         ionTypesList.updateList(ionTypes);
         subContainer.addComponent(ionTypesList);
-         subContainer.setExpandRatio(ionTypesList,36);
+        subContainer.setExpandRatio(ionTypesList, 36);
 
         neutralLossList = new MultiSelectOptionGroup("", false) {
             @Override
@@ -125,12 +122,13 @@ public class SpectrumAnnotationPanel extends PopupWindow {
         neutralLossList.addStyleName("mgfliststyle");
 
         subContainer.addComponent(neutralLossList);
-         subContainer.setExpandRatio(neutralLossList,36);
+        subContainer.setExpandRatio(neutralLossList, 36);
 
         peakMatchingContainer = new GridLayout(2, 2);
         peakMatchingContainer.setSizeFull();
         subContainer.addComponent(peakMatchingContainer);
-         subContainer.setExpandRatio(peakMatchingContainer,30);
+
+        subContainer.setExpandRatio(peakMatchingContainer, 30);
         peakMatchingContainer.setCaption("Peak Matching");
 
         annotationLevel = new HorizontalLabelTextField("Annotation Level", 75, new IntegerRangeValidator("0-100% range", 0, 100));
@@ -179,13 +177,13 @@ public class SpectrumAnnotationPanel extends PopupWindow {
         okBtn.addClickListener((Button.ClickEvent event) -> {
             saveParameters();
         });
-       
+
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(100, Unit.PIXELS);
         cancelBtn.setHeight(25, Unit.PIXELS);
         container.addComponent(cancelBtn, "bottom:10px;right:10px");
-        container.addComponent(okBtn , "bottom:10px;right:120px");
+        container.addComponent(okBtn, "bottom:10px;right:120px");
         cancelBtn.addClickListener((Button.ClickEvent event) -> {
             SpectrumAnnotationPanel.this.setPopupVisible(false);
         });
@@ -239,6 +237,13 @@ public class SpectrumAnnotationPanel extends PopupWindow {
         });
         neutralLossList.updateList(neutralLoss);
         neutralLossList.selectAll();
+        if (neutralLoss.size() <= 3) {
+            neutralLossList.addStyleName("inlineflex");
+            this.getContent().addStyleName("compress");
+            subContainer.setExpandRatio(ionTypesList, 0.44f);
+            subContainer.setExpandRatio(neutralLossList, 0.24f);
+            subContainer.setExpandRatio(peakMatchingContainer, 0.32f);
+        }
         annotationLevel.setSelectedValue((int) (annotationParameters.getAnnotationIntensityLimit() * 100));
         if (annotationParameters.isFragmentIonPpm()) {
             fragmentIonAccuracy.setSelectedValue(annotationParameters.getFragmentIonAccuracy());
@@ -269,12 +274,11 @@ public class SpectrumAnnotationPanel extends PopupWindow {
 
     }
 
-     /**
+    /**
      * Returns the annotation settings as set by the user.
      *
      * @return the annotation settings as set by the user
      */
-
     public AnnotationParameters getAnnotationSettings() {
 
         AnnotationParameters annotationSettings = new AnnotationParameters();

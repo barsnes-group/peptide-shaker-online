@@ -125,6 +125,9 @@ public class HorizontalLabel2TextField extends HorizontalLayout {
     }
 
     public void setSecondSelectedValue(Object value) {
+//        if (value == null || value.toString().equals("null")) {        
+//            textField2.addStyleName("hidetext");
+//        }
         textField2.setValue(value + "");
         textField2.setData(value);
 

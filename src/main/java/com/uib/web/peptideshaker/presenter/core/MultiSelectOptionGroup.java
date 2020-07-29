@@ -42,6 +42,7 @@ public class MultiSelectOptionGroup extends HorizontalLayout implements LayoutEv
         listI.setSizeUndefined();
         listI.setMultiSelect(true);
         listI.setStyleName("optiongroup");
+        
 
         MultiSelectOptionGroup.this.addComponent(listI);
         if (title != null) {

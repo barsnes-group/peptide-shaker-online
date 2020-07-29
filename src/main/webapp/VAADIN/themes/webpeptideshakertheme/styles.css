@@ -19884,7 +19884,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .v-popupview-infopopup .v-icon {
-	margin-top: 15px !important;
+	line-height: 250% !important;
 }
 
 .webpeptideshakertheme .infolayout .v-verticallayout-closeboxbtn {
@@ -22263,4 +22263,21 @@ div.v-layout.v-horizontal.v-widget {
 
 .webpeptideshakertheme .v-ui.uicontainer.busybrocess .v-loading-indicator[style*="none"] {
 	opacity: 1;
+}
+
+.webpeptideshakertheme .popuppanelcontainer .v-horizontallayout-inlineflex.v-horizontallayout-optiongroupframe .v-select-optiongroup-optiongroup.v-select-optiongroup-showlist {
+	display: inline-flex !important;
+	min-width: 100% !important;
+}
+
+.webpeptideshakertheme .popuppanelcontainer .v-horizontallayout-inlineflex.v-horizontallayout-optiongroupframe .v-select-optiongroup-optiongroup.v-select-optiongroup-showlist .v-checkbox.v-select-option {
+	min-width: 78px;
+}
+
+.webpeptideshakertheme .v-absolutelayout-popuppanelmaincontainer.v-absolutelayout-compress {
+	height: 415px !important;
+}
+
+.webpeptideshakertheme .v-horizontallayout .v-absolutelayout-infopopupcontainer .v-popupview-infopopup .v-icon {
+	line-height: 100% !important;
 }

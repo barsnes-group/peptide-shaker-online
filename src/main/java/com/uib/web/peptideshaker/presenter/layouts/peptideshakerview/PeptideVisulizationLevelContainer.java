@@ -163,6 +163,9 @@ public class PeptideVisulizationLevelContainer extends HorizontalLayout implemen
 
     @Override
     public void selectionChange(String type) {
+        if (peptideShakerVisualizationDataset == null) {
+            return;
+        }
         if (type.equalsIgnoreCase("peptide_selection") && !peptideShakerVisualizationDataset.isUploadedProject()) {
 
             if (Selection_Manager.getSelectedPeptide() != null) {
@@ -186,7 +189,7 @@ public class PeptideVisulizationLevelContainer extends HorizontalLayout implemen
                 headerLabel.setDescription("");
             }
 
-        } else {
+        } else  {
             headerLabel.setValue("Peptide Spectrum Matches");
             this.psmViewBtn.updateIconByResource(null);
             headerLabel.setDescription("");

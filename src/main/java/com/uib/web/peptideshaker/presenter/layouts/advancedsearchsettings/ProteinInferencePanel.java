@@ -36,7 +36,7 @@ public class ProteinInferencePanel extends PopupWindow {
         Label title = new Label("Protein Inference");
         AbsoluteLayout container = new AbsoluteLayout();
         container.setStyleName("popuppanelmaincontainer");
-        container.setWidth(600, Unit.PIXELS);
+        container.setWidth(415, Unit.PIXELS);
         container.setHeight(285, Unit.PIXELS);
 
         VerticalLayout subContainer = new VerticalLayout();
@@ -50,24 +50,27 @@ public class ProteinInferencePanel extends PopupWindow {
 
         uniprotEvidenceLevel = new HorizontalLabelDropDownList("&nbsp&nbsp-Based on UniProt Evidence Level");
         uniprotEvidenceLevel.updateData(values);
+        uniprotEvidenceLevel.updateExpandingRatio(0.7f, 0.3f);
 
         peptideConfidence = new HorizontalLabelDropDownList("&nbsp&nbsp-Based on Peptide Confidence");
         peptideConfidence.updateData(values);
-        peptideIgnoredConfidence = new HorizontalLabelTextField("&nbsp&nbsp&nbsp&nbsp&nbspConfidence Below Which A Peptide Is Ignored", 0.0, new DoubleRangeValidator("Only double values allowd", (-1* Double.MAX_VALUE), Double.MAX_VALUE));
-
+        peptideConfidence.updateExpandingRatio(0.7f, 0.3f);
+        peptideIgnoredConfidence = new HorizontalLabelTextField("&nbsp&nbsp&nbsp&nbsp&nbspConfidence Below Which A Peptide Is Ignored", 0.0, new DoubleRangeValidator("Only double values allowd", (-1 * Double.MAX_VALUE), Double.MAX_VALUE));
+        peptideIgnoredConfidence.updateExpandingRatio(0.7f, 0.3f);
         enzymaticity = new HorizontalLabelDropDownList("&nbsp&nbsp-Based on Enzymaticity");
         enzymaticity.updateData(values);
-
+        enzymaticity.updateExpandingRatio(0.7f, 0.3f);
         variantMapping = new HorizontalLabelDropDownList("&nbsp&nbsp-Based on Variant Mapping");
         variantMapping.updateData(values);
-
+        variantMapping.updateExpandingRatio(0.7f, 0.3f);
         accountModificationforProteinMapping = new HorizontalLabelDropDownList("Account for Modifications in Protein Mapping");
         accountModificationforProteinMapping.updateData(values);
-
+        accountModificationforProteinMapping.updateExpandingRatio(0.7f, 0.3f);
         container.addComponent(title, "left:10px;top:10px");
         container.addComponent(subContainer, "left:10px;top:70px;right:10px;bottom:40px");
         simplyProteinGroups = new HorizontalLabelDropDownList("Simplify Protein Froups");
         simplyProteinGroups.updateData(values);
+        simplyProteinGroups.updateExpandingRatio(0.7f, 0.3f);
         subContainer.addComponent(simplyProteinGroups);
         subContainer.addComponent(uniprotEvidenceLevel);
         subContainer.addComponent(peptideConfidence);
@@ -96,12 +99,12 @@ public class ProteinInferencePanel extends PopupWindow {
             setPopupVisible(false);
 
         });
-      
+
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);
         cancelBtn.setHeight(20, Unit.PIXELS);
-        container.addComponent(okBtn, "bottom:10px;right:96px");  
+        container.addComponent(okBtn, "bottom:10px;right:96px");
         container.addComponent(cancelBtn, "bottom:10px;right:10px");
         cancelBtn.addClickListener((Button.ClickEvent event) -> {
             ProteinInferencePanel.this.setPopupVisible(false);
@@ -169,7 +172,7 @@ public class ProteinInferencePanel extends PopupWindow {
         webSearchParameters.getProteinInferenceParameters().setConfidenceThreshold(Double.valueOf(peptideIgnoredConfidence.getSelectedValue()));
         webSearchParameters.getProteinInferenceParameters().setSimplifyGroupsEnzymaticity(enzymaticity.getSelectedValue().equalsIgnoreCase("Yes"));
         webSearchParameters.getProteinInferenceParameters().setSimplifyGroupsVariants(variantMapping.getSelectedValue().equalsIgnoreCase("Yes"));
-      webSearchParameters.getProteinInferenceParameters().setModificationRefinement(accountModificationforProteinMapping.getSelectedValue().equalsIgnoreCase("Yes"));
+        webSearchParameters.getProteinInferenceParameters().setModificationRefinement(accountModificationforProteinMapping.getSelectedValue().equalsIgnoreCase("Yes"));
 //if
     }
 

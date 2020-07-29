@@ -197,9 +197,10 @@ public class MyriMatchAdvancedSettingsPanel extends PopupWindow {
     public void setPopupVisible(boolean visible) {
         if (visible && webSearchParameters != null) {
             updateGUI(webSearchParameters);
-        } else if (webSearchParameters != null) {
-            updateParameters();
         }
+//        else if (webSearchParameters != null) {
+//            updateParameters();
+//        }
         super.setPopupVisible(visible); //To change body of generated methods, choose Tools | Templates.
     }
 

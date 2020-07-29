@@ -289,7 +289,7 @@ public abstract class PresenterContainer extends VerticalLayout {
                 historyFilesMap.putAll(fileSystemPresenter.getHistoryFilesMap());
                 fileSystemPresenter.updateData(historyFilesMap, fileSystemPresenter.isJobInProgress());
                 interactivePSPRojectResultsPresenter.setSelectedDataset(peptideShakerVisualizationDataset);
-                viewLayout(interactivePSPRojectResultsPresenter.getViewId());
+//                viewLayout(interactivePSPRojectResultsPresenter.getViewId());
             }
 
         };

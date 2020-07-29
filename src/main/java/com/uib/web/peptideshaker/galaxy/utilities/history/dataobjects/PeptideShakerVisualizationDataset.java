@@ -431,8 +431,8 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
         this.uploadedProject = true;
         this.psDatasetStat = "ok";
         PeptideShakerVisualizationDataset.this.setType("User uploaded Project");
-        PeptideShakerVisualizationDataset.this.processDataFiles();
         this.table_headers = new TableHeaderConstatnts();
+        PeptideShakerVisualizationDataset.this.processDataFiles();        
         this.inputMgffilesName = new LinkedHashSet<>();
 
     }
@@ -1019,13 +1019,13 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             executorService.submit(processFastaFileTask);
             while (!proteinProcessFuture.isDone()) {
             }
-
             processPeptidesTask = new ProcessPeptidesTask(uploadedPeptideFile, processProteinsTask.call(), processProteinsTask.getProtein_ProteinGroup_Map(), modificationMap);
             peptideProcessFuture = executorService.submit(processPeptidesTask);
             if (!uploadedProject) {
                 processPathwayMatcherFilesTask = new ProcessPathwayMatcherFilesTask(proteoform_file);
                 executorService.submit(processPathwayMatcherFilesTask);
             }
+           
             executorService.shutdown();
             if (!uploadedProject) {
                 processPSMFile();
@@ -1034,8 +1034,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             } else {
 
                 while (!peptideProcessFuture.isDone()) {
-
-                }
+                } 
             }
 
         } catch (IOException ex) {

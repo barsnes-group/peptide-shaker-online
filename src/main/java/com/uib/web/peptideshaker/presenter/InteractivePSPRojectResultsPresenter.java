@@ -292,7 +292,6 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
                 datasetVisulizationLevelContainer.setMargin(new MarginInfo(false, false, false, false));
                 maximisedMode = true;
                 viewControlButtonContainer.addStyleName("visible");
-
                 if (dataprocessFuture == null) {
                     datasetsOverviewBtn.setId("suspend");
                     datasetsOverviewBtn.setEnabled(false);
@@ -392,7 +391,6 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
      */
     public void setSelectedDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
         this.peptideShakerVisualizationDataset = peptideShakerVisualizationDataset;
-        System.out.println("at is to share ds? "+peptideShakerVisualizationDataset.isToShareDataset());
         ExecutorService executorService = Executors.newFixedThreadPool(4);
         Runnable runnableTask = () -> {
             mainPresenterBtn.setEnabled(peptideShakerVisualizationDataset != null);
@@ -411,21 +409,28 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
             proteinsVisulizationLevelContainer.selectDataset(peptideShakerVisualizationDataset);
         };
         Runnable runnableTask3 = () -> {
-            peptideVisulizationLevelContainer.selectDataset(peptideShakerVisualizationDataset);
+            if (!peptideShakerVisualizationDataset.isUploadedProject()) {
+                peptideVisulizationLevelContainer.selectDataset(peptideShakerVisualizationDataset);
+            }
 
         };
         dataprocessFuture = executorService.submit(runnableTask1);
-        executorService.submit(runnableTask);
+//        executorService.submit(runnableTask);
         executorService.submit(runnableTask2);
         executorService.submit(runnableTask3);
         executorService.shutdown();
         UI.getCurrent().addStyleName("busybrocess");
         while (!dataprocessFuture.isDone()) {
-
         }
         uploadOwnDataBtn.updateIconByHTMLCode(VaadinIcons.FILE_TEXT_O.getHtml() + "<div class='overlayicon'>" + VaadinIcons.ARROW_CIRCLE_UP_O.getHtml() + "</div>");
-        maximisedMode = false;
-        this.maximizeView();
+        if (!peptideShakerVisualizationDataset.isUploadedProject()) {
+            maximisedMode = false;
+            this.maximizeView();
+        } else {
+            UI.getCurrent().removeStyleName("busybrocess");
+            selectSubviewButton(datasetsOverviewBtn);
+            datasetsOverviewBtn.removeStyleName("inactive");
+        }
 
     }
 
