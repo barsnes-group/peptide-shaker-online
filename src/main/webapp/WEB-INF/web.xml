@@ -15,7 +15,7 @@
     <context-param>
         <description>galaxy url</description>
         <param-name>galaxyServerUrl</param-name>
-        <param-value>http://158.39.74.194/</param-value>
+        <param-value></param-value>
     </context-param>
     <context-param>
         <description>Test user API key for galaxy </description>
@@ -55,7 +55,7 @@
     <context-param>
         <description>Database Username</description>
         <param-name>userName</param-name>
-        <param-value>root</param-value>
+        <param-value></param-value>
     </context-param>
     <context-param>
         <description>Web Application name (same as war file)</description>
@@ -65,7 +65,7 @@
     <context-param>
         <description>database name</description>
         <param-name>dbName</param-name>
-        <param-value>reactome_2020_06_03</param-value>
+        <param-value></param-value>
     </context-param>
     <!-- Session Configuration -->
     <session-config>
