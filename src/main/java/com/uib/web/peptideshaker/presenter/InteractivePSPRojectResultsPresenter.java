@@ -1,33 +1,21 @@
 package com.uib.web.peptideshaker.presenter;
 
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.DatasetVisulizationLevelContainer;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.ProteinVisulizationLevelContainer;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.SelectionManager;
-import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
 import com.uib.web.peptideshaker.presenter.core.ButtonWithLabel;
+import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
 import com.uib.web.peptideshaker.presenter.core.SmallSideBtn;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.PeptideVisulizationLevelContainer;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.UserUploadFilesContainer;
+import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.*;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
+import pl.exsio.plupload.PluploadFile;
+
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import pl.exsio.plupload.PluploadFile;
+import java.util.concurrent.*;
 
 /**
  * This class represent PeptideShaker view presenter which is responsible for
@@ -46,6 +34,10 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
      */
     private final SmallSideBtn smallPresenterBtn;
     /**
+     * The central selection manager .
+     */
+    private final SelectionManager Selection_Manager;
+    /**
      * The main left side buttons container in big screen mode.
      */
     private VerticalLayout viewControlButtonContainer;
@@ -63,10 +55,6 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
      */
     private PeptideVisulizationLevelContainer peptideVisulizationLevelContainer;
     /**
-     * The central selection manager .
-     */
-    private final SelectionManager Selection_Manager;
-    /**
      * Reference index to the last selected sup-view.
      */
     private int lastSelectedBtn = 1;
@@ -77,6 +65,8 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
     private PresenterSubViewSideBtn datasetsOverviewBtn;
     private PresenterSubViewSideBtn uploadOwnDataBtn;
     private UserUploadFilesContainer userUploadDataLayoutContainer;
+    private PeptideShakerVisualizationDataset peptideShakerVisualizationDataset;
+    private boolean allJobsAreDone = false;
 
     /**
      * Constructor to initialise the main layout and attributes.
@@ -381,13 +371,12 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
     public ButtonWithLabel getMainPresenterButton() {
         return mainPresenterBtn;
     }
-    private PeptideShakerVisualizationDataset peptideShakerVisualizationDataset;
 
     /**
      * Activate PeptideShaker dataset visualisation upon user selection
      *
      * @param peptideShakerVisualizationDataset PeptideShaker visualisation
-     * dataset
+     *                                          dataset
      */
     public void setSelectedDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
         this.peptideShakerVisualizationDataset = peptideShakerVisualizationDataset;
@@ -433,8 +422,6 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
         }
 
     }
-
-    private boolean allJobsAreDone = false;
 
     /**
      * Visualise dataset

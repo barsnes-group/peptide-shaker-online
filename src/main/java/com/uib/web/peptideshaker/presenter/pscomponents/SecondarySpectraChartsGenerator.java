@@ -21,17 +21,6 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.geom.Ellipse2D;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.HashSet;
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.encoders.ImageEncoder;
 import org.jfree.chart.encoders.ImageEncoderFactory;
@@ -40,8 +29,14 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.DefaultXYItemRenderer;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.HashSet;
+
 /**
- *
  * @author Yehia Farag this class represents spectra chart in relation with
  * peptide sequence
  */
@@ -49,26 +44,16 @@ public class SecondarySpectraChartsGenerator {
 
     private final Image sequenceFragmentationChartComponent;
     private final Label massErrorPlotComponent;
-//    private final Label sequenceLabel;
+    //    private final Label sequenceLabel;
     private final Object objectId;
+    private final VerticalLayout sequenceFragmentationChart;
+    private final VerticalLayout massErrorPlot;
+    int count = 0;
+    ImageEncoder in = ImageEncoderFactory.newInstance(ImageFormat.PNG, 1);
     private int imgW = -1;
     private int imgH = -1;
     private String base64;
     private MassErrorPlot errorPlot;
-    private final VerticalLayout sequenceFragmentationChart;
-    private final VerticalLayout massErrorPlot;
-
-    public Object getObjectId() {
-        return objectId;
-    }
-
-    public VerticalLayout getSequenceFragmentationChart() {
-        return sequenceFragmentationChart;
-    }
-
-    public VerticalLayout getMassErrorPlot() {
-        return massErrorPlot;
-    }
 
     public SecondarySpectraChartsGenerator(String sequence, String tooltip, Object objectId, SpectrumInformation spectrumInformation) {
         this.sequenceFragmentationChart = new VerticalLayout();
@@ -110,25 +95,25 @@ public class SecondarySpectraChartsGenerator {
         SpecificAnnotationParameters specificAnnotationParameters = annotationParameters.getSpecificAnnotationParameters(
                 spectrumInformation.getSpectrumMatch().getSpectrumFile(),
                 spectrumInformation.getSpectrumMatch().getSpectrumTitle(),
-                peptideAssumption, 
-                modificationParameters, 
-                sequenceProvider, 
-                modificationSequenceMatchingParameters, 
+                peptideAssumption,
+                modificationParameters,
+                sequenceProvider,
+                modificationSequenceMatchingParameters,
                 spectrumAnnotator
         );
 
         IonMatch[] annotations = spectrumAnnotator.getSpectrumAnnotation(
-                        annotationParameters,
-                        specificAnnotationParameters,
-                        spectrumInformation.getSpectrumMatch().getSpectrumFile(),
-                        spectrumInformation.getSpectrumMatch().getSpectrumTitle(),
-                        spectrumInformation.getSpectrum(),
-                        currentPeptide,
-                        modificationParameters,
-                        sequenceProvider,
-                        modificationSequenceMatchingParameters
-                );
-        
+                annotationParameters,
+                specificAnnotationParameters,
+                spectrumInformation.getSpectrumMatch().getSpectrumFile(),
+                spectrumInformation.getSpectrumMatch().getSpectrumTitle(),
+                spectrumInformation.getSpectrum(),
+                currentPeptide,
+                modificationParameters,
+                sequenceProvider,
+                modificationSequenceMatchingParameters
+        );
+
 //        PeptideAssumption peptideAssumption = spectrumInformation.getSpectrumMatch().getBestPeptideAssumption();
 //        Peptide currentPeptide = peptideAssumption.getPeptide();
 //        AnnotationParameters annotationParameters = spectrumInformation.getIdentificationParameters().getAnnotationParameters();
@@ -199,13 +184,24 @@ public class SecondarySpectraChartsGenerator {
 
     }
 
+    public Object getObjectId() {
+        return objectId;
+    }
+
+    public VerticalLayout getSequenceFragmentationChart() {
+        return sequenceFragmentationChart;
+    }
+
+    public VerticalLayout getMassErrorPlot() {
+        return massErrorPlot;
+    }
+
     public void reset() {
 //        this.plotImage.setVisible(false);
 //        this.sequenceLabel.setVisible(true);
 
     }
-    int count = 0;
-ImageEncoder in = ImageEncoderFactory.newInstance(ImageFormat.PNG, 1);
+
     private String drawImage(JPanel panel) {
         panel.revalidate();
         panel.repaint();

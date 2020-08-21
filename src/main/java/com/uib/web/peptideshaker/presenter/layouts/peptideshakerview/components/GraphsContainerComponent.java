@@ -5,18 +5,11 @@ import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideSha
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.ProteinGroupObject;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.components.RangeColorGenerator;
 import com.uib.web.peptideshaker.presenter.core.graph.GraphComponent;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import graphmatcher.NetworkGraphComponent;
 import graphmatcher.NetworkGraphEdge;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import java.util.*;
 
 /**
  * this class represents interactive graph layout
@@ -32,15 +25,11 @@ public abstract class GraphsContainerComponent extends VerticalLayout {
     private final Map<String, ProteinGroupObject> unrelatedProt = new LinkedHashMap<>();
     private final Map<String, PeptideObject> unrelatedPeptides = new LinkedHashMap<>();
     private final HashMap<String, ArrayList<String>> edges;
+    private final NetworkGraphComponent proteinsPathwayNewtorkGraph;
     private PeptideShakerVisualizationDataset peptideShakerVisualizationDataset;
     private String thumbURL;
     private int maxPsms;
     private RangeColorGenerator colorScale;
-    private final NetworkGraphComponent proteinsPathwayNewtorkGraph;
-
-    public RangeColorGenerator getColorScale() {
-        return colorScale;
-    }
 
     public GraphsContainerComponent() {
 
@@ -48,7 +37,7 @@ public abstract class GraphsContainerComponent extends VerticalLayout {
         graphComponent = new GraphComponent() {
             @Override
             public void selectedItem(Set<Object> selectedItems, Set<Object> selectedChildsItems, boolean updateProteform) {
-                GraphsContainerComponent.this.selectedItem(selectedItems, selectedChildsItems, false);// 
+                GraphsContainerComponent.this.selectedItem(selectedItems, selectedChildsItems, false);//
                 if (updateProteform) {
                     GraphsContainerComponent.this.updateProteoformGraphData(selectedItems);
                 }
@@ -68,7 +57,7 @@ public abstract class GraphsContainerComponent extends VerticalLayout {
 
         proteinsPathwayNewtorkGraph = new NetworkGraphComponent() {
             @Override
-            public void selectedItem(Set<Object> selectedParentItems, Set<Object> selectedChildItems) {//               
+            public void selectedItem(Set<Object> selectedParentItems, Set<Object> selectedChildItems) {//
                 if (proteinsPathwayNewtorkGraph.isVisible()) {
                     GraphsContainerComponent.this.selectedItem(selectedParentItems, selectedChildItems, true);
                     graphComponent.selectParentItem(selectedParentItems);
@@ -79,6 +68,10 @@ public abstract class GraphsContainerComponent extends VerticalLayout {
         proteinsPathwayNewtorkGraph.setSizeFull();
         graphComponent.addProteoformGraphComponent(proteinsPathwayNewtorkGraph);
 
+    }
+
+    public RangeColorGenerator getColorScale() {
+        return colorScale;
     }
 
     public void selectDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {

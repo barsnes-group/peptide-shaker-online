@@ -64,8 +64,8 @@ public class Protein3DStructureCoverage extends AbsoluteLayout {
     /**
      * Add coverage component
      *
-     * @param left the x position
-     * @param width the width of the component
+     * @param left      the x position
+     * @param width     the width of the component
      * @param highlight is the component highlighted
      */
     public void addCoverageComponent(double left, Double width, boolean highlight) {

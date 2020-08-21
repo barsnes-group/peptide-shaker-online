@@ -13,7 +13,6 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
- *
  * @author y-mok
  */
 public class ValidationLevelsPanel extends PopupWindow {
@@ -58,12 +57,12 @@ public class ValidationLevelsPanel extends PopupWindow {
                 setPopupVisible(false);
             }
         });
-       
+
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);
         cancelBtn.setHeight(20, Unit.PIXELS);
-        container.addComponent(okBtn, "bottom:10px;right:96px"); 
+        container.addComponent(okBtn, "bottom:10px;right:96px");
         container.addComponent(cancelBtn, "bottom:10px;right:10px");
         cancelBtn.addClickListener((Button.ClickEvent event) -> {
             ValidationLevelsPanel.this.setPopupVisible(false);

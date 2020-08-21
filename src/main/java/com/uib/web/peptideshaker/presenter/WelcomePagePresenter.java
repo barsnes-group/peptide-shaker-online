@@ -5,32 +5,16 @@ import com.uib.web.peptideshaker.presenter.core.SmallSideBtn;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.ExternalResource;
-import com.vaadin.server.Page;
-import com.vaadin.server.Sizeable;
-import com.vaadin.server.ThemeResource;
-import com.vaadin.server.VaadinSession;
+import com.vaadin.server.*;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.shared.ui.window.WindowMode;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Link;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -90,10 +74,6 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
      */
     private final Window busyConnectinWindow;
     /**
-     * Executor service to execute connection task to galaxy server.
-     */
-    private ExecutorService executorService = Executors.newFixedThreadPool(2);
-    /**
      * Container for different presenters buttons (data overview, tools ,
      * results, and galaxy connection)
      */
@@ -111,6 +91,10 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
      * Unique presenter id
      */
     private final String viewId = WelcomePagePresenter.class.getName();
+    /**
+     * Executor service to execute connection task to galaxy server.
+     */
+    private ExecutorService executorService = Executors.newFixedThreadPool(2);
 
     /**
      * Constructor to initialise the layout.
@@ -544,7 +528,7 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
      * update the layout based on connection to galaxy.
      *
      * @param userOverviewData list of user data gathered from user account on
-     * Galaxy server
+     *                         Galaxy server
      */
     private void updateConnectionStatusToGalaxy(List<String> userOverviewData) {
 
@@ -587,7 +571,7 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
      * update user overview panel.
      *
      * @param userOverviewData list of user data gathered from user account on
-     * Galaxy server
+     *                         Galaxy server
      */
     public void updateUserOverviewPanel(List<String> userOverviewData) {
         if (userOverviewData != null && !userOverviewData.isEmpty()) {
@@ -692,7 +676,7 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
      * Connect to galaxy server.
      *
      * @param presenterId button used to login
-     * @param userAPI user API key that is required to connect to galaxy
+     * @param userAPI     user API key that is required to connect to galaxy
      * @return list of overview data for the user / null indicate failed to
      * connect to Galaxy Server
      */
@@ -700,7 +684,6 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
 
     /**
      * View dataset that is shared by link.
-     *
      */
     public abstract void viewToShareDataset();
 
@@ -710,7 +693,6 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
      * @param title the label text title
      * @param value the label text value
      * @return the generated label
-     *
      */
     private Label initLeftSideInfoLabel(String title, String value) {
         Label label = new Label("<div class='lefttitle' style='width:120px;font-size: 14px;'>" + title + "</div><div style='white-space: nowrap;width: 65px;height: 20px;font-size: 12px;color:#cd6e1d;position: relative;top: -20px;left: 120px;text-overflow: ellipsis;overflow: hidden;'>  " + value + " </div>");
@@ -728,7 +710,6 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
      *
      * @param label the generated label to be updated
      * @param value the new value for the label
-     *
      */
     private void updateLeftSideInfoLabel(Label label, String value) {
         String org = label.getValue().split("</div>")[0];
@@ -752,7 +733,7 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
      * button for each presenter in the system
      *
      * @param presenterBtnsContainer grid layout that contain all the large
-     * presenter buttons
+     *                               presenter buttons
      */
     public void setPresenterControlButtonContainer(AbsoluteLayout presenterBtnsContainer) {
         presenterBtnsContainer.addComponent(galaxyLoginBtn, "left:50%;top:50%;");

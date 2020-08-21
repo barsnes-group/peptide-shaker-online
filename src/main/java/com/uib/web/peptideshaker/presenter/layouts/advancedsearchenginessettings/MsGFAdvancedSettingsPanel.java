@@ -15,11 +15,11 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- *
  * @author y-mok
  */
 public class MsGFAdvancedSettingsPanel extends PopupWindow {
@@ -123,7 +123,7 @@ public class MsGFAdvancedSettingsPanel extends PopupWindow {
         enzymaticTerminal.setItemCaption(1 + "", "At Least One");
         enzymaticTerminal.setItemCaption(2 + "", "Both");
 
-        peptideLength = new HorizontalLabel2TextField("Peptide Length (min-max)", 0, 0, new IntegerRangeValidator("Only double values allowd", (-1* Integer.MAX_VALUE), Integer.MAX_VALUE));
+        peptideLength = new HorizontalLabel2TextField("Peptide Length (min-max)", 0, 0, new IntegerRangeValidator("Only double values allowd", (-1 * Integer.MAX_VALUE), Integer.MAX_VALUE));
         peptideLength.setSpacing(true);
         subContainer.addComponent(peptideLength);
 
@@ -135,11 +135,11 @@ public class MsGFAdvancedSettingsPanel extends PopupWindow {
         additionalOutput = new HorizontalLabelDropDownList("Additional Output");
         subContainer.addComponent(additionalOutput);
         additionalOutput.updateData(values);
-        numberofTasks = new HorizontalLabelTextField("Number of tasks", "default", new IntegerRangeValidator("Only Integer value allowed", (-1* Integer.MAX_VALUE), Integer.MAX_VALUE));
+        numberofTasks = new HorizontalLabelTextField("Number of tasks", "default", new IntegerRangeValidator("Only Integer value allowed", (-1 * Integer.MAX_VALUE), Integer.MAX_VALUE));
         subContainer.addComponent(numberofTasks);
 
         String helpText = "<a href='https://msgfplus.github.io/msgfplus/MSGFPlus.html' target='_blank'>";
-        Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open the MS-GF+ help page.</font>",100,20);
+        Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open the MS-GF+ help page.</font>", 100, 20);
         container.addComponent(help, "left:10px;bottom:10px;");
         Button okBtn = new Button("OK");
         okBtn.setWidth(76, Unit.PIXELS);
@@ -150,12 +150,12 @@ public class MsGFAdvancedSettingsPanel extends PopupWindow {
                 setPopupVisible(false);
             }
         });
-       
+
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);
         cancelBtn.setHeight(20, Unit.PIXELS);
-        container.addComponent(okBtn, "bottom:10px;right:96px"); 
+        container.addComponent(okBtn, "bottom:10px;right:96px");
         container.addComponent(cancelBtn, "bottom:10px;right:10px");
         cancelBtn.addClickListener((Button.ClickEvent event) -> {
             MsGFAdvancedSettingsPanel.this.setPopupVisible(false);

@@ -11,7 +11,6 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- *
  * @author Yehia Farag
  */
 public abstract class FilterButton extends VerticalLayout implements LayoutEvents.LayoutClickListener {
@@ -25,10 +24,10 @@ public abstract class FilterButton extends VerticalLayout implements LayoutEvent
         FilterButton.this.setWidth(22, Unit.PIXELS);
         FilterButton.this.setHeight(22, Unit.PIXELS);
         icon = new Image();
-        icon.setSizeFull(); 
+        icon.setSizeFull();
         icon.setSource(activeBunResource);
 //        icon.setSource(inActiveBunResource);
-FilterButton.this.addStyleName("hide");
+        FilterButton.this.addStyleName("hide");
         FilterButton.this.addComponent(icon);
         FilterButton.this.addLayoutClickListener(FilterButton.this);
         FilterButton.this.setEnabled(false);
@@ -38,7 +37,7 @@ FilterButton.this.addStyleName("hide");
     private void setActiveBtn(boolean active) {
         if (active) {
             this.removeStyleName("hide");
-           
+
             this.addStyleName("pointer");
             this.addStyleName("highlightfilter");
 

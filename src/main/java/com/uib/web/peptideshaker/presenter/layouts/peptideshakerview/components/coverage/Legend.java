@@ -3,15 +3,14 @@ package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.uib.web.peptideshaker.presenter.core.graph.Node;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import graphmatcher.NetworkGraphNode;
-import java.awt.Color;
+
+import java.awt.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -345,7 +344,7 @@ public abstract class Legend extends VerticalLayout {
     }
 
     private Node generateNode(String defaultStyleName) {
-        Node node = new Node("prot", "prot", new ModificationMatch[]{}, "", -1,Color.lightGray, -1000, Color.lightGray) {
+        Node node = new Node("prot", "prot", new ModificationMatch[]{}, "", -1, Color.lightGray, -1000, Color.lightGray) {
             @Override
             public void selected(String id) {
 
@@ -381,7 +380,7 @@ public abstract class Legend extends VerticalLayout {
 
 //        currentModifications += modifications.split("\\(")[0] + ";";
 //       ModificationMatch[] modMatch=  new ModificationMatch[]{};
-        Node node = new Node("prot", "prot", modMatch, null, -1,Color.lightGray, -1000, Color.lightGray) {
+        Node node = new Node("prot", "prot", modMatch, null, -1, Color.lightGray, -1000, Color.lightGray) {
             @Override
             public void selected(String id) {
 

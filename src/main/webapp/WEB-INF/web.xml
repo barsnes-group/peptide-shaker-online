@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="WebApp_ID" version="2.5">
     <display-name>Vaadin Web Application</display-name>
     <listener>
         <listener-class>com.uib.web.peptideshaker.listeners.VaadinSessionListener</listener-class>
     </listener>
     <listener>
         <listener-class>com.uib.web.peptideshaker.listeners.VaadinContextListener</listener-class>
-    </listener> 
+    </listener>
     <context-param>
-        <description>link to csf-pr available proteins list  https://proteomics.uib.no/csf-pr/VAADIN/</description>
+        <description>link to csf-pr available proteins list https://proteomics.uib.no/csf-pr/VAADIN/</description>
         <param-name>csfprservice</param-name>
         <param-value>https://proteomics.uib.no/csf-pr/VAADIN/</param-value>
     </context-param>
     <context-param>
         <description>galaxy url</description>
         <param-name>galaxyServerUrl</param-name>
-        <param-value></param-value>
+        <param-value>http://158.39.74.194/</param-value>
     </context-param>
     <context-param>
-        <description>Test user API key for galaxy </description>
+        <description>Test user API key for galaxy</description>
         <param-name>testUserAPIKey</param-name>
-        <param-value></param-value>
+        <param-value>3b5754c5b177864e6b1e3dc34f4016d7</param-value>
     </context-param>
     <context-param>
         <description>peptide shaker tool version</description>
@@ -41,7 +43,7 @@
         <description>Database url</description>
         <param-name>url</param-name>
         <param-value>jdbc:mysql://localhost:3306/</param-value>
-    </context-param>   
+    </context-param>
     <context-param>
         <description>Database Driver</description>
         <param-name>driver</param-name>
@@ -50,12 +52,12 @@
     <context-param>
         <description>Database Password</description>
         <param-name>password</param-name>
-        <param-value></param-value>
+        <param-value>qwe1212qwe1212</param-value>
     </context-param>
     <context-param>
         <description>Database Username</description>
         <param-name>userName</param-name>
-        <param-value></param-value>
+        <param-value>root</param-value>
     </context-param>
     <context-param>
         <description>Web Application name (same as war file)</description>
@@ -65,7 +67,7 @@
     <context-param>
         <description>database name</description>
         <param-name>dbName</param-name>
-        <param-value></param-value>
+        <param-value>reactome_2020_06_03</param-value>
     </context-param>
     <!-- Session Configuration -->
     <session-config>
@@ -87,5 +89,5 @@
         <servlet-name>litemol</servlet-name>
         <url-pattern>/litemol</url-pattern>
     </servlet-mapping>
-  
+
 </web-app>

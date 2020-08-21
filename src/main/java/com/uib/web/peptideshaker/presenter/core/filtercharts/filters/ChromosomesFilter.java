@@ -1,25 +1,16 @@
 package com.uib.web.peptideshaker.presenter.core.filtercharts.filters;
 
-import com.uib.web.peptideshaker.presenter.core.filtercharts.RegistrableFilter;
 import com.google.common.collect.Sets;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.SelectionManager;
 import com.uib.web.peptideshaker.presenter.core.FilterButton;
+import com.uib.web.peptideshaker.presenter.core.filtercharts.RegistrableFilter;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.components.RangeColorGenerator;
+import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.SelectionManager;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+
+import java.util.*;
 
 /**
  * This class represents matrix layout filter
@@ -28,33 +19,23 @@ import java.util.TreeSet;
  */
 public abstract class ChromosomesFilter extends AbsoluteLayout implements RegistrableFilter {
 
-    private RangeColorGenerator colorGenerator;
-
     private final String filterId;
-
     private final Panel mainFilterPanel;
     private final Label chartTitle;
-
     private final FilterButton resetFilterBtn;
-
     private final Set<Object> selectedCategories;
     private final Set<Comparable> appliedFilters;
-    private Map<Integer, Set<Comparable>> fullData;
     private final Map<Integer, Set<Comparable>> filteredData;
-    
-    private final AbsoluteLayout frame ;
-
-    private int totalItemsNumber;
+    private final AbsoluteLayout frame;
     private final SelectionManager Selection_Manager;
-
     private final Map<Comparable, Label> chromosomessLabelMap;
     private final Set<Comparable> selectedData;
     private final AbsoluteLayout mainChartContainer;
     private final LayoutEvents.LayoutClickListener mainClickListener;
-
-    public boolean isAppliedFilter() {
-        return !(selectedData.isEmpty() || selectedData.size() == totalItemsNumber);
-    }
+    int activeChromosomes;
+    private RangeColorGenerator colorGenerator;
+    private Map<Integer, Set<Comparable>> fullData;
+    private int totalItemsNumber;
 
     public ChromosomesFilter(String title, String filterId, SelectionManager Selection_Manager) {
 
@@ -63,7 +44,7 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
         selectedData = new LinkedHashSet<>();
         this.appliedFilters = new LinkedHashSet<>();
         ChromosomesFilter.this.setSizeFull();
-        
+
         frame = new AbsoluteLayout();
         frame.setSizeFull();
         frame.setStyleName("innerborderframe");
@@ -71,7 +52,7 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
         frame.addStyleName("reorderlayout");
         frame.addStyleName("chromosomfilter");
         ChromosomesFilter.this.addComponent(frame);
-        
+
 
         this.selectedCategories = new LinkedHashSet<>();
         this.Selection_Manager.RegistrDatasetsFilter(ChromosomesFilter.this);
@@ -93,9 +74,9 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
 //        resetFilterBtn.setHeight(10, Unit.PERCENTAGE);
         resetFilterBtn.setVisible(false);
         resetFilterBtn.addStyleName("btninframe");
-         resetFilterBtn.addStyleName("chromosomefilterrest");
+        resetFilterBtn.addStyleName("chromosomefilterrest");
         ChromosomesFilter.this.addComponent(resetFilterBtn, "top:5px;right:0px;");
-        
+
 
         mainFilterPanel = new Panel();
         mainFilterPanel.setHeight(100, Unit.PERCENTAGE);
@@ -106,7 +87,8 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
         frame.addComponent(mainFilterPanel, "top: 51px;left: 10px;right: 10px;bottom: 0px;");
 
         chromosomessLabelMap = new LinkedHashMap<>();
-        this.filteredData = new LinkedHashMap<>();;
+        this.filteredData = new LinkedHashMap<>();
+        ;
 
         this.mainClickListener = (LayoutEvents.LayoutClickEvent event) -> {
             Component clickedComponent = event.getClickedComponent();
@@ -126,6 +108,10 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
         };
         mainChartContainer = initFilterLayout();
         mainFilterPanel.setContent(mainChartContainer);
+    }
+
+    public boolean isAppliedFilter() {
+        return !(selectedData.isEmpty() || selectedData.size() == totalItemsNumber);
     }
 
     private AbsoluteLayout initFilterLayout() {
@@ -151,8 +137,6 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
         filterContainer.addComponent(filter);
         return filterContainer;
     }
-
-    int activeChromosomes;
 
     private void updateChromosomesLabelsColor() {
         activeChromosomes = 0;
@@ -312,8 +296,8 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
      * be any double value.
      *
      * @param linearValue the value to be converted to log scale
-     * @param max The upper limit number for the input numbers
-     * @param lowerLimit the lower limit for the input numbers
+     * @param max         The upper limit number for the input numbers
+     * @param lowerLimit  the lower limit for the input numbers
      * @return the value in log scale
      */
     private double scaleValues(double linearValue, double max, double lowerLimit) {

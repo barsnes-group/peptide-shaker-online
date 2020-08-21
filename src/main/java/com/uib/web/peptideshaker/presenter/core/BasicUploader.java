@@ -5,12 +5,13 @@ import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.themes.ValoTheme;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import pl.exsio.plupload.Plupload;
 import pl.exsio.plupload.PluploadError;
 import pl.exsio.plupload.PluploadFile;
 import pl.exsio.plupload.helper.filter.PluploadFilter;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * This class represents Uploading class with progress bar
@@ -19,8 +20,8 @@ import pl.exsio.plupload.helper.filter.PluploadFilter;
  */
 public abstract class BasicUploader extends AbsoluteLayout {
 
-    private Plupload uploaderComponent;
     private final Set<String> filterSet;
+    private Plupload uploaderComponent;
 
     /**
      * Initialise the upload unit

@@ -20,20 +20,14 @@ import com.vaadin.server.StreamResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.AbsoluteLayout.ComponentPosition;
-import com.vaadin.ui.Alignment;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.DragAndDropWrapper;
+import com.vaadin.ui.AbsoluteLayout.ComponentPosition;
 import com.vaadin.ui.DragAndDropWrapper.WrapperTargetDetails;
-import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.PopupView;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
 import com.vaadin.ui.themes.ValoTheme;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
@@ -41,30 +35,20 @@ import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.CrossoverScalingControl;
 import edu.uci.ics.jung.visualization.control.ScalingControl;
 import graphmatcher.NetworkGraphComponent;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Shape;
-import java.awt.Stroke;
+import org.jfree.chart.encoders.ImageEncoder;
+import org.jfree.chart.encoders.ImageEncoderFactory;
+import org.jfree.chart.encoders.ImageFormat;
+import org.vaadin.simplefiledownloader.SimpleFileDownloader;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import javax.imageio.ImageIO;
-import org.jfree.chart.encoders.ImageEncoder;
-import org.jfree.chart.encoders.ImageEncoderFactory;
-import org.jfree.chart.encoders.ImageFormat;
-import org.vaadin.simplefiledownloader.SimpleFileDownloader;
+import java.util.*;
 
 /**
  * This class represents Graph layout component
@@ -74,11 +58,31 @@ import org.vaadin.simplefiledownloader.SimpleFileDownloader;
 public abstract class GraphComponent extends VerticalLayout {
 
     private final AbsoluteLayout canvas;
+    private final Stroke dashLineStroke;
+    private final AbsoluteLayout mainContainer;
+    private final AbsoluteLayout proteoformLayerContainer;
+    private final DropHandler dropHandler;
+    private final OptionGroup graphsControl;
+    private final AbsoluteLayout proteinPeptideGraphWrapper;
+    private final SizeReporter sizeReporter;
+    private final Map<String, String> styles;
+    private final Label graphInfo;
+    private final HorizontalLayout bottomRightPanel;
+    private final PopupView legendLayout;
+    private final Legend informationLegend;
+    private final HorizontalLayout rightBottomPanel;
+    private final VerticalLayout lefTtopPanel;
+    private final Map<Object, Node> nodesMap;
+    private final Set<Edge> edgesMap;
+    private final OptionGroup proteinsControl;
+    private final OptionGroup nodeControl;
+    private final Set<Object> selectedProteins;
+    private final Set<Object> selectedPeptides;
+    private final AbsoluteLayout scaleContainer;
+    private final Property.ValueChangeListener proteinsControlListener;
     private int liveWidth;
     private int liveHeight;
     private Image edgesImage;
-    private final Stroke dashLineStroke;
-
     /**
      * The graph.
      */
@@ -98,46 +102,13 @@ public abstract class GraphComponent extends VerticalLayout {
      */
     private VisualizationViewer visualizationViewer;
     private FRLayout graphLayout;
-
-    private final AbsoluteLayout mainContainer;
-    private final AbsoluteLayout proteoformLayerContainer;
-    private final DropHandler dropHandler;
-    private final OptionGroup graphsControl;
-
-    private final AbsoluteLayout proteinPeptideGraphWrapper;
-
-    private final SizeReporter sizeReporter;
-    private final Map<String, String> styles;
-    private final Label graphInfo;
-    private final HorizontalLayout bottomRightPanel;
-
-    private final PopupView legendLayout;
-    private final Legend informationLegend;
-
-    private final HorizontalLayout rightBottomPanel;
-
-    private final VerticalLayout lefTtopPanel;
-    private final Map<Object, Node> nodesMap;
-    private final Set<Edge> edgesMap;
-
-    private final OptionGroup proteinsControl;
-    private final OptionGroup nodeControl;
     private boolean uniqueOnly = false;
     private Object lastSelected;
-
-    private final Set<Object> selectedProteins;
-    private final Set<Object> selectedPeptides;
-
     private String thumbImgeUrl;
-    private final AbsoluteLayout scaleContainer;
     private VerticalLayout psmColorScaleLayout;
     private VerticalLayout intensityColorScaleLayout;
     private NetworkGraphComponent proteinsPathwayNewtorkGraph;
-    private final Property.ValueChangeListener proteinsControlListener;
-
-    public String getThumbImgeUrl() {
-        return thumbImgeUrl;
-    }
+    private String lastSelectedModeType = null;
 
     public GraphComponent() {
         GraphComponent.this.setMargin(new MarginInfo(false, false, false, false));
@@ -470,6 +441,10 @@ public abstract class GraphComponent extends VerticalLayout {
 
     }
 
+    public String getThumbImgeUrl() {
+        return thumbImgeUrl;
+    }
+
     public void addProteoformGraphComponent(NetworkGraphComponent proteinsPathwayNewtorkGraph) {
         this.proteinsPathwayNewtorkGraph = proteinsPathwayNewtorkGraph;
         proteoformLayerContainer.addComponent(proteinsPathwayNewtorkGraph);
@@ -486,8 +461,6 @@ public abstract class GraphComponent extends VerticalLayout {
         scaler.scale(visualizationViewer, 0.9f, visualizationViewer.getCenter());
         reDrawGraph();
     }
-
-    private String lastSelectedModeType = null;
 
     private void updateNodeColourType(String modeType) {
         lastSelectedModeType = modeType;
@@ -786,38 +759,6 @@ public abstract class GraphComponent extends VerticalLayout {
 
     }
 
-    /**
-     * This class is a wrapper for the dropped component that is used in the
-     * Drag-Drop layout.
-     *
-     * @author Yehia Farag
-     */
-    class WrappedComponent extends DragAndDropWrapper {
-
-        /**
-         * The layout drop handler.
-         */
-        private final DropHandler dropHandler;
-
-        /**
-         * Constructor to initialise the main attributes.
-         *
-         * @param content the dropped component (the label layout)
-         * @param dropHandler The layout drop handler.
-         */
-        public WrappedComponent(final Component content, final DropHandler dropHandler) {
-            super(content);
-            this.dropHandler = dropHandler;
-            WrappedComponent.this.setDragStartMode(DragAndDropWrapper.DragStartMode.WRAPPER);
-        }
-
-        @Override
-        public DropHandler getDropHandler() {
-            return dropHandler;
-        }
-
-    }
-
     private String generateThumbImg() {
         FRLayout tgraphlayout = new FRLayout<>(graph);
         VisualizationViewer vv = new VisualizationViewer<>(tgraphlayout, new Dimension(80, 80));
@@ -904,7 +845,7 @@ public abstract class GraphComponent extends VerticalLayout {
                 circle = new Ellipse2D.Double((int) graphLayout.getX(node) - 10 + 20, graphLayout.getY(node) - 10 + 20, 20, 20);
                 g2d.setPaint(nodesMap.get(node).getCurrentActiveColor());
             } else {
-//               
+//
                 circle = new Ellipse2D.Double((int) graphLayout.getX(node) - 20 + 20, graphLayout.getY(node) - 20 + 20, 40, 40);
                 g2d.setPaint(nodesMap.get(node).getCurrentActiveColor());
             }
@@ -1035,5 +976,37 @@ public abstract class GraphComponent extends VerticalLayout {
         if (!enable) {
             graphsControl.setValue("Protein-Peptide");
         }
+    }
+
+    /**
+     * This class is a wrapper for the dropped component that is used in the
+     * Drag-Drop layout.
+     *
+     * @author Yehia Farag
+     */
+    class WrappedComponent extends DragAndDropWrapper {
+
+        /**
+         * The layout drop handler.
+         */
+        private final DropHandler dropHandler;
+
+        /**
+         * Constructor to initialise the main attributes.
+         *
+         * @param content     the dropped component (the label layout)
+         * @param dropHandler The layout drop handler.
+         */
+        public WrappedComponent(final Component content, final DropHandler dropHandler) {
+            super(content);
+            this.dropHandler = dropHandler;
+            WrappedComponent.this.setDragStartMode(DragAndDropWrapper.DragStartMode.WRAPPER);
+        }
+
+        @Override
+        public DropHandler getDropHandler() {
+            return dropHandler;
+        }
+
     }
 }

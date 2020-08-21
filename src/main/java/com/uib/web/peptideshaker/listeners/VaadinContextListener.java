@@ -1,16 +1,14 @@
-
 package com.uib.web.peptideshaker.listeners;
 
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 
 /**
- *Context listener to perform cleaning on restarting the system
+ * Context listener to perform cleaning on restarting the system
+ *
  * @author Yehia Farag
  */
 public class VaadinContextListener implements ServletContextListener {
@@ -28,15 +26,15 @@ public class VaadinContextListener implements ServletContextListener {
             for (File tFile : temp_folder.listFiles()) {
                 try {
                     deletFile(tFile);
-                    
+
 
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
             }
         }
-        
-       
+
+
     }
 
     private void deletFile(File file) throws IOException {
@@ -54,7 +52,7 @@ public class VaadinContextListener implements ServletContextListener {
             if (tFile.isDirectory()) {
                 deleteDirectory(tFile);
             } else {
-               Files.deleteIfExists(tFile.toPath());
+                Files.deleteIfExists(tFile.toPath());
             }
         }
         Files.deleteIfExists(file.toPath());

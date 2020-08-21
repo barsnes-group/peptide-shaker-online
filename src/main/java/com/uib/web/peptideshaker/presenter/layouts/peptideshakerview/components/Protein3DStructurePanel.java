@@ -3,27 +3,17 @@ package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideObject;
+import com.uib.web.peptideshaker.model.core.pdb.ChainBlock;
 import com.uib.web.peptideshaker.model.core.pdb.PDBMatch;
 import com.uib.web.peptideshaker.model.core.pdb.PdbHandler;
-import com.uib.web.peptideshaker.model.core.pdb.ChainBlock;
 import com.vaadin.data.Property;
 import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.VerticalLayout;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
+import com.vaadin.ui.*;
+
+import java.awt.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * This class represents 3D protein structure panel using JSMOL web service
@@ -33,20 +23,12 @@ import java.util.HashSet;
 public class Protein3DStructurePanel extends AbsoluteLayout {
 
     private final VerticalLayout LiteMolPanel;
-    private AbsoluteLayout chainCoverageLayout;
-
     private final LiteMOL3DComponent liteMOL3DComponent;
     private final Map<String, List<HashMap<String, Object>>> peptidesQueryMap;
-
-    private int moleculeMode = 1;
     private final ComboBox pdbMatchesSelect;
     private final ComboBox pdbChainsSelect;
     private final Property.ValueChangeListener pdbMatchSelectlistener;
     private final Property.ValueChangeListener pdbChainsSelectlistener;
-    private ChainCoverageComponent lastSelectedChainCoverage;
-    private Object lastSelectedAccession;
-    private String lastSelectedProteinSequence;
-
     private final int[] defaultSelectedBlueColor = new int[]{25, 125, 255};
     private final int[] defaultUnSelectedBlueColor = new int[]{132, 191, 249};
     private final int[] defaultSelectedConfidentColor = new int[]{0, 128, 0};
@@ -58,13 +40,22 @@ public class Protein3DStructurePanel extends AbsoluteLayout {
     private final int[] defaultSelectedNotAvailableColor = new int[]{211, 211, 211};
     private final int[] defaultUnselectedNotAvailableColor = new int[]{246, 246, 246};
     private final int[] basicColor = new int[]{226, 226, 226};
-    private String lastSelectedPeptideKey;
-    private Collection<PeptideObject> proteinPeptides;
     private final Map<String, PeptideObject> proteinPeptidesMap;
     private final Map<String, List<ChainBlock>> pdbBlockMap;
-    private int proteinSequenceLength;
     private final Label uniprotLabel;
     private final PdbHandler pdbHandler = new PdbHandler();
+    /**
+     * The post translational modifications factory.
+     */
+    private final ModificationFactory PTM = ModificationFactory.getInstance();
+    private AbsoluteLayout chainCoverageLayout;
+    private int moleculeMode = 1;
+    private ChainCoverageComponent lastSelectedChainCoverage;
+    private Object lastSelectedAccession;
+    private String lastSelectedProteinSequence;
+    private String lastSelectedPeptideKey;
+    private Collection<PeptideObject> proteinPeptides;
+    private int proteinSequenceLength;
     private PDBMatch lastSelectedMatch;
 
     public Protein3DStructurePanel() {
@@ -147,7 +138,7 @@ public class Protein3DStructurePanel extends AbsoluteLayout {
             //time to active d3
             pdbChainsSelect.removeValueChangeListener(pdbChainsSelectlistener);
             pdbChainsSelect.removeAllItems();
-            LiteMolPanel.setVisible(pdbMatchesSelect.getValue() != null);//            
+            LiteMolPanel.setVisible(pdbMatchesSelect.getValue() != null);//
             lastSelectedMatch = pdbHandler.updatePdbInformation(pdbMatchesSelect.getValue().toString(), lastSelectedProteinSequence, lastSelectedAccession);
             pdbBlockMap.clear();
             lastSelectedChainCoverage = reCalculateChainRange(lastSelectedMatch.getChains(), proteinSequenceLength);
@@ -276,11 +267,6 @@ public class Protein3DStructurePanel extends AbsoluteLayout {
         return chainCoverage;
 
     }
-
-    /**
-     * The post translational modifications factory.
-     */
-    private final ModificationFactory PTM = ModificationFactory.getInstance();
 
     private void selectPeptides(String peptideKey) {
         lastSelectedPeptideKey = peptideKey;

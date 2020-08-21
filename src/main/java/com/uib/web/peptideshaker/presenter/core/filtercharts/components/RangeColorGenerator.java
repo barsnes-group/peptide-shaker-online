@@ -7,7 +7,8 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import java.awt.Color;
+
+import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -85,7 +86,7 @@ public class RangeColorGenerator {
         l.setSizeFull();
         scal.addComponent(l);
         double step = max / 50.0;
-        for (double x = max; x > 0;) {
+        for (double x = max; x > 0; ) {
             if (gradeScale) {
                 l = new Label("<center style= ' background-color: " + RangeColorGenerator.this.getGradeColor(x, max, 0) + ";'></center>", ContentMode.HTML);
                 x -= step;
@@ -144,9 +145,9 @@ public class RangeColorGenerator {
             return new Color(245, 245, 245);
         }
         double n = (value) / max;
-        double R1 = Math.max(lowerColor.getRed() * n + upperColor.getRed() * (1 - n),0);
-        double G1 = Math.max(lowerColor.getGreen() * n + upperColor.getGreen() * (1 - n),0);
-        double B1 = Math.max(lowerColor.getBlue() * n + upperColor.getBlue() * (1 - n),0);
+        double R1 = Math.max(lowerColor.getRed() * n + upperColor.getRed() * (1 - n), 0);
+        double G1 = Math.max(lowerColor.getGreen() * n + upperColor.getGreen() * (1 - n), 0);
+        double B1 = Math.max(lowerColor.getBlue() * n + upperColor.getBlue() * (1 - n), 0);
         return new Color((int) R1, (int) G1, (int) B1);
     }
 
@@ -154,8 +155,8 @@ public class RangeColorGenerator {
      * Get colour value from grade scale
      *
      * @param value the value to be converted into colour
-     * @param max1 max value
-     * @param min minimum value
+     * @param max1  max value
+     * @param min   minimum value
      * @return RGB colour as string
      */
     public String getGradeColor(double value, double max1, double min) {
@@ -186,7 +187,6 @@ public class RangeColorGenerator {
      * @param h Hue is specified as degrees in the range 0 - 360.
      * @param s Saturation is specified as a percentage in the range 1 - 100.
      * @param l Lumanance is specified as a percentage in the range 1 - 100.
-     *
      * @returns the RGB Colour object
      */
     private Color toRGB(float h, float s, float l) {
@@ -196,11 +196,10 @@ public class RangeColorGenerator {
     /**
      * Convert HSL values to a RGB Colour.
      *
-     * @param h Hue is specified as degrees in the range 0 - 360.
-     * @param s Saturation is specified as a percentage in the range 1 - 100.
-     * @param l Lumanance is specified as a percentage in the range 1 - 100.
+     * @param h     Hue is specified as degrees in the range 0 - 360.
+     * @param s     Saturation is specified as a percentage in the range 1 - 100.
+     * @param l     Lumanance is specified as a percentage in the range 1 - 100.
      * @param alpha the alpha value between 0 - 1
-     *
      * @returns the RGB Colour object
      */
     private Color toRGB(float h, float s, float l, float alpha) {

@@ -1,7 +1,6 @@
 package com.uib.web.peptideshaker.presenter.core;
 
 import com.vaadin.server.Resource;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Image;
 
@@ -30,6 +29,15 @@ public class StatusLabel extends Image {
     }
 
     /**
+     * Get label statues
+     *
+     * @return label statues
+     */
+    public int getStatus() {
+        return status;
+    }
+
+    /**
      * Update label statues
      *
      * @param status label statues
@@ -50,15 +58,6 @@ public class StatusLabel extends Image {
             this.status = 2;
         }
 
-    }
-
-    /**
-     * Get label statues
-     *
-     * @return label statues
-     */
-    public int getStatus() {
-        return status;
     }
 
 }

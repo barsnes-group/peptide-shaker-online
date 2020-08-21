@@ -1,17 +1,8 @@
 package com.uib.web.peptideshaker.model.core;
 
 import com.google.common.collect.Sets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
+
+import java.util.*;
 
 /**
  * This class responsible for calculating matrix for DivaMatrixLayoutChartFilter
@@ -68,7 +59,7 @@ public class ModificationMatrix {
      * calculate the matrix rows and columns
      *
      * @param data map of data rows as keys and columns as set
-     * @return  calculated matrix
+     * @return calculated matrix
      */
     private Map<String, Set<Comparable>> calculateMatrix(Map<String, Set<Comparable>> data) {
         //calculate matrix

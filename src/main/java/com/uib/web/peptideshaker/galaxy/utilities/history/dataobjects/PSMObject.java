@@ -17,6 +17,14 @@ public class PSMObject {
      */
     private final Set<String> proteins;
     /**
+     * Protein variable modifications list included in the PSM sequence.
+     */
+    private final Set<String> variableModifications;
+    /**
+     * Protein fixed modifications list included in the PSM sequence.
+     */
+    private final Set<String> fixedModifications;
+    /**
      * Standard PSM sequence.
      */
     private String sequence;
@@ -36,14 +44,6 @@ public class PSMObject {
      * PSM positions.
      */
     private String postions;
-    /**
-     * Protein variable modifications list included in the PSM sequence.
-     */
-    private final Set<String> variableModifications;
-    /**
-     * Protein fixed modifications list included in the PSM sequence.
-     */
-    private final Set<String> fixedModifications;
     /**
      * Spectrum file include the PSM.
      */
@@ -97,6 +97,43 @@ public class PSMObject {
      * all related peptides.
      */
     private double intensityPercentage = 0;
+    /**
+     * Localisation confidence.
+     */
+    private String localizationConfidence;
+    /**
+     * Probabilistic PTM (Post-translational modification) Score.
+     */
+    private String probabilisticPTMScore;
+    /**
+     * D score.
+     */
+    private String D_Score;
+    /**
+     * Confidence value.
+     */
+    private double confidence;
+    /**
+     * Validation value.
+     */
+    private String validation;
+    /**
+     * PSM index.
+     */
+    private int index;
+    /**
+     * PSM tool-tip text value.
+     */
+    private String tooltip;
+    private String proteinsAsString;
+    /**
+     * Constructor to initialise the main data structure.
+     */
+    public PSMObject() {
+        proteins = new LinkedHashSet<>();
+        variableModifications = new LinkedHashSet<>();
+        fixedModifications = new LinkedHashSet<>();
+    }
 
     /**
      * Get intensity as percentage
@@ -151,35 +188,6 @@ public class PSMObject {
     public void setIntensity(double intensity) {
         this.intensity = intensity;
     }
-    /**
-     * Localisation confidence.
-     */
-    private String localizationConfidence;
-    /**
-     * Probabilistic PTM (Post-translational modification) Score.
-     */
-    private String probabilisticPTMScore;
-    /**
-     * D score.
-     */
-    private String D_Score;
-    /**
-     * Confidence value.
-     */
-    private double confidence;
-    /**
-     * Validation value.
-     */
-    private String validation;
-    /**
-     * PSM index.
-     */
-    private int index;
-    /**
-     * PSM tool-tip text value.
-     */
-    private String tooltip;
-    private String proteinsAsString;
 
     public String getProteinsAsString() {
         return proteinsAsString;
@@ -187,15 +195,6 @@ public class PSMObject {
 
     public void setProteinsAsString(String proteinsAsString) {
         this.proteinsAsString = proteinsAsString;
-    }
-
-    /**
-     * Constructor to initialise the main data structure.
-     */
-    public PSMObject() {
-        proteins = new LinkedHashSet<>();
-        variableModifications = new LinkedHashSet<>();
-        fixedModifications = new LinkedHashSet<>();
     }
 
     /**

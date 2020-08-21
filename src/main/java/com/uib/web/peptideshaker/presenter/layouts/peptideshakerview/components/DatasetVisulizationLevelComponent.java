@@ -8,37 +8,23 @@ import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideSha
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.ProteinGroupObject;
 import com.uib.web.peptideshaker.model.core.AlphanumComparator;
 import com.uib.web.peptideshaker.model.core.ModificationMatrix;
-import com.uib.web.peptideshaker.presenter.core.CSFPRLabel;
-import com.uib.web.peptideshaker.presenter.core.ClosablePopup;
-import com.uib.web.peptideshaker.presenter.core.ColorLabel;
-import com.uib.web.peptideshaker.presenter.core.ColorLabelWithPopupTooltip;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.SelectionManager;
-import com.uib.web.peptideshaker.presenter.core.SearchableTable;
-import com.uib.web.peptideshaker.presenter.core.SparkLineLabel;
-import com.uib.web.peptideshaker.presenter.core.TableColumnHeader;
-import com.uib.web.peptideshaker.presenter.core.ValidationLabel;
+import com.uib.web.peptideshaker.presenter.core.*;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.FiltersContainer;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.RegistrableFilter;
+import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.SelectionManager;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.VaadinSession;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Link;
-import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.Table;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import java.awt.Color;
+
+import java.awt.*;
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class represents filtered Table with graph view
@@ -51,18 +37,17 @@ public class DatasetVisulizationLevelComponent extends AbsoluteLayout implements
     private final FiltersContainer datasetFiltersContainer;
     private final Map<String, Integer> inferenceMap;
     private final LayoutEvents.LayoutClickListener selectionListener;
-    private PeptideShakerVisualizationDataset peptideShakerVisualizationDataset;
-    private Map<String, ProteinGroupObject> proteinTableMap;
-    private double intensityColumnWidth = 120.0;
     private final Map<Integer, Component> filterComponentsMap;
-    private int currentFilterView = 0;
     private final DecimalFormat df = new DecimalFormat("#.##");
     private final DecimalFormat df1 = new DecimalFormat("0.00E00");// new DecimalFormat("#.##");
-
     /**
      * The post translational modifications factory.
      */
     private final ModificationFactory PTM = ModificationFactory.getInstance();
+    private PeptideShakerVisualizationDataset peptideShakerVisualizationDataset;
+    private Map<String, ProteinGroupObject> proteinTableMap;
+    private double intensityColumnWidth = 120.0;
+    private int currentFilterView = 0;
 
     public DatasetVisulizationLevelComponent(SelectionManager Selection_Manager) {
         DatasetVisulizationLevelComponent.this.setSizeFull();
@@ -133,7 +118,7 @@ public class DatasetVisulizationLevelComponent extends AbsoluteLayout implements
                 }
                 proteinTableContainer.suspendColumnResizeListener();
                 mainTable.setColumnWidth("index", Math.max(50, (int) (50 * corrector)));
-               
+
                 mainTable.setColumnWidth("proteinInference", Math.max(37, (int) (37 * corrector)));
                 mainTable.setColumnWidth("Accession", Math.max(60, (int) (60 * corrector)));
                 mainTable.setColumnWidth("csf", Math.max(50, (int) (50 * corrector)));
@@ -146,10 +131,10 @@ public class DatasetVisulizationLevelComponent extends AbsoluteLayout implements
                 mainTable.setColumnWidth("chromosom", Math.max(50, (int) (50 * corrector)));
                 mainTable.setColumnWidth("validation", Math.max(32, (int) (32 * corrector)));
                 mainTable.setColumnWidth("confidence", Math.max(90, (int) (90 * corrector)));
-                mainTable.setColumnWidth("chromosom", Math.max(37, (int) (37 * corrector))); 
-                
-                mainTable.setColumnWidth("proteinIntensity", Math.max((int)intensityColumnWidth, (int) (intensityColumnWidth * corrector)));
-                int nameColWidth = Math.max(120, lastWidth - ((int) ((664 + intensityColumnWidth) * corrector))+16);
+                mainTable.setColumnWidth("chromosom", Math.max(37, (int) (37 * corrector)));
+
+                mainTable.setColumnWidth("proteinIntensity", Math.max((int) intensityColumnWidth, (int) (intensityColumnWidth * corrector)));
+                int nameColWidth = Math.max(120, lastWidth - ((int) ((664 + intensityColumnWidth) * corrector)) + 16);
                 mainTable.setColumnWidth("Name", nameColWidth);
                 proteinTableContainer.activateColumnResizeListener();
             }
@@ -325,7 +310,7 @@ public class DatasetVisulizationLevelComponent extends AbsoluteLayout implements
                 ModificationColorMap.put(mod, Color.LIGHT_GRAY);
             }
         });
-        datasetFiltersContainer.updateFiltersData(peptideShakerVisualizationDataset.isToShareDataset()||peptideShakerVisualizationDataset.isUploadedProject(),modificationMatrix, ModificationColorMap, peptideShakerVisualizationDataset.getChromosomeMap(), peptideShakerVisualizationDataset.getProteinInferenceMap(), peptideShakerVisualizationDataset.getProteinValidationMap(), peptideShakerVisualizationDataset.getProteinPeptidesNumberMap(), peptideShakerVisualizationDataset.getProteinPSMNumberMap(), peptideShakerVisualizationDataset.getProteinCoverageMap(), peptideShakerVisualizationDataset.getProteinIntensityAllPeptideMap(), peptideShakerVisualizationDataset.getProteinIntensityUniquePeptideMap());
+        datasetFiltersContainer.updateFiltersData(peptideShakerVisualizationDataset.isToShareDataset() || peptideShakerVisualizationDataset.isUploadedProject(), modificationMatrix, ModificationColorMap, peptideShakerVisualizationDataset.getChromosomeMap(), peptideShakerVisualizationDataset.getProteinInferenceMap(), peptideShakerVisualizationDataset.getProteinValidationMap(), peptideShakerVisualizationDataset.getProteinPeptidesNumberMap(), peptideShakerVisualizationDataset.getProteinPSMNumberMap(), peptideShakerVisualizationDataset.getProteinCoverageMap(), peptideShakerVisualizationDataset.getProteinIntensityAllPeptideMap(), peptideShakerVisualizationDataset.getProteinIntensityUniquePeptideMap());
 
         if (peptideShakerVisualizationDataset.isQuantDataset()) {
             OptionGroup quantOptions = new OptionGroup();
@@ -337,7 +322,7 @@ public class DatasetVisulizationLevelComponent extends AbsoluteLayout implements
             quantOptions.addItem("All Peptides");
             quantOptions.addItem("Unique Peptides");
             quantOptions.setValue("All Peptides");
-           
+
             quantOptions.addValueChangeListener((Property.ValueChangeEvent event) -> {
                 updateQuantValues((quantOptions.getValue().toString().equals("All Peptides")));
             });
@@ -468,7 +453,6 @@ public class DatasetVisulizationLevelComponent extends AbsoluteLayout implements
      * Returns the color object corresponding to the given rgb representation.
      *
      * @param colorRGB the color in rgb representation
-     *
      * @return the color object
      */
     private Color getColor(int colorRGB) {

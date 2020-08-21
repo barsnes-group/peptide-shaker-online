@@ -14,11 +14,11 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- *
  * @author y-mok
  */
 public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
@@ -51,7 +51,7 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
         container.addComponent(title, "left:10px;top:10px");
         VerticalLayout subContainer = new VerticalLayout();
         subContainer.setSizeFull();
-        subContainer.setStyleName("subcontainer");       
+        subContainer.setStyleName("subcontainer");
         subContainer.addStyleName("paddingvertical5");
         container.addComponent(subContainer, "left:10px;top:45px;right:10px;bottom:40px");
         MSAmandaAdvancedSettingsPanel.this.setContent(container);
@@ -167,7 +167,7 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
         outputFormat.updateData(values);
 
         String helpText = "<a href='https://ms.imp.ac.at/?goto=msamanda' target='_blank'>";
-        Help help = new Help(helpText, "Click to open the MS Amanda help page.",100,20);
+        Help help = new Help(helpText, "Click to open the MS Amanda help page.", 100, 20);
         container.addComponent(help, "left:10px;bottom:10px;");
 
         Button okBtn = new Button("OK");
@@ -179,12 +179,12 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
                 setPopupVisible(false);
             }
         });
-       
+
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);
         cancelBtn.setHeight(20, Unit.PIXELS);
-        container.addComponent(okBtn, "bottom:10px;right:96px"); 
+        container.addComponent(okBtn, "bottom:10px;right:96px");
         container.addComponent(cancelBtn, "bottom:10px;right:10px");
         cancelBtn.addClickListener((Button.ClickEvent event) -> {
             MSAmandaAdvancedSettingsPanel.this.setPopupVisible(false);
@@ -194,7 +194,7 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
 
     public void updateGUI(IdentificationParameters webSearchParameters) {
         this.webSearchParameters = webSearchParameters;
-        MsAmandaParameters oldMsAmandaParameters = (MsAmandaParameters)  webSearchParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex());
+        MsAmandaParameters oldMsAmandaParameters = (MsAmandaParameters) webSearchParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex());
 
         minPeptideLength.setSelectedValue(oldMsAmandaParameters.getMinPeptideLength());
 
@@ -215,11 +215,11 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
         } else {
             performDeisotoping.setSelected("No");
         }
-        maxPtmDublicatesPerPeptide.setSelected(oldMsAmandaParameters.getMaxModifications()+"");
-        maxVariablePTMsPerPeptide.setSelected(oldMsAmandaParameters.getMaxVariableModifications()+"");
-        maxPotintialPtmSitesPerPeptide.setSelected(oldMsAmandaParameters.getMaxModificationSites()+"");
-        maxNeutralLossesPerPeptide.setSelected(oldMsAmandaParameters.getMaxNeutralLosses()+"");
-        maxPtmNeutralLossesPerPeptide.setSelected(oldMsAmandaParameters.getMaxNeutralLossesPerModification()+"");
+        maxPtmDublicatesPerPeptide.setSelected(oldMsAmandaParameters.getMaxModifications() + "");
+        maxVariablePTMsPerPeptide.setSelected(oldMsAmandaParameters.getMaxVariableModifications() + "");
+        maxPotintialPtmSitesPerPeptide.setSelected(oldMsAmandaParameters.getMaxModificationSites() + "");
+        maxNeutralLossesPerPeptide.setSelected(oldMsAmandaParameters.getMaxNeutralLosses() + "");
+        maxPtmNeutralLossesPerPeptide.setSelected(oldMsAmandaParameters.getMaxNeutralLossesPerModification() + "");
         minPeptideLength.setSelectedValue(oldMsAmandaParameters.getMinPeptideLength());
         maxProteinsLoadedIntoMemory.setSelectedValue(oldMsAmandaParameters.getMaxLoadedProteins());
         maxSpectraLoadedIntoMemory.setSelectedValue(oldMsAmandaParameters.getMaxLoadedSpectra());

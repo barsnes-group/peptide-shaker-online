@@ -1,11 +1,7 @@
 package com.uib.web.peptideshaker.presenter.pscomponents.eu.isas.peptideshaker.parameters;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class contains score about the PTM localization scoring.
@@ -14,10 +10,6 @@ import java.util.Set;
  */
 public class PtmScoring implements Serializable {
 
-    /**
-     * Serial version UID for post-serialization compatibility.
-     */
-    static final long serialVersionUID = -3357368272501542941L;
     /**
      * Index indicating that the modification was not found.
      */
@@ -39,6 +31,15 @@ public class PtmScoring implements Serializable {
      */
     public static final int VERY_CONFIDENT = 3;
     /**
+     * The separator used to separate locations in the modification location
+     * key.
+     */
+    public static final String separator = "|";
+    /**
+     * Serial version UID for post-serialization compatibility.
+     */
+    static final long serialVersionUID = -3357368272501542941L;
+    /**
      * Amino acid specific delta score. 1 is the first amino acid.
      */
     private HashMap<Integer, Double> deltaScoresAtAA;
@@ -51,11 +52,6 @@ public class PtmScoring implements Serializable {
      */
     private String ptmName;
     /**
-     * The separator used to separate locations in the modification location
-     * key.
-     */
-    public static final String separator = "|";
-    /**
      * The retained PTM site assignment.
      */
     private HashMap<Integer, Integer> ptmLocationAtAA;
@@ -67,6 +63,44 @@ public class PtmScoring implements Serializable {
      */
     public PtmScoring(String ptmName) {
         this.ptmName = ptmName;
+    }
+
+    /**
+     * Convenience method returning all confidence levels as string.
+     *
+     * @return an array with all confidence levels as string
+     */
+    public static String[] getPossibleConfidenceLevels() {
+        String[] result = new String[5];
+        result[0] = "Not Found";
+        result[1] = "Random";
+        result[2] = "Doubtful";
+        result[3] = "Confident";
+        result[4] = "Very Confident";
+        return result;
+    }
+
+    /**
+     * Convenience method returning the given confidence level as a string.
+     *
+     * @param index the confidence level
+     * @return the corresponding string
+     */
+    public static String getConfidenceLevel(int index) {
+        switch (index) {
+            case -1:
+                return "Not Found";
+            case 0:
+                return "Random";
+            case 1:
+                return "Doubtful";
+            case 2:
+                return "Confident";
+            case 3:
+                return "Very Confident";
+            default:
+                return "";
+        }
     }
 
     /**
@@ -95,7 +129,7 @@ public class PtmScoring implements Serializable {
     /**
      * Sets the delta score at a given site. First amino acid is 1.
      *
-     * @param site the modification site
+     * @param site  the modification site
      * @param score the delta score
      */
     public void setDeltaScore(int site, double score) {
@@ -126,7 +160,7 @@ public class PtmScoring implements Serializable {
     /**
      * Sets the probabilistic score at a given site. First amino acid is 1.
      *
-     * @param site the modification site
+     * @param site  the modification site
      * @param score the delta score
      */
     public void setProbabilisticScore(int site, double score) {
@@ -280,7 +314,7 @@ public class PtmScoring implements Serializable {
      * Sets the confidence level of a modification site. 1 is the first amino
      * acid.
      *
-     * @param site the modification site
+     * @param site            the modification site
      * @param confidenceLevel the confidence level
      */
     public void setSiteConfidence(int site, int confidenceLevel) {
@@ -329,7 +363,6 @@ public class PtmScoring implements Serializable {
      * Returns the confidence of the PTM localization.
      *
      * @param site the modification site
-     *
      * @return the confidence of the localization as indexed by the static
      * fields
      */
@@ -392,7 +425,6 @@ public class PtmScoring implements Serializable {
      * fields).
      *
      * @param confidenceLevel the confidence level
-     *
      * @return the PTM locations at the given confidence level
      */
     public ArrayList<Integer> getPtmLocations(int confidenceLevel) {
@@ -405,43 +437,5 @@ public class PtmScoring implements Serializable {
             }
         }
         return result;
-    }
-
-    /**
-     * Convenience method returning all confidence levels as string.
-     *
-     * @return an array with all confidence levels as string
-     */
-    public static String[] getPossibleConfidenceLevels() {
-        String[] result = new String[5];
-        result[0] = "Not Found";
-        result[1] = "Random";
-        result[2] = "Doubtful";
-        result[3] = "Confident";
-        result[4] = "Very Confident";
-        return result;
-    }
-
-    /**
-     * Convenience method returning the given confidence level as a string.
-     *
-     * @param index the confidence level
-     * @return the corresponding string
-     */
-    public static String getConfidenceLevel(int index) {
-        switch (index) {
-            case -1:
-                return "Not Found";
-            case 0:
-                return "Random";
-            case 1:
-                return "Doubtful";
-            case 2:
-                return "Confident";
-            case 3:
-                return "Very Confident";
-            default:
-                return "";
-        }
     }
 }

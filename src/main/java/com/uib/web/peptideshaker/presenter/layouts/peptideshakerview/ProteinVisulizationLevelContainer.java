@@ -3,29 +3,19 @@ package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.ProteinGroupObject;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.ProteinCoverageTable;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.Protein3DStructurePanel;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.GraphsContainerComponent;
 import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.RegistrableFilter;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.components.RangeColorGenerator;
+import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.GraphsContainerComponent;
+import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.Protein3DStructurePanel;
+import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.ProteinCoverageTable;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
 
 /**
  * This class represents the layout that contains selected proteins overview
@@ -42,12 +32,11 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
     private final PresenterSubViewSideBtn proteinoverviewBtn;
     private final ProteinCoverageTable proteinCoverageContainer;
     private final Protein3DStructurePanel protein3DStructurePanel;
+    private final Map<Integer, Component> filterComponentsMap;
     private Map<String, PeptideObject> proteinPeptides;
     private RangeColorGenerator colorScale;
     private boolean specificPeptideSelection;
     private boolean initialized3D = false;
-
-    private final Map<Integer, Component> filterComponentsMap;
     private int currentFilterView = 0;
 
     /**
@@ -131,7 +120,7 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
                     if (protein3DStructurePanel.getLastSelectedAccession() != null && !protein3DStructurePanel.getLastSelectedAccession().toString().equalsIgnoreCase(protein.getAccession())) {
                         initialized3D = false;
                     }
-                    protein3DStructurePanel.updatePanel(protein.getAccession(), protein.getSequence(), proteinPeptides.values(),proteinoverviewBtn.getStyleName().contains("selectedbiglbtn"));
+                    protein3DStructurePanel.updatePanel(protein.getAccession(), protein.getSequence(), proteinPeptides.values(), proteinoverviewBtn.getStyleName().contains("selectedbiglbtn"));
 
                 } else {
                     protein3DStructurePanel.reset();

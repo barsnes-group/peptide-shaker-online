@@ -7,7 +7,8 @@ import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import java.awt.Color;
+
+import java.awt.*;
 
 /**
  * This class represents selectable node that used mainly in
@@ -17,51 +18,24 @@ import java.awt.Color;
  */
 public abstract class SelectableNode extends AbsoluteLayout implements LayoutEvents.LayoutClickListener {
 
-    private boolean selecatble;
     private final boolean disables;
     private final VerticalLayout upperLine;
     private final VerticalLayout lowerLine;
     private final String nodeId;
-    private boolean selected;
     private final int columnIndex;
     private final VerticalLayout nodeContainer;
     private final Color nodeColor;
     private final Label nodeCircle;
-
-    /**
-     * Get node id
-     *
-     * @return id
-     */
-    public String getNodeId() {
-        return nodeId;
-    }
-
-    /**
-     * Get node colour
-     *
-     * @return AWT colour
-     */
-    public Color getNodeColor() {
-        return nodeColor;
-    }
-
-    /**
-     * Check if node is disabled
-     *
-     * @return disabled node
-     */
-    public boolean isDisables() {
-        return disables;
-    }
+    private boolean selecatble;
+    private boolean selected;
 
     /**
      * Initialise selectable node
      *
-     * @param nodeId id
+     * @param nodeId      id
      * @param columnIndex represented column
-     * @param disables disabled node
-     * @param nodeColor node colour-AWT
+     * @param disables    disabled node
+     * @param nodeColor   node colour-AWT
      */
     public SelectableNode(String nodeId, int columnIndex, boolean disables, Color nodeColor) {
         this.nodeId = nodeId;
@@ -103,6 +77,33 @@ public abstract class SelectableNode extends AbsoluteLayout implements LayoutEve
         lineContainers.addComponent(lowerLine);
         lineContainers.setComponentAlignment(lowerLine, Alignment.TOP_CENTER);
 
+    }
+
+    /**
+     * Get node id
+     *
+     * @return id
+     */
+    public String getNodeId() {
+        return nodeId;
+    }
+
+    /**
+     * Get node colour
+     *
+     * @return AWT colour
+     */
+    public Color getNodeColor() {
+        return nodeColor;
+    }
+
+    /**
+     * Check if node is disabled
+     *
+     * @return disabled node
+     */
+    public boolean isDisables() {
+        return disables;
     }
 
     /**

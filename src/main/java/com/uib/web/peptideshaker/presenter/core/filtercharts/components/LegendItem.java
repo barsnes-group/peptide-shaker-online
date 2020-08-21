@@ -3,7 +3,8 @@ package com.uib.web.peptideshaker.presenter.core.filtercharts.components;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
-import java.awt.Color;
+
+import java.awt.*;
 
 /**
  * This class represents legend item can be use with any of the charts
@@ -15,7 +16,7 @@ public class LegendItem extends Label {
     /**
      * Initialise legend item
      *
-     * @param text legend label and tool-tip
+     * @param text  legend label and tool-tip
      * @param color legend colour
      */
     public LegendItem(String text, Color color) {

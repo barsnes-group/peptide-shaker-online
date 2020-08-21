@@ -10,6 +10,7 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PopupView;
+
 import java.text.DecimalFormat;
 
 /**
@@ -21,8 +22,10 @@ public class ColorLabelWithPopupTooltip extends AbsoluteLayout implements Compar
 
     private final Label colorLabel;
     private final Label description;
-    private double value;
     private final DecimalFormat df1 = new DecimalFormat("0.00E00");// new DecimalFormat("#.##");
+    private double value;
+    private Label caption;
+    private AbsoluteLayout sparkContainer;
 
     public ColorLabelWithPopupTooltip(double value, String color) {
         this.value = value;
@@ -53,21 +56,6 @@ public class ColorLabelWithPopupTooltip extends AbsoluteLayout implements Compar
         });
 
     }
-
-    public void updateValues(double value, String color) {
-        this.value = value;
-        description.setValue("Intensity: " + value);
-        colorLabel.setValue("<div style='background:" + color + ";'>");
-
-    }
-
-    @Override
-    public int compareTo(ColorLabelWithPopupTooltip t) {
-        return Double.valueOf(this.value).compareTo(t.value);
-    }
-
-    private Label caption;
-    private AbsoluteLayout sparkContainer;
 
     public ColorLabelWithPopupTooltip(double value, String color, double percentage) {
         this.value = value;
@@ -110,6 +98,18 @@ public class ColorLabelWithPopupTooltip extends AbsoluteLayout implements Compar
 
     }
 
+    public void updateValues(double value, String color) {
+        this.value = value;
+        description.setValue("Intensity: " + value);
+        colorLabel.setValue("<div style='background:" + color + ";'>");
+
+    }
+
+    @Override
+    public int compareTo(ColorLabelWithPopupTooltip t) {
+        return Double.valueOf(this.value).compareTo(t.value);
+    }
+
     public void updateValues(double value, String color, double percentage) {
         this.value = value;
         caption.setValue(df1.format(value));
@@ -126,8 +126,8 @@ public class ColorLabelWithPopupTooltip extends AbsoluteLayout implements Compar
      * be any double value.
      *
      * @param linearValue the value to be converted to log scale
-     * @param max The upper limit number for the input numbers
-     * @param lowerLimit the lower limit for the input numbers
+     * @param max         The upper limit number for the input numbers
+     * @param lowerLimit  the lower limit for the input numbers
      * @return the value in log scale
      */
     private double scaleValues(double linearValue, double max, double lowerLimit) {
@@ -145,10 +145,10 @@ public class ColorLabelWithPopupTooltip extends AbsoluteLayout implements Compar
 //        logValue = (logValue * 2 / logMax) + lowerLimit;
 //        return Math.min(logValue, max);
     }
-    
-      @Override
+
+    @Override
     public String toString() {
-        return this.value+"";
+        return this.value + "";
     }
 
 }

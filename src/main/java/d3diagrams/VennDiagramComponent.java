@@ -1,8 +1,8 @@
 package d3diagrams;
 
-import com.vaadin.annotations.JavaScript;
 import com.vaadin.ui.AbstractJavaScriptComponent;
 import elemental.json.JsonArray;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -10,6 +10,8 @@ import java.util.ArrayList;
 public abstract class VennDiagramComponent extends AbstractJavaScriptComponent {
 
 
+    ArrayList<ValueChangeListener> listeners
+            = new ArrayList<>();
 
     public VennDiagramComponent() {
         VennDiagramComponent.this.setWidth(100, Unit.PERCENTAGE);
@@ -31,21 +33,13 @@ public abstract class VennDiagramComponent extends AbstractJavaScriptComponent {
 
     public abstract void SelectionPerformed(String value);
 
-    public interface ValueChangeListener extends Serializable {
-
-        void valueChange();
-    }
-    ArrayList<ValueChangeListener> listeners
-            = new ArrayList<>();
-
     public void addValueChangeListener(
             ValueChangeListener listener) {
         listeners.add(listener);
     }
 
-
-     public void setValue(String value,int w,int h) {
-        getState().setValue("serverRequest:data;" + value + ";" + + Math.max(100, w) + "," + Math.max(100, h));
+    public void setValue(String value, int w, int h) {
+        getState().setValue("serverRequest:data;" + value + ";" + +Math.max(100, w) + "," + Math.max(100, h));
     }
 
     public String getValue() {
@@ -53,13 +47,18 @@ public abstract class VennDiagramComponent extends AbstractJavaScriptComponent {
     }
 
     public void setSize(int width, int height) {
-        getState().setValue("serverRequest:sizeonly;" + Math.max(100,width) + ";" + Math.max(100,height));
+        getState().setValue("serverRequest:sizeonly;" + Math.max(100, width) + ";" + Math.max(100, height));
 
     }
 
     @Override
     protected VennDiagramComponentState getState() {
         return (VennDiagramComponentState) super.getState();
+    }
+
+    public interface ValueChangeListener extends Serializable {
+
+        void valueChange();
     }
 
 }

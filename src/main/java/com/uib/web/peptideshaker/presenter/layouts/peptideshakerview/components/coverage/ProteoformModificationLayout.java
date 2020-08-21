@@ -5,7 +5,8 @@ import com.vaadin.event.LayoutEvents;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import java.awt.Color;
+
+import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -56,4 +57,4 @@ public abstract class ProteoformModificationLayout extends VerticalLayout implem
         return null;
     }
 
-    }
+}

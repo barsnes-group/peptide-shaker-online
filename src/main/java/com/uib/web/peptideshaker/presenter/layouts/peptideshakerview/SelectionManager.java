@@ -7,13 +7,8 @@ import com.uib.web.peptideshaker.model.core.ModificationMatrix;
 import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.RegistrableFilter;
 import com.vaadin.ui.Component;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+
+import java.util.*;
 
 /**
  * This class represents peptideShaker presenter selection manager
@@ -26,36 +21,48 @@ public class SelectionManager {
     private final Map<String, RegistrableFilter> registeredDatasetFiltersMap;
     private final Map<String, RegistrableFilter> registeredProteinComponentsMap;
     private final Set<Comparable> fullProteinSet;
-    private FilteredProteins filteredProteinsSet;
     private final List<String> datasetFilterOrderList;
-    private String selectedProteinId;
-    private PeptideObject selectedPeptide;
-    private boolean singleProteinsFilter = false;
-    private ModificationMatrix modificationMatrix;
-    private Map<Integer, Set<Comparable>> chromosomeMap;
-
     private final Map<String, Set<Comparable>> selectedModificationsMap;
     private final Map<Integer, Set<Comparable>> selectedChromosomeMap;
-    private Map<String, Set<Comparable>> piMap;
     private final Map<String, Set<Comparable>> selectedPIMap;
-
-    private Map<String, Set<Comparable>> proteinValidationMap;
     private final Map<String, Set<Comparable>> selectedProteinValidationMap;
-
     private final Map<String, Set<Comparable>> registeredDatasetAppliedFiltersMap;
-
-    private TreeMap<Comparable, Set<Comparable>> proteinPeptidesNumberMap;
-    private TreeMap<Comparable, Set<Comparable>> proteinPSMNumberMap;
-    private TreeMap<Comparable, Set<Comparable>> proteinCoverageMap;
-
-    private TreeMap<Comparable, Set<Comparable>> proteinIntinsityAllPepMap;
-    private TreeMap<Comparable, Set<Comparable>> proteinIntinsityUniquePepMap;
-    
     private final TreeMap<Comparable, Set<Comparable>> selectedProteinPeptidesNumberMap;
     private final TreeMap<Comparable, Set<Comparable>> selectedProteinPSMNumberMap;
     private final TreeMap<Comparable, Set<Comparable>> selectedProteinCoverageMap;
     private final TreeMap<Comparable, Set<Comparable>> selectedProteinInteinsityAllPepMap;
     private final TreeMap<Comparable, Set<Comparable>> selectedProteinInteinsityUniquePepMap;
+    private FilteredProteins filteredProteinsSet;
+    private String selectedProteinId;
+    private PeptideObject selectedPeptide;
+    private boolean singleProteinsFilter = false;
+    private ModificationMatrix modificationMatrix;
+    private Map<Integer, Set<Comparable>> chromosomeMap;
+    private Map<String, Set<Comparable>> piMap;
+    private Map<String, Set<Comparable>> proteinValidationMap;
+    private TreeMap<Comparable, Set<Comparable>> proteinPeptidesNumberMap;
+    private TreeMap<Comparable, Set<Comparable>> proteinPSMNumberMap;
+    private TreeMap<Comparable, Set<Comparable>> proteinCoverageMap;
+    private TreeMap<Comparable, Set<Comparable>> proteinIntinsityAllPepMap;
+    private TreeMap<Comparable, Set<Comparable>> proteinIntinsityUniquePepMap;
+
+    public SelectionManager() {
+        this.btnsLayoutMap = new LinkedHashMap<>();
+        this.registeredDatasetFiltersMap = new LinkedHashMap<>();
+        this.registeredProteinComponentsMap = new LinkedHashMap<>();
+        this.selectedModificationsMap = new LinkedHashMap<>();
+        this.selectedChromosomeMap = new LinkedHashMap<>();
+        this.selectedPIMap = new LinkedHashMap<>();
+        this.selectedProteinValidationMap = new LinkedHashMap<>();
+        this.fullProteinSet = new LinkedHashSet<>();
+        this.registeredDatasetAppliedFiltersMap = new LinkedHashMap<>();
+        this.selectedProteinCoverageMap = new TreeMap<>();
+        this.selectedProteinPeptidesNumberMap = new TreeMap<>();
+        this.selectedProteinPSMNumberMap = new TreeMap<>();
+        this.selectedProteinInteinsityAllPepMap = new TreeMap<>();
+        this.selectedProteinInteinsityUniquePepMap = new TreeMap<>();
+        this.datasetFilterOrderList = new ArrayList<>();
+    }
 
     public String getSelectedProteinId() {
         return selectedProteinId;
@@ -63,21 +70,6 @@ public class SelectionManager {
 
     public Set<Comparable> getFullProteinSet() {
         return fullProteinSet;
-    }
-
-    public void setProteinPeptidesNumberMap(TreeMap<Comparable, Set<Comparable>> proteinPeptidesNumberMap) {
-        this.selectedProteinPeptidesNumberMap.clear();
-        this.proteinPeptidesNumberMap = proteinPeptidesNumberMap;
-    }
-
-    public void setProteinPSMNumberMap(TreeMap<Comparable, Set<Comparable>> proteinPSMNumberMap) {
-        this.selectedProteinPSMNumberMap.clear();
-        this.proteinPSMNumberMap = proteinPSMNumberMap;
-    }
-
-    public void setProteinCoverageMap(TreeMap<Comparable, Set<Comparable>> proteinCoverageMap) {
-        this.selectedProteinCoverageMap.clear();
-        this.proteinCoverageMap = proteinCoverageMap;
     }
 
     public TreeMap<Comparable, Set<Comparable>> getProteinPeptidesNumberMap() {
@@ -88,12 +80,22 @@ public class SelectionManager {
         }
     }
 
+    public void setProteinPeptidesNumberMap(TreeMap<Comparable, Set<Comparable>> proteinPeptidesNumberMap) {
+        this.selectedProteinPeptidesNumberMap.clear();
+        this.proteinPeptidesNumberMap = proteinPeptidesNumberMap;
+    }
+
     public TreeMap<Comparable, Set<Comparable>> getProteinPSMNumberMap() {
         if (selectedProteinPSMNumberMap.isEmpty()) {
             return selectedProteinPSMNumberMap;
         } else {
             return proteinPSMNumberMap;
         }
+    }
+
+    public void setProteinPSMNumberMap(TreeMap<Comparable, Set<Comparable>> proteinPSMNumberMap) {
+        this.selectedProteinPSMNumberMap.clear();
+        this.proteinPSMNumberMap = proteinPSMNumberMap;
     }
 
     public TreeMap<Comparable, Set<Comparable>> getProteinCoverageMap() {
@@ -104,14 +106,9 @@ public class SelectionManager {
         }
     }
 
-    public void setChromosomeMap(Map<Integer, Set<Comparable>> chromosomeMap) {
-        this.selectedChromosomeMap.clear();
-        this.chromosomeMap = chromosomeMap;
-    }
-
-    public void setPiMap(Map<String, Set<Comparable>> piMap) {
-        this.selectedPIMap.clear();
-        this.piMap = piMap;
+    public void setProteinCoverageMap(TreeMap<Comparable, Set<Comparable>> proteinCoverageMap) {
+        this.selectedProteinCoverageMap.clear();
+        this.proteinCoverageMap = proteinCoverageMap;
     }
 
     public Map<String, Set<Comparable>> getPiMap() {
@@ -120,6 +117,11 @@ public class SelectionManager {
         } else {
             return selectedPIMap;
         }
+    }
+
+    public void setPiMap(Map<String, Set<Comparable>> piMap) {
+        this.selectedPIMap.clear();
+        this.piMap = piMap;
     }
 
     public Map<String, Set<Comparable>> getProteinValidationMap() {
@@ -141,6 +143,11 @@ public class SelectionManager {
         } else {
             return selectedChromosomeMap;
         }
+    }
+
+    public void setChromosomeMap(Map<Integer, Set<Comparable>> chromosomeMap) {
+        this.selectedChromosomeMap.clear();
+        this.chromosomeMap = chromosomeMap;
     }
 
     public void reset() {
@@ -176,24 +183,6 @@ public class SelectionManager {
         modificationMatrix.getCalculatedColumns().values().forEach((set) -> {
             fullProteinSet.addAll(set);
         });
-    }
-
-    public SelectionManager() {
-        this.btnsLayoutMap = new LinkedHashMap<>();
-        this.registeredDatasetFiltersMap = new LinkedHashMap<>();
-        this.registeredProteinComponentsMap = new LinkedHashMap<>();
-        this.selectedModificationsMap = new LinkedHashMap<>();
-        this.selectedChromosomeMap = new LinkedHashMap<>();
-        this.selectedPIMap = new LinkedHashMap<>();
-        this.selectedProteinValidationMap = new LinkedHashMap<>();
-        this.fullProteinSet = new LinkedHashSet<>();
-        this.registeredDatasetAppliedFiltersMap = new LinkedHashMap<>();
-        this.selectedProteinCoverageMap = new TreeMap<>();
-        this.selectedProteinPeptidesNumberMap = new TreeMap<>();
-        this.selectedProteinPSMNumberMap = new TreeMap<>();
-        this.selectedProteinInteinsityAllPepMap = new TreeMap<>();
-        this.selectedProteinInteinsityUniquePepMap = new TreeMap<>();
-        this.datasetFilterOrderList = new ArrayList<>();
     }
 
     public void addBtnLayout(PresenterSubViewSideBtn btn, Component layout) {
@@ -450,7 +439,7 @@ public class SelectionManager {
     /**
      * Loop responsible for updating all registered listeners
      *
-     * @param type selection type
+     * @param type     selection type
      * @param filterId filter that create the event
      */
     private void SelectionChanged(String selectionType, String actionFilterId) {
@@ -479,7 +468,7 @@ public class SelectionManager {
 
     }
 
-//    public Set<Comparable> getFilteredProteinsSet() {
+    //    public Set<Comparable> getFilteredProteinsSet() {
 //        if (filteredProteinsSet == null) {
 //            System.out.println("there is a null selected proted");
 //        }

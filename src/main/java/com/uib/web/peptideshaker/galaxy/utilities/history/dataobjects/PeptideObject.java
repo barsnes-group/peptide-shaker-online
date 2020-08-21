@@ -4,6 +4,7 @@ import com.compomics.util.experiment.biology.modifications.Modification;
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.biology.proteins.Peptide;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -17,6 +18,19 @@ import java.util.Set;
  */
 public class PeptideObject extends Peptide {
 
+    /**
+     * Set of main protein accessions for the peptide.
+     */
+    private final Set<String> proteinsSet;
+    /**
+     * Set of main protein group accessions for the peptide.
+     */
+    private final Set<String> proteinGroupsSet;
+    /**
+     * Instance of the PTM factory that is loading PTM from an XML file and
+     * provide them on demand as standard class.
+     */
+    private final ModificationFactory ptmFactory = ModificationFactory.getInstance();
     /**
      * Peptide index from the exported PeptideShaker file.
      */
@@ -86,26 +100,13 @@ public class PeptideObject extends Peptide {
      */
     private String tooltip;
     /**
-     * Set of main protein accessions for the peptide.
-     */
-    private final Set<String> proteinsSet;
-    /**
      * UniProt protein group key.
      */
     private String proteinGroupKey;
     /**
-     * Set of main protein group accessions for the peptide.
-     */
-    private final Set<String> proteinGroupsSet;
-    /**
      * Number of validated unique peptides to protein group.
      */
     private int validatedUniqueToGroupNumber;
-    /**
-     * Instance of the PTM factory that is loading PTM from an XML file and
-     * provide them on demand as standard class.
-     */
-    private final ModificationFactory ptmFactory = ModificationFactory.getInstance();
     /**
      * The modifications carried by the peptide.
      */
@@ -117,7 +118,7 @@ public class PeptideObject extends Peptide {
     /**
      * Intensity hash-code colour of the quantification.
      */
-    private String intensityColor= "rgb(255,255,255)";
+    private String intensityColor = "rgb(255,255,255)";
     /**
      * Intensity hash-code colour of the psmNumber.
      */
@@ -127,6 +128,15 @@ public class PeptideObject extends Peptide {
      */
     private boolean invisibleOn3d;
     private String variableModificationsAsString = "";
+
+    /**
+     * Constructor to initialise the main data structure.
+     */
+    public PeptideObject() {
+        this.proteinsSet = new LinkedHashSet<>();
+        this.proteinGroupsSet = new LinkedHashSet<>();
+
+    }
 
     /**
      * Check if peptide visible on 3d structure
@@ -183,12 +193,12 @@ public class PeptideObject extends Peptide {
     }
 
     /**
-     * Constructor to initialise the main data structure.
+     * Get peptide tool-tip text value.
+     *
+     * @return tool tip text
      */
-    public PeptideObject() {
-        this.proteinsSet = new LinkedHashSet<>();
-        this.proteinGroupsSet = new LinkedHashSet<>();
-
+    public String getTooltip() {
+        return this.tooltip;
     }
 
     /**
@@ -198,15 +208,6 @@ public class PeptideObject extends Peptide {
      */
     public void setTooltip(String tooltip) {
         this.tooltip = tooltip;
-    }
-
-    /**
-     * Get peptide tool-tip text value.
-     *
-     * @return tool tip text
-     */
-    public String getTooltip() {
-        return this.tooltip;
     }
 
     /**
@@ -329,7 +330,7 @@ public class PeptideObject extends Peptide {
      * Set protein variable modifications list included in the peptide sequence.
      *
      * @param variableModifications protein variable modifications list(as
-     * string) included in the peptide sequence.
+     *                              string) included in the peptide sequence.
      */
     @Override
     public void setVariableModifications(ModificationMatch[] variableModifications) {
@@ -340,7 +341,7 @@ public class PeptideObject extends Peptide {
      * Set protein variable modifications list included in the peptide sequence.
      *
      * @param variableModifications protein variable modifications list(as
-     * string) included in the peptide sequence.
+     *                              string) included in the peptide sequence.
      */
     public void setVariableModifications(String variableModifications) {
 
@@ -389,7 +390,7 @@ public class PeptideObject extends Peptide {
      * Set protein fixed modifications list included in the peptide sequence.
      *
      * @param fixedModificationsAsString protein fixed modifications list(as
-     * string) included in the peptide sequence.
+     *                                   string) included in the peptide sequence.
      */
     public void setFixedModificationsAsString(String fixedModificationsAsString) {
         this.fixedModificationsAsString = fixedModificationsAsString;
@@ -653,7 +654,7 @@ public class PeptideObject extends Peptide {
     }
 
     /**
-     **Set intensity hashed colour as string
+     * *Set intensity hashed colour as string
      *
      * @param intensityColor hashed colour
      */

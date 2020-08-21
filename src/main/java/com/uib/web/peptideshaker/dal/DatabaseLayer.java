@@ -1,6 +1,7 @@
 package com.uib.web.peptideshaker.dal;
 
 import com.vaadin.server.VaadinSession;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,17 +10,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.sql.*;
+import java.util.*;
+
 import static junit.framework.Assert.assertEquals;
 
 /**
@@ -84,7 +77,6 @@ public class DatabaseLayer {
      * to csf-pr.
      *
      * @return set of Uni-prot protein accessions available on csf-pr
-     *
      */
     public Set<String> getCsfprAccList() {
         Set<String> csf_pr_acc_list = new LinkedHashSet<>();
@@ -271,11 +263,11 @@ public class DatabaseLayer {
     /**
      * Store and retrieve dataset details index to share in link
      *
-     * @param dsDetails encoded dataset details to store in database
+     * @param dsDetails   encoded dataset details to store in database
      * @param dsUniqueKey dataset unique key
      * @returndataset details public key
      */
-    public int insertDatasetSharingLink(String dsDetails,String dsUniqueKey) {
+    public int insertDatasetSharingLink(String dsDetails, String dsUniqueKey) {
         /**
          * select dsDetails
          */
@@ -290,11 +282,11 @@ public class DatabaseLayer {
             /**
              * if nothing available insert and get the index
              */
-            
+
             String insertstatment = "INSERT INTO `datasetsharing` (`ds_details`, `ds_name`) VALUES (?,?);";
             PreparedStatement preparedStatment = conn.prepareStatement(insertstatment, Statement.RETURN_GENERATED_KEYS);
             preparedStatment.setString(1, dsDetails);
-             preparedStatment.setString(2, dsUniqueKey);
+            preparedStatment.setString(2, dsUniqueKey);
             preparedStatment.executeUpdate();
             ResultSet rs = preparedStatment.getGeneratedKeys();
             while (rs.next()) {
@@ -304,7 +296,7 @@ public class DatabaseLayer {
             String message = e.getLocalizedMessage();
             return (getDatasetSharingLink(dsDetails));
         }
-         System.out.println("at err else happend we return -1: ");
+        System.out.println("at err else happend we return -1: ");
         return -1;
     }
 

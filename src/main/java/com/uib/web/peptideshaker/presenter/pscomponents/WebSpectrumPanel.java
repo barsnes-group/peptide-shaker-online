@@ -8,17 +8,18 @@ package com.uib.web.peptideshaker.presenter.pscomponents;
 import com.compomics.util.gui.interfaces.SpectrumAnnotation;
 import com.compomics.util.gui.spectrum.SpectrumPanel;
 import com.compomics.util.interfaces.SpectrumFile;
-import java.awt.Color;
-import java.awt.Graphics;
+
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Vector;
 
 /**
- *
  * @author y-mok
  */
 public class WebSpectrumPanel extends SpectrumPanel {
+
+    private boolean showAllPeakDetails;
 
     public WebSpectrumPanel(SpectrumFile aSpecFile) {
         super(aSpecFile);
@@ -122,7 +123,6 @@ public class WebSpectrumPanel extends SpectrumPanel {
         repaint();
 
     }
-    private boolean showAllPeakDetails;
 
     /**
      * Invoked when the mouse has been clicked on a component.
@@ -347,8 +347,8 @@ public class WebSpectrumPanel extends SpectrumPanel {
     public void paint(Graphics g) {
 
 //        
-    
-super.paint(g);
+
+        super.paint(g);
         if (iXAxisData != null) {
             if (iDragged && iDragXLoc > 0) {
                 g.drawLine(iStartXLoc, iStartYLoc, iDragXLoc, iStartYLoc);
@@ -400,7 +400,7 @@ super.paint(g);
 
             // highlight mirrored peaks
             if (iHighLightMirrored) {
-               
+
                 this.highLightPeak(iHighLightIndexMirrored, iHighLightDatasetIndexMirrored, g, true);
                 iHighLightMirrored = false;
             }
@@ -412,7 +412,7 @@ super.paint(g);
             // highlight clicked mirrored peaks
             if (iClickedMirrored) {
 
-               this.highlightClicked(iClickedIndexMirrored, iHighLightDatasetIndexMirrored, g, true);
+                this.highlightClicked(iClickedIndexMirrored, iHighLightDatasetIndexMirrored, g, true);
             }
             // see if there are daisychain to display
             drawDaisyChain(g, iClickedList, iClickedListDatasetIndices, iClickedIndex, iClickedDataSetIndex, iStoredSequence, iStoredSequenceDatasetIndices, false);
@@ -465,8 +465,8 @@ super.paint(g);
 
             }
         }
-        
-      
+
+
     }
 
     /**
@@ -474,8 +474,8 @@ super.paint(g);
      * annotation.
      *
      * @param xAxisValue the x-axis value
-     * @param mirrored if true checks for the mirrored peaks, false checks the
-     * normal peaks
+     * @param mirrored   if true checks for the mirrored peaks, false checks the
+     *                   normal peaks
      * @return true of the given x-axis value is annotated with at least one
      * annotation
      */
@@ -508,5 +508,5 @@ super.paint(g);
 
         return annotatedPeak;
     }
-   
+
 }

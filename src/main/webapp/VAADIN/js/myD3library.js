@@ -1,4 +1,3 @@
-
 // Define the namespace
 var myD3library = myD3library || {};
 myD3library.VennDiagramComponent = function (element) {
@@ -20,10 +19,9 @@ myD3library.VennDiagramComponent = function (element) {
     function initChart(width, height, data, selectedDataColors, unselectedDataColors) {
 
 
-
         doneLoading = true;
         chart.width(width)
-                .height(height);
+            .height(height);
         var div = d3.select("#venn");
         try {
             clearchart();
@@ -36,17 +34,17 @@ myD3library.VennDiagramComponent = function (element) {
         }
         //fill color
         div.selectAll("path")
-                .style("fill-opacity", 1)
-                .style("stroke", function (d, i) {
-                    return "white";
-                })
+            .style("fill-opacity", 1)
+            .style("stroke", function (d, i) {
+                return "white";
+            })
 
-//                .style("fill-opacity", function (d, j) {
-//            return  0.8;
-//        })
-                .style("fill", function (d, j) {
-                    return unselectedDataColors[j];
-                }).style("stroke-width", 3);
+            //                .style("fill-opacity", function (d, j) {
+            //            return  0.8;
+            //        })
+            .style("fill", function (d, j) {
+                return unselectedDataColors[j];
+            }).style("stroke-width", 3);
 //                        
 
 
@@ -61,15 +59,15 @@ myD3library.VennDiagramComponent = function (element) {
 //                .style("fill", function (d, i) {
 //                    return colours[i];
 //                })
-                ;
+        ;
 //                .style("stroke", function (d, i) {
 //                    return colours[i];
 //                });
 
         areas.select("text")
-                .style("fill", "#ffffff")
-                .style("font-family", "'Open Sans', sans-serif")
-                .style("font-size", "16px").style("font-weight", 100).style("font-style", "normal").style("text-decoration", "none").style("stroke-width", "0.1px").style("stroke", "white");
+            .style("fill", "#ffffff")
+            .style("font-family", "'Open Sans', sans-serif")
+            .style("font-size", "16px").style("font-weight", 100).style("font-style", "normal").style("text-decoration", "none").style("stroke-width", "0.1px").style("stroke", "white");
 
         /*    fill: black;
          font-size: 25px;
@@ -89,7 +87,6 @@ myD3library.VennDiagramComponent = function (element) {
          font-family: 'open sans';
          font-style: italic;
          **/
-
 
 
 //        var defs = d3.select("#venn svg").append("defs");
@@ -139,17 +136,17 @@ myD3library.VennDiagramComponent = function (element) {
             selectCircle();
         });
         div.selectAll("g")
-                .on("mouseover", function (d, i) {
-                })
+            .on("mouseover", function (d, i) {
+            })
 
-                .on("mousemove", function () {
+            .on("mousemove", function () {
 
-                })
+            })
 
-                .on("mouseout", function (d, i) {
+            .on("mouseout", function (d, i) {
 
-                });
-       
+            });
+
 
     }
 
@@ -163,6 +160,7 @@ myD3library.VennDiagramComponent = function (element) {
             }
         });
     }
+
     function selectCircle() {
         selectionAction = true;
         var countselect = 0;
@@ -174,7 +172,7 @@ myD3library.VennDiagramComponent = function (element) {
                 return unselectedDataColors[j];
             }
         });
-        if (countselect === selectedDataColours.length){
+        if (countselect === selectedDataColours.length) {
             for (var i = 0; i < selectedData.length; i++) {
                 selectedData[i] = false;
             }
@@ -265,7 +263,7 @@ myD3library.VennDiagramComponent = function (element) {
                 for (var i = 0; i < selectionIndexs.length; i++) {
                     selectedData[selectionIndexs[i]] = true;
                 }
-                
+
                 highlightCircle();
             }
             if (value.includes(":data")) {
@@ -279,7 +277,7 @@ myD3library.VennDiagramComponent = function (element) {
                 cwidth = parseInt(value.split(";")[4].split(",")[0]);
                 cheight = parseInt(value.split(";")[4].split(",")[1]);
                 initChart(cwidth, cheight, sets, selectedDataColours, unselectedDataColors);
-                 selectAllCircles();
+                selectAllCircles();
 
             }
 

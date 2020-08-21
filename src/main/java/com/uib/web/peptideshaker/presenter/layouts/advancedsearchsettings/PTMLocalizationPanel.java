@@ -12,11 +12,11 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- *
  * @author y-mok
  */
 public class PTMLocalizationPanel extends PopupWindow {
@@ -53,7 +53,7 @@ public class PTMLocalizationPanel extends PopupWindow {
 
         accountNeutralLosses = new HorizontalLabelDropDownList("Account Neutral Losses");
         accountNeutralLosses.updateData(values);
-        threshold = new HorizontalLabelTextField("Threshold", 0.0, new DoubleRangeValidator("Only double values allowd", (-1* Double.MAX_VALUE), Double.MAX_VALUE));
+        threshold = new HorizontalLabelTextField("Threshold", 0.0, new DoubleRangeValidator("Only double values allowd", (-1 * Double.MAX_VALUE), Double.MAX_VALUE));
 
         confidentSites = new HorizontalLabelDropDownList("Confident Sites");
         confidentSites.updateData(values);
@@ -85,7 +85,7 @@ public class PTMLocalizationPanel extends PopupWindow {
             setPopupVisible(false);
 
         });
-        
+
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);

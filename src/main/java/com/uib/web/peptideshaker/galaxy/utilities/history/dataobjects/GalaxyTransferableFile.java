@@ -44,9 +44,9 @@ public class GalaxyTransferableFile extends GalaxyFileObject {
     /**
      * Constructor to initialise the main variables
      *
-     * @param user_folder User data files folder
+     * @param user_folder      User data files folder
      * @param galaxyFileObject Galaxy file object
-     * @param zipped The file on Galaxy server is compressed
+     * @param zipped           The file on Galaxy server is compressed
      */
     public GalaxyTransferableFile(File user_folder, GalaxyFileObject galaxyFileObject, boolean zipped) {
         this.galaxyFileObject = galaxyFileObject;
@@ -75,7 +75,6 @@ public class GalaxyTransferableFile extends GalaxyFileObject {
      *
      * @return the sub files list of files contained in folder (case of
      * compressed folder).
-     *
      */
     public Set<String> getSubFilesList() {
         if (zipped && subFilesList.isEmpty()) {
@@ -217,8 +216,7 @@ public class GalaxyTransferableFile extends GalaxyFileObject {
     }
 
     /**
-     * Get the list of Java File Objects that represents the downloaded file from zip folder 
-     * 
+     * Get the list of Java File Objects that represents the downloaded file from zip folder
      *
      * @return Set of File objects that already downloaded on the user files folder
      */
@@ -270,7 +268,7 @@ public class GalaxyTransferableFile extends GalaxyFileObject {
 
         }
 
-    return fileSet ;
-}
+        return fileSet;
+    }
 
 }

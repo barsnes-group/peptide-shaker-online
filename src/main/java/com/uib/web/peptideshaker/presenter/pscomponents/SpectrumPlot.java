@@ -35,19 +35,20 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.slider.SliderOrientation;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.MenuBar;
+import com.vaadin.ui.*;
 import com.vaadin.ui.MenuBar.MenuItem;
-import com.vaadin.ui.PopupView;
-import com.vaadin.ui.Slider;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import java.awt.Color;
-import java.awt.Graphics2D;
+import org.jfree.chart.encoders.ImageEncoder;
+import org.jfree.chart.encoders.ImageEncoderFactory;
+import org.jfree.chart.encoders.ImageFormat;
+import org.vaadin.simplefiledownloader.SimpleFileDownloader;
+import selectioncanvas.SelectioncanvasComponent;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -57,14 +58,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import javax.imageio.ImageIO;
-import javax.swing.JPanel;
-import javax.swing.Timer;
-import org.jfree.chart.encoders.ImageEncoder;
-import org.jfree.chart.encoders.ImageEncoderFactory;
-import org.jfree.chart.encoders.ImageFormat;
-import org.vaadin.simplefiledownloader.SimpleFileDownloader;
-import selectioncanvas.SelectioncanvasComponent;
 
 /**
  * This class represents Spectrum Plot extracted from PeptideShaker and
@@ -75,14 +68,11 @@ import selectioncanvas.SelectioncanvasComponent;
 public class SpectrumPlot extends AbsoluteLayout {
 
     private final Image plot;
-    private Image plotThumbImage;
-    private SelectioncanvasComponent selectionCanvas;
     private final VerticalLayout selectionCanvasContainer;
     private final Slider levelSlider;
     private final Slider annotationAccuracySlider;
-    private WebSpectrumPanel spectrumPanel;
     private final SizeReporter mainSizeReporter;
-//    private final String[] ions = {"a", "b", "c", "x", "y", "z"};
+    //    private final String[] ions = {"a", "b", "c", "x", "y", "z"};
     private final MenuBar.Command annotationsItemsCommand;
     private final MenuItem ionsItem;
     private final MenuItem otherItem;
@@ -93,32 +83,34 @@ public class SpectrumPlot extends AbsoluteLayout {
     private final MenuItem resetAnnoItem;
     private final MenuItem deNovoItem;
     private final MenuItem settingsItem;
-    private boolean disableSizeReporter = false;
     private final ComponentResizeListener compResizeListener;
-    private int updatedComponentWidth;
-    private int updatedComponentHeight;
-    private SequenceProvider sequenceProvider;
     /**
      * Time to wait
      */
     private final int DELAY = 1000;
     /**
+     * The spectrum annotator.
+     */
+    private final PeptideSpectrumAnnotator spectrumAnnotator = new PeptideSpectrumAnnotator();
+    private Image plotThumbImage;
+    private SelectioncanvasComponent selectionCanvas;
+    private WebSpectrumPanel spectrumPanel;
+    private boolean disableSizeReporter = false;
+    private int updatedComponentWidth;
+    private int updatedComponentHeight;
+    private SequenceProvider sequenceProvider;
+    /**
      * Waiting timer
      */
     private javax.swing.Timer waitingTimer;
-
-    public boolean isDisableSizeReporter() {
-        return disableSizeReporter;
-    }
-
-    public void setDisableSizeReporter(boolean disableSizeReporter) {
-        this.disableSizeReporter = disableSizeReporter;
-    }
-
-    public void setPlotThumbImage(Image plotThumbImage) {
-        this.plotThumbImage = plotThumbImage;
-        this.plotThumbImage.addStyleName("nopadding");
-    }
+    private IdentificationParameters identificationParameters;
+    private SpecificAnnotationParameters specificAnnotationParameters;
+    private boolean defaultAnnotationInUse;
+    private Spectrum currentSpectrum;
+    private Peptide currentPeptide;
+    private double fragmentIonAccuracy;
+    private SpectrumMatch spectrumMatch;
+    private Thread selectedSpectrumThread;
 
     public SpectrumPlot() {
 //        SpectrumPlot.this.setStyleName("splotframe");
@@ -341,6 +333,19 @@ public class SpectrumPlot extends AbsoluteLayout {
         spectrumSlidersPopup.setDescription("Show annotation accuracy  and  intensity level sliders");
         controlsLayout.addComponent(spectrumSlidersPopup);
 
+    }
+
+    public boolean isDisableSizeReporter() {
+        return disableSizeReporter;
+    }
+
+    public void setDisableSizeReporter(boolean disableSizeReporter) {
+        this.disableSizeReporter = disableSizeReporter;
+    }
+
+    public void setPlotThumbImage(Image plotThumbImage) {
+        this.plotThumbImage = plotThumbImage;
+        this.plotThumbImage.addStyleName("nopadding");
     }
 
     private void updateImage(JPanel jpanel) {
@@ -598,14 +603,6 @@ public class SpectrumPlot extends AbsoluteLayout {
             subItem.setCheckable(true);
         });
     }
-    private IdentificationParameters identificationParameters;
-    private SpecificAnnotationParameters specificAnnotationParameters;
-    private boolean defaultAnnotationInUse;
-    private Spectrum currentSpectrum;
-    private Peptide currentPeptide;
-    private double fragmentIonAccuracy;
-    private SpectrumMatch spectrumMatch;
-    private Thread selectedSpectrumThread;
 
     public void selectedSpectrum(Spectrum currentSpectrum, SequenceProvider sequenceProvider, String charge, double fragmentIonAccuracy, IdentificationParameters identificationParameters, SpectrumMatch spectrumMatch) {
         mainSizeReporter.removeResizeListener(compResizeListener);
@@ -799,10 +796,5 @@ public class SpectrumPlot extends AbsoluteLayout {
 
         return knownMassDeltas;
     }
-
-    /**
-     * The spectrum annotator.
-     */
-    private final PeptideSpectrumAnnotator spectrumAnnotator = new PeptideSpectrumAnnotator();
 
 }

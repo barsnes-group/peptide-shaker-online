@@ -7,12 +7,15 @@ package selectioncanvas;
 
 import com.vaadin.ui.AbstractJavaScriptComponent;
 import elemental.json.JsonArray;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
 //@JavaScript({"../../VAADIN/js/mylibrary2.js", "../../VAADIN/js/mycomponent-connector2.js", "https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.touch/1.1.0/jquery.touch.min.js", "../../VAADIN/js/jquery.mousewheel.js"})
 public abstract class SelectioncanvasComponent2 extends AbstractJavaScriptComponent {
 
+    ArrayList<ValueChangeListener> listeners
+            = new ArrayList<>();
     private String lastSelectedValue = "";
 
     public SelectioncanvasComponent2() {
@@ -33,7 +36,7 @@ public abstract class SelectioncanvasComponent2 extends AbstractJavaScriptCompon
             if (valueArr.length < 4) {
                 return;
             } else if (valueArr.length == 4) {
-                mouseWheeAction((int)Double.parseDouble(valueArr[0]), (int)Double.parseDouble(valueArr[1]), Integer.valueOf(valueArr[2]));
+                mouseWheeAction((int) Double.parseDouble(valueArr[0]), (int) Double.parseDouble(valueArr[1]), Integer.valueOf(valueArr[2]));
                 return;
 
             }
@@ -70,24 +73,17 @@ public abstract class SelectioncanvasComponent2 extends AbstractJavaScriptCompon
 
     public abstract void mouseWheeAction(int startX, int startY, int zoomLevel);
 
-    public interface ValueChangeListener extends Serializable {
-
-        void valueChange();
-    }
-    ArrayList<ValueChangeListener> listeners
-            = new ArrayList<>();
-
     public void addValueChangeListener(
             ValueChangeListener listener) {
         listeners.add(listener);
     }
 
-    public void setValue(String value) {
-        getState().setValue(value);
-    }
-
     public String getValue() {
         return getState().getValue();
+    }
+
+    public void setValue(String value) {
+        getState().setValue(value);
     }
 
     public void setSize(int width, int height, boolean freeYSelection) {
@@ -100,6 +96,11 @@ public abstract class SelectioncanvasComponent2 extends AbstractJavaScriptCompon
     @Override
     protected SelectioncanvasComponentState getState() {
         return (SelectioncanvasComponentState) super.getState();
+    }
+
+    public interface ValueChangeListener extends Serializable {
+
+        void valueChange();
     }
 
 }

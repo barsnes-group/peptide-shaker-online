@@ -1,14 +1,13 @@
-
 // Define the namespace
 var mylibrary = mylibrary || {};
 mylibrary.SelectioncanvasComponent = function (element) {
     element.innerHTML =
-            "<canvas id='selectioncanvas' oncontextmenu='return false;'></canvas>" +
-            "<input id='coords' type='text' name='value'/>" +
-            "<input id='tbox' type='text' name='value'/>" +
-            "<input id='hiddenbtn' type='button' value='Click'/>" +
-            "<img id='leftarrow' width='32' height='32' src='VAADIN/themes/webpeptideshakertheme/img/vaadin-arrow-left.svg' alt=''>" +
-            "<img id='rightarrow' width='32' height='32' src='VAADIN/themes/webpeptideshakertheme/img/vaadin-arrow-right.svg' alt=''>";
+        "<canvas id='selectioncanvas' oncontextmenu='return false;'></canvas>" +
+        "<input id='coords' type='text' name='value'/>" +
+        "<input id='tbox' type='text' name='value'/>" +
+        "<input id='hiddenbtn' type='button' value='Click'/>" +
+        "<img id='leftarrow' width='32' height='32' src='VAADIN/themes/webpeptideshakertheme/img/vaadin-arrow-left.svg' alt=''>" +
+        "<img id='rightarrow' width='32' height='32' src='VAADIN/themes/webpeptideshakertheme/img/vaadin-arrow-right.svg' alt=''>";
     var document = element.ownerDocument;
     // Style it
     // Getter and setter for the value property
@@ -40,12 +39,10 @@ mylibrary.SelectioncanvasComponent = function (element) {
         button.disabled = true;
         setTimeout(activateBtn, 1000);
     };
+
     function activateBtn() {
         button.disabled = false;
     }
-
-
-
 
 
     var thecoordsText = document.getElementById('coords');
@@ -182,14 +179,15 @@ mylibrary.SelectioncanvasComponent = function (element) {
     });
 
 
-
-    selectionCanvasElement.touch({preventDefault: {
+    selectionCanvasElement.touch({
+        preventDefault: {
             drag: true,
             swipe: true,
             tap: true,
             panzoom: true,
             contextmenu: true
-        }});
+        }
+    });
 
     selectionCanvasElement.on('doubleTap', function (e) {
         touchevent = true;
@@ -208,8 +206,14 @@ mylibrary.SelectioncanvasComponent = function (element) {
         ctx.lineCap = 'round';
         ctx.beginPath();
         clearCanvas();
-        startTouchI = {x: parseInt(ev.originalEvent.touches[0].pageX - canvasOffset.left, 10), y: parseInt(ev.originalEvent.touches[0].pageY - canvasOffset.top, 10)};
-        startTouchII = {x: parseInt(ev.originalEvent.touches[1].pageX - canvasOffset.left, 10), y: parseInt(ev.originalEvent.touches[1].pageY - canvasOffset.top, 10)};
+        startTouchI = {
+            x: parseInt(ev.originalEvent.touches[0].pageX - canvasOffset.left, 10),
+            y: parseInt(ev.originalEvent.touches[0].pageY - canvasOffset.top, 10)
+        };
+        startTouchII = {
+            x: parseInt(ev.originalEvent.touches[1].pageX - canvasOffset.left, 10),
+            y: parseInt(ev.originalEvent.touches[1].pageY - canvasOffset.top, 10)
+        };
     });
 
     selectionCanvasElement.on('touchend', function (ev) {
@@ -221,6 +225,7 @@ mylibrary.SelectioncanvasComponent = function (element) {
         clearCanvas();
         document.dis;
     });
+
     function zoomout() {
         startPos.x = -1;
         startPos.y = -1;
@@ -229,7 +234,8 @@ mylibrary.SelectioncanvasComponent = function (element) {
         thecoordsText.value = startPos.x + "," + startPos.y + "," + finalPos.x + "," + finalPos.y + "," + 2;
         button.click(2);
     }
-    function  touchEnd() {
+
+    function touchEnd() {
 
         //get direction of each touch
         var firstTouchToLeft = false;
@@ -307,6 +313,7 @@ mylibrary.SelectioncanvasComponent = function (element) {
         }
         touchevent = false;
     }
+
     var timer;
     selectionCanvasElement.on('touchmove', function (ev) {
         if (mouseevent)
@@ -314,8 +321,14 @@ mylibrary.SelectioncanvasComponent = function (element) {
         touchevent = true;
         if (ev.originalEvent.touches.length !== 2)
             return;
-        finalTouchI = {x: parseInt(ev.originalEvent.touches[0].pageX - canvasOffset.left, 10), y: parseInt(ev.originalEvent.touches[0].pageY - canvasOffset.top, 10)};
-        finalTouchII = {x: parseInt(ev.originalEvent.touches[1].pageX - canvasOffset.left, 10), y: parseInt(ev.originalEvent.touches[1].pageY - canvasOffset.top, 10)};
+        finalTouchI = {
+            x: parseInt(ev.originalEvent.touches[0].pageX - canvasOffset.left, 10),
+            y: parseInt(ev.originalEvent.touches[0].pageY - canvasOffset.top, 10)
+        };
+        finalTouchII = {
+            x: parseInt(ev.originalEvent.touches[1].pageX - canvasOffset.left, 10),
+            y: parseInt(ev.originalEvent.touches[1].pageY - canvasOffset.top, 10)
+        };
         rect(ctx);
         clearTimeout(timer);
         timer = setTimeout(touchEnd, 300);

@@ -5,6 +5,7 @@ import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+
 import java.util.Map;
 
 /**
@@ -21,8 +22,8 @@ public abstract class SparkLineLabel extends AbsoluteLayout implements Comparabl
      * Initialise spark line component
      *
      * @param labelValue spark line label
-     * @param values spark line data
-     * @param itemId spark line id
+     * @param values     spark line data
+     * @param itemId     spark line id
      */
     public SparkLineLabel(String labelValue, Map<String, Number> values, Object itemId) {
         SparkLineLabel.this.setSizeFull();

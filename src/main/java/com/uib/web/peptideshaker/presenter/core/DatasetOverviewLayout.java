@@ -2,31 +2,18 @@ package com.uib.web.peptideshaker.presenter.core;
 
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.parameters.identification.IdentificationParameters;
-
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
-
 import com.uib.web.peptideshaker.presenter.core.form.Horizontal2Label;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import java.util.*;
 
 /**
  * This class represents the search settings form layout
@@ -48,12 +35,7 @@ public abstract class DatasetOverviewLayout extends VerticalLayout {
     private final List<String> ionsList = new ArrayList(Arrays.asList(new String[]{"a", "b", "c", "x", "y", "z"}));
 
     private Table fixedModificationTable;
-
-    public String getEnzyme() {
-        return enzyme;
-    }
     private Table variableModificationTable;
-
     private String enzyme = "";
 
     /**
@@ -72,11 +54,8 @@ public abstract class DatasetOverviewLayout extends VerticalLayout {
             return;
         }
         DatasetOverviewLayout.this.addComponent(titleLayout);
-        Label projectNameLabel = new Label(dataset.getName().split("___")[0] + " <i style='color: gray;font-size: 12px;'>(" + dataset.getCreateTime() + ")</i>", ContentMode.HTML);
-//        String timeStamp = "";
-//        if (dataset.getName().split("___").length > 1) {
-//            timeStamp = "___"+dataset.getName().split("___")[1];
-//        }
+        Label projectNameLabel = new Label(dataset.getName()+ " <i style='color: gray;font-size: 12px;'>(" + dataset.getCreateTime() + ")</i>", ContentMode.HTML);
+
         projectNameLabel.addStyleName(ValoTheme.LABEL_BOLD);
         titleLayout.addComponent(projectNameLabel);
         titleLayout.setComponentAlignment(projectNameLabel, Alignment.TOP_CENTER);
@@ -135,6 +114,10 @@ public abstract class DatasetOverviewLayout extends VerticalLayout {
         proteaseFragmentationContainer.addStyleName("subpanelframe");
         DatasetOverviewLayout.this.addComponent(proteaseFragmentationContainer);
 
+    }
+
+    public String getEnzyme() {
+        return enzyme;
     }
 
     private GridLayout inititProteaseFragmentationLayout(IdentificationParameters parameters) {

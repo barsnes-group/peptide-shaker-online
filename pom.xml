@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.uib</groupId>
@@ -35,7 +36,7 @@
 
         <!-- old EBI repository -->
         <repository>
-            <id>ebi-repo</id> 
+            <id>ebi-repo</id>
             <name>The EBI internal repository</name>
             <url>http://www.ebi.ac.uk/~maven/m2repo</url>
         </repository>
@@ -71,7 +72,7 @@
             <scope>provided</scope>
         </dependency>
 
-      
+
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-server</artifactId>
@@ -93,9 +94,9 @@
             <groupId>com.github.jmchilton.blend4j</groupId>
             <artifactId>blend4j</artifactId>
             <version>0.2.0</version>
-          
+
         </dependency>
-        
+
         <dependency>
             <groupId>org.vaadin.addons</groupId>
             <artifactId>refresher</artifactId>
@@ -117,9 +118,9 @@
             <version>1.6.2</version>
         </dependency>
 
-       
+
         <dependency>
-            <groupId>com.compomics</groupId>   
+            <groupId>com.compomics</groupId>
             <artifactId>utilities</artifactId>
             <version>5.0.0-beta</version>
             <exclusions>
@@ -130,7 +131,7 @@
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
-                </exclusion>               
+                </exclusion>
                 <exclusion>
                     <groupId>it.unimi.dsi</groupId>
                     <artifactId>fastutil</artifactId>
@@ -142,7 +143,7 @@
             <artifactId>jersey-client</artifactId>
             <version>2.31</version>
         </dependency>
-       
+
         <dependency>
             <groupId>org.vaadin.addons</groupId>
             <artifactId>canvas</artifactId>
@@ -163,8 +164,8 @@
             <artifactId>jung-graph-impl</artifactId>
             <version>2.0.1</version>
         </dependency>
-       
-       
+
+
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>
@@ -175,13 +176,13 @@
             <artifactId>biojava-core</artifactId>
             <version>5.0.2</version>
         </dependency>
-        
+
         <dependency>
             <groupId>pl.exsio</groupId>
             <artifactId>plupload-vaadin</artifactId>
             <version>2.1.0</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.vaadin.addons</groupId>
             <artifactId>simplefiledownloader</artifactId>
@@ -192,7 +193,7 @@
             <groupId>org.jfree</groupId>
             <artifactId>jfreesvg</artifactId>
             <version>3.3</version>
-        </dependency>         
+        </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -214,23 +215,23 @@
             <version>1.4.1</version>
         </dependency>
         <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-        <version>2.9.10.5</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.10.5</version>
         </dependency>
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
             <version>2.1.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.10</version>
         </dependency>
 
-        
+
     </dependencies>
 
     <build>
@@ -247,7 +248,7 @@
                     </compilerArguments>
                 </configuration>
             </plugin>
-      
+
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -20,11 +20,11 @@ public class TableColumnHeader {
     /**
      * Initialise table column header
      *
-     * @param propertyId column id
-     * @param type column type
-     * @param defaultValue null representer
-     * @param columnHeader title of the column
-     * @param columnIcon column icon
+     * @param propertyId      column id
+     * @param type            column type
+     * @param defaultValue    null representer
+     * @param columnHeader    title of the column
+     * @param columnIcon      column icon
      * @param columnAlignment title alignment
      */
     public TableColumnHeader(Object propertyId, Class<?> type, Object defaultValue, String columnHeader, Resource columnIcon, Table.Align columnAlignment) {

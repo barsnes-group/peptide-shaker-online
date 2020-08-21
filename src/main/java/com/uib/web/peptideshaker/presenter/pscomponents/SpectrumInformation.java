@@ -11,11 +11,12 @@ import com.compomics.util.experiment.mass_spectrometry.spectra.Spectrum;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 
 /**
- *this class contain all the required information to load spectrum data
+ * this class contain all the required information to load spectrum data
+ *
  * @author Yehia Farag
  */
 public class SpectrumInformation {
-    private   Spectrum spectrum;
+    private Spectrum spectrum;
     private String charge;
     private double fragmentIonAccuracy;
     private IdentificationParameters identificationParameters;
@@ -23,7 +24,7 @@ public class SpectrumInformation {
     private Object spectrumId;
     private int maxCharge;
     private double mzError;
-    private SequenceProvider  sequenceProvider;
+    private SequenceProvider sequenceProvider;
 
     public int getMaxCharge() {
         return maxCharge;
@@ -96,5 +97,5 @@ public class SpectrumInformation {
     public void setSequenceProvider(SequenceProvider sequenceProvider) {
         this.sequenceProvider = sequenceProvider;
     }
-    
+
 }

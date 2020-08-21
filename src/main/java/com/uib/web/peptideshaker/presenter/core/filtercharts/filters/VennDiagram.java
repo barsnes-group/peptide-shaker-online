@@ -6,34 +6,26 @@
 package com.uib.web.peptideshaker.presenter.core.filtercharts.filters;
 
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
-import com.ejt.vaadin.sizereporter.ComponentResizeListener;
 import com.ejt.vaadin.sizereporter.SizeReporter;
 import com.google.common.collect.Sets;
 import com.uib.web.peptideshaker.model.core.ModificationMatrix;
 import com.vaadin.event.LayoutEvents;
-import com.vaadin.server.Page;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.themes.ValoTheme;
 import d3diagrams.VennDiagramComponent;
-import java.awt.Color;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import java.awt.*;
+import java.util.*;
+
 /**
- *
  * @author Yehia Farag
  */
 public abstract class VennDiagram extends AbsoluteLayout {
@@ -41,18 +33,17 @@ public abstract class VennDiagram extends AbsoluteLayout {
     private final VennDiagramComponent vennDiagramComponent;
     private final HorizontalLayout legendContainer;
     private final Map<String, String> indexMap;
-    private ModificationMatrix modificationMatrix;
-    private Map<String, Color> dataColors;
-
-    private JSONArray dataset;
-    private JSONArray selectedDatasetColors;
-    private JSONArray unselectedDatasetColors;
     private final SizeReporter legendSizeReported;
     private final Set<Integer> selectedIndexes;
     private final String vennDiagramfilter = "vennDiagramfilter";
     private final Map<String, JSONObject> tempDataset;
-
     private final String alphabet = "abcdefghijklmnopqrstuvwxyz".toUpperCase();
+    private final Map<String, String> nameToCharMap;
+    private ModificationMatrix modificationMatrix;
+    private Map<String, Color> dataColors;
+    private JSONArray dataset;
+    private JSONArray selectedDatasetColors;
+    private JSONArray unselectedDatasetColors;
     /**
      * The width of the chart.
      */
@@ -61,8 +52,6 @@ public abstract class VennDiagram extends AbsoluteLayout {
      * The height of the chart.
      */
     private int mainHeight;
-
-    private final Map<String, String> nameToCharMap;
 
     public VennDiagram() {
         VennDiagram.this.setSizeFull();
@@ -161,7 +150,7 @@ public abstract class VennDiagram extends AbsoluteLayout {
 
     }
 
-//    private void updateComponentSize() {
+    //    private void updateComponentSize() {
 //        JavaScript.getCurrent().execute(" var elem = document.getElementById('" + vennDiagramfilter + "'); "
 //                + " if(elem){ getElSizeof" + vennDiagramfilter + "(elem.clientWidth, elem.clientHeight); }");
 //    }
@@ -257,7 +246,8 @@ public abstract class VennDiagram extends AbsoluteLayout {
 
             }
 
-        };
+        }
+        ;
         for (String key : intersectionCategories.keySet()) {
             String[] intersections = key.replace("[", "").replace("]", "").split(",");
             boolean allUnAvailable = true;

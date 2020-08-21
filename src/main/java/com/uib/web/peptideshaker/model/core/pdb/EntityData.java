@@ -1,10 +1,10 @@
-
 package com.uib.web.peptideshaker.model.core.pdb;
 
 import java.util.List;
 
 /**
- *This class is responsible for storing PDB entity data
+ * This class is responsible for storing PDB entity data
+ *
  * @author y-mok
  */
 public class EntityData {
@@ -62,5 +62,5 @@ public class EntityData {
     public void setLength(int length) {
         this.length = length;
     }
-    
+
 }

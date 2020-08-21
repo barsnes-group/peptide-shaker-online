@@ -2,12 +2,13 @@ package com.uib.web.peptideshaker.presenter;
 
 import com.uib.web.peptideshaker.presenter.core.ButtonWithLabel;
 import com.uib.web.peptideshaker.presenter.core.SmallSideBtn;
-import com.vaadin.ui.AbsoluteLayout;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import com.vaadin.event.LayoutEvents;
+import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Component;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * This class represents the main layout of the application and main view
@@ -37,10 +38,6 @@ public class PresenterManager implements LayoutEvents.LayoutClickListener {
      * contain the small presenter control buttons.
      */
     private final AbsoluteLayout presenterButtonsContainerLayout;
-
-    public AbsoluteLayout getPresenterButtonsContainerLayout() {
-        return presenterButtonsContainerLayout;
-    }
     /**
      * Presenter buttons layout container contains the presenter control buttons
      * layout.
@@ -50,6 +47,9 @@ public class PresenterManager implements LayoutEvents.LayoutClickListener {
      * Map of current registered views.
      */
     private final Map<String, ViewableFrame> visualizationMap = new LinkedHashMap<>();
+    private final Map<String, SmallSideBtn> presenterBtnsMap = new LinkedHashMap<>();
+    int x = 0;
+    int y = 0;
     /**
      * The column index number for the presenter buttons container
      */
@@ -61,11 +61,7 @@ public class PresenterManager implements LayoutEvents.LayoutClickListener {
     private boolean startDrag = false;
     private long startX = 0;
     private long endX = 0;
-    private final Map<String, SmallSideBtn> presenterBtnsMap = new LinkedHashMap<>();
-
-    public AbsoluteLayout getSubViewButtonsActionContainer() {
-        return subViewButtonsActionContainer;
-    }
+    private LayoutEvents.LayoutClickEvent lastEvent;
 
     /**
      * Constructor to initialise the layout.
@@ -76,6 +72,14 @@ public class PresenterManager implements LayoutEvents.LayoutClickListener {
         this.presenterButtonsContainerLayout = presenterButtonsContainerLayout;
         this.subPresenterButtonsContainer = subPresenterButtonsContainer;
 
+    }
+
+    public AbsoluteLayout getPresenterButtonsContainerLayout() {
+        return presenterButtonsContainerLayout;
+    }
+
+    public AbsoluteLayout getSubViewButtonsActionContainer() {
+        return subViewButtonsActionContainer;
     }
 
     /**
@@ -90,9 +94,6 @@ public class PresenterManager implements LayoutEvents.LayoutClickListener {
             subPresenterButtonsContainer.addStyleName("hide");
         }
     }
-
-    int x = 0;
-    int y = 0;
 
     /**
      * Register view into the view management system.
@@ -159,7 +160,6 @@ public class PresenterManager implements LayoutEvents.LayoutClickListener {
         }
 
     }
-    private LayoutEvents.LayoutClickEvent lastEvent;
 
     /**
      * On click on the side button view the selected layout
@@ -203,6 +203,5 @@ public class PresenterManager implements LayoutEvents.LayoutClickListener {
         }
     }
 
-   
 
 }

@@ -3,9 +3,9 @@ package com.uib.web.peptideshaker.presenter.core.filtercharts.filters;
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.SizeReporter;
 import com.google.common.collect.Sets;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.SelectionManager;
 import com.uib.web.peptideshaker.presenter.core.FilterButton;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.RegistrableFilter;
+import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.SelectionManager;
 import com.vaadin.data.Property;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.shared.ui.MarginInfo;
@@ -15,12 +15,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Slider;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import java.awt.Color;
-import java.awt.Rectangle;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.TreeMap;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.NumberAxis;
@@ -30,6 +24,12 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
 import org.jfree.ui.RectangleInsets;
+
+import java.awt.*;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * This class represents range component with lower and upper range
@@ -46,17 +46,19 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
     private final Slider upperRangeSlider;
     private final Slider lowerRangeSlider;
     private final AbsoluteLayout slidersContainer;
-    private TreeMap<Comparable, Set<Comparable>> data;
     private final TreeMap<Comparable, Set<Comparable>> activeData;
     private final Label chartTitle;
-    private int chartWidth;
-    private int chartHeight;
     private final JFreeChart mainChart;
     private final FilterButton resetFilterBtn;
-    private double maxValue;
     private final String title;
     private final String sign;
+    private TreeMap<Comparable, Set<Comparable>> data;
+    private int chartWidth;
+    private int chartHeight;
+    private double maxValue;
     private boolean suspendFilter;
+    private Set<Comparable> lastselectedItems = new LinkedHashSet<>();
+    private Set<Comparable> lastselectedCategories = new LinkedHashSet<>();
 
     public DivaRangeFilter(String title, String filterId, SelectionManager Selection_Manager) {
 
@@ -73,7 +75,7 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
         this.Selection_Manager = Selection_Manager;
         this.activeData = new TreeMap<>();
         DivaRangeFilter.this.setSizeFull();
-        
+
 
         AbsoluteLayout frame = new AbsoluteLayout();
         frame.setSizeFull();
@@ -103,9 +105,8 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
         chartContainer.addComponent(chartImage);
         SizeReporter reporter = new SizeReporter(chartContainer);
         mainChart = initChart();
-        
 
-       
+
         reporter.addResizeListener((ComponentResizeEvent event) -> {
             int tChartWidth = event.getWidth();
             int tChartHeight = event.getHeight();
@@ -153,13 +154,13 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
         resetFilterBtn.setVisible(false);
         resetFilterBtn.addStyleName("btninframe");
         DivaRangeFilter.this.addComponent(resetFilterBtn, "top:0px;right:0px;");
-        
-        Label label = new Label("<center>#Proteins</center>",ContentMode.HTML);
+
+        Label label = new Label("<center>#Proteins</center>", ContentMode.HTML);
         label.setStyleName("verticallabel");
-        label.setWidth(20,Unit.PIXELS);
-        label.setHeight(100,Unit.PERCENTAGE);
-         frame.addComponent(label, "top: 22px;left: 1px;bottom: 18px;");
-        
+        label.setWidth(20, Unit.PIXELS);
+        label.setHeight(100, Unit.PERCENTAGE);
+        frame.addComponent(label, "top: 22px;left: 1px;bottom: 18px;");
+
 
     }
 
@@ -264,8 +265,8 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
      * Convert JFree chart into image and encode it as base64 string to be used
      * as image link.
      *
-     * @param chart JFree chart instance
-     * @param width Image width
+     * @param chart  JFree chart instance
+     * @param width  Image width
      * @param height Image height.
      */
     private String saveToFile(final JFreeChart chart, int width, int height) {
@@ -321,9 +322,6 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
         }
         Selection_Manager.setSelection("dataset_filter_selection", filter, null, filterId);
     }
-
-    private Set<Comparable> lastselectedItems = new LinkedHashSet<>();
-    private Set<Comparable> lastselectedCategories = new LinkedHashSet<>();
 
     @Override
     public void updateFilterSelection(Set<Comparable> selectedItems, Set<Comparable> selectedCategories, boolean topFilter, boolean singleProteinsFilter, boolean selfAction) {
@@ -440,7 +438,7 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
 
     @Override
     public void redrawChart() {
-         applyFilter(lowerRangeSlider.getMin(), lowerRangeSlider.getMax());
+        applyFilter(lowerRangeSlider.getMin(), lowerRangeSlider.getMax());
     }
 
     /**
@@ -449,8 +447,8 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
      * be any double value.
      *
      * @param linearValue the value to be converted to log scale
-     * @param max The upper limit number for the input numbers
-     * @param lowerLimit the lower limit for the input numbers
+     * @param max         The upper limit number for the input numbers
+     * @param lowerLimit  the lower limit for the input numbers
      * @return the value in log scale
      */
     private double scaleValues(double linearValue, double max, double lowerLimit) {
@@ -460,10 +458,10 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
         return logValue;
     }
 
-    
+
     @Override
     public void suspendFilter(boolean suspendFilter) {
-        this.suspendFilter=suspendFilter;
+        this.suspendFilter = suspendFilter;
     }
 
     private void setMainAppliedFilter(boolean mainAppliedFilter) {
@@ -471,9 +469,9 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
         if (mainAppliedFilter) {
             this.addStyleName("highlightfilter");
         } else {
-            
+
             this.removeStyleName("highlightfilter");
-            
+
             upperRangeSlider.removeValueChangeListener(DivaRangeFilter.this);
             lowerRangeSlider.removeValueChangeListener(DivaRangeFilter.this);
             lowerRangeSlider.setValue(lowerRangeSlider.getMin());
@@ -489,5 +487,5 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
         chartTitle.setVisible(false);
         return chartTitle.getValue();
     }
-    
-        }
+
+}

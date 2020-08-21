@@ -22,15 +22,16 @@ public class HorizontalLabelTextField extends HorizontalLayout {
      * Main drop-down list.
      */
     private final TextField textField;
-    private String defaultValue;
     private final Label captionLabel;
     public String appliedValue;
+    private String defaultValue;
+    private boolean required = true;
 
     /**
      * Constructor to initialize the main attributes
      *
      * @param caption title
-     * @param values the drop-down list values
+     * @param values  the drop-down list values
      */
     public HorizontalLabelTextField(String caption, Object defaultValue, Validator validator) {
         HorizontalLabelTextField.this.setSizeFull();
@@ -65,8 +66,8 @@ public class HorizontalLabelTextField extends HorizontalLayout {
                 textField.setConverter(Integer.class);
             } else if (validator instanceof DoubleRangeValidator) {
                 textField.setConverter(Double.class);
-                 textField.addTextChangeListener((FieldEvents.TextChangeEvent event) -> {
-                     appliedValue=event.getText();
+                textField.addTextChangeListener((FieldEvents.TextChangeEvent event) -> {
+                    appliedValue = event.getText();
                 });
 
             }
@@ -103,8 +104,6 @@ public class HorizontalLabelTextField extends HorizontalLayout {
         textField.setRequiredError("Can not be empty");
     }
 
-    private boolean required = true;
-
     public boolean isValid() {
         textField.setRequired(required);
         boolean check = textField.isValid();
@@ -115,6 +114,15 @@ public class HorizontalLabelTextField extends HorizontalLayout {
 
     public boolean isModified() {
         return !textField.getValue().equalsIgnoreCase(textField.getData() + "");
+    }
+
+    public String getSelectedValue() {
+        if (textField.getValue() == null) {
+            return defaultValue.replace(" ", "_");
+
+        }
+        return textField.getValue().replace(" ", "_");
+
     }
 
     public void setSelectedValue(Object value) {
@@ -141,15 +149,6 @@ public class HorizontalLabelTextField extends HorizontalLayout {
         }
 
         textField.setData(value);
-
-    }
-
-    public String getSelectedValue() {
-        if (textField.getValue() == null) {
-            return defaultValue.replace(" ", "_");
-
-        }
-        return textField.getValue().replace(" ", "_");
 
     }
 

@@ -2,6 +2,7 @@ package com.uib.web.peptideshaker.presenter.core.filtercharts.components.coverag
 
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.ui.VerticalLayout;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +18,14 @@ public class StackedBarPeptideComponent extends VerticalLayout implements Compar
      * Parameters map.
      */
     private final Map<String, Object> parametersMap = new HashMap<>();
+    /**
+     * The peptide width.
+     */
+    private final Integer widthArea;
+    /**
+     * The peptide PTM layout container.
+     */
+    private final VerticalLayout ptmLayout = new VerticalLayout();
     /**
      * Default CSS style.
      */
@@ -34,14 +43,6 @@ public class StackedBarPeptideComponent extends VerticalLayout implements Compar
      */
     private int x0;
     /**
-     * The peptide width.
-     */
-    private final Integer widthArea;
-    /**
-     * The peptide PTM layout container.
-     */
-    private final VerticalLayout ptmLayout = new VerticalLayout();
-    /**
      * The peptide has PTMs.
      */
     private boolean ptmAvailable = false;
@@ -50,6 +51,51 @@ public class StackedBarPeptideComponent extends VerticalLayout implements Compar
      * The main pop-up window that contain peptide information form.
      */
 //    private PopupWindowFrame popupWindow;
+
+    /**
+     * Constructor to initialize the main attributes.
+     *
+     * @param x0                  The peptide start location on x access.
+     * @param widthArea           The peptide width.
+     * @param peptideModification The peptide modification PTMs.
+     * @param quantPeptide        Quant peptide object that has all peptide
+     *                            information.
+     * @param proteinName         The parent protein name.
+     */
+    public StackedBarPeptideComponent(int x0, int widthArea, String peptideModification, QuantPeptide quantPeptide, String proteinName) {
+        this.setHeight(15, Unit.PIXELS);
+        this.setWidth((widthArea), Unit.PIXELS);
+        this.x0 = x0;
+        this.widthArea = widthArea;
+        StackedBarPeptideComponent.this.setParam("width", widthArea);
+        if (peptideModification != null && !peptideModification.trim().equalsIgnoreCase("")) {
+            ptmAvailable = true;
+            ptmLayout.setStyleName("ptmglycosylation");
+            ptmLayout.setWidth(10, Unit.PIXELS);
+            ptmLayout.setHeight(10, Unit.PIXELS);
+            ptmLayout.setDescription(peptideModification);
+            ptmLayout.setVisible(false);
+        }
+        if (quantPeptide != null) {
+
+            VerticalLayout popupBody = new VerticalLayout();
+            popupBody.setWidth(99, Unit.PERCENTAGE);
+            popupBody.setHeight(365, Unit.PIXELS);
+            String title = "Peptide Information (" + proteinName.trim() + ")";
+
+//            popupWindow = new PopupWindowFrame(title, popupBody);
+//
+//            popupWindow.setFrameHeight(450);
+//            popupWindow.setFrameWidth(1500);
+//
+//            PeptidesInformationOverviewLayout peptideInfo = new PeptidesInformationOverviewLayout(quantPeptide);
+//            popupBody.addComponent(peptideInfo);
+//            popupBody.setComponentAlignment(peptideInfo, Alignment.TOP_CENTER);
+            this.addLayoutClickListener(StackedBarPeptideComponent.this);
+        }
+
+    }
+
     /**
      * Get the peptide location level
      *
@@ -88,15 +134,6 @@ public class StackedBarPeptideComponent extends VerticalLayout implements Compar
     }
 
     /**
-     * Get peptide width.
-     *
-     * @return widthArea Peptide width.
-     */
-    public int getWidthArea() {
-        return widthArea;
-    }
-
-    /**
      * Set the peptide start location on x access.
      *
      * @param x0 x access location.
@@ -106,47 +143,12 @@ public class StackedBarPeptideComponent extends VerticalLayout implements Compar
     }
 
     /**
-     * Constructor to initialize the main attributes.
+     * Get peptide width.
      *
-     * @param x0 The peptide start location on x access.
-     * @param widthArea The peptide width.
-     * @param peptideModification The peptide modification PTMs.
-     * @param quantPeptide Quant peptide object that has all peptide
-     * information.
-     * @param proteinName The parent protein name.
+     * @return widthArea Peptide width.
      */
-    public StackedBarPeptideComponent(int x0, int widthArea, String peptideModification, QuantPeptide quantPeptide, String proteinName) {
-        this.setHeight(15, Unit.PIXELS);
-        this.setWidth((widthArea), Unit.PIXELS);
-        this.x0 = x0;
-        this.widthArea = widthArea;
-        StackedBarPeptideComponent.this.setParam("width", widthArea);
-        if (peptideModification != null && !peptideModification.trim().equalsIgnoreCase("")) {
-            ptmAvailable = true;
-            ptmLayout.setStyleName("ptmglycosylation");
-            ptmLayout.setWidth(10, Unit.PIXELS);
-            ptmLayout.setHeight(10, Unit.PIXELS);
-            ptmLayout.setDescription(peptideModification);
-            ptmLayout.setVisible(false);
-        }
-        if (quantPeptide != null) {
-
-            VerticalLayout popupBody = new VerticalLayout();
-            popupBody.setWidth(99, Unit.PERCENTAGE);
-            popupBody.setHeight(365, Unit.PIXELS);
-            String title = "Peptide Information (" + proteinName.trim() + ")";
-
-//            popupWindow = new PopupWindowFrame(title, popupBody);
-//
-//            popupWindow.setFrameHeight(450);
-//            popupWindow.setFrameWidth(1500);
-//
-//            PeptidesInformationOverviewLayout peptideInfo = new PeptidesInformationOverviewLayout(quantPeptide);
-//            popupBody.addComponent(peptideInfo);
-//            popupBody.setComponentAlignment(peptideInfo, Alignment.TOP_CENTER);
-            this.addLayoutClickListener(StackedBarPeptideComponent.this);
-        }
-
+    public int getWidthArea() {
+        return widthArea;
     }
 
     /**
@@ -170,7 +172,7 @@ public class StackedBarPeptideComponent extends VerticalLayout implements Compar
     /**
      * Add parameter.
      *
-     * @param key parameter key
+     * @param key   parameter key
      * @param value parameter value.
      */
     public void setParam(String key, Object value) {

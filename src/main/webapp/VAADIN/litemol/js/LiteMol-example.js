@@ -30,9 +30,19 @@ var LiteMol;
                     return ({
                         sourceKind: 'CoordinateServer',
                         sources: {
-                            'CoordinateServer': {kind: 'CoordinateServer', id: '1cbs', type: 'Full', lowPrecisionCoords: true, serverUrl: ctx.settings.get('molecule.downloadBinaryCIFFromCoordinateServer.server') ? ctx.settings.get('molecule.downloadBinaryCIFFromCoordinateServer.server') : 'https://webchem.ncbr.muni.cz/CoordinateServer'},
+                            'CoordinateServer': {
+                                kind: 'CoordinateServer',
+                                id: '1cbs',
+                                type: 'Full',
+                                lowPrecisionCoords: true,
+                                serverUrl: ctx.settings.get('molecule.downloadBinaryCIFFromCoordinateServer.server') ? ctx.settings.get('molecule.downloadBinaryCIFFromCoordinateServer.server') : 'https://webchem.ncbr.muni.cz/CoordinateServer'
+                            },
                             'PDBe Updated mmCIF': {kind: 'PDBe Updated mmCIF', id: '1cbs'},
-                            'URL': {kind: 'URL', format: LiteMol.Core.Formats.Molecule.SupportedFormats.mmCIF, url: 'https://webchem.ncbr.muni.cz/CoordinateServer/1tqn/cartoon'},
+                            'URL': {
+                                kind: 'URL',
+                                format: LiteMol.Core.Formats.Molecule.SupportedFormats.mmCIF,
+                                url: 'https://webchem.ncbr.muni.cz/CoordinateServer/1tqn/cartoon'
+                            },
                             'File on Disk': {kind: 'File on Disk', file: void 0}
                         }
                     });
@@ -106,7 +116,12 @@ var LiteMol;
                     from: [Entity.Root],
                     to: [Entity.Action],
                     defaultParams: function (ctx) {
-                        return ({id: '1cbs', type: 'Full', lowPrecisionCoords: true, serverUrl: ctx.settings.get('molecule.downloadBinaryCIFFromCoordinateServer.server') ? ctx.settings.get('molecule.downloadBinaryCIFFromCoordinateServer.server') : 'https://webchem.ncbr.muni.cz/CoordinateServer'});
+                        return ({
+                            id: '1cbs',
+                            type: 'Full',
+                            lowPrecisionCoords: true,
+                            serverUrl: ctx.settings.get('molecule.downloadBinaryCIFFromCoordinateServer.server') ? ctx.settings.get('molecule.downloadBinaryCIFFromCoordinateServer.server') : 'https://webchem.ncbr.muni.cz/CoordinateServer'
+                        });
                     },
                     validateParams: function (p) {
                         return (!p.id || !p.id.trim().length) ? ['Enter Id'] : (!p.serverUrl || !p.serverUrl.trim().length) ? ['Enter CoordinateServer base URL'] : void 0;
@@ -116,9 +131,9 @@ var LiteMol;
                     var id = t.params.id.toLowerCase().trim();
                     var url = "" + t.params.serverUrl + (t.params.serverUrl[t.params.serverUrl.length - 1] === '/' ? '' : '/') + id + "/" + query + "?encoding=bcif&lowPrecisionCoords=" + (t.params.lowPrecisionCoords ? '1' : '0');
                     return Bootstrap.Tree.Transform.build()
-                            .add(a, Entity.Transformer.Data.Download, {url: url, type: 'Binary', id: id, title: 'Molecule'})
-                            .then(Entity.Transformer.Molecule.CreateFromData, {format: LiteMol.Core.Formats.Molecule.SupportedFormats.mmBCIF}, {isBinding: true})
-                            .then(Entity.Transformer.Molecule.CreateModel, {modelIndex: 0}, {isBinding: false});
+                        .add(a, Entity.Transformer.Data.Download, {url: url, type: 'Binary', id: id, title: 'Molecule'})
+                        .then(Entity.Transformer.Molecule.CreateFromData, {format: LiteMol.Core.Formats.Molecule.SupportedFormats.mmBCIF}, {isBinding: true})
+                        .then(Entity.Transformer.Molecule.CreateModel, {modelIndex: 0}, {isBinding: false});
                 });
             })(Data = PDBe.Data || (PDBe.Data = {}));
         })(PDBe = Viewer.PDBe || (Viewer.PDBe = {}));
@@ -136,6 +151,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
                 reject(e);
             }
         }
+
         function rejected(value) {
             try {
                 step(generator["throw"](value));
@@ -143,28 +159,38 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
                 reject(e);
             }
         }
+
         function step(result) {
             result.done ? resolve(result.value) : new P(function (resolve) {
                 resolve(result.value);
             }).then(fulfilled, rejected);
         }
+
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = {label: 0, sent: function () {
+    var _ = {
+        label: 0, sent: function () {
             if (t[0] & 1)
                 throw t[1];
             return t[1];
-        }, trys: [], ops: []}, f, y, t, g;
-    return g = {next: verb(0), "throw": verb(1), "return": verb(2)}, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+        }, trys: [], ops: []
+    }, f, y, t, g;
+    return g = {
+        next: verb(0),
+        "throw": verb(1),
+        "return": verb(2)
+    }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
         return this;
     }), g;
+
     function verb(n) {
         return function (v) {
             return step([n, v]);
         };
     }
+
     function step(op) {
         if (f)
             throw new TypeError("Generator is already executing.");
@@ -247,116 +273,144 @@ var LiteMol;
                     'emdb-id': 'EMDB (from EMDB Id)'
                 };
                 Data.DensitySources = ['electron-density', 'emdb-pdbid', 'emdb-id'];
+
                 function doElectron(a, t, id) {
                     var action = Bootstrap.Tree.Transform.build();
                     id = id.trim().toLowerCase();
                     var groupRef = t.props.ref ? t.props.ref : Bootstrap.Utils.generateUUID();
-                    var group = action.add(a, Transformer.Basic.CreateGroup, {label: id, description: 'Density'}, {ref: groupRef});
+                    var group = action.add(a, Transformer.Basic.CreateGroup, {
+                        label: id,
+                        description: 'Density'
+                    }, {ref: groupRef});
                     var diffRef = Bootstrap.Utils.generateUUID();
                     var mainRef = Bootstrap.Utils.generateUUID();
                     var diff = group
-                            .then(Transformer.Data.Download, {url: "https://www.ebi.ac.uk/pdbe/coordinates/files/" + id + "_diff.ccp4", type: 'Binary', id: id, description: 'Fo-Fc', title: 'Density'})
-                            .then(Transformer.Density.ParseData, {format: LiteMol.Core.Formats.Density.SupportedFormats.CCP4, id: 'Fo-Fc'}, {isBinding: true, ref: diffRef});
+                        .then(Transformer.Data.Download, {
+                            url: "https://www.ebi.ac.uk/pdbe/coordinates/files/" + id + "_diff.ccp4",
+                            type: 'Binary',
+                            id: id,
+                            description: 'Fo-Fc',
+                            title: 'Density'
+                        })
+                        .then(Transformer.Density.ParseData, {
+                            format: LiteMol.Core.Formats.Density.SupportedFormats.CCP4,
+                            id: 'Fo-Fc'
+                        }, {isBinding: true, ref: diffRef});
                     diff
-                            .then(Transformer.Density.CreateVisualBehaviour, {
-                                id: 'Fo-Fc(-ve)',
-                                isoSigmaMin: -5,
-                                isoSigmaMax: 0,
-                                minRadius: 0,
-                                maxRadius: 10,
-                                radius: 5,
-                                showFull: false,
-                                style: Visualization.Density.Style.create({
-                                    isoValue: -3,
-                                    isoValueType: Bootstrap.Visualization.Density.IsoValueType.Sigma,
-                                    color: LiteMol.Visualization.Color.fromHex(0xBB3333),
-                                    isWireframe: true,
-                                    transparency: {alpha: 1.0}
-                                })
-                            });
+                        .then(Transformer.Density.CreateVisualBehaviour, {
+                            id: 'Fo-Fc(-ve)',
+                            isoSigmaMin: -5,
+                            isoSigmaMax: 0,
+                            minRadius: 0,
+                            maxRadius: 10,
+                            radius: 5,
+                            showFull: false,
+                            style: Visualization.Density.Style.create({
+                                isoValue: -3,
+                                isoValueType: Bootstrap.Visualization.Density.IsoValueType.Sigma,
+                                color: LiteMol.Visualization.Color.fromHex(0xBB3333),
+                                isWireframe: true,
+                                transparency: {alpha: 1.0}
+                            })
+                        });
                     diff
-                            .then(Transformer.Density.CreateVisualBehaviour, {
-                                id: 'Fo-Fc(+ve)',
-                                isoSigmaMin: 0,
-                                isoSigmaMax: 5,
-                                minRadius: 0,
-                                maxRadius: 10,
-                                radius: 5,
-                                showFull: false,
-                                style: Visualization.Density.Style.create({
-                                    isoValue: 3,
-                                    isoValueType: Bootstrap.Visualization.Density.IsoValueType.Sigma,
-                                    color: LiteMol.Visualization.Color.fromHex(0x33BB33),
-                                    isWireframe: true,
-                                    transparency: {alpha: 1.0}
-                                })
-                            });
+                        .then(Transformer.Density.CreateVisualBehaviour, {
+                            id: 'Fo-Fc(+ve)',
+                            isoSigmaMin: 0,
+                            isoSigmaMax: 5,
+                            minRadius: 0,
+                            maxRadius: 10,
+                            radius: 5,
+                            showFull: false,
+                            style: Visualization.Density.Style.create({
+                                isoValue: 3,
+                                isoValueType: Bootstrap.Visualization.Density.IsoValueType.Sigma,
+                                color: LiteMol.Visualization.Color.fromHex(0x33BB33),
+                                isWireframe: true,
+                                transparency: {alpha: 1.0}
+                            })
+                        });
                     group
-                            .then(Transformer.Data.Download, {url: "https://www.ebi.ac.uk/pdbe/coordinates/files/" + id + ".ccp4", type: 'Binary', id: id, description: '2Fo-Fc', title: 'Density'})
-                            .then(Transformer.Density.ParseData, {format: LiteMol.Core.Formats.Density.SupportedFormats.CCP4, id: '2Fo-Fc'}, {isBinding: true, ref: mainRef})
-                            .then(Transformer.Density.CreateVisualBehaviour, {
-                                id: '2Fo-Fc',
-                                isoSigmaMin: 0,
-                                isoSigmaMax: 2,
-                                minRadius: 0,
-                                maxRadius: 10,
-                                radius: 5,
-                                showFull: false,
-                                style: Visualization.Density.Style.create({
-                                    isoValue: 1.5,
-                                    isoValueType: Bootstrap.Visualization.Density.IsoValueType.Sigma,
-                                    color: LiteMol.Visualization.Color.fromHex(0x3362B2),
-                                    isWireframe: false,
-                                    transparency: {alpha: 0.4}
-                                })
-                            });
+                        .then(Transformer.Data.Download, {
+                            url: "https://www.ebi.ac.uk/pdbe/coordinates/files/" + id + ".ccp4",
+                            type: 'Binary',
+                            id: id,
+                            description: '2Fo-Fc',
+                            title: 'Density'
+                        })
+                        .then(Transformer.Density.ParseData, {
+                            format: LiteMol.Core.Formats.Density.SupportedFormats.CCP4,
+                            id: '2Fo-Fc'
+                        }, {isBinding: true, ref: mainRef})
+                        .then(Transformer.Density.CreateVisualBehaviour, {
+                            id: '2Fo-Fc',
+                            isoSigmaMin: 0,
+                            isoSigmaMax: 2,
+                            minRadius: 0,
+                            maxRadius: 10,
+                            radius: 5,
+                            showFull: false,
+                            style: Visualization.Density.Style.create({
+                                isoValue: 1.5,
+                                isoValueType: Bootstrap.Visualization.Density.IsoValueType.Sigma,
+                                color: LiteMol.Visualization.Color.fromHex(0x3362B2),
+                                isWireframe: false,
+                                transparency: {alpha: 0.4}
+                            })
+                        });
                     return {
                         action: action,
                         context: {id: id, refs: [mainRef, diffRef], groupRef: groupRef}
                     };
                 }
+
                 function doEmdb(a, t, id, contourLevel) {
                     var action = Bootstrap.Tree.Transform.build();
                     var mainRef = Bootstrap.Utils.generateUUID();
                     var labelId = 'EMD-' + id;
                     action
-                            .add(a, Transformer.Data.Download, {
-                                url: "https://www.ebi.ac.uk/pdbe/static/files/em/maps/emd_" + id + ".map.gz",
-                                type: 'Binary',
-                                id: labelId,
-                                description: 'EMDB Density',
-                                responseCompression: Bootstrap.Utils.DataCompressionMethod.Gzip,
-                                title: 'Density'
+                        .add(a, Transformer.Data.Download, {
+                            url: "https://www.ebi.ac.uk/pdbe/static/files/em/maps/emd_" + id + ".map.gz",
+                            type: 'Binary',
+                            id: labelId,
+                            description: 'EMDB Density',
+                            responseCompression: Bootstrap.Utils.DataCompressionMethod.Gzip,
+                            title: 'Density'
+                        })
+                        .then(Transformer.Density.ParseData, {
+                            format: LiteMol.Core.Formats.Density.SupportedFormats.CCP4,
+                            id: labelId
+                        }, {isBinding: true, ref: mainRef})
+                        .then(Transformer.Density.CreateVisualBehaviour, {
+                            id: 'Density',
+                            isoSigmaMin: -5,
+                            isoSigmaMax: 5,
+                            minRadius: 0,
+                            maxRadius: 50,
+                            radius: 5,
+                            showFull: false,
+                            style: Visualization.Density.Style.create({
+                                isoValue: contourLevel !== void 0 ? contourLevel : 1.5,
+                                isoValueType: contourLevel !== void 0 ? Bootstrap.Visualization.Density.IsoValueType.Absolute : Bootstrap.Visualization.Density.IsoValueType.Sigma,
+                                color: LiteMol.Visualization.Color.fromHex(0x638F8F),
+                                isWireframe: false,
+                                transparency: {alpha: 0.3}
                             })
-                            .then(Transformer.Density.ParseData, {format: LiteMol.Core.Formats.Density.SupportedFormats.CCP4, id: labelId}, {isBinding: true, ref: mainRef})
-                            .then(Transformer.Density.CreateVisualBehaviour, {
-                                id: 'Density',
-                                isoSigmaMin: -5,
-                                isoSigmaMax: 5,
-                                minRadius: 0,
-                                maxRadius: 50,
-                                radius: 5,
-                                showFull: false,
-                                style: Visualization.Density.Style.create({
-                                    isoValue: contourLevel !== void 0 ? contourLevel : 1.5,
-                                    isoValueType: contourLevel !== void 0 ? Bootstrap.Visualization.Density.IsoValueType.Absolute : Bootstrap.Visualization.Density.IsoValueType.Sigma,
-                                    color: LiteMol.Visualization.Color.fromHex(0x638F8F),
-                                    isWireframe: false,
-                                    transparency: {alpha: 0.3}
-                                })
-                            });
+                        });
                     return {
                         action: action,
                         context: {id: id, refs: [mainRef]}
                     };
                 }
+
                 function fail(a, message) {
                     return {
                         action: Bootstrap.Tree.Transform.build()
-                                .add(a, Transformer.Basic.Fail, {title: 'Density', message: message}),
+                            .add(a, Transformer.Basic.Fail, {title: 'Density', message: message}),
                         context: void 0
                     };
                 }
+
                 function doEmdbPdbId(ctx, a, t, id) {
                     return __awaiter(this, void 0, void 0, function () {
                         var s, json, emdbId, e, emdb;
@@ -391,6 +445,7 @@ var LiteMol;
                         });
                     });
                 }
+
                 function doEmdbId(ctx, a, t, id) {
                     return __awaiter(this, void 0, void 0, function () {
                         var s, json, contour, e;
@@ -417,6 +472,7 @@ var LiteMol;
                         });
                     });
                 }
+
                 // this creates the electron density based on the spec you sent me
                 Data.DownloadDensity = Bootstrap.Tree.Transformer.actionWithContext({
                     id: 'pdbe-density-download-data',
@@ -492,7 +548,12 @@ var LiteMol;
                 var _this = this;
                 var Entity = LiteMol.Bootstrap.Entity;
                 var Transformer = LiteMol.Bootstrap.Entity.Transformer;
-                Validation.Report = Entity.create({name: 'PDBe Molecule Validation Report', typeClass: 'Behaviour', shortName: 'VR', description: 'Represents PDBe validation report.'});
+                Validation.Report = Entity.create({
+                    name: 'PDBe Molecule Validation Report',
+                    typeClass: 'Behaviour',
+                    shortName: 'VR',
+                    description: 'Represents PDBe validation report.'
+                });
                 var Api;
                 (function (Api) {
                     function getResidueId(seqNumber, insCode) {
@@ -501,7 +562,9 @@ var LiteMol;
                             id += " " + insCode;
                         return id;
                     }
+
                     Api.getResidueId = getResidueId;
+
                     function getEntry(report, modelId, entity, asymId, residueId) {
                         var e = report[entity];
                         if (!e)
@@ -514,7 +577,9 @@ var LiteMol;
                             return void 0;
                         return e[residueId];
                     }
+
                     Api.getEntry = getEntry;
+
                     function createReport(data) {
                         var report = {};
                         if (!data.molecules)
@@ -530,7 +595,8 @@ var LiteMol;
                                     var residues = models[model.model_id.toString()] || {};
                                     for (var _g = 0, _h = model.residues; _g < _h.length; _g++) {
                                         var residue = _h[_g];
-                                        var id = getResidueId(residue.residue_number, residue.author_insertion_code), entry = residues[id];
+                                        var id = getResidueId(residue.residue_number, residue.author_insertion_code),
+                                            entry = residues[id];
                                         if (entry) {
                                             entry.residues.push(residue);
                                             entry.numIssues = Math.max(entry.numIssues, residue.outlier_types.length);
@@ -549,6 +615,7 @@ var LiteMol;
                         }
                         return report;
                     }
+
                     Api.createReport = createReport;
                 })(Api = Validation.Api || (Validation.Api = {}));
                 var Interactivity;
@@ -567,6 +634,7 @@ var LiteMol;
                                 }
                             };
                         }
+
                         Behaviour.prototype.dispose = function () {
                             this.context.highlight.removeProvider(this.provider);
                         };
@@ -621,10 +689,12 @@ var LiteMol;
                     var defaultColor = {r: 0.6, g: 0.6, b: 0.6};
                     var selectionColor = {r: 0, g: 0, b: 1};
                     var highlightColor = {r: 1, g: 0, b: 1};
+
                     function createResidueMapNormal(model, report) {
                         var map = new Uint8Array(model.data.residues.count);
                         var mId = model.modelId;
-                        var _a = model.data.residues, asymId = _a.asymId, entityId = _a.entityId, seqNumber = _a.seqNumber, insCode = _a.insCode, isHet = _a.isHet;
+                        var _a = model.data.residues, asymId = _a.asymId, entityId = _a.entityId,
+                            seqNumber = _a.seqNumber, insCode = _a.insCode, isHet = _a.isHet;
                         for (var i = 0, _b = model.data.residues.count; i < _b; i++) {
                             var entry = Api.getEntry(report, mId, entityId[i], asymId[i], Api.getResidueId(seqNumber[i], insCode[i]));
                             if (entry) {
@@ -635,11 +705,13 @@ var LiteMol;
                         }
                         return map;
                     }
+
                     function createResidueMapComputed(model, report) {
                         var map = new Uint8Array(model.data.residues.count);
                         var mId = model.modelId;
                         var parent = model.parent;
-                        var _a = model.data.residues, entityId = _a.entityId, seqNumber = _a.seqNumber, insCode = _a.insCode, chainIndex = _a.chainIndex, isHet = _a.isHet;
+                        var _a = model.data.residues, entityId = _a.entityId, seqNumber = _a.seqNumber,
+                            insCode = _a.insCode, chainIndex = _a.chainIndex, isHet = _a.isHet;
                         var sourceChainIndex = model.data.chains.sourceChainIndex;
                         var asymId = parent.data.chains.asymId;
                         for (var i = 0, _b = model.data.residues.count; i < _b; i++) {
@@ -653,11 +725,12 @@ var LiteMol;
                         }
                         return map;
                     }
+
                     function create(entity, report) {
                         var model = entity.props.model;
                         var map = model.source === LiteMol.Core.Structure.Molecule.Model.Source.File
-                                ? createResidueMapNormal(model, report)
-                                : createResidueMapComputed(model, report);
+                            ? createResidueMapNormal(model, report)
+                            : createResidueMapComputed(model, report);
                         var colors = LiteMol.Core.Utils.FastMap.create();
                         colors.set('Uniform', defaultColor);
                         colors.set('Selection', selectionColor);
@@ -666,8 +739,13 @@ var LiteMol;
                         var mapping = LiteMol.Visualization.Theme.createColorMapMapping(function (i) {
                             return map[residueIndex[i]];
                         }, colorMap, defaultColor);
-                        return LiteMol.Visualization.Theme.createMapping(mapping, {colors: colors, interactive: true, transparency: {alpha: 1.0}});
+                        return LiteMol.Visualization.Theme.createMapping(mapping, {
+                            colors: colors,
+                            interactive: true,
+                            transparency: {alpha: 1.0}
+                        });
                     }
+
                     Theme.create = create;
                 })(Theme || (Theme = {}));
                 var Create = LiteMol.Bootstrap.Tree.Transformer.create({
@@ -692,7 +770,10 @@ var LiteMol;
                                         data = JSON.parse(a.props.data);
                                         model = data[t.params.id];
                                         report = Api.createReport(model || {});
-                                        return [2 /*return*/, Validation.Report.create(t, {label: 'Validation Report', behaviour: new Interactivity.Behaviour(context, report)})];
+                                        return [2 /*return*/, Validation.Report.create(t, {
+                                            label: 'Validation Report',
+                                            behaviour: new Interactivity.Behaviour(context, report)
+                                        })];
                                 }
                             });
                         });
@@ -710,8 +791,14 @@ var LiteMol;
                 }, function (context, a, t) {
                     var id = a.props.molecule.id.trim().toLocaleLowerCase();
                     var action = LiteMol.Bootstrap.Tree.Transform.build()
-                            .add(a, Transformer.Data.Download, {url: "https://www.ebi.ac.uk/pdbe/api/validation/residuewise_outlier_summary/entry/" + id, type: 'String', id: id, description: 'Validation Data', title: 'Validation'})
-                            .then(Create, {id: id}, {isBinding: true, ref: t.params.reportRef});
+                        .add(a, Transformer.Data.Download, {
+                            url: "https://www.ebi.ac.uk/pdbe/api/validation/residuewise_outlier_summary/entry/" + id,
+                            type: 'String',
+                            id: id,
+                            description: 'Validation Data',
+                            title: 'Validation'
+                        })
+                        .then(Create, {id: id}, {isBinding: true, ref: t.params.reportRef});
                     return action;
                 }, "Validation report loaded. Hovering over residue will now contain validation info. To apply validation coloring, select the entity in the tree and apply it the right panel.");
                 Validation.ApplyTheme = LiteMol.Bootstrap.Tree.Transformer.create({
@@ -744,7 +831,10 @@ var LiteMol;
                                         theme = Theme.create(model, a.props.behaviour.report);
                                         themes.set(model.id, theme);
                                     }
-                                    LiteMol.Bootstrap.Command.Visual.UpdateBasicTheme.dispatch(context, {visual: v, theme: theme});
+                                    LiteMol.Bootstrap.Command.Visual.UpdateBasicTheme.dispatch(context, {
+                                        visual: v,
+                                        theme: theme
+                                    });
                                 }
                                 context.logger.message('Validation coloring applied.');
                                 return [2 /*return*/, LiteMol.Bootstrap.Tree.Node.Null];
@@ -761,19 +851,21 @@ var LiteMol;
  */
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
-            ({__proto__: []} instanceof Array && function (d, b) {
-                d.__proto__ = b;
-            }) ||
-            function (d, b) {
-                for (var p in b)
-                    if (b.hasOwnProperty(p))
-                        d[p] = b[p];
-            };
+        ({__proto__: []} instanceof Array && function (d, b) {
+            d.__proto__ = b;
+        }) ||
+        function (d, b) {
+            for (var p in b)
+                if (b.hasOwnProperty(p))
+                    d[p] = b[p];
+        };
     return function (d, b) {
         extendStatics(d, b);
+
         function __() {
             this.constructor = d;
         }
+
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
@@ -791,6 +883,7 @@ var LiteMol;
         // Transforms transform entities. On how to define custom entities, check LiteMol.Bootstrap/Entity/Types.ts where there are plenty of examples.
         var CoordianteStreamingCustomView = /** @class */ (function (_super) {
             __extends(CoordianteStreamingCustomView, _super);
+
             function CoordianteStreamingCustomView() {
                 var _this = _super !== null && _super.apply(this, arguments) || this;
                 // this is for demonstration only, for dynamic options, store them in the transform params or in the underlying entity props.
@@ -800,6 +893,7 @@ var LiteMol;
                 ];
                 return _this;
             }
+
             CoordianteStreamingCustomView.prototype.renderControls = function () {
                 var _this = this;
                 var params = this.params;
@@ -812,16 +906,20 @@ var LiteMol;
                 // to update the params, you can use "this.updateParams" or "this.autoUpdateParams". Auto update params will work only on "updateable transforms"
                 // and will work similarly to how visuals are updated. If autoUpdateParams is not used, the user has to click "Update" buttom manually.                                    
                 return React.createElement("div", null,
-                        React.createElement(Controls.OptionsGroup, {options: this.servers, caption: function (s) {
-                                return s.name;
-                            }, current: currentServer, onChange: function (o) {
-                                return _this.updateParams({server: o.url});
-                            }, label: 'Server'}),
-                        React.createElement(Controls.TextBoxGroup, {value: params.id, onChange: function (v) {
-                                return _this.updateParams({id: v});
-                            }, label: 'Id', onEnter: function (e) {
-                                return _this.applyEnter(e);
-                            }, placeholder: 'PDB id...'}));
+                    React.createElement(Controls.OptionsGroup, {
+                        options: this.servers, caption: function (s) {
+                            return s.name;
+                        }, current: currentServer, onChange: function (o) {
+                            return _this.updateParams({server: o.url});
+                        }, label: 'Server'
+                    }),
+                    React.createElement(Controls.TextBoxGroup, {
+                        value: params.id, onChange: function (v) {
+                            return _this.updateParams({id: v});
+                        }, label: 'Id', onEnter: function (e) {
+                            return _this.applyEnter(e);
+                        }, placeholder: 'PDB id...'
+                    }));
             };
             return CoordianteStreamingCustomView;
         }(LiteMol.Plugin.Views.Transform.ControllerBase));
@@ -844,6 +942,7 @@ var LiteMolPluginInstance;
                 this.uniqueColors = [];
                 this.map = Core.Utils.FastMap.create();
             }
+
             Object.defineProperty(ColorMapper.prototype, "colorMap", {
                 get: function () {
                     var map = Core.Utils.FastMap.create();
@@ -866,6 +965,7 @@ var LiteMolPluginInstance;
             };
             return ColorMapper;
         }());
+
         function createTheme(model, colorDef) {
             var mapper = new ColorMapper();
             mapper.addColor(colorDef.base);
@@ -895,7 +995,9 @@ var LiteMolPluginInstance;
             // make the theme "sticky" so that it persist "ResetScene" command.
             return Visualization.Theme.createMapping(mapping, {colors: colors, isSticky: true});
         }
+
         CustomTheme.createTheme = createTheme;
+
         function applyTheme(plugin, modelRef, theme) {
             var visuals = plugin.selectEntities(Bootstrap.Tree.Selection.byRef(modelRef).subtree().ofType(Bootstrap.Entity.Molecule.Visual));
             for (var _i = 0, visuals_2 = visuals; _i < visuals_2.length; _i++) {
@@ -903,6 +1005,7 @@ var LiteMolPluginInstance;
                 plugin.command(Bootstrap.Command.Visual.UpdateBasicTheme, {visual: v, theme: theme});
             }
         }
+
         CustomTheme.applyTheme = applyTheme;
     })(CustomTheme = LiteMolPluginInstance.CustomTheme || (LiteMolPluginInstance.CustomTheme = {}));
 })(LiteMolPluginInstance || (LiteMolPluginInstance = {}));
@@ -940,16 +1043,19 @@ var LiteMolPluginInstance;
         button.onclick = action;
         actions.appendChild(button);
     }
+
     function addSeparator() {
         var actions = document.getElementById('actions');
         actions.appendChild(document.createElement('hr'));
     }
+
     function addHeader(title) {
         var actions = document.getElementById('actions');
         var h = document.createElement('h4');
         h.innerText = title;
         actions.appendChild(h);
     }
+
     function addTextInput(id, value, placeholder) {
         var actions = document.getElementById('actions');
         var input = document.createElement('input');
@@ -959,6 +1065,7 @@ var LiteMolPluginInstance;
         input.value = value;
         actions.appendChild(input);
     }
+
     function addHoverArea(title, mouseEnter, mouseLeave) {
         var actions = document.getElementById('actions');
         var div = document.createElement('div');
@@ -978,6 +1085,7 @@ var LiteMolPluginInstance;
     var moleculeId = '1cbs';
     var plugin;
     var interactivityTarget = document.getElementById('interactions');
+
     function showInteraction(type, i) {
         if (!i) {
             interactivityTarget.innerHTML = type + ": nothing<br/>" + interactivityTarget.innerHTML;
@@ -986,18 +1094,22 @@ var LiteMolPluginInstance;
         // you have access to atoms, residues, chains, entities in the info object.
         interactivityTarget.innerHTML = type + ": " + i.residues[0].authName + " " + i.residues[0].chain.authAsymId + " " + i.residues[0].authSeqNumber + "<br/>" + interactivityTarget.innerHTML;
     }
+
     // this applies the transforms we will build later
     // it results a promise-like object that you can "then/catch".
     function applyTransforms(actions) {
         return plugin.applyTransform(actions);
     }
+
     function selectNodes(what) {
         return plugin.context.select(what);
     }
+
     function cleanUp() {
         // the themes will reset automatically, but you need to cleanup all the other stuff you've created that you dont want to persist
         Command.Tree.RemoveNode.dispatch(plugin.context, 'sequence-selection');
     }
+
     addHeader('Create & Destroy');
     addButton('Create Plugin', function () {
         // you will want to do a browser version check here
@@ -1042,26 +1154,35 @@ var LiteMolPluginInstance;
     addButton('Collapsed Controls: Portrait', function () {
         var container = document.getElementById('app');
         container.className = 'app-portrait';
-        plugin.command(Command.Layout.SetState, {collapsedControlsLayout: Bootstrap.Components.CollapsedControlsLayout.Portrait, hideControls: false});
+        plugin.command(Command.Layout.SetState, {
+            collapsedControlsLayout: Bootstrap.Components.CollapsedControlsLayout.Portrait,
+            hideControls: false
+        });
     });
     addButton('Collapsed Controls: Landscape', function () {
         var container = document.getElementById('app');
         container.className = 'app-landscape';
-        plugin.command(Command.Layout.SetState, {collapsedControlsLayout: Bootstrap.Components.CollapsedControlsLayout.Landscape, hideControls: false});
+        plugin.command(Command.Layout.SetState, {
+            collapsedControlsLayout: Bootstrap.Components.CollapsedControlsLayout.Landscape,
+            hideControls: false
+        });
     });
     addButton('Collapsed Controls: Outside (Default)', function () {
         var container = document.getElementById('app');
         container.className = 'app-default';
-        plugin.command(Command.Layout.SetState, {collapsedControlsLayout: Bootstrap.Components.CollapsedControlsLayout.Outside, hideControls: false});
+        plugin.command(Command.Layout.SetState, {
+            collapsedControlsLayout: Bootstrap.Components.CollapsedControlsLayout.Outside,
+            hideControls: false
+        });
     });
     addSeparator();
     addButton('Control Regions: Hide Left and Bottom, Sticky Right', function () {
         plugin.command(Command.Layout.SetState, {
             regionStates: (_a = {},
-                    _a[Bootstrap.Components.LayoutRegion.Left] = 'Hidden',
-                    _a[Bootstrap.Components.LayoutRegion.Bottom] = 'Hidden',
-                    _a[Bootstrap.Components.LayoutRegion.Right] = 'Sticky',
-                    _a),
+                _a[Bootstrap.Components.LayoutRegion.Left] = 'Hidden',
+                _a[Bootstrap.Components.LayoutRegion.Bottom] = 'Hidden',
+                _a[Bootstrap.Components.LayoutRegion.Right] = 'Sticky',
+                _a),
             hideControls: false
         });
         var _a;
@@ -1091,15 +1212,24 @@ var LiteMolPluginInstance;
         // var id = ((document.getElementById('pdbid').value) || '').trim().toLowerCase();
         var json = ((document.getElementById('pdbid').value) || '');
         var jsonObj = JSON.parse(json);
-        var id = jsonObj.pdbId;         
+        var id = jsonObj.pdbId;
         var shwoWater = (document.getElementById('showWB').value === 'true');
         // this builds the transforms needed to create a molecule
         var action = Transform.build()
-                .add(plugin.context.tree.root, Transformer.Data.Download, {url: "https://www.ebi.ac.uk/pdbe/static/entry/" + id + "_updated.cif", type: 'String', id: id})
-                .then(Transformer.Data.ParseCif, {id: id}, {isBinding: true})
-                .then(Transformer.Molecule.CreateFromMmCif, {blockIndex: 0}, {isBinding: true})
-                .then(Transformer.Molecule.CreateModel, {modelIndex: 0}, {isBinding: false, ref: 'model'})
-                .then(Transformer.Molecule.CreateMacromoleculeVisual, {polymer: true, polymerRef: 'polymer-visual', het: shwoWater, water: shwoWater});
+            .add(plugin.context.tree.root, Transformer.Data.Download, {
+                url: "https://www.ebi.ac.uk/pdbe/static/entry/" + id + "_updated.cif",
+                type: 'String',
+                id: id
+            })
+            .then(Transformer.Data.ParseCif, {id: id}, {isBinding: true})
+            .then(Transformer.Molecule.CreateFromMmCif, {blockIndex: 0}, {isBinding: true})
+            .then(Transformer.Molecule.CreateModel, {modelIndex: 0}, {isBinding: false, ref: 'model'})
+            .then(Transformer.Molecule.CreateMacromoleculeVisual, {
+                polymer: true,
+                polymerRef: 'polymer-visual',
+                het: shwoWater,
+                water: shwoWater
+            });
         // can also add hetRef and waterRef; the refs allow us to reference the model and visual later.
         taction = action;
         applyTransforms(action);
@@ -1115,46 +1245,65 @@ var LiteMolPluginInstance;
         var ligandStyle = {
             type: 'BallsAndSticks',
             params: {useVDW: true, vdwScaling: 0.25, bondRadius: 0.13, detail: 'Automatic'},
-            theme: {template: Visualization.Molecule.Default.ElementSymbolThemeTemplate, colors: Visualization.Molecule.Default.ElementSymbolThemeTemplate.colors, transparency: {alpha: 1.0}}
+            theme: {
+                template: Visualization.Molecule.Default.ElementSymbolThemeTemplate,
+                colors: Visualization.Molecule.Default.ElementSymbolThemeTemplate.colors,
+                transparency: {alpha: 1.0}
+            }
         };
         var ambStyle = {
             type: 'BallsAndSticks',
             params: {useVDW: false, atomRadius: 0.15, bondRadius: 0.07, detail: 'Automatic'},
-            theme: {template: Visualization.Molecule.Default.UniformThemeTemplate, colors: Visualization.Molecule.Default.UniformThemeTemplate.colors.set('Uniform', {r: 0.4, g: 0.4, b: 0.4}), transparency: {alpha: 0.75}}
+            theme: {
+                template: Visualization.Molecule.Default.UniformThemeTemplate,
+                colors: Visualization.Molecule.Default.UniformThemeTemplate.colors.set('Uniform', {
+                    r: 0.4,
+                    g: 0.4,
+                    b: 0.4
+                }),
+                transparency: {alpha: 0.75}
+            }
         };
         var ligandQ = Query.residues({name: 'REA'}); // here you will fill in the whole info 
         var ambQ = Query.residues({name: 'REA'}).ambientResidues(5); // adjust the radius
         var id = '1cbs:REA';
         var url = "https://webchem.ncbr.muni.cz/CoordinateServer/1cbs/ligandInteraction?name=REA"; // here you will fill in the full server etc ...
         var action = Transform.build()
-                .add(plugin.context.tree.root, Transformer.Data.Download, {url: url, type: 'String', id: id})
-                .then(Transformer.Data.ParseCif, {id: id}, {isBinding: true})
-                .then(Transformer.Molecule.CreateFromMmCif, {blockIndex: 0}, {isBinding: true})
-                .then(Transformer.Molecule.CreateModel, {modelIndex: 0}, {isBinding: false, ref: 'ligand-model'});
+            .add(plugin.context.tree.root, Transformer.Data.Download, {url: url, type: 'String', id: id})
+            .then(Transformer.Data.ParseCif, {id: id}, {isBinding: true})
+            .then(Transformer.Molecule.CreateFromMmCif, {blockIndex: 0}, {isBinding: true})
+            .then(Transformer.Molecule.CreateModel, {modelIndex: 0}, {isBinding: false, ref: 'ligand-model'});
         action.then(Transformer.Molecule.CreateSelectionFromQuery, {query: ambQ, name: 'Ambience'}, {isBinding: true})
-                .then(Transformer.Molecule.CreateVisual, {style: ambStyle});
+            .then(Transformer.Molecule.CreateVisual, {style: ambStyle});
         action.then(Transformer.Molecule.CreateSelectionFromQuery, {query: ligandQ, name: 'Ligand'}, {isBinding: true})
-                .then(Transformer.Molecule.CreateVisual, {style: ligandStyle}, {ref: 'ligand-visual'});
+            .then(Transformer.Molecule.CreateVisual, {style: ligandStyle}, {ref: 'ligand-visual'});
         applyTransforms(action)
-                .then(function () {
-                    // we select the ligand to display the density around it if it's loaded
-                    Command.Molecule.CreateSelectInteraction.dispatch(plugin.context, {entity: selectNodes('ligand-visual')[0], query: Query.everything()});
+            .then(function () {
+                // we select the ligand to display the density around it if it's loaded
+                Command.Molecule.CreateSelectInteraction.dispatch(plugin.context, {
+                    entity: selectNodes('ligand-visual')[0],
+                    query: Query.everything()
                 });
+            });
         //.catch(e => reportError(e));
     });
     addButton('Load Density', function () {
         var id = moleculeId;
         // this builds the transforms needed to create a molecule
         var action = Transform.build()
-                .add(plugin.context.tree.root, LiteMol.Viewer.PDBe.Data.DownloadDensity, {id: id}, {ref: 'density'});
+            .add(plugin.context.tree.root, LiteMol.Viewer.PDBe.Data.DownloadDensity, {id: id}, {ref: 'density'});
         applyTransforms(action);
     });
     addButton('Toggle Density', function () {
         var density = selectNodes('density')[0];
         if (!density)
             return;
-        Command.Entity.SetVisibility.dispatch(plugin.context, {entity: density, visible: density.state.visibility === 2 /* None */});
+        Command.Entity.SetVisibility.dispatch(plugin.context, {
+            entity: density,
+            visible: density.state.visibility === 2 /* None */
+        });
     });
+
     function createSelectionTheme(color) {
         // for more options also see Bootstrap/Visualization/Molecule/Theme
         var colors = LiteMol.Core.Utils.FastMap.create();
@@ -1163,6 +1312,7 @@ var LiteMolPluginInstance;
         colors.set('Highlight', CoreVis.Theme.Default.HighlightColor);
         return Visualization.Molecule.uniformThemeProvider(void 0, {colors: colors});
     }
+
     addButton('Select, Extract, Focus', function () {
         var visual = selectNodes('polymer-visual')[0];
         if (!visual)
@@ -1170,8 +1320,11 @@ var LiteMolPluginInstance;
         var query = Query.sequence('1', 'A', {seqNumber: 10}, {seqNumber: 25});
         var theme = createSelectionTheme(CoreVis.Color.fromHex(0x123456));
         var action = Transform.build()
-                .add(visual, Transformer.Molecule.CreateSelectionFromQuery, {query: query, name: 'My name'}, {ref: 'sequence-selection'})
-                .then(Transformer.Molecule.CreateVisual, {style: Visualization.Molecule.Default.ForType.get('BallsAndSticks')});
+            .add(visual, Transformer.Molecule.CreateSelectionFromQuery, {
+                query: query,
+                name: 'My name'
+            }, {ref: 'sequence-selection'})
+            .then(Transformer.Molecule.CreateVisual, {style: Visualization.Molecule.Default.ForType.get('BallsAndSticks')});
         applyTransforms(action).then(function () {
             Command.Visual.UpdateBasicTheme.dispatch(plugin.context, {visual: visual, theme: theme});
             Command.Entity.Focus.dispatch(plugin.context, selectNodes('sequence-selection'));
@@ -1192,8 +1345,6 @@ var LiteMolPluginInstance;
         var theme = LiteMolPluginInstance.CustomTheme.createTheme(model.props.model, coloringJson);
 //        // instead of "polymer-visual", "model" or any valid ref can be used: all "child" visuals will be colored.
         LiteMolPluginInstance.CustomTheme.applyTheme(plugin, 'polymer-visual', theme);
-
-
 
 
 //        var model = plugin.selectEntities('model')[0];
@@ -1249,216 +1400,246 @@ var LiteMolPluginInstance;
         colors.set('A', CoreVis.Color.fromRgb(125, 169, 12));
         // etc.
         var theme = Visualization.Molecule.createColorMapThemeProvider(
-                // here you can also use m.atoms.residueIndex, m.residues.name/.... etc.
-                        // you can also get more creative and use "composite properties"
-                                // for this check Bootstrap/Visualization/Theme.ts and Visualization/Base/Theme.ts and it should be clear hwo to do that.
-                                        //
-                                                // You can create "validation based" coloring using this approach as it is not implemented in the plugin for now.
-                                                        function (m) {
-                                                            return ({index: m.data.atoms.chainIndex, property: m.data.chains.asymId});
-                                                        }, colors,
-                                                        // this a fallback color used for elements not in the set 
-                                                        CoreVis.Color.fromRgb(0, 0, 123))(model);
-                                                Command.Visual.UpdateBasicTheme.dispatch(plugin.context, {visual: visual, theme: theme});
-                                                // if you also want to color the ligands and waters, you have to safe references to them and do it manually.          
-                                            });
-                                    addButton('Highlight On', function () {
-                                        var model = selectNodes('model')[0];
-                                        if (!model)
-                                            return;
-                                        var query = Query.sequence('1', 'A', {seqNumber: 10}, {seqNumber: 25});
-                                        Command.Molecule.Highlight.dispatch(plugin.context, {model: model, query: query, isOn: true});
-                                    });
-                                    addButton('Highlight Off', function () {
-                                        var model = selectNodes('model')[0];
-                                        if (!model)
-                                            return;
-                                        var query = Query.sequence('1', 'A', {seqNumber: 10}, {seqNumber: 25});
-                                        Command.Molecule.Highlight.dispatch(plugin.context, {model: model, query: query, isOn: false});
-                                    });
-                                    addButton('Reset Theme, Sel, Highlight', function () {
-                                        Command.Visual.ResetTheme.dispatch(plugin.context, void 0);
-                                        cleanUp();
-                                    });
-                                    var AQ = Query.Algebraic;
-                                    addButton('Algebraic Query', function () {
-                                        var model = selectNodes('model')[0];
-                                        if (!model)
-                                            return;
-                                        //let query = AQ.query(AQ.sidechain);
-                                        var query = AQ.query(AQ.equal(AQ.residueName, AQ.value('ALA')));
-                                        var action = Transform.build()
-                                                .add(model, Transformer.Molecule.CreateSelectionFromQuery, {query: query, name: 'Alg. query'}, {ref: 'alg-selection'})
-                                                .then(Transformer.Molecule.CreateVisual, {style: Visualization.Molecule.Default.ForType.get('BallsAndSticks')});
-                                        applyTransforms(action);
-                                    });
-                                    addSeparator();
-                                    addHeader('Multiple Models');
+            // here you can also use m.atoms.residueIndex, m.residues.name/.... etc.
+            // you can also get more creative and use "composite properties"
+            // for this check Bootstrap/Visualization/Theme.ts and Visualization/Base/Theme.ts and it should be clear hwo to do that.
+            //
+            // You can create "validation based" coloring using this approach as it is not implemented in the plugin for now.
+            function (m) {
+                return ({index: m.data.atoms.chainIndex, property: m.data.chains.asymId});
+            }, colors,
+            // this a fallback color used for elements not in the set
+            CoreVis.Color.fromRgb(0, 0, 123))(model);
+        Command.Visual.UpdateBasicTheme.dispatch(plugin.context, {visual: visual, theme: theme});
+        // if you also want to color the ligands and waters, you have to safe references to them and do it manually.
+    });
+    addButton('Highlight On', function () {
+        var model = selectNodes('model')[0];
+        if (!model)
+            return;
+        var query = Query.sequence('1', 'A', {seqNumber: 10}, {seqNumber: 25});
+        Command.Molecule.Highlight.dispatch(plugin.context, {model: model, query: query, isOn: true});
+    });
+    addButton('Highlight Off', function () {
+        var model = selectNodes('model')[0];
+        if (!model)
+            return;
+        var query = Query.sequence('1', 'A', {seqNumber: 10}, {seqNumber: 25});
+        Command.Molecule.Highlight.dispatch(plugin.context, {model: model, query: query, isOn: false});
+    });
+    addButton('Reset Theme, Sel, Highlight', function () {
+        Command.Visual.ResetTheme.dispatch(plugin.context, void 0);
+        cleanUp();
+    });
+    var AQ = Query.Algebraic;
+    addButton('Algebraic Query', function () {
+        var model = selectNodes('model')[0];
+        if (!model)
+            return;
+        //let query = AQ.query(AQ.sidechain);
+        var query = AQ.query(AQ.equal(AQ.residueName, AQ.value('ALA')));
+        var action = Transform.build()
+            .add(model, Transformer.Molecule.CreateSelectionFromQuery, {
+                query: query,
+                name: 'Alg. query'
+            }, {ref: 'alg-selection'})
+            .then(Transformer.Molecule.CreateVisual, {style: Visualization.Molecule.Default.ForType.get('BallsAndSticks')});
+        applyTransforms(action);
+    });
+    addSeparator();
+    addHeader('Multiple Models');
 
 
+    addTextInput('models-pdbid', '1grm', '4 letter PDB id...');
+    addButton('Clear, Download, and Parse', function () {
+        var id = ((document.getElementById('models-pdbid').value) || '').trim().toLowerCase();
+        if (id.length !== 4) {
+            console.log('id must be a 4 letter string.');
+            return;
+        }
+        Bootstrap.Command.Tree.RemoveNode.dispatch(plugin.context, plugin.context.tree.root);
+        // this builds the transforms needed to create a molecule
+        var action = Transform.build()
+            .add(plugin.context.tree.root, Transformer.Data.Download, {
+                url: "https://www.ebi.ac.uk/pdbe/static/entry/" + id + "_updated.cif",
+                type: 'String',
+                id: id
+            })
+            .then(Transformer.Molecule.CreateFromData, {format: LiteMol.Core.Formats.Molecule.SupportedFormats.mmCIF}, {ref: 'molecule'});
+        //.then(Transformer.Molecule.CreateModel, { modelIndex: 0 }, { isBinding: false, ref: 'model' })
+        //.then(Transformer.Molecule.CreateMacromoleculeVisual, { polymer: true, polymerRef: 'polymer-visual', het: true, water: true });
+        // can also add hetRef and waterRef; the refs allow us to reference the model and visual later.
+        applyTransforms(action);
+        //.then(() => nextAction())
+        //.catch(e => reportError(e));
+    });
+    addButton('Create All Models', function () {
+        // this function can be called 'automatically' in applyTransforms(action).then(....) from 'Clear, Download, and Parse';
+        var molecule = plugin.context.select('molecule' /* accessed by ref created in 'Clear, Download, and Parse' */)[0];
+        if (!molecule) {
+            console.log('Molecule not loaded.');
+            return;
+        }
+        var count = molecule.props.molecule.models.length;
+        var action = Transform.build();
+        var colors = Bootstrap.Immutable.Map()
+            .set('Selection', LiteMol.Visualization.Theme.Default.SelectionColor)
+            .set('Highlight', LiteMol.Visualization.Theme.Default.HighlightColor);
+        for (var i = 0; i < count; i++) {
+            // More styles in Bootstrap/Visualization/Molecule/Styles.ts
+            var style = {
+                type: 'Cartoons',
+                params: {detail: 'Automatic'},
+                theme: {
+                    template: Bootstrap.Visualization.Molecule.Default.UniformThemeTemplate,
+                    colors: colors.set('Uniform', LiteMol.Visualization.Molecule.Colors.DefaultPallete[i]),
+                    transparency: {}
+                }
+            };
+            action
+                .add(molecule, Transformer.Molecule.CreateModel, {modelIndex: i}, {isBinding: false, ref: 'model-' + i})
+                .then(Transformer.Molecule.CreateVisual, {style: style}, {ref: 'model-visual-' + i});
+        }
+        applyTransforms(action);
+    });
+    addButton('Toggle Model 2 Visibility', function () {
+        var entity = plugin.context.select('model-1' /* indexed from 0 */)[0];
+        if (!entity)
+            return;
+        Bootstrap.Command.Entity.SetVisibility.dispatch(plugin.context, {
+            entity: entity,
+            visible: entity.state.visibility === 0 /* Full */ ? false : true
+        });
+    });
+    addHoverArea('Hover to Highlight Model 1', function () {
+        Bootstrap.Command.Entity.Highlight.dispatch(plugin.context, {
+            entities: plugin.context.select('model-visual-0' /* indexed from 0 */),
+            isOn: true
+        });
+    }, function () {
+        Bootstrap.Command.Entity.Highlight.dispatch(plugin.context, {
+            entities: plugin.context.select('model-visual-0' /* indexed from 0 */),
+            isOn: false
+        });
+    });
+    addHeader('Input data');
+    addTextInput('pdbid', '', '4 letter PDB id...');
+    addTextInput('showWB', '', '4 letter PDB id...');
 
-                                    addTextInput('models-pdbid', '1grm', '4 letter PDB id...');
-                                    addButton('Clear, Download, and Parse', function () {
-                                        var id = ((document.getElementById('models-pdbid').value) || '').trim().toLowerCase();
-                                        if (id.length !== 4) {
-                                            console.log('id must be a 4 letter string.');
-                                            return;
-                                        }
-                                        Bootstrap.Command.Tree.RemoveNode.dispatch(plugin.context, plugin.context.tree.root);
-                                        // this builds the transforms needed to create a molecule
-                                        var action = Transform.build()
-                                                .add(plugin.context.tree.root, Transformer.Data.Download, {url: "https://www.ebi.ac.uk/pdbe/static/entry/" + id + "_updated.cif", type: 'String', id: id})
-                                                .then(Transformer.Molecule.CreateFromData, {format: LiteMol.Core.Formats.Molecule.SupportedFormats.mmCIF}, {ref: 'molecule'});
-                                        //.then(Transformer.Molecule.CreateModel, { modelIndex: 0 }, { isBinding: false, ref: 'model' })
-                                        //.then(Transformer.Molecule.CreateMacromoleculeVisual, { polymer: true, polymerRef: 'polymer-visual', het: true, water: true });
-                                        // can also add hetRef and waterRef; the refs allow us to reference the model and visual later.
-                                        applyTransforms(action);
-                                        //.then(() => nextAction())
-                                        //.catch(e => reportError(e));
-                                    });
-                                    addButton('Create All Models', function () {
-                                        // this function can be called 'automatically' in applyTransforms(action).then(....) from 'Clear, Download, and Parse';
-                                        var molecule = plugin.context.select('molecule' /* accessed by ref created in 'Clear, Download, and Parse' */)[0];
-                                        if (!molecule) {
-                                            console.log('Molecule not loaded.');
-                                            return;
-                                        }
-                                        var count = molecule.props.molecule.models.length;
-                                        var action = Transform.build();
-                                        var colors = Bootstrap.Immutable.Map()
-                                                .set('Selection', LiteMol.Visualization.Theme.Default.SelectionColor)
-                                                .set('Highlight', LiteMol.Visualization.Theme.Default.HighlightColor);
-                                        for (var i = 0; i < count; i++) {
-                                            // More styles in Bootstrap/Visualization/Molecule/Styles.ts
-                                            var style = {
-                                                type: 'Cartoons',
-                                                params: {detail: 'Automatic'},
-                                                theme: {
-                                                    template: Bootstrap.Visualization.Molecule.Default.UniformThemeTemplate,
-                                                    colors: colors.set('Uniform', LiteMol.Visualization.Molecule.Colors.DefaultPallete[i]),
-                                                    transparency: {}
-                                                }
-                                            };
-                                            action
-                                                    .add(molecule, Transformer.Molecule.CreateModel, {modelIndex: i}, {isBinding: false, ref: 'model-' + i})
-                                                    .then(Transformer.Molecule.CreateVisual, {style: style}, {ref: 'model-visual-' + i});
-                                        }
-                                        applyTransforms(action);
-                                    });
-                                    addButton('Toggle Model 2 Visibility', function () {
-                                        var entity = plugin.context.select('model-1' /* indexed from 0 */)[0];
-                                        if (!entity)
-                                            return;
-                                        Bootstrap.Command.Entity.SetVisibility.dispatch(plugin.context, {entity: entity, visible: entity.state.visibility === 0 /* Full */ ? false : true});
-                                    });
-                                    addHoverArea('Hover to Highlight Model 1', function () {
-                                        Bootstrap.Command.Entity.Highlight.dispatch(plugin.context, {entities: plugin.context.select('model-visual-0' /* indexed from 0 */), isOn: true});
-                                    }, function () {
-                                        Bootstrap.Command.Entity.Highlight.dispatch(plugin.context, {entities: plugin.context.select('model-visual-0' /* indexed from 0 */), isOn: false});
-                                    });
-                                    addHeader('Input data');
-                                    addTextInput('pdbid', '', '4 letter PDB id...');
-                                    addTextInput('showWB', '', '4 letter PDB id...');
+    var DefaultComponents = [
+        Plugin.Components.Visualization.HighlightInfo(LayoutRegion.Main, true),
+        Plugin.Components.Entity.Current('LiteMol', Plugin.VERSION.number)(LayoutRegion.Right, true),
+        Plugin.Components.Transform.View(LayoutRegion.Right),
+        Plugin.Components.Context.Log(LayoutRegion.Bottom, true),
+        Plugin.Components.Context.Overlay(LayoutRegion.Root),
+        Plugin.Components.Context.Toast(LayoutRegion.Main, true),
+        Plugin.Components.Context.BackgroundTasks(LayoutRegion.Main, true)
+    ];
+    var NoLogComponents = [
+        Plugin.Components.Visualization.HighlightInfo(LayoutRegion.Main, true),
+        Plugin.Components.Entity.Current('LiteMol', Plugin.VERSION.number)(LayoutRegion.Right, true),
+        Plugin.Components.Transform.View(LayoutRegion.Right),
+        Plugin.Components.Context.Overlay(LayoutRegion.Root),
+        Plugin.Components.Context.Toast(LayoutRegion.Main, true),
+        Plugin.Components.Context.BackgroundTasks(LayoutRegion.Main, true)
+    ];
 
-                                    var DefaultComponents = [
-                                        Plugin.Components.Visualization.HighlightInfo(LayoutRegion.Main, true),
-                                        Plugin.Components.Entity.Current('LiteMol', Plugin.VERSION.number)(LayoutRegion.Right, true),
-                                        Plugin.Components.Transform.View(LayoutRegion.Right),
-                                        Plugin.Components.Context.Log(LayoutRegion.Bottom, true),
-                                        Plugin.Components.Context.Overlay(LayoutRegion.Root),
-                                        Plugin.Components.Context.Toast(LayoutRegion.Main, true),
-                                        Plugin.Components.Context.BackgroundTasks(LayoutRegion.Main, true)
-                                    ];
-                                    var NoLogComponents = [
-                                        Plugin.Components.Visualization.HighlightInfo(LayoutRegion.Main, true),
-                                        Plugin.Components.Entity.Current('LiteMol', Plugin.VERSION.number)(LayoutRegion.Right, true),
-                                        Plugin.Components.Transform.View(LayoutRegion.Right),
-                                        Plugin.Components.Context.Overlay(LayoutRegion.Root),
-                                        Plugin.Components.Context.Toast(LayoutRegion.Main, true),
-                                        Plugin.Components.Context.BackgroundTasks(LayoutRegion.Main, true)
-                                    ];
-                                    function create(target) {
-                                        var customSpecification = {
-                                            settings: {
-                                                // currently these are all the 'global' settings available 
-                                                'molecule.model.defaultQuery': "residues({ name: 'ALA' })",
-                                                'molecule.model.defaultAssemblyName': '1',
-                                                'molecule.coordinateStreaming.defaultId': '1jj2',
-                                                'molecule.coordinateStreaming.defaultServer': 'https://webchem.ncbr.muni.cz/CoordinateServer/',
-                                                'molecule.coordinateStreaming.defaultRadius': 10,
-                                                'density.defaultVisualBehaviourRadius': 5
-                                            },
-                                            transforms: [
-                                                // These are the controls that are available in the UI. Removing any of them wont break anything, but the user 
-                                                // be able to create a particular thing if he deletes something.
-                                                {transformer: LiteMol.Viewer.DataSources.DownloadMolecule, view: Views.Transform.Data.WithUrlIdField},
-                                                {transformer: Transformer.Molecule.OpenMoleculeFromFile, view: Views.Transform.Molecule.OpenFile},
-                                                {transformer: Transformer.Data.Download, view: Views.Transform.Data.Download},
-                                                {transformer: Transformer.Data.OpenFile, view: Views.Transform.Data.OpenFile},
-                                                // this uses the custom view defined in the CustomTransformView.tsx
-                                                //{ transformer: Transformer.Molecule.CoordinateStreaming.InitStreaming, view: Views.Transform.Molecule.InitCoordinateStreaming },
-                                                {transformer: Transformer.Molecule.CoordinateStreaming.InitStreaming, view: LiteMol.Example.CoordianteStreamingCustomView},
-                                                // Raw data transforms
-                                                {transformer: Transformer.Data.ParseCif, view: Views.Transform.Empty},
-                                                {transformer: Transformer.Density.ParseData, view: Views.Transform.Density.ParseData},
-                                                // Molecule(model) transforms
-                                                {transformer: Transformer.Molecule.CreateFromMmCif, view: Views.Transform.Molecule.CreateFromMmCif},
-                                                {transformer: Transformer.Molecule.CreateModel, view: Views.Transform.Molecule.CreateModel},
-                                                {transformer: Transformer.Molecule.CreateSelection, view: Views.Transform.Molecule.CreateSelection},
-                                                {transformer: Transformer.Molecule.CreateAssembly, view: Views.Transform.Molecule.CreateAssembly},
-                                                {transformer: Transformer.Molecule.CreateSymmetryMates, view: Views.Transform.Molecule.CreateSymmetryMates},
-                                                {transformer: Transformer.Molecule.CreateMacromoleculeVisual, view: Views.Transform.Empty},
-                                                {transformer: Transformer.Molecule.CreateVisual, view: Views.Transform.Molecule.CreateVisual},
-                                                // density transforms
-                                                {transformer: Transformer.Density.CreateVisual, view: Views.Transform.Density.CreateVisual},
-                                                {transformer: Transformer.Density.CreateVisualBehaviour, view: Views.Transform.Density.CreateVisualBehaviour},
-                                                // Coordinate streaming            
-                                                {transformer: Transformer.Molecule.CoordinateStreaming.CreateBehaviour, view: Views.Transform.Empty},
-                                                // Validation report
-                                                {transformer: LiteMol.Viewer.PDBe.Validation.DownloadAndCreate, view: Views.Transform.Empty},
-                                                {transformer: LiteMol.Viewer.PDBe.Validation.ApplyTheme, view: Views.Transform.Empty}
-                                            ],
-                                            behaviours: [
-                                                // you will find the source of all behaviours in the Bootstrap/Behaviour directory
-                                                // keep these 2
-                                                Bootstrap.Behaviour.SetEntityToCurrentWhenAdded,
-                                                Bootstrap.Behaviour.FocusCameraOnSelect,
-                                                // this colors the visual when a selection is created on it.
-                                                Bootstrap.Behaviour.ApplySelectionToVisual,
-                                                // you will most likely not want this as this could cause trouble
-                                                //Bootstrap.Behaviour.CreateVisualWhenModelIsAdded,
-                                                // this colors the visual when it's selected by mouse or touch
-                                                Bootstrap.Behaviour.ApplyInteractivitySelection,
-                                                // this shows what atom/residue is the pointer currently over
-                                                Bootstrap.Behaviour.Molecule.HighlightElementInfo,
-                                                // when the same element is clicked twice in a row, the selection is emptied
-                                                Bootstrap.Behaviour.UnselectElementOnRepeatedClick,
-                                                // distance to the last "clicked" element
-                                                Bootstrap.Behaviour.Molecule.DistanceToLastClickedElement,
-                                                // when somethinh is selected, this will create an "overlay visual" of the selected residue and show every other residue within 5ang
-                                                // you will not want to use this for the ligand pages, where you create the same thing this does at startup
-                                                Bootstrap.Behaviour.Molecule.ShowInteractionOnSelect(5),
-                                                // this tracks what is downloaded and some basic actions. Does not send any private data etc.
-                                                // While it is not required for any functionality, we as authors are very much interested in basic 
-                                                // usage statistics of the application and would appriciate if this behaviour is used.
+    function create(target) {
+        var customSpecification = {
+            settings: {
+                // currently these are all the 'global' settings available
+                'molecule.model.defaultQuery': "residues({ name: 'ALA' })",
+                'molecule.model.defaultAssemblyName': '1',
+                'molecule.coordinateStreaming.defaultId': '1jj2',
+                'molecule.coordinateStreaming.defaultServer': 'https://webchem.ncbr.muni.cz/CoordinateServer/',
+                'molecule.coordinateStreaming.defaultRadius': 10,
+                'density.defaultVisualBehaviourRadius': 5
+            },
+            transforms: [
+                // These are the controls that are available in the UI. Removing any of them wont break anything, but the user
+                // be able to create a particular thing if he deletes something.
+                {transformer: LiteMol.Viewer.DataSources.DownloadMolecule, view: Views.Transform.Data.WithUrlIdField},
+                {transformer: Transformer.Molecule.OpenMoleculeFromFile, view: Views.Transform.Molecule.OpenFile},
+                {transformer: Transformer.Data.Download, view: Views.Transform.Data.Download},
+                {transformer: Transformer.Data.OpenFile, view: Views.Transform.Data.OpenFile},
+                // this uses the custom view defined in the CustomTransformView.tsx
+                //{ transformer: Transformer.Molecule.CoordinateStreaming.InitStreaming, view: Views.Transform.Molecule.InitCoordinateStreaming },
+                {
+                    transformer: Transformer.Molecule.CoordinateStreaming.InitStreaming,
+                    view: LiteMol.Example.CoordianteStreamingCustomView
+                },
+                // Raw data transforms
+                {transformer: Transformer.Data.ParseCif, view: Views.Transform.Empty},
+                {transformer: Transformer.Density.ParseData, view: Views.Transform.Density.ParseData},
+                // Molecule(model) transforms
+                {transformer: Transformer.Molecule.CreateFromMmCif, view: Views.Transform.Molecule.CreateFromMmCif},
+                {transformer: Transformer.Molecule.CreateModel, view: Views.Transform.Molecule.CreateModel},
+                {transformer: Transformer.Molecule.CreateSelection, view: Views.Transform.Molecule.CreateSelection},
+                {transformer: Transformer.Molecule.CreateAssembly, view: Views.Transform.Molecule.CreateAssembly},
+                {
+                    transformer: Transformer.Molecule.CreateSymmetryMates,
+                    view: Views.Transform.Molecule.CreateSymmetryMates
+                },
+                {transformer: Transformer.Molecule.CreateMacromoleculeVisual, view: Views.Transform.Empty},
+                {transformer: Transformer.Molecule.CreateVisual, view: Views.Transform.Molecule.CreateVisual},
+                // density transforms
+                {transformer: Transformer.Density.CreateVisual, view: Views.Transform.Density.CreateVisual},
+                {
+                    transformer: Transformer.Density.CreateVisualBehaviour,
+                    view: Views.Transform.Density.CreateVisualBehaviour
+                },
+                // Coordinate streaming
+                {transformer: Transformer.Molecule.CoordinateStreaming.CreateBehaviour, view: Views.Transform.Empty},
+                // Validation report
+                {transformer: LiteMol.Viewer.PDBe.Validation.DownloadAndCreate, view: Views.Transform.Empty},
+                {transformer: LiteMol.Viewer.PDBe.Validation.ApplyTheme, view: Views.Transform.Empty}
+            ],
+            behaviours: [
+                // you will find the source of all behaviours in the Bootstrap/Behaviour directory
+                // keep these 2
+                Bootstrap.Behaviour.SetEntityToCurrentWhenAdded,
+                Bootstrap.Behaviour.FocusCameraOnSelect,
+                // this colors the visual when a selection is created on it.
+                Bootstrap.Behaviour.ApplySelectionToVisual,
+                // you will most likely not want this as this could cause trouble
+                //Bootstrap.Behaviour.CreateVisualWhenModelIsAdded,
+                // this colors the visual when it's selected by mouse or touch
+                Bootstrap.Behaviour.ApplyInteractivitySelection,
+                // this shows what atom/residue is the pointer currently over
+                Bootstrap.Behaviour.Molecule.HighlightElementInfo,
+                // when the same element is clicked twice in a row, the selection is emptied
+                Bootstrap.Behaviour.UnselectElementOnRepeatedClick,
+                // distance to the last "clicked" element
+                Bootstrap.Behaviour.Molecule.DistanceToLastClickedElement,
+                // when somethinh is selected, this will create an "overlay visual" of the selected residue and show every other residue within 5ang
+                // you will not want to use this for the ligand pages, where you create the same thing this does at startup
+                Bootstrap.Behaviour.Molecule.ShowInteractionOnSelect(5),
+                // this tracks what is downloaded and some basic actions. Does not send any private data etc.
+                // While it is not required for any functionality, we as authors are very much interested in basic
+                // usage statistics of the application and would appriciate if this behaviour is used.
 //                                                Bootstrap.Behaviour.GoogleAnalytics('UA-77062725-1')
-                                            ],
-                                            components: DefaultComponents,
-                                            viewport: {
-                                                // dont touch this either 
-                                                view: Views.Visualization.Viewport,
-                                                controlsView: Views.Visualization.ViewportControls
-                                            },
-                                            layoutView: Views.Layout,
-                                            tree: {
-                                                // or this 
-                                                region: LayoutRegion.Left,
-                                                view: Views.Entity.Tree
-                                            }
-                                        };
-                                        var plugin = Plugin.create({target: target, customSpecification: customSpecification, layoutState: {hideControls: true}});
-                                        plugin.context.logger.message("LiteMol Plugin Commands Example " + Plugin.VERSION.number);
-                                        return plugin;
-                                    }
-                                    LiteMolPluginInstance.create = create;
-                                })(LiteMolPluginInstance || (LiteMolPluginInstance = {}));
+            ],
+            components: DefaultComponents,
+            viewport: {
+                // dont touch this either
+                view: Views.Visualization.Viewport,
+                controlsView: Views.Visualization.ViewportControls
+            },
+            layoutView: Views.Layout,
+            tree: {
+                // or this
+                region: LayoutRegion.Left,
+                view: Views.Entity.Tree
+            }
+        };
+        var plugin = Plugin.create({
+            target: target,
+            customSpecification: customSpecification,
+            layoutState: {hideControls: true}
+        });
+        plugin.context.logger.message("LiteMol Plugin Commands Example " + Plugin.VERSION.number);
+        return plugin;
+    }
+
+    LiteMolPluginInstance.create = create;
+})(LiteMolPluginInstance || (LiteMolPluginInstance = {}));

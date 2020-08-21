@@ -95,7 +95,7 @@ public class SmallSideBtn extends AbsoluteLayout {
         } else {
             this.addStyleName("disable");
         }
-        super.setEnabled(enabled); 
+        super.setEnabled(enabled);
     }
 
 }

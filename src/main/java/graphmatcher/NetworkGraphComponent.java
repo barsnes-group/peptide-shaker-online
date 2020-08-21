@@ -15,52 +15,27 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.AbsoluteLayout.ComponentPosition;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.DragAndDropWrapper;
+import com.vaadin.ui.AbsoluteLayout.ComponentPosition;
 import com.vaadin.ui.DragAndDropWrapper.WrapperTargetDetails;
-import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.PopupView;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
 import com.vaadin.ui.themes.ValoTheme;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
-import edu.uci.ics.jung.visualization.control.CrossoverScalingControl;
-import edu.uci.ics.jung.visualization.control.ScalingControl;
-import edu.uci.ics.jung.visualization.decorators.EdgeShape;
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import org.jfree.chart.encoders.ImageEncoder;
 import org.jfree.chart.encoders.ImageEncoderFactory;
 import org.jfree.chart.encoders.ImageFormat;
 import selectioncanvas.SelectioncanvasComponent2;
+
+import java.awt.*;
+import java.awt.geom.Line2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * This class represents Graph layout component
@@ -71,26 +46,14 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
 
     private final AbsoluteLayout canvasWrapper;
     private final AbsoluteLayout canvas;
-    private int liveWidth = 1000;
-    private int liveHeight = 500;
-    private Image edgesImage;
     private final Stroke internalStroke;
     private final Stroke externalStroke;
     private final Color edgeSelectedColor = new Color(0, 154, 255);
     private final Color edgeUnSelectedColor = Color.lightGray;
     /**
-     * The graph.
-     */
-    private UndirectedSparseGraph<String, String> graph;
-    /**
      * The nodes.
      */
     private final Map<String, Map<String, NetworkGraphNode>> graphNodes;
-    /**
-     * The edges: the keys are the node labels and the elements the list of
-     * objects.
-     */
-    private Set<NetworkGraphEdge> graphEdges;
     /**
      * The nodes.
      */
@@ -104,8 +67,6 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
      * Creates new form GraphForm
      */
     private final Label graphInfo;
-    private VisualizationViewer visualizationViewer;
-    private FRLayout graphLayout;
     private final AbsoluteLayout mainContainer;
     private final DropHandler dropHandler;
     private final AbsoluteLayout graphWrapper;
@@ -116,10 +77,21 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
     private final PopupView legendLayout;
     private final Legend informationLegend;
     private final SelectioncanvasComponent2 selectionCanavas;
-
-    public Legend getInformationLegend() {
-        return informationLegend;
-    }
+    int counter = 0;
+    private int liveWidth = 1000;
+    private int liveHeight = 500;
+    private Image edgesImage;
+    /**
+     * The graph.
+     */
+    private UndirectedSparseGraph<String, String> graph;
+    /**
+     * The edges: the keys are the node labels and the elements the list of
+     * objects.
+     */
+    private Set<NetworkGraphEdge> graphEdges;
+    private VisualizationViewer visualizationViewer;
+    private FRLayout graphLayout;
 
     public NetworkGraphComponent() {
         NetworkGraphComponent.this.setMargin(new MarginInfo(false, false, false, false));
@@ -298,7 +270,7 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
         graphInfo.addStyleName("inframe");
         mainContainer.addComponent(graphInfo, "right: " + 15 + "px; top: " + 15 + "px");
 
-       
+
         VerticalLayout updateLayoutBtn = new VerticalLayout();
         updateLayoutBtn.setIcon(VaadinIcons.REFRESH);
         updateLayoutBtn.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
@@ -308,13 +280,13 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
         updateLayoutBtn.addLayoutClickListener((LayoutEvents.LayoutClickEvent event) -> {
             updateGraphLayout();
         });
-          VerticalLayout selectAllBtn = new VerticalLayout();
-       selectAllBtn.setIcon(new ThemeResource("img/selectall_1.png"));
+        VerticalLayout selectAllBtn = new VerticalLayout();
+        selectAllBtn.setIcon(new ThemeResource("img/selectall_1.png"));
         selectAllBtn.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
         selectAllBtn.addStyleName(ValoTheme.BUTTON_LINK);
-         selectAllBtn.addStyleName("selectallbtn");
-         selectAllBtn.setDescription("Select all");
-        selectAllBtn.addLayoutClickListener((LayoutEvents.LayoutClickEvent event)-> {
+        selectAllBtn.addStyleName("selectallbtn");
+        selectAllBtn.setDescription("Select all");
+        selectAllBtn.addLayoutClickListener((LayoutEvents.LayoutClickEvent event) -> {
             selectAll();
         });
 
@@ -344,8 +316,8 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
         legendLayoutBtn.setIcon(new ThemeResource("img/legend.png"));
         legendLayoutBtn.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
         legendLayoutBtn.addStyleName(ValoTheme.BUTTON_LINK);
-         legendLayoutBtn.addStyleName("legendbtn");
-         legendLayoutBtn.setDescription("Legend");
+        legendLayoutBtn.addStyleName("legendbtn");
+        legendLayoutBtn.setDescription("Legend");
         legendLayoutBtn.addLayoutClickListener((LayoutEvents.LayoutClickEvent event) -> {
             legendLayout.setPopupVisible(true);
         });
@@ -364,7 +336,10 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
         mainContainer.addComponent(legendLayout, "left: " + 50 + "%; top: " + 50 + "%");
         canvasWrapper.addComponent(selectionCanavas);
     }
-    int counter = 0;
+
+    public Legend getInformationLegend() {
+        return informationLegend;
+    }
 
     public void updateGraphData(Set<String> selectedIds, Set<NetworkGraphEdge> edges) {//Map<String, Map<String, Node>> graphNodes
         this.canvas.removeAllComponents();
@@ -694,7 +669,6 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
 
     }
 
-   
 
     private Shape drawEdge(int x1, int y1, int x2, int y2) {
         return new Line2D.Double(x1, y1, x2, y2);
@@ -816,7 +790,7 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
         /**
          * Constructor to initialise the main attributes.
          *
-         * @param content the dropped component (the label layout)
+         * @param content     the dropped component (the label layout)
          * @param dropHandler The layout drop handler.
          */
         public WrappedComponent(final Component content, final DropHandler dropHandler) {

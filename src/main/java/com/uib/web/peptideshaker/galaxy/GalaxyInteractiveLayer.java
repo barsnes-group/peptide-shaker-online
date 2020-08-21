@@ -1,25 +1,20 @@
 package com.uib.web.peptideshaker.galaxy;
 
 import com.compomics.util.parameters.identification.IdentificationParameters;
-import com.github.jmchilton.blend4j.galaxy.GalaxyInstanceFactory;
-import com.uib.web.peptideshaker.galaxy.handlers.GalaxyHistoryHandler;
-import com.uib.web.peptideshaker.galaxy.handlers.GalaxyToolsHandler;
 import com.github.jmchilton.blend4j.galaxy.UsersClient;
 import com.github.jmchilton.blend4j.galaxy.beans.User;
 import com.uib.web.peptideshaker.galaxy.client.GalaxyClient;
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
+import com.uib.web.peptideshaker.galaxy.handlers.GalaxyHistoryHandler;
+import com.uib.web.peptideshaker.galaxy.handlers.GalaxyToolsHandler;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
+import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.vaadin.server.VaadinSession;
+import pl.exsio.plupload.PluploadFile;
+
 import java.io.File;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import pl.exsio.plupload.PluploadFile;
+import java.util.*;
 
 /**
  * This class represents main galaxy interactive layer that interact with both
@@ -30,21 +25,9 @@ import pl.exsio.plupload.PluploadFile;
 public abstract class GalaxyInteractiveLayer {
 
     /**
-     * Main Galaxy Server instance.
-     */
-    private GalaxyClient Galaxy_Instance;
-    /**
      * Galaxy Server history management system
      */
     private final GalaxyHistoryHandler historyHandler;
-    /**
-     * Galaxy Server tools management handler
-     */
-    private GalaxyToolsHandler toolsHandler;
-    /**
-     * User data files folder
-     */
-    private File user_folder;
     /**
      * User overview information list for welcome page left panel
      */
@@ -53,6 +36,18 @@ public abstract class GalaxyInteractiveLayer {
      * Decimal Format for memory usage
      */
     private final DecimalFormat dsFormater = new DecimalFormat("#.##");
+    /**
+     * Main Galaxy Server instance.
+     */
+    private GalaxyClient Galaxy_Instance;
+    /**
+     * Galaxy Server tools management handler
+     */
+    private GalaxyToolsHandler toolsHandler;
+    /**
+     * User data files folder
+     */
+    private File user_folder;
 
     /**
      * Constructor to initialise the main Galaxy history handler.
@@ -73,9 +68,9 @@ public abstract class GalaxyInteractiveLayer {
             @Override
             public void updatePresenterLayer(Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress, boolean updatePresenterView, Set<String> toDeleteMap) {
                 //update history in the system                 
-               
+
                 GalaxyInteractiveLayer.this.updatePresenterLayer(historyFilesMap, jobsInProgress, updatePresenterView);
-                
+
                 if (!jobsInProgress && toDeleteMap != null && toolsHandler != null) {
                     toDeleteMap.forEach((galaxyId) -> {
                         toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), galaxyId.split(";")[0], galaxyId.split(";")[1], galaxyId.split(";").length == 3);
@@ -104,8 +99,8 @@ public abstract class GalaxyInteractiveLayer {
     /**
      * Connect the system to Galaxy Server
      *
-     * @param galaxyServerUrl the address of Galaxy Server
-     * @param userAPI Galaxy user API key
+     * @param galaxyServerUrl   the address of Galaxy Server
+     * @param userAPI           Galaxy user API key
      * @param userDataFolderUrl main folder for storing users data
      * @return System connected to Galaxy server or not
      */
@@ -141,16 +136,19 @@ public abstract class GalaxyInteractiveLayer {
         }
         return true;
     }
-     /**
+
+    /**
      * Connect the system to Galaxy Server
      *
-     * @param galaxyServerUrl the address of Galaxy Server
+     * @param galaxyServerUrl   the address of Galaxy Server
      * @param userDataFolderUrl main folder for storing users data
      */
-    public void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl){              
-            historyHandler.viewToShareDataset(galaxyServerUrl, userDataFolderUrl);
+    public void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl) {
+        historyHandler.viewToShareDataset(galaxyServerUrl, userDataFolderUrl);
 
-    };
+    }
+
+    ;
 
     /**
      * Get user API key for galaxy server
@@ -174,14 +172,14 @@ public abstract class GalaxyInteractiveLayer {
     /**
      * Run Online Peptide-Shaker search and analysis work-flow
      *
-     * @param projectName new project name
-     * @param fastaFileId FASTA file dataset id
+     * @param projectName           new project name
+     * @param fastaFileId           FASTA file dataset id
      * @param searchParameterFileId .par file id
-     * @param inputFilesIdsList list of MGF or Raw file dataset ids
-     * @param searchEnginesList List of selected search engine names
-     * @param searchParameters User input search parameters
-     * @param quant execute work-flow for quantification dataset (raw files
-     * included)
+     * @param inputFilesIdsList     list of MGF or Raw file dataset ids
+     * @param searchEnginesList     List of selected search engine names
+     * @param searchParameters      User input search parameters
+     * @param quant                 execute work-flow for quantification dataset (raw files
+     *                              included)
      */
     public void execute_SearchGUI_PeptideShaker_WorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> inputFilesIdsList, Set<String> searchEnginesList, IdentificationParameters searchParameters, boolean quant) {
         Map<String, String> inputFilesMap = new LinkedHashMap<>();
@@ -203,7 +201,7 @@ public abstract class GalaxyInteractiveLayer {
      * Save user input search parameters file into galaxy to be reused in future
      *
      * @param searchParameters search parameters file.
-     * @param newFile is new or just edited file
+     * @param newFile          is new or just edited file
      * @return updated get user Search Settings Files Map
      */
     public Map<String, GalaxyTransferableFile> saveSearchGUIParameters(IdentificationParameters searchParameters, boolean newFile) {
@@ -244,7 +242,6 @@ public abstract class GalaxyInteractiveLayer {
      * Get the available MGF files Map on Galaxy Server
      *
      * @return mgfFilesMap
-     *
      */
     public Map<String, GalaxyFileObject> getMgfFilesMap() {
         if (historyHandler != null) {
@@ -258,7 +255,6 @@ public abstract class GalaxyInteractiveLayer {
      * Get the available Raw files Map on Galaxy Server
      *
      * @return rawfFilesMap
-     *
      */
     public Map<String, GalaxyFileObject> getRawFilesMap() {
         if (historyHandler != null) {
@@ -291,7 +287,7 @@ public abstract class GalaxyInteractiveLayer {
         if (fileObject.getType().equalsIgnoreCase("Web Peptide Shaker Dataset")) {
             PeptideShakerVisualizationDataset vDs = (PeptideShakerVisualizationDataset) fileObject;
             if (vDs.isQuantDataset()) {
-                if (vDs.getMoff_quant_file()!=null && !vDs.getMoff_quant_file().isEmpty()) {
+                if (vDs.getMoff_quant_file() != null && !vDs.getMoff_quant_file().isEmpty()) {
                     vDs.getMoff_quant_file().forEach((moffId) -> {
                         toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), moffId.getGalaxyId(), false);
                     });
@@ -301,7 +297,7 @@ public abstract class GalaxyInteractiveLayer {
                 }
             }
 
-            if (vDs.getCuiFileSet()!=null && !vDs.getCuiFileSet().isEmpty()) {
+            if (vDs.getCuiFileSet() != null && !vDs.getCuiFileSet().isEmpty()) {
                 for (GalaxyTransferableFile cuiFile : vDs.getCuiFileSet()) {
                     toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), cuiFile.getGalaxyId(), false);
                 }
@@ -309,7 +305,7 @@ public abstract class GalaxyInteractiveLayer {
             if (vDs.getCuiListGalaxyId() != null) {
                 toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getCuiListGalaxyId(), true);
             }
-            if (vDs.getIndexedMGFFilesMap()!=null && !vDs.getIndexedMGFFilesMap().isEmpty()) {
+            if (vDs.getIndexedMGFFilesMap() != null && !vDs.getIndexedMGFFilesMap().isEmpty()) {
                 for (GalaxyFileObject indexedMGF : vDs.getIndexedMGFFilesMap().values()) {
                     toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), indexedMGF.getGalaxyId(), false);
                 }
@@ -320,7 +316,7 @@ public abstract class GalaxyInteractiveLayer {
             if (vDs.getGalaxyId() != null) {
                 toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getGalaxyId(), false);
             }
-            if (vDs.getSearchGUIFile()!=null && vDs.getSearchGUIFile().getGalaxyId() != null) {
+            if (vDs.getSearchGUIFile() != null && vDs.getSearchGUIFile().getGalaxyId() != null) {
                 toolsHandler.deleteDataset(Galaxy_Instance.getGalaxyUrl(), vDs.getHistoryId(), vDs.getSearchGUIFile().getGalaxyId(), false);
             }
 
@@ -335,11 +331,11 @@ public abstract class GalaxyInteractiveLayer {
      * Update and synchronise the data on Galaxy Server with the local file
      * system on Online Peptide Shaker
      *
-     * @param historyFilesMap List of available files(datasets) available on
-     * galaxy
-     * @param jobsInProgress there is currently jobs running on Galaxy Server
+     * @param historyFilesMap     List of available files(datasets) available on
+     *                            galaxy
+     * @param jobsInProgress      there is currently jobs running on Galaxy Server
      * @param updatePresenterView open file system view after updating the file
-     * system
+     *                            system
      */
     public abstract void updatePresenterLayer(Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress, boolean updatePresenterView);
 
@@ -348,7 +344,6 @@ public abstract class GalaxyInteractiveLayer {
      *
      * @param proteinAcc protein accession list
      * @return edges data for the selected accessions
-     *
      */
     public abstract Set<String[]> getPathwayEdges(Set<String> proteinAcc);
 

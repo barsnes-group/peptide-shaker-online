@@ -1,26 +1,19 @@
 package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview;
 
 import com.uib.web.peptideshaker.presenter.core.BasicUploader;
-
-import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
 import com.uib.web.peptideshaker.presenter.core.Help;
+import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
 import com.uib.web.peptideshaker.presenter.core.StatusProgressLabel;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.ProgressBar;
-import com.vaadin.ui.TextField;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import org.apache.commons.collections15.map.LinkedMap;
+import pl.exsio.plupload.PluploadFile;
+
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.apache.commons.collections15.map.LinkedMap;
-import pl.exsio.plupload.PluploadFile;
 
 /**
  * This class represents the layout that contains PeptideShaker datasets
@@ -31,11 +24,11 @@ import pl.exsio.plupload.PluploadFile;
 public abstract class UserUploadFilesContainer extends HorizontalLayout {
 
     private final AbsoluteLayout container;
-    private TextField projectNameField;
     private final AbsoluteLayout subContainerLayout;
     private final Map<String, PluploadFile> uploadedFileMap;
+    private TextField projectNameField;
     private AbsoluteLayout textFilesInputContainer;
-//    private AbsoluteLayout mzTabInputContainer;
+    //    private AbsoluteLayout mzTabInputContainer;
 //    private AbsoluteLayout mzIdentMLContainer;
     private AbsoluteLayout projectVisulizationButtonsContainer;
     private AbsoluteLayout fastaFileContainerLayout;
@@ -82,7 +75,7 @@ public abstract class UserUploadFilesContainer extends HorizontalLayout {
         titleLabel.addStyleName("maintitleheader");
         container.addComponent(titleLabel, "left:40px;top:13px");
         Help helpBtn = new Help("<h1>Upload / Visualize Projects</h1>Users can upload and visualise their own processed files ( FASTA, protein and  peptide files )the format of the protein and peptide files should follow the sample files format <a href='VAADIN/sample_files.zip' download>[download sample files]</a>.\n"
-                + "please note that the files will be automatically deleted after the session expire.", "",400,150);
+                + "please note that the files will be automatically deleted after the session expire.", "", 400, 150);
         container.addComponent(helpBtn, "left:265px;top:0px");
 
         AbsoluteLayout mainContainerLayout = new AbsoluteLayout();
@@ -207,7 +200,7 @@ public abstract class UserUploadFilesContainer extends HorizontalLayout {
         return projectVisulizationButtonsLayoutContainer;
     }
 
-    private AbsoluteLayout initUploaderField(String title, String format) {    
+    private AbsoluteLayout initUploaderField(String title, String format) {
         AbsoluteLayout uploaderFieldContainer = new AbsoluteLayout();
         uploaderFieldContainer.setWidth(100, Unit.PERCENTAGE);
         uploaderFieldContainer.setHeight(30, Unit.PIXELS);
@@ -336,8 +329,8 @@ public abstract class UserUploadFilesContainer extends HorizontalLayout {
      *
      * @param projectName
      * @param uploadedFileMap
-     * @param projectType (1) identification data from files, (2) quant data
-     * from files, (3) data from mzTab, (4) data from mzIdentML file
+     * @param projectType     (1) identification data from files, (2) quant data
+     *                        from files, (3) data from mzTab, (4) data from mzIdentML file
      */
     public abstract boolean[] processVisualizationDataset(String projectName, Map<String, PluploadFile> uploadedFileMap);
 

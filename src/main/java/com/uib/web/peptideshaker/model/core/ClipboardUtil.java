@@ -37,10 +37,10 @@ public class ClipboardUtil extends AbsoluteLayout {
         clipboard.addStyleName(ValoTheme.BUTTON_LINK);
         clipboard.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
         clipboard.addSuccessListener(() -> {
-            Notification.show("Copy to clipboard successful :-) " , linkAstText,Notification.Type.TRAY_NOTIFICATION);
+            Notification.show("Copy to clipboard successful :-) ", linkAstText, Notification.Type.TRAY_NOTIFICATION);
         });
         clipboard.addErrorListener(() -> {
-            Notification.show("Error","Copy to clipboard unsuccessful", Notification.Type.ERROR_MESSAGE);
+            Notification.show("Error", "Copy to clipboard unsuccessful", Notification.Type.ERROR_MESSAGE);
         });
 
     }

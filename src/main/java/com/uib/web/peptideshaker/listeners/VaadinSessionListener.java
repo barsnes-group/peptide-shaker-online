@@ -1,12 +1,12 @@
 package com.uib.web.peptideshaker.listeners;
 
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
 
 /**
  * This class responsible for cleaning folders after user session expire
@@ -41,9 +41,9 @@ public class VaadinSessionListener implements HttpSessionListener {
             System.out.println("at schedulerfuture termonated " + schedulerFuture.cancel(true));
         }
         ScheduledExecutorService scheduler = (ScheduledExecutorService) hse.getSession().getAttribute("scheduler");
-        if (scheduler != null) { 
+        if (scheduler != null) {
             scheduler.shutdown();
-            System.out.println("at scheduler shoutdown " );
+            System.out.println("at scheduler shoutdown ");
         }
     }
 

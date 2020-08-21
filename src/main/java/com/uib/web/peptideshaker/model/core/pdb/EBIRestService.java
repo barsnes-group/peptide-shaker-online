@@ -1,5 +1,10 @@
 package com.uib.web.peptideshaker.model.core.pdb;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
+import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -8,18 +13,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.net.ssl.HttpsURLConnection;
+import java.util.*;
+
 import static javax.ws.rs.core.HttpHeaders.USER_AGENT;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 /**
  * This class represents EBI web service for PDB data
@@ -43,7 +39,7 @@ public class EBIRestService {
      * Get PDB matches set from UniProt accessions
      *
      * @param accessions set of UniProt accessions
-     * @param isDoGet the HTTP method to use is GET
+     * @param isDoGet    the HTTP method to use is GET
      * @return set of PDB matches accessions
      */
     public Map<String, Map<String, PDBMatch>> getPdbIds(String accessions, boolean isDoGet) {
@@ -132,12 +128,12 @@ public class EBIRestService {
     /**
      * Update PDB matches information (full information)
      *
-     * @param proteinSequence protein sequence
-     * @param pdbMatch PDB match
+     * @param proteinSequence  protein sequence
+     * @param pdbMatch         PDB match
      * @param proteinAccession selected protein accession
      * @return update PDB match
      */
-    public PDBMatch updatePdbInformation(PDBMatch pdbMatch, String proteinSequence,Object proteinAccession) {
+    public PDBMatch updatePdbInformation(PDBMatch pdbMatch, String proteinSequence, Object proteinAccession) {
         try {
 
             String url = "https://www.ebi.ac.uk/pdbe/api/pdb/entry/molecules/";
@@ -175,9 +171,9 @@ public class EBIRestService {
                 Map<String, Object> retMap = toMap(jsonObject);
                 retMap = (Map<String, Object>) retMap.get(urlParameters.toLowerCase());
                 retMap = (Map<String, Object>) retMap.get("UniProt");
-                retMap = (Map<String, Object>) retMap.get(proteinAccession+"");
-                List subList = (List) retMap.get("mappings");   
-                
+                retMap = (Map<String, Object>) retMap.get(proteinAccession + "");
+                List subList = (List) retMap.get("mappings");
+
                 for (Object submapObject : subList) {
                     Map<String, Object> subMap = (Map<String, Object>) submapObject;
                     int uniprotStart = (int) subMap.get("unp_start");
@@ -394,10 +390,11 @@ public class EBIRestService {
 //        }
 //        return pdbMatch;
 //    }
+
     /**
      * Send HTTP doPOST request.
      *
-     * @param url link to server
+     * @param url           link to server
      * @param urlParameters request parameters
      * @return response as string
      */
@@ -527,5 +524,5 @@ public class EBIRestService {
         return list;
     }
 
-   
+
 }

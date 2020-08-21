@@ -8,17 +8,13 @@ import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextFieldDro
 import com.vaadin.data.validator.DoubleRangeValidator;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- *
  * @author y-mok
  */
 public class ImportFiltersPanel extends PopupWindow {
@@ -44,7 +40,7 @@ public class ImportFiltersPanel extends PopupWindow {
 
         container.addComponent(title, "left:10px;top:10px");
         container.addComponent(subContainer, "left:10px;top:45px;right:10px;bottom:40px");
-        peptideLength = new HorizontalLabel2TextField("Peptide Length", 0, 0, new IntegerRangeValidator("check the input range", (-1* Integer.MAX_VALUE), Integer.MAX_VALUE));
+        peptideLength = new HorizontalLabel2TextField("Peptide Length", 0, 0, new IntegerRangeValidator("check the input range", (-1 * Integer.MAX_VALUE), Integer.MAX_VALUE));
         subContainer.addComponent(peptideLength);
         Set<String> values = new LinkedHashSet<>();
         values.add("ppm");
@@ -52,10 +48,10 @@ public class ImportFiltersPanel extends PopupWindow {
         precursorMzDeviation = new HorizontalLabelTextFieldDropdownList("Precursor m/z Deviation", 10.0, values, new DoubleRangeValidator("check the input range", 0.0, Double.MAX_VALUE));
         subContainer.addComponent(precursorMzDeviation);
 
-        missedCleavages = new HorizontalLabel2TextField("Missed Cleavages", "", "", new IntegerRangeValidator("check the input range", (-1* Integer.MAX_VALUE), Integer.MAX_VALUE));
+        missedCleavages = new HorizontalLabel2TextField("Missed Cleavages", "", "", new IntegerRangeValidator("check the input range", (-1 * Integer.MAX_VALUE), Integer.MAX_VALUE));
         subContainer.addComponent(missedCleavages);
 
-        isotops = new HorizontalLabel2TextField("Isotops", "", "", new IntegerRangeValidator("check the input range", (-1* Integer.MAX_VALUE), Integer.MAX_VALUE));
+        isotops = new HorizontalLabel2TextField("Isotops", "", "", new IntegerRangeValidator("check the input range", (-1 * Integer.MAX_VALUE), Integer.MAX_VALUE));
         subContainer.addComponent(isotops);
 
         excludeUnKnownPTMs = new OptionGroup();
@@ -78,7 +74,7 @@ public class ImportFiltersPanel extends PopupWindow {
                 setPopupVisible(false);
             }
         });
-        
+
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);

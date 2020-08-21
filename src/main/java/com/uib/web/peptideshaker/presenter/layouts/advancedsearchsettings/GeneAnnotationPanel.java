@@ -9,11 +9,11 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- *
  * @author y-mok
  */
 public class GeneAnnotationPanel extends PopupWindow {
@@ -60,7 +60,7 @@ public class GeneAnnotationPanel extends PopupWindow {
             setPopupVisible(false);
 
         });
-       
+
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);

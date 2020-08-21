@@ -8,32 +8,24 @@ package com.uib.web.peptideshaker.presenter.core;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.uib.web.peptideshaker.presenter.core.form.Horizontal2Label;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import java.text.DecimalFormat;
+import java.util.*;
+
 /**
- *
  * @author y-mok
  */
 public abstract class FileOverviewLayout extends VerticalLayout {
-/**
+    /**
      * Decimal Format for memory usage
      */
     private final DecimalFormat dsFormater = new DecimalFormat("#.##");
+
     /**
      * Constructor to initialise the main setting parameters
      *
@@ -41,7 +33,7 @@ public abstract class FileOverviewLayout extends VerticalLayout {
      */
     public FileOverviewLayout(GalaxyFileObject dataset) {
         FileOverviewLayout.this.setMargin(true);
-        FileOverviewLayout.this.setWidth(300,Unit.PIXELS);
+        FileOverviewLayout.this.setWidth(300, Unit.PIXELS);
         FileOverviewLayout.this.setHeightUndefined();
         FileOverviewLayout.this.setSpacing(true);
         HorizontalLayout titleLayout = new HorizontalLayout();
@@ -49,9 +41,9 @@ public abstract class FileOverviewLayout extends VerticalLayout {
         titleLayout.addStyleName("subpanelframe");
 
         FileOverviewLayout.this.addComponent(titleLayout);
-        Label projectNameLabel = new Label(dataset.getName().split("___")[0]);
+        Label projectNameLabel = new Label(dataset.getName());
         projectNameLabel.addStyleName(ValoTheme.LABEL_BOLD);
-        titleLayout.setWidth(100,Unit.PERCENTAGE);
+        titleLayout.setWidth(100, Unit.PERCENTAGE);
         titleLayout.addComponent(projectNameLabel);
         titleLayout.setComponentAlignment(projectNameLabel, Alignment.TOP_CENTER);
 
@@ -76,7 +68,7 @@ public abstract class FileOverviewLayout extends VerticalLayout {
 
         Horizontal2Label createdLabel = new Horizontal2Label("Created :", dataset.getCreate_time());
         upperPanel.addComponent(createdLabel);
-        Horizontal2Label sizeLabel = new Horizontal2Label("State    :", dataset.getStatus()+"");
+        Horizontal2Label sizeLabel = new Horizontal2Label("State    :", dataset.getStatus() + "");
         upperPanel.addComponent(sizeLabel);
         Horizontal2Label formatLabel = new Horizontal2Label("Format  :", dataset.getType());
         upperPanel.addComponent(formatLabel);

@@ -9,14 +9,7 @@ import com.compomics.util.parameters.identification.search.SearchParameters;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.presenter.core.MultiSelectOptionGroup;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
-import com.uib.web.peptideshaker.presenter.core.form.ColorLabel;
-import com.uib.web.peptideshaker.presenter.core.form.Horizontal2Label;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabel2DropdownList;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabel2TextField;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextFieldDropdownList;
-import com.uib.web.peptideshaker.presenter.core.form.SparkLine;
+import com.uib.web.peptideshaker.presenter.core.form.*;
 import com.vaadin.data.Property;
 import com.vaadin.data.validator.DoubleRangeValidator;
 import com.vaadin.data.validator.IntegerRangeValidator;
@@ -26,30 +19,20 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import java.awt.Color;
+
+import java.awt.*;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 //need to be documeneted
+
 /**
  * This class represents the search settings input form layout
  *
@@ -73,6 +56,37 @@ public abstract class SearchParametersForm extends VerticalLayout {
      * The common modifications list.
      */
     private final Set<String> commonModificationIds;
+    /**
+     * The modification items that is used for initialise modifications tables.
+     */
+    private final Map<Object, Object[]> completeModificationItems = new LinkedHashMap<>();
+    private final Map<String, String> updatedModiList = new HashMap<>();
+    private final MultiSelectOptionGroup createDecoyDatabaseOptionList;
+    /**
+     * Search parameter file name input field.
+     */
+    private final HorizontalLabelTextField searchParametersFileNameInputField;
+    private final HorizontalLayout searchsettingsContainer;
+    /**
+     * Coordinate view of sub panels in mobile and small screen mode.
+     */
+    private final LayoutEvents.LayoutClickListener viewCoordinatorListener;
+    /**
+     * Modification container layout.
+     */
+    private final PopupWindow modificationContainer;
+    private final VerticalLayout modificationLabelsContainer;
+    private final VerticalLayout proteaseFragmentationLabelsContainer;
+    /**
+     * Protease fragmentation container layout.
+     */
+    private final PopupWindow proteaseFragmentationContainer;
+    private final DecimalFormat df = new DecimalFormat("0.00E00");//new DecimalFormat("#.##");
+    private final Label titleLabel;
+    private final Button modificationsBtn;
+    private final Button proteaseFragmentationBtn;
+    private final Button saveBtn;
+    private final boolean editable;
     /**
      * The selected fixed modifications table.
      */
@@ -105,18 +119,6 @@ public abstract class SearchParametersForm extends VerticalLayout {
      * The remove from fixed modification table button.
      */
     private Button removeFromFixedModificationTableBtn;
-    /**
-     * The modification items that is used for initialise modifications tables.
-     */
-    private final Map<Object, Object[]> completeModificationItems = new LinkedHashMap<>();
-    private final Map<String, String> updatedModiList = new HashMap<>();
-
-    private final MultiSelectOptionGroup createDecoyDatabaseOptionList;
-    /**
-     * Search parameter file name input field.
-     */
-    private final HorizontalLabelTextField searchParametersFileNameInputField;
-    private final HorizontalLayout searchsettingsContainer;
     /**
      * Selected parameter file .par file galaxy id.
      */
@@ -166,30 +168,8 @@ public abstract class SearchParametersForm extends VerticalLayout {
      * Search Parameters file (.par) is new or modified.
      */
     private boolean isNew = true;
-    /**
-     * Coordinate view of sub panels in mobile and small screen mode.
-     */
-    private final LayoutEvents.LayoutClickListener viewCoordinatorListener;
-    /**
-     * Modification container layout.
-     */
-    private final PopupWindow modificationContainer;
-    private final VerticalLayout modificationLabelsContainer;
-    private final VerticalLayout proteaseFragmentationLabelsContainer;
     private Label proteaseFragmentationLabels;
-    /**
-     * Protease fragmentation container layout.
-     */
-    private final PopupWindow proteaseFragmentationContainer;
-    private final DecimalFormat df = new DecimalFormat("0.00E00");//new DecimalFormat("#.##");
-
     private String enzyme;
-    private final Label titleLabel;
-    private final Button modificationsBtn;
-    private final Button proteaseFragmentationBtn;
-    private final Button saveBtn;
-    private final boolean editable;
-
     /**
      * Advanced search settings layout
      */
@@ -416,9 +396,9 @@ public abstract class SearchParametersForm extends VerticalLayout {
     /**
      * Constructor to initialise the main setting parameters.
      *
-     * @param dataset PeptideShakerVisulization dataset object
+     * @param dataset          PeptideShakerVisulization dataset object
      * @param visibleByDefault the layout will be visible by default(for paining
-     * error handling)
+     *                         error handling)
      */
     public SearchParametersForm(PeptideShakerVisualizationDataset dataset, boolean visibleByDefault) {
         this(true);
@@ -430,7 +410,7 @@ public abstract class SearchParametersForm extends VerticalLayout {
         SearchParametersForm.this.setVisible(visibleByDefault);
         SearchParametersForm.this.addStyleName("dsoverview");
         SearchParametersForm.this.updateForms(dataset.getSearchingParameters());
-        titleLabel.setValue(dataset.getName().split("___")[0] + (" <i style='color: gray;font-size: 12px;'>(" + dataset.getCreateTime() + ")</i>").replace("(null)", ""));
+        titleLabel.setValue(dataset.getName()+ (" <i style='color: gray;font-size: 12px;'>(" + dataset.getCreateTime() + ")</i>").replace("(null)", ""));
         searchsettingsContainer.setVisible(false);
 
 //        fastaFileList.setEnabled(false);
@@ -453,8 +433,8 @@ public abstract class SearchParametersForm extends VerticalLayout {
     /**
      * Initialise the layout for search advanced setting
      *
-     * @todo: to be implemented
      * @return initialised advanced search setting layout
+     * @todo: to be implemented
      */
     private VerticalLayout initAdvancedSearchOption() {
         return new VerticalLayout();
@@ -589,7 +569,7 @@ public abstract class SearchParametersForm extends VerticalLayout {
 
         List<String> allModiList = PTM.getDefaultModifications();
         // get the min and max values for the mass sparklines
-        double maxMass =  (-1.0*Double.MAX_VALUE);
+        double maxMass = (-1.0 * Double.MAX_VALUE);
         double minMass = Double.MAX_VALUE;
 
         for (String ptm : PTM.getModifications()) {
@@ -898,7 +878,7 @@ public abstract class SearchParametersForm extends VerticalLayout {
 
         specificityList = new HorizontalLabelDropDownList("Specificity");
         specificityList.updateData(specificityOptionList);
-        maxMissCleavages = new HorizontalLabelTextField("Max Missed Cleavages", 2, new IntegerRangeValidator("Error", (-1* Integer.MAX_VALUE), Integer.MAX_VALUE));
+        maxMissCleavages = new HorizontalLabelTextField("Max Missed Cleavages", 2, new IntegerRangeValidator("Error", (-1 * Integer.MAX_VALUE), Integer.MAX_VALUE));
 
         Set<String> ionListI = new LinkedHashSet<>();
         ionListI.add("a");
@@ -927,8 +907,8 @@ public abstract class SearchParametersForm extends VerticalLayout {
         Set<String> mzToleranceList = new LinkedHashSet<>();
         mzToleranceList.add("ppm");
         mzToleranceList.add("Da");
-        precursorTolerance = new HorizontalLabelTextFieldDropdownList("Precursor m/z Tolerance", 10.0, mzToleranceList, new DoubleRangeValidator("Error ", (-1* Double.MAX_VALUE), Double.MAX_VALUE));
-        fragmentTolerance = new HorizontalLabelTextFieldDropdownList("Fragment m/z Tolerance", 0.5, mzToleranceList, new DoubleRangeValidator("Error ", (-1* Double.MAX_VALUE), Double.MAX_VALUE));
+        precursorTolerance = new HorizontalLabelTextFieldDropdownList("Precursor m/z Tolerance", 10.0, mzToleranceList, new DoubleRangeValidator("Error ", (-1 * Double.MAX_VALUE), Double.MAX_VALUE));
+        fragmentTolerance = new HorizontalLabelTextFieldDropdownList("Fragment m/z Tolerance", 0.5, mzToleranceList, new DoubleRangeValidator("Error ", (-1 * Double.MAX_VALUE), Double.MAX_VALUE));
         precursorTolerance.setSelected("ppm");
         precursorTolerance.setTextValue(10);
 
@@ -936,9 +916,9 @@ public abstract class SearchParametersForm extends VerticalLayout {
         fragmentTolerance.setTextValue(0.5);
         rightSideLayout.addComponent(precursorTolerance);
         rightSideLayout.addComponent(fragmentTolerance);
-        precursorCharge = new HorizontalLabel2TextField("Precursor Charge", 2, 4, new IntegerRangeValidator("Error ", (-1* Integer.MAX_VALUE), Integer.MAX_VALUE));
+        precursorCharge = new HorizontalLabel2TextField("Precursor Charge", 2, 4, new IntegerRangeValidator("Error ", (-1 * Integer.MAX_VALUE), Integer.MAX_VALUE));
         rightSideLayout.addComponent(precursorCharge);
-        isotopes = new HorizontalLabel2TextField("Isotopes", 0, 1, new IntegerRangeValidator("Error", (-1* Integer.MAX_VALUE), Integer.MAX_VALUE));
+        isotopes = new HorizontalLabel2TextField("Isotopes", 0, 1, new IntegerRangeValidator("Error", (-1 * Integer.MAX_VALUE), Integer.MAX_VALUE));
         rightSideLayout.addComponent(isotopes);
 
         proteaseFragmentationLabels = new Label("", ContentMode.HTML);
@@ -971,7 +951,7 @@ public abstract class SearchParametersForm extends VerticalLayout {
      * files drop-down list
      *
      * @param searchParameters search parameter object from selected parameter
-     * file
+     *                         file
      */
     public void updateForms(IdentificationParameters searchParameters) {
         this.searchParameters = searchParameters;
@@ -980,7 +960,7 @@ public abstract class SearchParametersForm extends VerticalLayout {
         searchParametersFileNameInputField.setSelectedValue(null);
         createDecoyDatabaseOptionList.setSelectedValue("create_decoy");
 
-        if (searchParameters.getSearchParameters().getDigestionParameters()!= null) {
+        if (searchParameters.getSearchParameters().getDigestionParameters() != null) {
             digestionList.setSelected(searchParameters.getSearchParameters().getDigestionParameters().getCleavageParameter().name());
             enzymeList.setSelected(searchParameters.getSearchParameters().getDigestionParameters().getEnzymes().get(0).getName());
             enzyme = enzymeList.getSelectedValue();
@@ -1183,9 +1163,9 @@ public abstract class SearchParametersForm extends VerticalLayout {
      * server
      *
      * @param searchParameters updated search parameters object that is used to
-     * create .par file
-     * @param isNew store the search parameters object in new file or over write
-     * existing .par file
+     *                         create .par file
+     * @param isNew            store the search parameters object in new file or over write
+     *                         existing .par file
      */
     public abstract void saveSearchingFile(IdentificationParameters searchParameters, boolean isNew);
 

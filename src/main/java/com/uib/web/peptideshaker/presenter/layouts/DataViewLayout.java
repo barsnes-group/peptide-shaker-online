@@ -1,7 +1,7 @@
 package com.uib.web.peptideshaker.presenter.layouts;
 
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
+import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.model.core.ClipboardUtil;
 import com.uib.web.peptideshaker.model.core.LinkUtil;
 import com.uib.web.peptideshaker.presenter.core.ActionLabel;
@@ -10,23 +10,13 @@ import com.uib.web.peptideshaker.presenter.core.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.StatusLabel;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.ExternalResource;
-import com.vaadin.server.FileDownloader;
 import com.vaadin.server.Page;
-import com.vaadin.server.StreamResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import java.io.InputStream;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -47,6 +37,7 @@ public abstract class DataViewLayout extends Panel {
     private final float[] expandingRatio = new float[]{5f, 31f, 8f, 8f, 8f, 8f, 8f, 8f, 8f, 8f};
     private final AbsoluteLayout panelsContainers;
     private final Map<String, ActionLabel> datasetLabelSet;
+    private final String html_Img = VaadinIcons.EYE.getHtml();
     private Component nameLabel;
 
     /**
@@ -147,7 +138,7 @@ public abstract class DataViewLayout extends Panel {
             ActionLabel downloadLabel = new ActionLabel(VaadinIcons.DOWNLOAD_ALT, "Download File") {
                 @Override
                 public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                    Page.getCurrent().open(ds.getDownloadUrl()+"to_ext="+ds.getType().toLowerCase().replace("web peptide shaker dataset", "zip"), "download='file'", true);
+                    Page.getCurrent().open(ds.getDownloadUrl() + "to_ext=" + ds.getType().toLowerCase().replace("web peptide shaker dataset", "zip"), "download='file'", true);
                 }
             };
             ActionLabel deleteLabel = new ActionLabel(VaadinIcons.TRASH, "Delete File") {
@@ -159,7 +150,7 @@ public abstract class DataViewLayout extends Panel {
             };
             HorizontalLayout rowLayout;
             if (ds.getType().equalsIgnoreCase("User uploaded Project")) {
-                nameLabel = new ActionLabel(VaadinIcons.CLUSTER, ds.getName().split("___")[0], "Uploaded Project results ") {
+                nameLabel = new ActionLabel(VaadinIcons.CLUSTER, ds.getName(), "Uploaded Project results ") {
                     @Override
                     public void layoutClick(LayoutEvents.LayoutClickEvent event) {
                         DataViewLayout.this.setEnabled(false);
@@ -182,7 +173,7 @@ public abstract class DataViewLayout extends Panel {
                 labelContainer.addStyleName("maxwidth90per");
                 labelContainer.setWidthUndefined();
                 labelContainer.setHeight(260, Unit.PIXELS);
-                Label l = new Label("<h1>Uploaded Project</h1><p>Project:      " + ds.getName().split("___")[0] + "</p><p>Upload time: " + ds.getName().split("___")[1].replace("_", " ") + "</p><p>FASTA:       " + ds.getName().split("___")[2].split(",")[0] + "</p><p>Proteins:    " + ds.getName().split("___")[2].split(",")[1] + "</p><p>Peptides:    " + ds.getName().split("___")[2].split(",")[2] + "</p>", ContentMode.HTML);
+                Label l = new Label("<h1>Uploaded Project</h1><p>Project:      " + ds.getName() + "</p><p>Upload time: " + ds.getCreate_time() + "</p><p>FASTA:       " + ds.getName().split("___")[2].split(",")[0] + "</p><p>Proteins:    " + ds.getName().split("___")[2].split(",")[1] + "</p><p>Peptides:    " + ds.getName().split("___")[2].split(",")[2] + "</p>", ContentMode.HTML);
                 l.setSizeFull();
                 l.setStyleName("uploadeddsinfo");
                 labelContainer.addComponent(l);
@@ -193,7 +184,7 @@ public abstract class DataViewLayout extends Panel {
                 if (statusLabel.getStatus() == 2) {
                     statusLabel.setStatus("Some files are missings or corrupted please re-run SearchGUI-PeptideShaker-WorkFlow");
                 }
-//                
+//
                 infoLabel.addStyleName("centeredicon");
 
                 //0psiconHRNS
@@ -214,7 +205,7 @@ public abstract class DataViewLayout extends Panel {
                 topDataTable.addComponent(rowLayout);
             } else if (ds.getType().equalsIgnoreCase("Web Peptide Shaker Dataset")) {
 
-                nameLabel = new ActionLabel(VaadinIcons.CLUSTER, ds.getName().split("___")[0], "PeptideShaker results ") {
+                nameLabel = new ActionLabel(VaadinIcons.CLUSTER, ds.getName(), "PeptideShaker results ") {
                     @Override
                     public void layoutClick(LayoutEvents.LayoutClickEvent event) {
                         DataViewLayout.this.setEnabled(false);
@@ -238,7 +229,7 @@ public abstract class DataViewLayout extends Panel {
                 labelContainer.setHeight(260, Unit.PIXELS);
                 String labelValue = "";
                 if ((((PeptideShakerVisualizationDataset) ds).getStatus() != null && ((PeptideShakerVisualizationDataset) ds).getStatus().equalsIgnoreCase("ok"))) {
-                    labelValue = ("<h1>Web PeptideShaker Dataset</h1><p>Project:      " + ds.getName().split("___")[0] + "<p>FASTA:       " + ((PeptideShakerVisualizationDataset) ds).getFastaFileName() + "</p>" + "<p>SearchEngines:       " + ((PeptideShakerVisualizationDataset) ds).getSearchEngines() + "</p>" + "<p>Variable Modifications:       " + ((PeptideShakerVisualizationDataset) ds).getVariableModification() + "</p>" + "<p>Fixed Modifications:       " + ((PeptideShakerVisualizationDataset) ds).getFixedModification() + "</p>").replace("[", "").replace("]", "");
+                    labelValue = ("<h1>Web PeptideShaker Dataset</h1><p>Project:      " + ds.getName() + "<p>FASTA:       " + ((PeptideShakerVisualizationDataset) ds).getFastaFileName() + "</p>" + "<p>SearchEngines:       " + ((PeptideShakerVisualizationDataset) ds).getSearchEngines() + "</p>" + "<p>Variable Modifications:       " + ((PeptideShakerVisualizationDataset) ds).getVariableModification() + "</p>" + "<p>Fixed Modifications:       " + ((PeptideShakerVisualizationDataset) ds).getFixedModification() + "</p>").replace("[", "").replace("]", "");
                 }
                 Label l = new Label(labelValue, ContentMode.HTML);
                 l.setSizeFull();
@@ -255,7 +246,7 @@ public abstract class DataViewLayout extends Panel {
                 String link = ((PeptideShakerVisualizationDataset) ds).getLinkToShare();
                 int dsKey = -1;
                 if (link != null) {
-                    dsKey = insertDatsetLinkToShare(linkUtil.encrypt(link),linkUtil.encrypt(ds.getName()+"-_-"+ds.getGalaxyId()));
+                    dsKey = insertDatsetLinkToShare(linkUtil.encrypt(link), linkUtil.encrypt(ds.getName() + "-_-" + ds.getGalaxyId()));
                     String appName = VaadinSession.getCurrent().getAttribute("appName") + "";
                     String url = Page.getCurrent().getLocation().toString().split(appName)[0] + appName + "/";
                     String encryptedDsKey = linkUtil.encrypt(dsKey + "");
@@ -358,7 +349,6 @@ public abstract class DataViewLayout extends Panel {
     }
 
     public abstract void deleteDataset(GalaxyFileObject ds);
-    private final String html_Img = VaadinIcons.EYE.getHtml();
 
     private void updateViewDataset(PeptideShakerVisualizationDataset ds) {
         for (ActionLabel dsNameLabel : datasetLabelSet.values()) {
@@ -374,9 +364,9 @@ public abstract class DataViewLayout extends Panel {
     /**
      * Store and retrieve dataset details index to share in link
      *
-     * @param dsDetails encoded dataset details to store in database
+     * @param dsDetails   encoded dataset details to store in database
      * @param dsUniqueKey
      * @return dataset public key
      */
-    public abstract int insertDatsetLinkToShare(String dsDetails,String dsUniqueKey);
+    public abstract int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey);
 }

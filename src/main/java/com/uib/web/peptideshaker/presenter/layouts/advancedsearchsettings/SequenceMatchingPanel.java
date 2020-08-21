@@ -1,4 +1,3 @@
-
 package com.uib.web.peptideshaker.presenter.layouts.advancedsearchsettings;
 
 import com.compomics.util.parameters.identification.IdentificationParameters;
@@ -8,17 +7,13 @@ import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
 import com.vaadin.data.validator.DoubleRangeValidator;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- *
  * @author y-mok
  */
 public class SequenceMatchingPanel extends PopupWindow {
@@ -51,9 +46,9 @@ public class SequenceMatchingPanel extends PopupWindow {
         subContainer.setSizeFull();
         subContainer.setStyleName("subcontainer");
         subContainer.addComponent(matchingMethodList);
-         subContainer.setComponentAlignment(matchingMethodList,Alignment.TOP_LEFT);
+        subContainer.setComponentAlignment(matchingMethodList, Alignment.TOP_LEFT);
         subContainer.addComponent(shareOfX);
-        subContainer.setComponentAlignment(shareOfX,Alignment.BOTTOM_LEFT);
+        subContainer.setComponentAlignment(shareOfX, Alignment.BOTTOM_LEFT);
         container.addComponent(title, "left:10px;top:10px");
         container.addComponent(subContainer, "left:10px;top:45px;right:10px;bottom:40px");
         SequenceMatchingPanel.this.setContent(container);

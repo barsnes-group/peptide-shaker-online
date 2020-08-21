@@ -7,13 +7,14 @@ import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.themes.ValoTheme;
-import java.io.File;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import pl.exsio.plupload.Plupload;
 import pl.exsio.plupload.PluploadError;
 import pl.exsio.plupload.PluploadFile;
 import pl.exsio.plupload.helper.filter.PluploadFilter;
+
+import java.io.File;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * This class represents Uploading class with progress bar
@@ -22,10 +23,11 @@ import pl.exsio.plupload.helper.filter.PluploadFilter;
  */
 public abstract class Uploader extends AbsoluteLayout {
 
-    private File userUploadFolder;
-    private Plupload uploaderComponent;
     private final Label busyUpload;
     private final Set<String> filterSet;
+    private final String htmlLoadingImg = "<img src='VAADIN/themes/webpeptideshakertheme/img/globeearthanimation.gif' alt='' style='width: 17px;top: 10px;background-color: white;position: relative!important;z-index: 3!important;'>";
+    private File userUploadFolder;
+    private Plupload uploaderComponent;
     private String uploadedFileName;
 
     /**
@@ -130,12 +132,14 @@ public abstract class Uploader extends AbsoluteLayout {
 
     }
 
-    private final String htmlLoadingImg = "<img src='VAADIN/themes/webpeptideshakertheme/img/globeearthanimation.gif' alt='' style='width: 17px;top: 10px;background-color: white;position: relative!important;z-index: 3!important;'>";
+    public boolean isBusy() {
+        return uploaderComponent.getStyleName().contains("hidebutton");
+    }
 
     /**
      * Set upload is temporary disable
      *
-     * @param busy upload in progress
+     * @param busy   upload in progress
      * @param notifi show notification
      */
     public void setBusy(boolean busy) {
@@ -144,10 +148,6 @@ public abstract class Uploader extends AbsoluteLayout {
             Notification.show("File uploaded : " + uploadedFileName, Notification.Type.TRAY_NOTIFICATION);
             uploadedFileName = null;
         }
-    }
-
-    public boolean isBusy() {
-        return uploaderComponent.getStyleName().contains("hidebutton");
     }
 
     /**

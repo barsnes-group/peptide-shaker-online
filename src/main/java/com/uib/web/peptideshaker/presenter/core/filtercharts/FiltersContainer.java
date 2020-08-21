@@ -2,29 +2,18 @@ package com.uib.web.peptideshaker.presenter.core.filtercharts;
 
 import com.uib.web.peptideshaker.model.core.ModificationMatrix;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.filters.ChromosomesFilter;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.SelectionManager;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.filters.DivaPieChartFilter;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.filters.DivaRangeFilter;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.filters.ModificationsFilter;
+import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.SelectionManager;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
+
+import java.awt.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.*;
 
 /**
  * This class represents main container for pie-chart filters the class
@@ -54,23 +43,25 @@ public class FiltersContainer extends HorizontalLayout {
     private final VerticalLayout filterLeftPanelContainer;
     private final Map<String, Color> PIColorMap;
     private final List<Color> colorList;
-    private int piWidth = -1;
-    private int valWidth = -1;
     /**
      * Array of default slice colours.
      */
     private final Color[] defaultColors = new Color[]{new Color(219, 169, 1), new Color(110, 177, 206), new Color(213, 8, 8), new Color(4, 180, 95), new Color(174, 180, 4), new Color(10, 255, 14), new Color(244, 250, 88), new Color(255, 0, 64), new Color(246, 216, 206), new Color(189, 189, 189), new Color(255, 128, 0), Color.BLUE, Color.CYAN, Color.GREEN, Color.MAGENTA, Color.ORANGE, Color.PINK};
+    private final SelectionManager Selection_Manager;
+    private final Color[] colorsArrII = new Color[]{Color.DARK_GRAY, new Color(4, 180, 95), Color.ORANGE, new Color(213, 8, 8)};
+    private int piWidth = -1;
+    private int valWidth = -1;
     /**
      * Array of extra colours.
      */
     private String[] extraColourValues = new String[]{
-        "C00000", "00C000", "0000C0", "C0C000", "C000C0", "00C0C0", "C0C0C0",
-        "400000", "004000", "000040", "404000", "400040", "004040", "404040",
-        "200000", "002000", "000020", "202000", "200020", "002020", "202020",
-        "600000", "006000", "000060", "606000", "600060", "006060", "606060",
-        "A00000", "00A000", "0000A0", "A0A000", "A000A0", "00A0A0", "A0A0A0",
-        "E00000", "00E000", "0000E0", "E0E000", "E000E0", "00E0E0", "E0E0E0",};
-    private final SelectionManager Selection_Manager;
+            "C00000", "00C000", "0000C0", "C0C000", "C000C0", "00C0C0", "C0C0C0",
+            "400000", "004000", "000040", "404000", "400040", "004040", "404040",
+            "200000", "002000", "000020", "202000", "200020", "002020", "202020",
+            "600000", "006000", "000060", "606000", "600060", "006060", "606060",
+            "A00000", "00A000", "0000A0", "A0A000", "A000A0", "00A0A0", "A0A0A0",
+            "E00000", "00E000", "0000E0", "E0E000", "E000E0", "00E0E0", "E0E0E0",};
+    private boolean disableresize;
 
     /**
      * Initialise filter container
@@ -261,24 +252,23 @@ public class FiltersContainer extends HorizontalLayout {
         filterRightPanelContainer.setComponentAlignment(intinsityContainer, Alignment.BOTTOM_RIGHT);
 
     }
-    private final Color[] colorsArrII = new Color[]{Color.DARK_GRAY, new Color(4, 180, 95), Color.ORANGE, new Color(213, 8, 8)};
 
     /**
      * Update filters data
      *
-     * @param toShareDataset dataset is shared by user
-     * @param modificationMatrix main modification matrix
-     * @param modificationsColorMap main modification colour map
-     * @param chromosomeMap chromosomes map for the dataset
-     * @param piMap protein inference map for the dataset
-     * @param proteinValidationMap protein validation map for the dataset
-     * @param proteinPeptidesNumberMap protein to peptides number map
-     * @param proteinPSMNumberMap proteins to PSM number map
-     * @param proteinCoverageMap protein coverage map
-     * @param proteinIntinsityAllPepMap protein intensity map (based on all
-     * peptides intensity)
+     * @param toShareDataset               dataset is shared by user
+     * @param modificationMatrix           main modification matrix
+     * @param modificationsColorMap        main modification colour map
+     * @param chromosomeMap                chromosomes map for the dataset
+     * @param piMap                        protein inference map for the dataset
+     * @param proteinValidationMap         protein validation map for the dataset
+     * @param proteinPeptidesNumberMap     protein to peptides number map
+     * @param proteinPSMNumberMap          proteins to PSM number map
+     * @param proteinCoverageMap           protein coverage map
+     * @param proteinIntinsityAllPepMap    protein intensity map (based on all
+     *                                     peptides intensity)
      * @param proteinIntinsityUniquePepMap protein intensity map (based on
-     * unique peptides intensity)
+     *                                     unique peptides intensity)
      */
     public void updateFiltersData(boolean toShareDataset, ModificationMatrix modificationMatrix, Map<String, Color> modificationsColorMap, Map<Integer, Set<Comparable>> chromosomeMap, Map<String, Set<Comparable>> piMap, Map<String, Set<Comparable>> proteinValidationMap, TreeMap<Comparable, Set<Comparable>> proteinPeptidesNumberMap, TreeMap<Comparable, Set<Comparable>> proteinPSMNumberMap, TreeMap<Comparable, Set<Comparable>> proteinCoverageMap, TreeMap<Comparable, Set<Comparable>> proteinIntinsityAllPepMap, TreeMap<Comparable, Set<Comparable>> proteinIntinsityUniquePepMap) {
         Selection_Manager.reset();
@@ -376,7 +366,7 @@ public class FiltersContainer extends HorizontalLayout {
     }
 
     /**
-     **Get modifications filter
+     * *Get modifications filter
      *
      * @return modifications filter
      */
@@ -437,13 +427,13 @@ public class FiltersContainer extends HorizontalLayout {
     public DivaRangeFilter getIntensityUniquePeptidesRange() {
         return intensityUniquePeptidesRange;
     }
-private boolean disableresize;
+
     public void resetLegendSize(int pIWidth, int valWidth) {
 
-        if (pIWidth == valWidth || pIWidth == -1 || valWidth == -1 || pIWidth == -0 || valWidth == 10|| disableresize) {
+        if (pIWidth == valWidth || pIWidth == -1 || valWidth == -1 || pIWidth == -0 || valWidth == 10 || disableresize) {
             return;
         }
-        disableresize=true;
+        disableresize = true;
         int maxWidth = Math.max(valWidth, pIWidth) + 2;
         ProteinInferenceFilter.setLegendWidth(maxWidth);
         validationFilter.setLegendWidth(maxWidth);

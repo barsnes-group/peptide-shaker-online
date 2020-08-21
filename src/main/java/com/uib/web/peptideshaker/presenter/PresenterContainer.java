@@ -6,30 +6,20 @@
 package com.uib.web.peptideshaker.presenter;
 
 import com.compomics.util.parameters.identification.IdentificationParameters;
-import com.uib.web.peptideshaker.WebPeptideShakerApp;
-import com.uib.web.peptideshaker.galaxy.GalaxyInteractiveLayer;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.model.UploadedProjectUtility;
-import com.uib.web.peptideshaker.presenter.core.form.Horizontal2Label;
-import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinSession;
-import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
+import pl.exsio.plupload.PluploadFile;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import pl.exsio.plupload.PluploadFile;
 
 /**
  * This class represents container layout that contain all presenter components
@@ -67,6 +57,15 @@ public abstract class PresenterContainer extends VerticalLayout {
      */
     private final AbsoluteLayout subPresenterButtonsContainer;
     /**
+     * upload project utility to allow users to upload their ready files to
+     * visualise .
+     */
+    private final UploadedProjectUtility uploadedProjectUtility;
+    /**
+     * Initialise welcome page .
+     */
+    private final WelcomePagePresenter welcomePage;
+    /**
      * Container to view selected PeptideShaker projects.
      */
     private InteractivePSPRojectResultsPresenter interactivePSPRojectResultsPresenter;
@@ -80,19 +79,9 @@ public abstract class PresenterContainer extends VerticalLayout {
      * or in other databases.
      */
     private FileSystemPresenter fileSystemPresenter;
-    /**
-     * upload project utility to allow users to upload their ready files to
-     * visualise .
-     */
-    private final UploadedProjectUtility uploadedProjectUtility;
-    /**
-     * Initialise welcome page .
-     */
-    private final WelcomePagePresenter welcomePage;
 
     /**
      * Initialise container layout.
-     *
      *
      * @param availableGalaxyServer galaxy server is available online
      */
@@ -144,7 +133,7 @@ public abstract class PresenterContainer extends VerticalLayout {
             Page.getCurrent().reload();
         });
 
-        
+
         /**
          * landing page initialisation.
          *
@@ -167,11 +156,11 @@ public abstract class PresenterContainer extends VerticalLayout {
 
             @Override
             public void viewToShareDataset() {
-                 String galaxyServerUrl = VaadinSession.getCurrent().getAttribute("galaxyServerUrl").toString();
+                String galaxyServerUrl = VaadinSession.getCurrent().getAttribute("galaxyServerUrl").toString();
                 String userDataFolderUrl = VaadinSession.getCurrent().getAttribute("userDataFolderUrl").toString();
-                PresenterContainer.this.viewToShareDataset(galaxyServerUrl,userDataFolderUrl);
+                PresenterContainer.this.viewToShareDataset(galaxyServerUrl, userDataFolderUrl);
             }
-            
+
 
             @Override
             public void maximizeView() {
@@ -299,10 +288,12 @@ public abstract class PresenterContainer extends VerticalLayout {
     public void loginAsGuest() {
         welcomePage.loginAsGuest();
     }
- public void retriveToShareDataset() {
-         welcomePage.retriveToShareDataset();
+
+    public void retriveToShareDataset() {
+        welcomePage.retriveToShareDataset();
 
     }
+
     public HorizontalLayout getMainComponentContainer() {
         return mainComponentContainer;
     }
@@ -363,17 +354,17 @@ public abstract class PresenterContainer extends VerticalLayout {
     /**
      * Connect the system to Galaxy Server
      *
-     * @param galaxyServerUrl the address of Galaxy Server
-     * @param userAPI Galaxy user API key
+     * @param galaxyServerUrl   the address of Galaxy Server
+     * @param userAPI           Galaxy user API key
      * @param userDataFolderUrl main folder for storing users data
      * @return System connected to Galaxy server or not
      */
     public abstract List<String> connectToGalaxyServer(String galaxyServerUrl, String userAPI, String userDataFolderUrl);
-    
+
     /**
      * Connect the system to Galaxy Server
      *
-     * @param galaxyServerUrl the address of Galaxy Server
+     * @param galaxyServerUrl   the address of Galaxy Server
      * @param userDataFolderUrl main folder for storing users data
      */
     public abstract void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl);
@@ -383,27 +374,25 @@ public abstract class PresenterContainer extends VerticalLayout {
     /**
      * Run Online Peptide-Shaker work-flow
      *
-     * @param projectName The project name
-     * @param fastaFileId FASTA file dataset id
+     * @param projectName           The project name
+     * @param fastaFileId           FASTA file dataset id
      * @param searchParameterFileId .par file id
-     * @param mgfIdsList list of MGF file dataset ids
-     * @param searchEnginesList List of selected search engine names
+     * @param mgfIdsList            list of MGF file dataset ids
+     * @param searchEnginesList     List of selected search engine names
      */
     public abstract void execute_SearchGUI_PeptideShaker_WorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> mgfIdsList, Set<String> searchEnginesList, IdentificationParameters searchParam, boolean quant);
 
     /**
      * Save search settings file into galaxy
      *
-     *
      * @param searchParameters searchParameters .par file
-     * @param isNew is new search parameter file
+     * @param isNew            is new search parameter file
      * @return updated search parameters file list
      */
     public abstract Map<String, GalaxyTransferableFile> saveSearchGUIParameters(IdentificationParameters searchParameters, boolean isNew);
 
     /**
      * upload file into galaxy
-     *
      *
      * @param toUploadFiles files to be uploaded to galaxy
      * @return updated files map
@@ -423,7 +412,7 @@ public abstract class PresenterContainer extends VerticalLayout {
     /**
      * Store and retrieve dataset details index to share in link
      *
-     * @param dsDetails encoded dataset details to store in database
+     * @param dsDetails   encoded dataset details to store in database
      * @param dsUniqueKey
      * @return dataset public key
      */

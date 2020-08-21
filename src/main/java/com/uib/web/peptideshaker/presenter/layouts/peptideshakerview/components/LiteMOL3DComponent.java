@@ -2,11 +2,12 @@ package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.ui.VerticalLayout;
+import litemol.LiteMolComponent;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import litemol.LiteMolComponent;
 
 /**
  * This class provides an abstraction layer for LiteMOL 3D protein structure
@@ -15,8 +16,8 @@ import litemol.LiteMolComponent;
  */
 public class LiteMOL3DComponent extends VerticalLayout {
 
-    private String pdbId;
     private final LiteMolComponent proteinStructurePanel;
+    private String pdbId;
 
     public LiteMOL3DComponent() {
         LiteMOL3DComponent.this.setSizeFull();
@@ -68,8 +69,9 @@ public class LiteMOL3DComponent extends VerticalLayout {
         pdbId = null;
         proteinStructurePanel.setValue("reset-_-");
     }
-    public void redrawCanvas(){
+
+    public void redrawCanvas() {
         proteinStructurePanel.setValue("redraw-_-");
-}
+    }
 
 }

@@ -2,7 +2,8 @@ package com.uib.web.peptideshaker.presenter.core.form;
 
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
-import java.awt.Color;
+
+import java.awt.*;
 
 /**
  * This class represents color label

@@ -1,5 +1,11 @@
 package com.uib.web.peptideshaker.galaxy.utilities;
 
+import org.codehaus.jettison.json.JSONException;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,20 +14,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.codehaus.jettison.json.JSONException;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
  * This class will include required API connections that is no longer supported
@@ -30,17 +25,17 @@ import org.json.simple.parser.ParseException;
  * @author Yehia Farag
  */
 public class GalaxyAPIInteractiveLayer {
-    
-    public void populateCollection(String collectionId){
-    
-    
+
+    public void populateCollection(String collectionId) {
+
+
     }
 
     /**
      * Get list of datasets ids on galaxy server
      *
      * @param galaxyUrl web address to galaxy
-     * @param apiKey user API key
+     * @param apiKey    user API key
      * @return map of available dataset objects on galaxy
      */
     public List<Map<String, Object>> getDatasetIdList(String galaxyUrl, String apiKey) {
@@ -72,9 +67,9 @@ public class GalaxyAPIInteractiveLayer {
      * Fill missing information for specific dataset
      *
      * @param galaxyUrl web address for galaxy
-     * @param dsId dataset id
+     * @param dsId      dataset id
      * @param historyId history id
-     * @param apiKey user API key
+     * @param apiKey    user API key
      * @return dataset object map after filling all the missing information
      */
     public Map<String, Object> getDatasetInformation(String galaxyUrl, String dsId, String historyId, String apiKey) {
@@ -102,8 +97,8 @@ public class GalaxyAPIInteractiveLayer {
      * Get the user usage of memory on galaxy server
      *
      * @param galaxyUrl web address for galaxy
-     * @param userId user id
-     * @param apiKey user API key
+     * @param userId    user id
+     * @param apiKey    user API key
      * @return the memory usage as string
      */
     public String getUserMemoryUsage(String galaxyUrl, String userId, String apiKey) {
@@ -133,11 +128,10 @@ public class GalaxyAPIInteractiveLayer {
     /**
      * filter the dataset list removing collections and deleted datasets
      *
-     * @param dataList full dataset list
+     * @param dataList  full dataset list
      * @param galaxyUrl url for galaxy server
-     * @param apiKey user API key on galaxy server
+     * @param apiKey    user API key on galaxy server
      * @return filtered map of datasets
-     *
      */
     private List<Map<String, Object>> filterDatasets(List<Object> dataList, String galaxyUrl, String apiKey) {
         List<Map<String, Object>> convertedList = new ArrayList<>();
@@ -146,7 +140,7 @@ public class GalaxyAPIInteractiveLayer {
             Map<String, Object> datasetMap = (Map<String, Object>) dataList.get(i);
             if ((datasetMap.containsKey("collection_type") && datasetMap.get("deleted").toString().equalsIgnoreCase("false"))) {
 //                if (datasetMap.get("name").toString().endsWith("-Indexed-MGF")) {
-                Map<String, Object> collectionMap = getCollectionElements(datasetMap.get("url").toString (), galaxyUrl, apiKey);
+                Map<String, Object> collectionMap = getCollectionElements(datasetMap.get("url").toString(), galaxyUrl, apiKey);
                 datasetMap.put("elements", ((List) collectionMap.get("elements")));
 //                }
             }
@@ -167,11 +161,10 @@ public class GalaxyAPIInteractiveLayer {
     /**
      * Get data inside collections
      *
-     * @param url the url of collection
+     * @param url       the url of collection
      * @param galaxyUrl web address for galaxy server
-     * @param apiKey user API key on galaxy server
+     * @param apiKey    user API key on galaxy server
      * @return filtered map of datasets
-     *
      */
     private Map<String, Object> getCollectionElements(String url, String galaxyUrl, String apiKey) {
         try {
@@ -247,8 +240,8 @@ public class GalaxyAPIInteractiveLayer {
      * Get the user usage of memory on galaxy server
      *
      * @param galaxyUrl web address for galaxy
-     * @param userId user id
-     * @param apiKey user API key
+     * @param userId    user id
+     * @param apiKey    user API key
      * @return the memory usage as string
      */
     public boolean isJobDone(String galaxyUrl, String jobId, String apiKey) throws MalformedURLException, ParseException, JSONException, IOException, FileNotFoundException {

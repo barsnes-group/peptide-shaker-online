@@ -7,14 +7,14 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import java.awt.Color;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author yfa041
  */
 public class PeptideLayout extends AbsoluteLayout implements Comparable<PeptideLayout> {
@@ -24,21 +24,16 @@ public class PeptideLayout extends AbsoluteLayout implements Comparable<PeptideL
     private final PeptideObject peptide;
     private final String validationStatuesStyle;
     private final String proteinEvidenceStyle;
-    private boolean modifiedPeptide;
-    private VerticalLayout modificationLayout;
     private final VerticalLayout psmNumberLayout;
     private final VerticalLayout intensityLayout;
     private final List<Float> postionsList;
-
     private final String modificationStyleName = "nodemodificationbackground";
     /**
      * The post translational modifications factory.
      */
     private final ModificationFactory PTM = ModificationFactory.getInstance();
-
-    public PeptideObject getPeptide() {
-        return peptide;
-    }
+    private boolean modifiedPeptide;
+    private VerticalLayout modificationLayout;
 
     public PeptideLayout(PeptideObject peptide, float width, int startIndex, float x, String validationStatuesStyle, String proteinEvidenceStyle, boolean enzymatic, String PSMNumberColor) {
 
@@ -119,7 +114,7 @@ public class PeptideLayout extends AbsoluteLayout implements Comparable<PeptideL
         PeptideLayout.this.addComponent(intensityLayout);
         intensityLayout.setData(peptide.getModifiedSequence());
 //        psmNumberLayout.setStyleName("basicpeptidemodification");
-        if (peptide.getIntensity()> 0) {
+        if (peptide.getIntensity() > 0) {
             tooltip += "</br>Intensity: " + peptide.getIntensity() + "";
         }
 
@@ -133,6 +128,10 @@ public class PeptideLayout extends AbsoluteLayout implements Comparable<PeptideL
         PeptideLayout.this.setDescription(tooltip);
         this.postionsList = new ArrayList<>();
 
+    }
+
+    public PeptideObject getPeptide() {
+        return peptide;
     }
 
     public boolean isModifiedPeptide() {

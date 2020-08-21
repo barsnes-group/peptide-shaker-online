@@ -3,13 +3,8 @@ package com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects;
 import com.compomics.util.experiment.biology.proteins.Protein;
 import graphmatcher.NetworkGraphEdge;
 import graphmatcher.NetworkGraphNode;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
 
 /**
  * This class represents protein for Online PeptideShaker system the class
@@ -19,8 +14,21 @@ import java.util.Set;
  */
 public class ProteinGroupObject extends Protein {
 
+    private final Map<String, NetworkGraphNode> proteoformsNodes;
+    private final Set<NetworkGraphEdge> localEdges;
+    /**
+     * Set of secondary accessions related to the main accession protein.
+     */
+    private final Set<String> secondaryAccessionSet;
+    /**
+     * Protein group accessions set.
+     */
+    private final Set<String> proteinGroupSet;
+    /**
+     * List of peptides related to protein group.
+     */
+    private final Map<String, Boolean> relatedPeptidesList;
     private boolean proteoformUpdated;
-
     private boolean availableOn_CSF_PR;
     /**
      * UniProt accession number.
@@ -30,11 +38,6 @@ public class ProteinGroupObject extends Protein {
      * UniProt protein group key.
      */
     private String proteinGroupKey;
-
-    private final Map<String, NetworkGraphNode> proteoformsNodes;
-
-    private final Set<NetworkGraphEdge> localEdges;
-
     private double quantValue;
     /**
      * Intensity value of the quantification using average of all related
@@ -51,7 +54,6 @@ public class ProteinGroupObject extends Protein {
      * related peptides.
      */
     private String allPeptideIintensityColor = "rgb(" + 255 + "," + 255 + "," + 255 + ")";
-
     /**
      * Intensity value of the quantification using average of unique related
      * peptides.
@@ -67,61 +69,6 @@ public class ProteinGroupObject extends Protein {
      * related peptides.
      */
     private String uniquePeptideIintensityColor = "rgb(" + 255 + "," + 255 + "," + 255 + ")";
-
-    /**
-     * Get colour of all peptides intensity
-     *
-     * @return hashed colour
-     */
-    public String getAllPeptideIintensityColor() {
-        return allPeptideIintensityColor;
-    }
-
-    /**
-     * Set colour of all peptides intensity
-     *
-     * @param allPeptideIintensityColor hashed colour
-     */
-    public void setAllPeptideIintensityColor(String allPeptideIintensityColor) {
-        this.allPeptideIintensityColor = allPeptideIintensityColor;
-    }
-
-    /**
-     * Get the value for intensity for all peptides in protein
-     *
-     * @return calculated intensity from all quantified peptides
-     */
-    public double getAllPeptidesIntensity() {
-        return allPeptidesIntensity;
-    }
-
-    /**
-     **Set the value for intensity for all peptides in protein
-     *
-     * @param allPeptidesIntensity calculated intensity from all quantified
-     * peptides
-     */
-    public void setAllPeptidesIntensity(double allPeptidesIntensity) {
-        this.allPeptidesIntensity = allPeptidesIntensity;
-    }
-
-    /**
-     * Get protein group unique key
-     *
-     * @return protein group key
-     */
-    public String getProteinGroupKey() {
-        return proteinGroupKey;
-    }
-
-    /**
-     * Set protein group unique key
-     *
-     * @param proteinGroupKey protein group key
-     */
-    public void setProteinGroupKey(String proteinGroupKey) {
-        this.proteinGroupKey = proteinGroupKey;
-    }
     /**
      * Protein short name.
      */
@@ -179,17 +126,9 @@ public class ProteinGroupObject extends Protein {
      */
     private String secondaryAccessions;
     /**
-     * Set of secondary accessions related to the main accession protein.
-     */
-    private final Set<String> secondaryAccessionSet;
-    /**
      * Protein group that is related to the main protein.
      */
     private String proteinGroup;
-    /**
-     * Protein group accessions set.
-     */
-    private final Set<String> proteinGroupSet;
     /**
      * Number of validated peptides.
      */
@@ -229,7 +168,7 @@ public class ProteinGroupObject extends Protein {
     /**
      * Validation value.
      */
-    private String validation="Not Validated";
+    private String validation = "Not Validated";
     /**
      * Protein index from the exported PeptideShaker file.
      */
@@ -242,11 +181,72 @@ public class ProteinGroupObject extends Protein {
      * Protein sequence.
      */
     private String sequence;
-    /**
-     * List of peptides related to protein group.
-     */
-    private final Map<String, Boolean> relatedPeptidesList;
     private NetworkGraphNode parentNode;
+    /**
+     * Constructor to initialise the main data structure.
+     */
+    public ProteinGroupObject() {
+        this.secondaryAccessionSet = new LinkedHashSet<>();
+        this.proteinGroupSet = new LinkedHashSet<>();
+        this.relatedPeptidesList = new HashMap<>();
+        this.proteoformsNodes = new LinkedHashMap<>();
+        this.localEdges = new HashSet<>();
+    }
+
+    /**
+     * Get colour of all peptides intensity
+     *
+     * @return hashed colour
+     */
+    public String getAllPeptideIintensityColor() {
+        return allPeptideIintensityColor;
+    }
+
+    /**
+     * Set colour of all peptides intensity
+     *
+     * @param allPeptideIintensityColor hashed colour
+     */
+    public void setAllPeptideIintensityColor(String allPeptideIintensityColor) {
+        this.allPeptideIintensityColor = allPeptideIintensityColor;
+    }
+
+    /**
+     * Get the value for intensity for all peptides in protein
+     *
+     * @return calculated intensity from all quantified peptides
+     */
+    public double getAllPeptidesIntensity() {
+        return allPeptidesIntensity;
+    }
+
+    /**
+     * *Set the value for intensity for all peptides in protein
+     *
+     * @param allPeptidesIntensity calculated intensity from all quantified
+     *                             peptides
+     */
+    public void setAllPeptidesIntensity(double allPeptidesIntensity) {
+        this.allPeptidesIntensity = allPeptidesIntensity;
+    }
+
+    /**
+     * Get protein group unique key
+     *
+     * @return protein group key
+     */
+    public String getProteinGroupKey() {
+        return proteinGroupKey;
+    }
+
+    /**
+     * Set protein group unique key
+     *
+     * @param proteinGroupKey protein group key
+     */
+    public void setProteinGroupKey(String proteinGroupKey) {
+        this.proteinGroupKey = proteinGroupKey;
+    }
 
     /**
      * Get parent node
@@ -322,17 +322,6 @@ public class ProteinGroupObject extends Protein {
     }
 
     /**
-     * Constructor to initialise the main data structure.
-     */
-    public ProteinGroupObject() {
-        this.secondaryAccessionSet = new LinkedHashSet<>();
-        this.proteinGroupSet = new LinkedHashSet<>();
-        this.relatedPeptidesList = new HashMap<>();
-        this.proteoformsNodes = new LinkedHashMap<>();
-        this.localEdges = new HashSet<>();
-    }
-
-    /**
      * Get set of peptides related to protein group.
      *
      * @return set of peptides keys (modified sequence)
@@ -354,7 +343,7 @@ public class ProteinGroupObject extends Protein {
      * Update peptide type
      *
      * @param peptideKey peptides keys (modified sequence)
-     * @param enzymatic enzymatic peptide
+     * @param enzymatic  enzymatic peptide
      */
     public void updatePeptideType(String peptideKey, boolean enzymatic) {
         relatedPeptidesList.put(peptideKey, enzymatic);
@@ -543,7 +532,7 @@ public class ProteinGroupObject extends Protein {
      * Set confidently localised modification sites
      *
      * @param confidentlyLocalizedModificationSites confidently localised
-     * modification sites
+     *                                              modification sites
      */
     public void setConfidentlyLocalizedModificationSites(String confidentlyLocalizedModificationSites) {
         this.confidentlyLocalizedModificationSites = confidentlyLocalizedModificationSites;
@@ -562,7 +551,7 @@ public class ProteinGroupObject extends Protein {
      * Set number of confidently localised modification sites.
      *
      * @param ConfidentlyLocalizedModificationSitesNumber number of confidently
-     * localised modification sites.
+     *                                                    localised modification sites.
      */
     public void setConfidentlyLocalizedModificationSitesNumber(String ConfidentlyLocalizedModificationSitesNumber) {
         this.ConfidentlyLocalizedModificationSitesNumber = ConfidentlyLocalizedModificationSitesNumber;
@@ -581,7 +570,7 @@ public class ProteinGroupObject extends Protein {
      * Set ambiguous localised modification sites
      *
      * @param ambiguouslyLocalizedModificationSites Ambiguous localised
-     * modification sites
+     *                                              modification sites
      */
     public void setAmbiguouslyLocalizedModificationSites(String ambiguouslyLocalizedModificationSites) {
         this.ambiguouslyLocalizedModificationSites = ambiguouslyLocalizedModificationSites;
@@ -600,7 +589,7 @@ public class ProteinGroupObject extends Protein {
      * Set number of ambiguous localised modification sites.
      *
      * @param ambiguouslyLocalizedModificationSitesNumber Number of ambiguous
-     * localised modification sites.
+     *                                                    localised modification sites.
      */
     public void setAmbiguouslyLocalizedModificationSitesNumber(String ambiguouslyLocalizedModificationSitesNumber) {
         this.ambiguouslyLocalizedModificationSitesNumber = ambiguouslyLocalizedModificationSitesNumber;
@@ -637,7 +626,7 @@ public class ProteinGroupObject extends Protein {
      * Set secondary accessions related to the main accession protein
      *
      * @param secondaryAccessions Secondary accessions related to the main
-     * accession protein
+     *                            accession protein
      */
     public void setSecondaryAccessions(String secondaryAccessions) {
         this.secondaryAccessions = secondaryAccessions;
@@ -693,6 +682,15 @@ public class ProteinGroupObject extends Protein {
     }
 
     /**
+     * Set number of peptides
+     *
+     * @param peptidesNumber number of peptides
+     */
+    public void setPeptidesNumber(int peptidesNumber) {
+        this.peptidesNumber = peptidesNumber;
+    }
+
+    /**
      * Get set of secondary accessions related to the main accession protein.
      *
      * @return set of protein accessions.
@@ -708,15 +706,6 @@ public class ProteinGroupObject extends Protein {
      */
     public Set<String> getProteinGroupSet() {
         return proteinGroupSet;
-    }
-
-    /**
-     * Set number of peptides
-     *
-     * @param peptidesNumber number of peptides
-     */
-    public void setPeptidesNumber(int peptidesNumber) {
-        this.peptidesNumber = peptidesNumber;
     }
 
     /**
@@ -750,7 +739,7 @@ public class ProteinGroupObject extends Protein {
      * Set unique number of validated peptides to the protein.
      *
      * @param validatedUniqueNumber Unique number of validated peptides to the
-     * protein.
+     *                              protein.
      */
     public void setValidatedUniqueNumber(int validatedUniqueNumber) {
         this.validatedUniqueNumber = validatedUniqueNumber;
@@ -769,7 +758,7 @@ public class ProteinGroupObject extends Protein {
      * Set unique number of peptides to the protein group.
      *
      * @param uniqueToGroupNumber Unique number of peptides to the protein
-     * group.
+     *                            group.
      */
     public void setUniqueToGroupNumber(int uniqueToGroupNumber) {
         this.uniqueToGroupNumber = uniqueToGroupNumber;
@@ -788,7 +777,7 @@ public class ProteinGroupObject extends Protein {
      * Set unique number of validated peptides to the protein group.
      *
      * @param validatedUniqueToGroupNumber Unique number of validated peptides
-     * to the protein group.
+     *                                     to the protein group.
      */
     public void setValidatedUniqueToGroupNumber(int validatedUniqueToGroupNumber) {
         this.validatedUniqueToGroupNumber = validatedUniqueToGroupNumber;

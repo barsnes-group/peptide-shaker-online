@@ -5,18 +5,15 @@
  */
 package d3diagrams;
 
-import d3diagrams.*;
 import com.vaadin.shared.ui.JavaScriptComponentState;
 
 /**
- *
  * @author y-mok
  */
 public class VennDiagramComponentState extends JavaScriptComponentState {
     private String value;
-  
 
-   
+
     public String getValue() {
         return value;
     }
@@ -24,5 +21,5 @@ public class VennDiagramComponentState extends JavaScriptComponentState {
     public void setValue(String value) {
         this.value = value;
     }
-    
+
 }

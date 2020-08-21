@@ -1,7 +1,6 @@
 package com.uib.web.peptideshaker.presenter.core;
 
 import com.vaadin.event.LayoutEvents;
-import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
@@ -23,7 +22,7 @@ public abstract class ActionLabel extends HorizontalLayout implements LayoutEven
      * Initialise label
      *
      * @param text label text
-     * @param url web link to go on click
+     * @param url  web link to go on click
      */
     public ActionLabel(String text, Resource url) {
         ActionLabel.this.setSizeUndefined();
@@ -60,20 +59,12 @@ public abstract class ActionLabel extends HorizontalLayout implements LayoutEven
         ActionLabel.this.addLayoutClickListener(ActionLabel.this);
 
     }
-    public void setdownloadLink(String url,String fileName){
-        label.setContentMode(ContentMode.HTML);
-        label.setValue("<a href='"+url+"' download='"+fileName+"' target='_blank' > to hide text </a>");
-        label.setStyleName(ValoTheme.BUTTON_SMALL);
-//        label.setIcon(null);
-    
-    }
-    
 
     /**
      * Initialise label
      *
-     * @param icon resource icon
-     * @param name label text
+     * @param icon        resource icon
+     * @param name        label text
      * @param description label tool-tip
      */
     public ActionLabel(Resource icon, String name, String description) {
@@ -97,6 +88,14 @@ public abstract class ActionLabel extends HorizontalLayout implements LayoutEven
 
     }
 
+    public void setdownloadLink(String url, String fileName) {
+        label.setContentMode(ContentMode.HTML);
+        label.setValue("<a href='" + url + "' download='" + fileName + "' target='_blank' > to hide text </a>");
+        label.setStyleName(ValoTheme.BUTTON_SMALL);
+//        label.setIcon(null);
+
+    }
+
     /**
      * Get label value
      *
@@ -110,7 +109,6 @@ public abstract class ActionLabel extends HorizontalLayout implements LayoutEven
      * Update label title
      *
      * @param updatedTitle new label value
-     *
      */
     public void updateLabelTitle(String updatedTitle) {
         label.setValue(updatedTitle);

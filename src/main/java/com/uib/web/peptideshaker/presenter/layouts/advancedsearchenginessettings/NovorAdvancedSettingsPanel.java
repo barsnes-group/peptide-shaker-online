@@ -12,18 +12,18 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- *
  * @author y-mok
  */
 public class NovorAdvancedSettingsPanel extends PopupWindow {
 
     private final HorizontalLabelDropDownList fragmentaionMethod;
     private final HorizontalLabelDropDownList massAnalyzer;
-   
+
 
     private IdentificationParameters webSearchParameters;
 
@@ -38,16 +38,16 @@ public class NovorAdvancedSettingsPanel extends PopupWindow {
         container.addComponent(title, "left:10px;top:10px");
         VerticalLayout subContainer = new VerticalLayout();
         subContainer.setCaption("De Novo Settings");
-       
+
         subContainer.setSizeFull();
-        subContainer.setStyleName("subcontainer");  
+        subContainer.setStyleName("subcontainer");
         subContainer.addStyleName("importfiltersubcontainer");
         subContainer.addStyleName("noversubcontainer");
         container.addComponent(subContainer, "left:10px;top:70px;right:10px;bottom:40px");
         NovorAdvancedSettingsPanel.this.setContent(container);
         NovorAdvancedSettingsPanel.this.setClosable(true);
 
-       fragmentaionMethod = new HorizontalLabelDropDownList("Fragmentation Method");
+        fragmentaionMethod = new HorizontalLabelDropDownList("Fragmentation Method");
         subContainer.addComponent(fragmentaionMethod);
         Set<String> values2 = new LinkedHashSet<>();
         /**
@@ -58,17 +58,16 @@ public class NovorAdvancedSettingsPanel extends PopupWindow {
         fragmentaionMethod.updateData(values2);
 
         massAnalyzer = new HorizontalLabelDropDownList("Mass Analyzer");
-        subContainer.addComponent(massAnalyzer);       
+        subContainer.addComponent(massAnalyzer);
         values2.clear();
-        values2.add( "Trap");
-         values2.add( "TOF"); 
-         values2.add( "FT");         
+        values2.add("Trap");
+        values2.add("TOF");
+        values2.add("FT");
         massAnalyzer.updateData(values2);
 
-      
 
         String helpText = "<a href='https://www.rapidnovor.com' target='_blank'>";
-        Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open Rapid Novor  page.</font>",100,20);
+        Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open Rapid Novor  page.</font>", 100, 20);
         container.addComponent(help, "left:10px;bottom:10px;");
         Button okBtn = new Button("OK");
         okBtn.setWidth(76, Unit.PIXELS);
@@ -76,10 +75,10 @@ public class NovorAdvancedSettingsPanel extends PopupWindow {
         okBtn.setStyleName(ValoTheme.BUTTON_TINY);
         okBtn.addClickListener((Button.ClickEvent event) -> {
             updateParameters();
-                setPopupVisible(false);
-            
+            setPopupVisible(false);
+
         });
-        
+
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);
@@ -95,11 +94,11 @@ public class NovorAdvancedSettingsPanel extends PopupWindow {
     public void updateGUI(IdentificationParameters webSearchParameters) {
         this.webSearchParameters = webSearchParameters;
         NovorParameters noverParameters = (NovorParameters) webSearchParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.novor.getIndex());
-        
 
-        massAnalyzer.setSelected(noverParameters.getMassAnalyzer()+ "");
-        fragmentaionMethod.setSelected(noverParameters.getFragmentationMethod()+ "");
-       
+
+        massAnalyzer.setSelected(noverParameters.getMassAnalyzer() + "");
+        fragmentaionMethod.setSelected(noverParameters.getFragmentationMethod() + "");
+
 
     }
 
@@ -118,11 +117,11 @@ public class NovorAdvancedSettingsPanel extends PopupWindow {
     }
 
     private void updateParameters() {
-         NovorParameters noverParameters = (NovorParameters) webSearchParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.novor.getIndex());
-    
+        NovorParameters noverParameters = (NovorParameters) webSearchParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.novor.getIndex());
+
         noverParameters.setMassAnalyzer(massAnalyzer.getSelectedValue());
         noverParameters.setFragmentationMethod(fragmentaionMethod.getSelectedValue());
-      
+
 
     }
 

@@ -58,7 +58,8 @@ public class MobileSideBtn extends HorizontalLayout {
             this.addStyleName("shake");
         } else {
             this.removeStyleName("shake");
-            this.addStyleName("reshake");;
+            this.addStyleName("reshake");
+            ;
         }
     }
 

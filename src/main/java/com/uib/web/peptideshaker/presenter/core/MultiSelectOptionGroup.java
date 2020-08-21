@@ -2,8 +2,9 @@ package com.uib.web.peptideshaker.presenter.core;
 
 import com.vaadin.data.Property;
 import com.vaadin.event.LayoutEvents;
-import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.OptionGroup;
+
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -42,7 +43,7 @@ public class MultiSelectOptionGroup extends HorizontalLayout implements LayoutEv
         listI.setSizeUndefined();
         listI.setMultiSelect(true);
         listI.setStyleName("optiongroup");
-        
+
 
         MultiSelectOptionGroup.this.addComponent(listI);
         if (title != null) {
@@ -68,12 +69,12 @@ public class MultiSelectOptionGroup extends HorizontalLayout implements LayoutEv
 
         MultiSelectOptionGroup.this.addComponent(listIII);
 
-         if (title != null) {
-           listIV = new OptionGroup(" ");
+        if (title != null) {
+            listIV = new OptionGroup(" ");
         } else {
             listIV = new OptionGroup();
         }
-        
+
         listIV.setCaptionAsHtml(true);
         listIV.setSizeUndefined();
         listIV.setMultiSelect(true);
@@ -202,7 +203,7 @@ public class MultiSelectOptionGroup extends HorizontalLayout implements LayoutEv
     /**
      * Set the list is required to have a value.
      *
-     * @param required the selection is required
+     * @param required        the selection is required
      * @param requiredMessage the error appear if no data selected
      */
     public void setRequired(boolean required, String requiredMessage) {

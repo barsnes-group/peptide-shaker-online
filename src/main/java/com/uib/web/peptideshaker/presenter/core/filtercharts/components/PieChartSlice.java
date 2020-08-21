@@ -1,6 +1,6 @@
 package com.uib.web.peptideshaker.presenter.core.filtercharts.components;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,6 +14,10 @@ import java.util.Set;
 public class PieChartSlice implements Serializable {
 
     /**
+     * Set of included dataset indexes.
+     */
+    private final Set<Comparable> itemsIds = new HashSet<>();
+    /**
      * The slice identification label.
      */
     private Comparable label;
@@ -21,11 +25,6 @@ public class PieChartSlice implements Serializable {
      * The slice AWT Colour required by JFreechart.
      */
     private Color color;
-    /**
-     * Set of included dataset indexes.
-     */
-    private final Set<Comparable> itemsIds = new HashSet<>();
-
     private int totalValue;
 
     /**
@@ -38,7 +37,8 @@ public class PieChartSlice implements Serializable {
     }
 
     /**
-     *Set total value of the slice
+     * Set total value of the slice
+     *
      * @param totalValue the value as integer
      */
     public void setTotalValue(int totalValue) {

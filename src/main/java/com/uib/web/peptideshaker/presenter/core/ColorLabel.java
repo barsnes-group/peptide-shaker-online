@@ -31,7 +31,7 @@ public class ColorLabel extends VerticalLayout implements Comparable<ColorLabel>
         ColorLabel.this.setDescription(description);
         ColorLabel.this.setData(data);
         ColorLabel.this.addLayoutClickListener(listener);
-           this.description = description;
+        this.description = description;
     }
 
     @Override

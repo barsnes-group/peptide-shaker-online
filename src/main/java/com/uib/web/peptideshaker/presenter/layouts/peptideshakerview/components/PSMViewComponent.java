@@ -13,16 +13,9 @@ import com.vaadin.data.Property;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -30,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author Yehia Farag
  */
 public abstract class PSMViewComponent extends VerticalLayout {
@@ -40,36 +32,14 @@ public abstract class PSMViewComponent extends VerticalLayout {
     private final Property.ValueChangeListener psmlistener;
     private final VerticalLayout chartContainer;
     private final SpectrumPlot spectrumPlot;
+    private final DecimalFormat df1 = new DecimalFormat("#.##");
+    private final Map<Integer, Component> filterComponentsMap;
+    private final LayoutEvents.LayoutClickListener listener;
     private int index = 0;
     private int intensityColumnWidth = 120;
-    private final DecimalFormat df1 = new DecimalFormat("#.##");
-
-    private final Map<Integer, Component> filterComponentsMap;
     private int currentFilterView = 0;
     private int fragWidth;
-
-    public SpectrumPlot getSpectrumPlot() {
-        return spectrumPlot;
-    }
-    private final LayoutEvents.LayoutClickListener listener;
     private Map<Object, SpectrumInformation> spectrumInformationMap;
-
-    public void viewSpectraPlot(boolean view) {
-        chartContainer.setVisible(view);
-        if (!view) {
-            psmTableWrapper.addStyleName("nomargintop");
-        } else {
-            psmTableWrapper.removeStyleName("nomargintop");
-        }
-    }
-
-    public void viewPSMTable(boolean view) {
-        psmTableWrapper.setVisible(view);
-        psmTableWrapper.setSizeFull();
-        psmOverviewTable.setSizeFull();
-
-    }
-
     public PSMViewComponent() {
         PSMViewComponent.this.setSizeFull();
         PSMViewComponent.this.setSpacing(true);
@@ -217,6 +187,26 @@ public abstract class PSMViewComponent extends VerticalLayout {
 //        resizeControlBtn.resize(2);
     }
 
+    public SpectrumPlot getSpectrumPlot() {
+        return spectrumPlot;
+    }
+
+    public void viewSpectraPlot(boolean view) {
+        chartContainer.setVisible(view);
+        if (!view) {
+            psmTableWrapper.addStyleName("nomargintop");
+        } else {
+            psmTableWrapper.removeStyleName("nomargintop");
+        }
+    }
+
+    public void viewPSMTable(boolean view) {
+        psmTableWrapper.setVisible(view);
+        psmTableWrapper.setSizeFull();
+        psmOverviewTable.setSizeFull();
+
+    }
+
     public void updateView(List<PSMObject> psms, String tooltip, int peptideLength, boolean quantDataset) {
         this.psmOverviewTable.removeValueChangeListener(psmlistener);
         this.psmOverviewTable.removeAllItems();
@@ -241,9 +231,9 @@ public abstract class PSMViewComponent extends VerticalLayout {
             fragWidth = Math.max(fragWidth, psm.getSequence().length() * 17 + 100);
             String psmTooltip = "";
             for (String str : tooltip.split("</br>")) {
-                 if (str.contains("Intensity:")&&  psm.getIntensity()==-10000.0)
-                     psmTooltip = tooltip.replace(str, "");
-                 else if (str.contains("Intensity:")) {
+                if (str.contains("Intensity:") && psm.getIntensity() == -10000.0)
+                    psmTooltip = tooltip.replace(str, "");
+                else if (str.contains("Intensity:")) {
                     psmTooltip = tooltip.replace(str, "Intensity: " + psm.getIntensity());
                     break;
                 }
@@ -281,7 +271,7 @@ public abstract class PSMViewComponent extends VerticalLayout {
             };
             ValidationLabel validation = new ValidationLabel(psm.getValidation());
             this.psmOverviewTable.addItem(new Object[]{index++, chartGenerator.getSequenceFragmentationChart(), chartGenerator.getMassErrorPlot(), new ColorLabelWithPopupTooltip(psm.getIntensity(), psm.getIntensityColor(), psm.getIntensityPercentage()), chargeLabel, mzErrorLabel, confidentLabel, validation}, psm.getIndex());
-          
+
         });
         this.psmOverviewTable.setSortContainerPropertyId("confidence");
         this.psmOverviewTable.setSortAscending(false);

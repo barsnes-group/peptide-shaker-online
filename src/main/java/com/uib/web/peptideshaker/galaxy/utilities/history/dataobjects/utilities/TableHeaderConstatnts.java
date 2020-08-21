@@ -62,11 +62,11 @@ public class TableHeaderConstatnts {
     public final String Intensity = "intensity";
     public final String Prot = "prot";
     public final String Peptide = "peptide";
-    public final String Mod_peptide= "mod_peptide";
+    public final String Mod_peptide = "mod_peptide";
     public final String mz = "mz";
     public final String Mass = "mass";
     public final String Charge = "charge";
-    
+
     public final String Rt_peak = "rt_peak";
-    
+
 }

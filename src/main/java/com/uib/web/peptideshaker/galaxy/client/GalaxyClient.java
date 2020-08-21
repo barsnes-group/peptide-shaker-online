@@ -5,14 +5,9 @@
  */
 package com.uib.web.peptideshaker.galaxy.client;
 
-import com.github.jmchilton.blend4j.galaxy.GalaxyInstance;
-import com.github.jmchilton.blend4j.galaxy.GalaxyInstanceFactory;
-import com.github.jmchilton.blend4j.galaxy.HistoriesClient;
-import com.github.jmchilton.blend4j.galaxy.ToolsClient;
-import com.github.jmchilton.blend4j.galaxy.UsersClient;
-import com.github.jmchilton.blend4j.galaxy.WorkflowsClient;
+import com.github.jmchilton.blend4j.galaxy.*;
 import com.github.jmchilton.blend4j.galaxy.beans.History;
-import com.github.jmchilton.blend4j.galaxy.beans.HistoryDetails;
+
 import java.util.List;
 
 /**
@@ -22,9 +17,9 @@ import java.util.List;
  */
 public class GalaxyClient {
 
-    private GalaxyInstance Galaxy_Instance;
     private final String galaxy_Server_Url;
     private final String user_API;
+    private GalaxyInstance Galaxy_Instance;
 
     public GalaxyClient(String galaxyServerUrl, String userAPI) {
         Galaxy_Instance = GalaxyInstanceFactory.get(galaxyServerUrl, userAPI);
@@ -45,8 +40,8 @@ public class GalaxyClient {
     public boolean isJobDone(String jobid) {
         try {
             String jobStat = Galaxy_Instance.getJobsClient().showJob(jobid).getState();
-            System.out.println("at job stat is "+jobStat);
-            return jobStat.equalsIgnoreCase("ok") || jobStat.equalsIgnoreCase("error") ||jobStat.equalsIgnoreCase("paused")  ;
+            System.out.println("at job stat is " + jobStat);
+            return jobStat.equalsIgnoreCase("ok") || jobStat.equalsIgnoreCase("error") || jobStat.equalsIgnoreCase("paused");
 
         } catch (Exception e) {
             System.out.println("at handel exception at check history ready");
@@ -104,9 +99,10 @@ public class GalaxyClient {
         return Galaxy_Instance.getHistoriesClient().getHistories();
 
     }
-    private boolean checkHistoryReady(){
-    
-    return true;
+
+    private boolean checkHistoryReady() {
+
+        return true;
     }
 
 }

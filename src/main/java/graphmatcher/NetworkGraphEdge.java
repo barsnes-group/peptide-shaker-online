@@ -5,9 +5,6 @@
  */
 package graphmatcher;
 
-import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.Link;
-
 /**
  * This class represents edge in the developed graph
  *
@@ -17,18 +14,15 @@ public class NetworkGraphEdge {
 
     private final NetworkGraphNode n1;
     private final NetworkGraphNode n2;
+    private final boolean localEdge;
     private NetworkGraphNode pn1;
     private NetworkGraphNode pn2;
-
     private NetworkGraphNode firstNode;
     private NetworkGraphNode secondNode;
-
     private boolean hide;
-    private final boolean localEdge;
 //    private final String containerId;
 //    private final String type;
-
-//    private final Link edgeLabel;
+    //    private final Link edgeLabel;
     private String cssLabelPosition;
 
     public NetworkGraphEdge(NetworkGraphNode n1, NetworkGraphNode n2, boolean localEdge) {

@@ -158,7 +158,7 @@ public class QuantPeptide implements Serializable {
      * Set publication protein accession number(IPI or UniProt..etc)
      *
      * @param publicationAccessionNumber Publication protein accession
-     * number(IPI or UniProt..etc).
+     *                                   number(IPI or UniProt..etc).
      */
     public void setPublicationAccessionNumber(String publicationAccessionNumber) {
         this.publicationAccessionNumber = publicationAccessionNumber;
@@ -202,7 +202,7 @@ public class QuantPeptide implements Serializable {
 
     /**
      * Get peptide signature
-     *
+     * <p>
      * "__" + proteinIndex+ "__" + datasetIndex + "__"
      *
      * @return peptideSignature Peptide signature
@@ -213,7 +213,7 @@ public class QuantPeptide implements Serializable {
 
     /**
      * Set peptide signature
-     *
+     * <p>
      * "__" + proteinIndex+ "__" + datasetIndex + "__"
      *
      * @param peptideSignature Peptide signature
@@ -335,7 +335,7 @@ public class QuantPeptide implements Serializable {
     /**
      * Get unique parent protein id (protein index in database)
      *
-     * @return protIndex  Parent protein id 
+     * @return protIndex  Parent protein id
      */
     public int getProtIndex() {
         return protIndex;
@@ -344,7 +344,7 @@ public class QuantPeptide implements Serializable {
     /**
      * Set unique parent protein id (protein index in database)
      *
-     * @param protIndex Parent protein id 
+     * @param protIndex Parent protein id
      */
     public void setProtIndex(int protIndex) {
         this.protIndex = protIndex;
@@ -353,7 +353,7 @@ public class QuantPeptide implements Serializable {
     /**
      * Get unique parent dataset id (dataset index in database)
      *
-     * @return quantDatasetIndex  Parent dataset id 
+     * @return quantDatasetIndex  Parent dataset id
      */
     public int getQuantDatasetIndex() {
         return quantDatasetIndex;
@@ -362,7 +362,7 @@ public class QuantPeptide implements Serializable {
     /**
      * Set unique parent dataset id (dataset index in database)
      *
-     * @param quantDatasetIndex  Parent dataset id
+     * @param quantDatasetIndex Parent dataset id
      */
     public void setQuantDatasetIndex(int quantDatasetIndex) {
         this.quantDatasetIndex = quantDatasetIndex;

@@ -1,22 +1,18 @@
 package com.uib.web.peptideshaker.presenter;
 
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
-import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
-import com.uib.web.peptideshaker.presenter.layouts.DataViewLayout;
+import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.presenter.core.ButtonWithLabel;
 import com.uib.web.peptideshaker.presenter.core.Help;
+import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
 import com.uib.web.peptideshaker.presenter.core.SmallSideBtn;
+import com.uib.web.peptideshaker.presenter.layouts.DataViewLayout;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.Page;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -39,11 +35,11 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
      * The small side button (normal size screen).
      */
     private final SmallSideBtn smallPresenterButton;
-    private VerticalLayout leftSideButtonsContainer;
     /**
      * Map of layouts to coordinate left side buttons actions.
      */
     private final Map<PresenterSubViewSideBtn, Component> btnsLayoutMap;
+    private VerticalLayout leftSideButtonsContainer;
     /**
      * Main layout that contains the files and datasets table.
      */
@@ -52,6 +48,8 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
      * The main left side button (only support in a big screen).
      */
     private PresenterSubViewSideBtn viewDataBtn;
+    private Map<String, GalaxyFileObject> historyFilesMap;
+    private boolean jobInProgress;
 
     /**
      * Constructor to initialise the web tool main attributes.
@@ -116,9 +114,9 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
         titleLabel.setStyleName("frametitle");
         titleLabel.addStyleName("maintitleheader");
         dataViewFrameContent.addComponent(titleLabel, "left:40px;top:13px");
-         Help helpBtn = new Help("<h1>Projects Overview</h1>Users can check the available ready to visualise datasets, get an overview for the processed data, check the dataset processing statues and have access for the dataset sharing links where users can visulize the dataset using dataset link.<br/>Also users can delete datasets and input files.", "",400,150);
+        Help helpBtn = new Help("<h1>Projects Overview</h1>Users can check the available ready to visualise datasets, get an overview for the processed data, check the dataset processing statues and have access for the dataset sharing links where users can visulize the dataset using dataset link.<br/>Also users can delete datasets and input files.", "", 400, 150);
         dataViewFrameContent.addComponent(helpBtn, "left:178;top:0px");
-        
+
         dataViewFrameContent.addComponent(dataContainerLayout);
         viewDataBtn.setSelected(true);
 
@@ -148,8 +146,8 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
             }
 
             @Override
-            public int insertDatsetLinkToShare(String dsDetails,String dsUniqueKey) {
-                return FileSystemPresenter.this.insertDatsetLinkToShare(dsDetails,dsUniqueKey);
+            public int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey) {
+                return FileSystemPresenter.this.insertDatsetLinkToShare(dsDetails, dsUniqueKey);
             }
 
         };
@@ -158,14 +156,12 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
 
         return container;
     }
-    private Map<String, GalaxyFileObject> historyFilesMap;
-    private boolean jobInProgress;
 
     /**
      * Update Online PeptideShaker files from Galaxy Server
      *
      * @param historyFilesMap List of available files on Galaxy Server
-     * @param jobInProgress Jobs are running
+     * @param jobInProgress   Jobs are running
      */
     public void updateData(Map<String, GalaxyFileObject> historyFilesMap, boolean jobInProgress) {
         this.historyFilesMap = historyFilesMap;
@@ -344,9 +340,9 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
     /**
      * Store and retrieve dataset details index to share in link
      *
-     * @param dsDetails encoded dataset details to store in database
+     * @param dsDetails   encoded dataset details to store in database
      * @param dsUniqueKey
      * @return dataset public key
      */
-    public abstract int insertDatsetLinkToShare(String dsDetails,String dsUniqueKey);
+    public abstract int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey);
 }

@@ -1,5 +1,6 @@
 package com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -33,7 +34,7 @@ public class GalaxyFileObject {
     /**
      * File type.
      */
-    private String type;   
+    private String type;
     /**
      * File created time on Galaxy Server .
      */
@@ -45,7 +46,7 @@ public class GalaxyFileObject {
     /**
      * File size.
      */
-    private double size;   
+    private double size;
     /**
      * File available on Galaxy Server.
      */
@@ -74,19 +75,20 @@ public class GalaxyFileObject {
      *
      * @return Date object include file creation time on Galaxy Server
      */
-    public Date getCreate_time() {
-        return create_time;
+    public String getCreate_time() {
+        return new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss").format(create_time);
     }
 
     /**
      * Set File created time on Galaxy Server
      *
      * @param create_time Date object include file creation time on Galaxy
-     * Server
+     *                    Server
      */
     public void setCreate_time(Date create_time) {
         this.create_time = create_time;
-    } 
+    }
+
     /**
      * Check file available on Galaxy Server.
      *
@@ -104,6 +106,7 @@ public class GalaxyFileObject {
     public void setAvailableOnGalaxy(boolean availableOnGalaxy) {
         this.availableOnGalaxy = availableOnGalaxy;
     }
+
     /**
      * Get file statues on Galaxy Server (file is under processing)
      *
@@ -171,7 +174,7 @@ public class GalaxyFileObject {
      * Set the direct download link from Galaxy Server or NeLS storage system
      *
      * @param downloadUrl Direct download link from Galaxy Server or NeLS
-     * storage system
+     *                    storage system
      */
     public void setDownloadUrl(String downloadUrl) {
         this.downloadUrl = downloadUrl;
@@ -205,7 +208,8 @@ public class GalaxyFileObject {
     }
 
     /**
-     *Set file Id on Galaxy Server.
+     * Set file Id on Galaxy Server.
+     *
      * @param galaxyId File Id on Galaxy Server.
      */
     public void setGalaxyId(String galaxyId) {
@@ -213,7 +217,8 @@ public class GalaxyFileObject {
     }
 
     /**
-     *Get galaxy history Id on Galaxy Server where the file located.
+     * Get galaxy history Id on Galaxy Server where the file located.
+     *
      * @return Galaxy history Id on Galaxy Server where the file located
      */
     public String getHistoryId() {
@@ -221,12 +226,13 @@ public class GalaxyFileObject {
     }
 
     /**
-     *Set Galaxy history Id on Galaxy Server where the file located
+     * Set Galaxy history Id on Galaxy Server where the file located
+     *
      * @param historyId Galaxy history Id on Galaxy Server where the file located
      */
     public void setHistoryId(String historyId) {
         this.historyId = historyId;
     }
 
-    
+
 }

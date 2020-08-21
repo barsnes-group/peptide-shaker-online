@@ -6,11 +6,7 @@
 package com.uib.web.peptideshaker.presenter.core;
 
 import com.vaadin.event.LayoutEvents;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.PopupView;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 
 /**
  * This class represents popup layout with close button
@@ -36,7 +32,7 @@ public class ClosablePopup extends VerticalLayout {
         container.addComponent(btn, "right:-17px;top:-14px");
         Label l = new Label(title);
         container.addComponent(l, "left:5px;top:5px");
-        
+
         container.addComponent(content, "left:5px;bottom:5px;top:32px;right:5px;");
         popupView = new PopupView(caption, container);
         popupView.setCaptionAsHtml(true);

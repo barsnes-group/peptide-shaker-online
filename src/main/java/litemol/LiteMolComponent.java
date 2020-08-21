@@ -3,12 +3,16 @@ package litemol;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.ui.AbstractJavaScriptComponent;
 import elemental.json.JsonArray;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
 @StyleSheet({"../../VAADIN/js/mylitemolstyle.css", "../../VAADIN/js/LiteMol-plugin.css"})
 //@JavaScript({"../../VAADIN/js/LiteMol-plugin.js", "../../VAADIN/js/mylitemol-connector.js", "../../VAADIN/js/mylitemollibrary.js", "https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.touch/1.1.0/jquery.touch.min.js"})
 public class LiteMolComponent extends AbstractJavaScriptComponent {
+
+    ArrayList<ValueChangeListener> listeners
+            = new ArrayList<>();
 
     public LiteMolComponent() {
 
@@ -26,16 +30,13 @@ public class LiteMolComponent extends AbstractJavaScriptComponent {
         });
     }
 
-    public interface ValueChangeListener extends Serializable {
-
-        void valueChange();
-    }
-    ArrayList<ValueChangeListener> listeners
-            = new ArrayList<>();
-
     public void addValueChangeListener(
             ValueChangeListener listener) {
         listeners.add(listener);
+    }
+
+    public String getValue() {
+        return getState().getValue();
     }
 
     public void setValue(String value) {
@@ -45,10 +46,6 @@ public class LiteMolComponent extends AbstractJavaScriptComponent {
 //            ex.printStackTrace();
 //        }
         getState().setValue(value);
-    }
-
-    public String getValue() {
-        return getState().getValue();
     }
 
     public void setSize(int width, int height) {
@@ -61,6 +58,11 @@ public class LiteMolComponent extends AbstractJavaScriptComponent {
     @Override
     protected LiteMolComponentState getState() {
         return (LiteMolComponentState) super.getState();
+    }
+
+    public interface ValueChangeListener extends Serializable {
+
+        void valueChange();
     }
 
 }

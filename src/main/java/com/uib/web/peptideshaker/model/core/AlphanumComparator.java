@@ -27,12 +27,12 @@ package com.uib.web.peptideshaker.model.core;
 /**
  * This is an updated version with enhancements made by Daniel Migowski, Andre
  * Bogus, and David Koelle
- *
+ * <p>
  * To convert to use Templates (Java 1.5+): - Change implements Comparator to
  * implements Comparator - Change compare(Object o1, Object o2) to
  * compare(String s1, String s2) - Remove the type checking and casting in
  * compare().
- *
+ * <p>
  * To use this class: Use the static sort method from the java.util.Collections
  * class: Collections.sort(your list, new AlphanumComparator());
  */
@@ -91,7 +91,6 @@ public class AlphanumComparator implements Comparable<AlphanumComparator> {
     }
 
     /**
-     *
      * @param alphanumComparator2
      * @return integer value of the comparisons
      */
@@ -143,7 +142,8 @@ public class AlphanumComparator implements Comparable<AlphanumComparator> {
     }
 
     /**
-     *Convert to string value
+     * Convert to string value
+     *
      * @return The value to be compared
      */
     @Override

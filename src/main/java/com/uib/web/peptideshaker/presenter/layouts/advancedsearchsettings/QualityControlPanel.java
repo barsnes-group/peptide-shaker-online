@@ -5,15 +5,10 @@ import com.compomics.util.parameters.identification.advanced.ValidationQcParamet
 import com.compomics.util.parameters.identification.search.SearchParameters;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
- *
  * @author y-mok
  */
 public class QualityControlPanel extends PopupWindow {
@@ -58,10 +53,10 @@ public class QualityControlPanel extends PopupWindow {
         okBtn.setStyleName(ValoTheme.BUTTON_TINY);
         okBtn.addClickListener((Button.ClickEvent event) -> {
             updateParameters();
-                setPopupVisible(false);
-            
+            setPopupVisible(false);
+
         });
-        
+
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);

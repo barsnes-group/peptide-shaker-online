@@ -14,14 +14,14 @@ import com.vaadin.ui.Label;
  */
 public class PresenterSubViewSideBtn extends HorizontalLayout {
 
-    private Image btnThumbIconImage;
     private final Label iconLabel;
     private final int btnId;
+    private Image btnThumbIconImage;
 
     /**
      * Initialise side button view
      *
-     * @param text buttons text
+     * @param text  buttons text
      * @param btnId buttons id
      */
     public PresenterSubViewSideBtn(String text, int btnId) {

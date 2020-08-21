@@ -1,18 +1,15 @@
 package com.uib.web.peptideshaker.model;
 
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
+import pl.exsio.plupload.PluploadFile;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import pl.exsio.plupload.PluploadFile;
+import java.util.*;
 
 /**
  * This class responsible for process project uploaded files and generate
@@ -64,7 +61,7 @@ public abstract class UploadedProjectUtility {
         if (!checkFiles[0] || !checkFiles[1]) {
             return checkFiles;
         }
-        projectName = projectName.replace(" ", "_").replace("-", "_") + "___" + (new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss").format(new Timestamp(System.currentTimeMillis())) + "___" + filesnames.toString().replace(" ", "").replace("[", "").replace("]", ""));
+        //projectName = projectName.replace(" ", "_").replace("-", "_") + "___" + (new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss").format(new Timestamp(System.currentTimeMillis())) + "___" + filesnames.toString().replace(" ", "").replace("[", "").replace("]", ""));
 
         PeptideShakerVisualizationDataset psDs = new PeptideShakerVisualizationDataset(projectName, fastaFile, proteinFile, peptideFile, csf_pr_Accession_List) {
             @Override
@@ -72,6 +69,7 @@ public abstract class UploadedProjectUtility {
                 return new HashSet<>();
             }
         };
+        psDs.setCreate_time(new Timestamp(System.currentTimeMillis()));
         viewUploadedProjectDataset(psDs);
         return checkFiles;
 
@@ -82,7 +80,6 @@ public abstract class UploadedProjectUtility {
      *
      * @param peptides_file File
      * @return file is valid
-     *
      */
     private boolean checkPeptideFile(File peptides_file) {
         try {
@@ -116,7 +113,6 @@ public abstract class UploadedProjectUtility {
      *
      * @param proteins_file File
      * @return file is valid
-     *
      */
     private boolean checkProteinsFile(File proteins_file) {
 

@@ -16,10 +16,10 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 public class ButtonWithLabel extends HorizontalLayout {
 
-    private Image btnThumbIconImage;
     private final Label iconLabel;
     private final int btnId;
     private final Label textLabel;
+    private Image btnThumbIconImage;
 
     public ButtonWithLabel(String text, int btnId) {
         ButtonWithLabel.this.setHeight(80, Unit.PIXELS);

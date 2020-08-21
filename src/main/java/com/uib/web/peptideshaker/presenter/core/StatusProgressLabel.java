@@ -1,7 +1,6 @@
 package com.uib.web.peptideshaker.presenter.core;
 
 import com.vaadin.server.Resource;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Image;
 
@@ -31,6 +30,15 @@ public class StatusProgressLabel extends Image {
     }
 
     /**
+     * Get current statues
+     *
+     * @return statues
+     */
+    public int getStatus() {
+        return status;
+    }
+
+    /**
      * Set current statues
      *
      * @param status current statues
@@ -52,15 +60,6 @@ public class StatusProgressLabel extends Image {
             this.status = 2;
         }
 
-    }
-
-    /**
-     * Get current statues
-     *
-     * @return statues
-     */
-    public int getStatus() {
-        return status;
     }
 
 }

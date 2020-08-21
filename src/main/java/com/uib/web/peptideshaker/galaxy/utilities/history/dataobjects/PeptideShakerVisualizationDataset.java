@@ -1,6 +1,5 @@
 package com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects;
 
-import com.uib.web.peptideshaker.galaxy.utilities.history.FastaFileWebService;
 import com.compomics.util.experiment.biology.aminoacids.sequence.AminoAcidPattern;
 import com.compomics.util.experiment.biology.enzymes.Enzyme;
 import com.compomics.util.experiment.biology.enzymes.EnzymeFactory;
@@ -12,47 +11,16 @@ import com.compomics.util.experiment.identification.spectrum_assumptions.Peptide
 import com.compomics.util.experiment.io.mass_spectrometry.mgf.MgfIndex;
 import com.compomics.util.experiment.mass_spectrometry.spectra.Spectrum;
 import com.compomics.util.io.file.SerializationUtils;
-
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.advanced.SequenceMatchingParameters;
+import com.uib.web.peptideshaker.galaxy.utilities.history.FastaFileWebService;
 import com.uib.web.peptideshaker.galaxy.utilities.history.GalaxyDatasetServingUtil;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.utilities.TableHeaderConstatnts;
 import com.uib.web.peptideshaker.model.core.ModificationMatrix;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.components.RangeColorGenerator;
 import com.uib.web.peptideshaker.presenter.pscomponents.SpectrumInformation;
-import elemental.json.JsonArray;
-import elemental.json.impl.JreJsonArray;
 import graphmatcher.NetworkGraphEdge;
 import graphmatcher.NetworkGraphNode;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.collections15.map.LinkedMap;
 import org.biojava.nbio.core.sequence.ProteinSequence;
 import org.biojava.nbio.core.sequence.compound.AminoAcidCompound;
@@ -64,6 +32,11 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import java.io.*;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.concurrent.*;
+
 /**
  * This class represents dataset visualisation that store data for viewing files
  * on web
@@ -71,15 +44,6 @@ import org.codehaus.jettison.json.JSONObject;
  * @author Yehia Farag
  */
 public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject implements Comparable<PeptideShakerVisualizationDataset> {
-
-    /**
-     * Check if the project uploaded or imported from Galaxy
-     *
-     * @return project is uploaded
-     */
-    public boolean isUploadedProject() {
-        return uploadedProject;
-    }
 
     /**
      * Dataset (Project) name.
@@ -98,13 +62,45 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      */
     private final String apiKey;
     /**
-     * SearchGUI results file.
-     */
-    private GalaxyFileObject SearchGUIResultFile;
-    /**
      * MGF input files list.
      */
     private final Map<String, GalaxyFileObject> indexedMGFFilesMap;
+    private final Set<String> inputMgffilesName;
+    /**
+     * Standard header values for protein, peptides, psm and moff table files
+     */
+    private final TableHeaderConstatnts table_headers;
+    /**
+     * MGF index file map (.cms) files.
+     */
+    private final Map<String, File> cuiFileMap;
+    /**
+     * MGF index file map (.cui) files.
+     */
+    private final Map<String, MgfIndex> importedMgfIndexObjectMap;
+    /**
+     * Protein evidence options array.
+     */
+    private final String[] proteinEvidence = new String[]{"Not Available", "Protein", "Transcript", "Homology", "Predicted", "Uncertain"};
+    /**
+     * Protein modifications map (based on user search input).
+     */
+    private final ConcurrentHashMap<String, Set<Comparable>> modificationMap;
+    /**
+     * Protein to peptides number map (to be used in datasets filters).
+     */
+    private final TreeMap<Comparable, Set<Comparable>> proteinPeptidesNumberMap;
+    /**
+     * Managing the integration and data transfer between Galaxy Server and
+     * Online Peptide Shaker (managing requests and responses)
+     */
+    private final GalaxyDatasetServingUtil galaxyDatasetServingUtil;
+    private final Set<String> csf_pr_Accession_List;
+    private final boolean uploadedProject;
+    /**
+     * SearchGUI results file.
+     */
+    private GalaxyFileObject SearchGUIResultFile;
     private String indexedMgfGalaxyId;
     /**
      * PeptideShaker results file (compressed folder) ID on Galaxy Server.
@@ -144,91 +140,24 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
     private String enzyme;
     private RangeColorGenerator colorGenerator;
     private TreeSet<Double> intensitySet;
-//    private TreeSet<Double> logIntensitySet;
+    //    private TreeSet<Double> logIntensitySet;
     private double topIntensityValue;
-    private final Set<String> inputMgffilesName;
-    /**
-     * Standard header values for protein, peptides, psm and moff table files
-     */
-    private final TableHeaderConstatnts table_headers;
     /**
      * Output MOFF quant file representation on Online PeptideShaker.
      */
     private Set<GalaxyTransferableFile> moff_quant_files;
     private String moffGalaxyId;
-
-    public String getMoffGalaxyId() {
-        return moffGalaxyId;
-    }
-
     private boolean quantDataset = false;
-
-    public Map<String, GalaxyFileObject> getIndexedMGFFilesMap() {
-        return indexedMGFFilesMap;
-    }
-
-    public String getIndexedMgfGalaxyId() {
-        return indexedMgfGalaxyId;
-    }
-
-    public Set<GalaxyTransferableFile> getCuiFileSet() {
-        return cuiFileSet;
-    }
-
-    public String getCuiListGalaxyId() {
-        return cuiListGalaxyId;
-    }
-
-    /**
-     * Get Moff file object
-     *
-     * @return galaxy transferable file
-     */
-    public Set<GalaxyTransferableFile> getMoff_quant_file() {
-        return moff_quant_files;
-    }
-
-    /**
-     * Set Moff File
-     *
-     * @param moff_quant_file galaxy transferable file
-     */
-    public void setMoff_quant_files(String moffGalaxyId, Set<GalaxyTransferableFile> moff_quant_files) {
-        this.quantDataset = moff_quant_files.iterator().next().getStatus().equalsIgnoreCase("ok");
-        this.moff_quant_files = moff_quant_files;
-        this.moffGalaxyId = moffGalaxyId;
-    }
     /**
      * FASTA utilities that allow getting protein FASTA information using the
      * UniProt web service.
      */
     private FastaFileWebService FastaFileWebService;
     /**
-     * MGF index file map (.cms) files.
-     */
-    private final Map<String, File> cuiFileMap;
-    /**
      * Zip Folder contains mgf index files (cui).
      */
     private Set<GalaxyTransferableFile> cuiFileSet;
     private String cuiListGalaxyId;
-    /**
-     * MGF index file map (.cui) files.
-     */
-    private final Map<String, MgfIndex> importedMgfIndexObjectMap;
-
-    /**
-     * Protein evidence options array.
-     */
-    private final String[] proteinEvidence = new String[]{"Not Available", "Protein", "Transcript", "Homology", "Predicted", "Uncertain"};
-    /**
-     * Protein modifications map (based on user search input).
-     */
-    private final ConcurrentHashMap<String, Set<Comparable>> modificationMap;
-    /**
-     * Protein to peptides number map (to be used in datasets filters).
-     */
-    private final TreeMap<Comparable, Set<Comparable>> proteinPeptidesNumberMap;
     /**
      * The sequence matching options.
      */
@@ -238,18 +167,13 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      */
     private EnzymeFactory enzymeFactory;
     /**
-     * Managing the integration and data transfer between Galaxy Server and
-     * Online Peptide Shaker (managing requests and responses)
-     */
-    private final GalaxyDatasetServingUtil galaxyDatasetServingUtil;
-    /**
      * Generic class grouping the parameters used for protein identifications.
      */
     private IdentificationParameters identificationParameters;
     /**
      * Creating time for the datasets (to sort based on creation date).
      */
-    private Date createTime;
+    private String createTime;
     /**
      * Datasets statues (valid, not valid, or in progress).
      */
@@ -286,13 +210,10 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * Task used to process pathway matcher files.
      */
     private ProcessPathwayMatcherFilesTask processPathwayMatcherFilesTask;
-
     /**
      * PSM File already initialised.
      */
     private boolean PSMFileInitialized = false;
-
-    private final Set<String> csf_pr_Accession_List;
     /**
      * Link to share in public.
      */
@@ -300,8 +221,124 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
     private File uploadedFastaFile;
     private File uploadedProteinFile;
     private File uploadedPeptideFile;
-    private final boolean uploadedProject;
     private boolean toShareDataset;
+    private boolean externalDataset;
+
+    /**
+     * Constructor to initialise the main variables required to visualise
+     * PeptideShaker results
+     *
+     * @param projectName              Dataset (Project) name.
+     * @param user_folder              User data files folder
+     * @param galaxyLink               Galaxy Server web address
+     * @param apiKey                   Galaxy server user API key.
+     * @param galaxyDatasetServingUtil Managing the integration and data
+     *                                 transfer between Galaxy Server and Online Peptide Shaker (managing
+     *                                 requests and responses)
+     * @param csf_pr_Accession_List
+     */
+    public PeptideShakerVisualizationDataset(String projectName, File user_folder, String galaxyLink, String apiKey, GalaxyDatasetServingUtil galaxyDatasetServingUtil, Set<String> csf_pr_Accession_List) {
+        this.projectName = projectName;
+        this.user_folder = user_folder;
+        this.galaxyLink = galaxyLink;
+        this.apiKey = apiKey;
+        this.indexedMGFFilesMap = new LinkedHashMap<>();
+        this.cuiFileMap = new LinkedHashMap<>();
+        this.importedMgfIndexObjectMap = new LinkedHashMap<>();
+        this.proteinPeptidesNumberMap = new TreeMap<>();
+        this.modificationMap = new ConcurrentHashMap<>();
+        this.modificationMap.put("No Modification", new LinkedHashSet<>());
+        this.galaxyDatasetServingUtil = galaxyDatasetServingUtil;
+        this.csf_pr_Accession_List = csf_pr_Accession_List;
+        this.uploadedProject = false;
+        this.table_headers = new TableHeaderConstatnts();
+        this.inputMgffilesName = new LinkedHashSet<>();
+    }
+    /**
+     * Constructor to initialise the main variables required to visualise
+     * PeptideShaker results for uploaded projects type 1 ad 2
+     *
+     * @param projectName           Dataset (Project) name.
+     * @param fastaFile
+     * @param csf_pr_Accession_List
+     * @param peptideFile
+     * @param proteinFile
+     */
+    public PeptideShakerVisualizationDataset(String projectName, File fastaFile, File proteinFile, File peptideFile, Set<String> csf_pr_Accession_List) {
+        this.projectName = projectName;
+        PeptideShakerVisualizationDataset.this.setName(projectName);
+        PeptideShakerVisualizationDataset.this.setGalaxyId(projectName);
+        this.user_folder = null;
+        this.galaxyLink = null;
+        this.apiKey = null;
+        this.indexedMGFFilesMap = new LinkedHashMap<>();
+        this.cuiFileMap = new LinkedHashMap<>();
+        this.importedMgfIndexObjectMap = new LinkedHashMap<>();
+        this.proteinPeptidesNumberMap = new TreeMap<>();
+        this.modificationMap = new ConcurrentHashMap<>();
+        this.modificationMap.put("No Modification", new LinkedHashSet<>());
+        this.galaxyDatasetServingUtil = null;
+        this.csf_pr_Accession_List = csf_pr_Accession_List;
+        this.uploadedFastaFile = fastaFile;
+        this.uploadedProteinFile = proteinFile;
+        this.uploadedPeptideFile = peptideFile;
+        this.uploadedProject = true;
+        this.psDatasetStat = "ok";
+        PeptideShakerVisualizationDataset.this.setType("User uploaded Project");
+        this.table_headers = new TableHeaderConstatnts();
+        PeptideShakerVisualizationDataset.this.processDataFiles();
+        this.inputMgffilesName = new LinkedHashSet<>();
+
+    }
+
+    /**
+     * Check if the project uploaded or imported from Galaxy
+     *
+     * @return project is uploaded
+     */
+    public boolean isUploadedProject() {
+        return uploadedProject;
+    }
+
+    public String getMoffGalaxyId() {
+        return moffGalaxyId;
+    }
+
+    public Map<String, GalaxyFileObject> getIndexedMGFFilesMap() {
+        return indexedMGFFilesMap;
+    }
+
+    public String getIndexedMgfGalaxyId() {
+        return indexedMgfGalaxyId;
+    }
+
+    public Set<GalaxyTransferableFile> getCuiFileSet() {
+        return cuiFileSet;
+    }
+
+    public String getCuiListGalaxyId() {
+        return cuiListGalaxyId;
+    }
+
+    /**
+     * Get Moff file object
+     *
+     * @return galaxy transferable file
+     */
+    public Set<GalaxyTransferableFile> getMoff_quant_file() {
+        return moff_quant_files;
+    }
+
+    /**
+     * Set Moff File
+     *
+     * @param moff_quant_file galaxy transferable file
+     */
+    public void setMoff_quant_files(String moffGalaxyId, Set<GalaxyTransferableFile> moff_quant_files) {
+        this.quantDataset = moff_quant_files.iterator().next().getStatus().equalsIgnoreCase("ok");
+        this.moff_quant_files = moff_quant_files;
+        this.moffGalaxyId = moffGalaxyId;
+    }
 
     public boolean isToShareDataset() {
         return toShareDataset;
@@ -366,75 +403,6 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
 
         }
         return linkToShare;
-    }
-
-    /**
-     * Constructor to initialise the main variables required to visualise
-     * PeptideShaker results
-     *
-     * @param projectName Dataset (Project) name.
-     * @param user_folder User data files folder
-     * @param galaxyLink Galaxy Server web address
-     * @param apiKey Galaxy server user API key.
-     * @param galaxyDatasetServingUtil Managing the integration and data
-     * transfer between Galaxy Server and Online Peptide Shaker (managing
-     * requests and responses)
-     * @param csf_pr_Accession_List
-     */
-    public PeptideShakerVisualizationDataset(String projectName, File user_folder, String galaxyLink, String apiKey, GalaxyDatasetServingUtil galaxyDatasetServingUtil, Set<String> csf_pr_Accession_List) {
-        this.projectName = projectName;
-        this.user_folder = user_folder;
-        this.galaxyLink = galaxyLink;
-        this.apiKey = apiKey;
-        this.indexedMGFFilesMap = new LinkedHashMap<>();
-        this.cuiFileMap = new LinkedHashMap<>();
-        this.importedMgfIndexObjectMap = new LinkedHashMap<>();
-        this.proteinPeptidesNumberMap = new TreeMap<>();
-        this.modificationMap = new ConcurrentHashMap<>();
-        this.modificationMap.put("No Modification", new LinkedHashSet<>());
-        this.galaxyDatasetServingUtil = galaxyDatasetServingUtil;
-        this.csf_pr_Accession_List = csf_pr_Accession_List;
-        this.uploadedProject = false;
-        this.table_headers = new TableHeaderConstatnts();
-        this.inputMgffilesName = new LinkedHashSet<>();
-    }
-
-    /**
-     * Constructor to initialise the main variables required to visualise
-     * PeptideShaker results for uploaded projects type 1 ad 2
-     *
-     * @param projectName Dataset (Project) name.
-     * @param fastaFile
-     *
-     * @param csf_pr_Accession_List
-     * @param peptideFile
-     * @param proteinFile
-     */
-    public PeptideShakerVisualizationDataset(String projectName, File fastaFile, File proteinFile, File peptideFile, Set<String> csf_pr_Accession_List) {
-        this.projectName = projectName;
-        PeptideShakerVisualizationDataset.this.setName(projectName);
-        PeptideShakerVisualizationDataset.this.setGalaxyId(projectName);
-        this.user_folder = null;
-        this.galaxyLink = null;
-        this.apiKey = null;
-        this.indexedMGFFilesMap = new LinkedHashMap<>();
-        this.cuiFileMap = new LinkedHashMap<>();
-        this.importedMgfIndexObjectMap = new LinkedHashMap<>();
-        this.proteinPeptidesNumberMap = new TreeMap<>();
-        this.modificationMap = new ConcurrentHashMap<>();
-        this.modificationMap.put("No Modification", new LinkedHashSet<>());
-        this.galaxyDatasetServingUtil = null;
-        this.csf_pr_Accession_List = csf_pr_Accession_List;
-        this.uploadedFastaFile = fastaFile;
-        this.uploadedProteinFile = proteinFile;
-        this.uploadedPeptideFile = peptideFile;
-        this.uploadedProject = true;
-        this.psDatasetStat = "ok";
-        PeptideShakerVisualizationDataset.this.setType("User uploaded Project");
-        this.table_headers = new TableHeaderConstatnts();
-        PeptideShakerVisualizationDataset.this.processDataFiles();        
-        this.inputMgffilesName = new LinkedHashSet<>();
-
     }
 
     /**
@@ -504,7 +472,15 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
         return isValidDataset();
     }
 
-    private boolean externalDataset;
+    /**
+     * Set current state of the dataset
+     *
+     * @param status dataset state
+     */
+    @Override
+    public void setStatus(String status) {
+        this.psDatasetStat = status;
+    }
 
     private String isValidDataset() {
 
@@ -542,22 +518,12 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
     /**
      * Set current state of the dataset
      *
-     * @param status dataset state
+     * @param status   dataset state
      * @param external dataset is external
      */
     public void setStatus(String status, boolean external) {
         this.psDatasetStat = status;
         this.externalDataset = external;
-    }
-
-    /**
-     * Set current state of the dataset
-     *
-     * @param status dataset state
-     */
-    @Override
-    public void setStatus(String status) {
-        this.psDatasetStat = status;
     }
 
     /**
@@ -639,11 +605,12 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
 //        return indexedMGFFilesMap;
 //    }
 //    private boolean multiMgf = false;
+
     /**
      * Add MGF file to the dataset
      *
      * @param indexedMgfGalaxyId MGF file id on Galaxy Server
-     * @param mgfDs MGF file representation on Online PeptideShaker
+     * @param mgfDs              MGF file representation on Online PeptideShaker
      */
     public void setIndexedMgfFiles(String indexedMgfGalaxyId, Set<GalaxyFileObject> indexedMgfFiles) {
         for (GalaxyFileObject file : indexedMgfFiles) {
@@ -657,7 +624,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * Add MGF file to the dataset
      *
      * @param cuiListGalaxyId MGF file id on Galaxy Server
-     * @param mgfDs MGF file representation on Online PeptideShaker
+     * @param mgfDs           MGF file representation on Online PeptideShaker
      */
     public void setCuiFiles(String cuiListGalaxyId, Set<GalaxyTransferableFile> cuiFileSet) {
         this.cuiFileSet = cuiFileSet;
@@ -678,8 +645,8 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * Set PeptideShaker Results File Id on Galaxy Server
      *
      * @param PeptideShakerResultsFileId PeptideShaker Results File Id on Galaxy
-     * Server
-     * @param external shared dataset with other users
+     *                                   Server
+     * @param external                   shared dataset with other users
      */
     public void setPeptideShakerResultsFileId(String PeptideShakerResultsFileId, final boolean external) {
         this.PeptideShakerResultsFileId = PeptideShakerResultsFileId;
@@ -701,7 +668,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * Initialise PeptideShaker Results File and prepare inside folder files
      *
      * @param PeptideShakerResultsFileId PeptideShaker Results File Id on Galaxy
-     * Server
+     *                                   Server
      */
     private void initialiseDataFiles(String PeptideShakerResultsFileId) {
         //validate zipFile
@@ -823,6 +790,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
 //        }
 //
 //    }
+
     /**
      * Get Input FASTA file used in the search name
      *
@@ -1000,7 +968,6 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
     /**
      * Process files inside the PeptideShaker results file, (execute proteins,
      * peptides,and FASTA file tasks).
-     *
      */
     public void processDataFiles() {
         try {
@@ -1025,7 +992,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                 processPathwayMatcherFilesTask = new ProcessPathwayMatcherFilesTask(proteoform_file);
                 executorService.submit(processPathwayMatcherFilesTask);
             }
-           
+
             executorService.shutdown();
             if (!uploadedProject) {
                 processPSMFile();
@@ -1034,7 +1001,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             } else {
 
                 while (!peptideProcessFuture.isDone()) {
-                } 
+                }
             }
 
         } catch (IOException ex) {
@@ -1502,7 +1469,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * Update protein information to be display
      *
      * @param proteinObject protein object
-     * @param proteinKey protein key (accession)
+     * @param proteinKey    protein key (accession)
      * @return updated protein object
      */
     public ProteinGroupObject updateProteinInformation(ProteinGroupObject proteinObject, String proteinKey) {
@@ -1545,10 +1512,9 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * peptides are enzymatic, even if not all mappings are enzymatic.
      *
      * @param sequence
-     * @param peptideSequence the peptide sequence to check
-     * @param enzyme the enzyme to use
+     * @param peptideSequence             the peptide sequence to check
+     * @param enzyme                      the enzyme to use
      * @param sequenceMatchingPreferences the sequence matching preferences
-     *
      * @return true of the peptide is non-enzymatic
      */
     public boolean isEnzymaticPeptide(String sequence, String peptideSequence, Enzyme enzyme, SequenceMatchingParameters sequenceMatchingPreferences) {
@@ -1577,14 +1543,12 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * given protein in a map: peptide start index &gt; (amino acids before,
      * amino acids after).
      *
-     * @param peptide the sequence of the peptide of interest
-     * @param nAA the number of amino acids to include
+     * @param peptide                     the sequence of the peptide of interest
+     * @param nAA                         the number of amino acids to include
      * @param sequenceMatchingPreferences the sequence matching preferences
-     *
      * @return the amino acids surrounding a peptide in the protein sequence
-     *
      * @throws IOException Exception thrown whenever an error occurred while
-     * parsing the protein sequence
+     *                     parsing the protein sequence
      */
     private HashMap<Integer, String[]> getSurroundingAA(String sequence, String peptide, int nAA, SequenceMatchingParameters sequenceMatchingPreferences) {
 
@@ -1610,7 +1574,8 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             }
 
             result.get(startIndex)[1] = subsequence;
-        };
+        }
+        ;
 
         return result;
     }
@@ -1619,9 +1584,8 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * Returns the list of indexes where a peptide can be found in the protein
      * sequence. 1 is the first amino acid.
      *
-     * @param peptideSequence the sequence of the peptide of interest
+     * @param peptideSequence             the sequence of the peptide of interest
      * @param sequenceMatchingPreferences the sequence matching preferences
-     *
      * @return the list of indexes where a peptide can be found in a protein
      * sequence
      */
@@ -1702,7 +1666,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
     /**
      * Get selected spectrum data that is related to selected peptide.
      *
-     * @param PSMs selected PSMs files
+     * @param PSMs          selected PSMs files
      * @param peptideObject peptide object
      * @return map of Spectrum Information
      */
@@ -1756,7 +1720,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             long index = 0;
             if (false || selectedPsm.getSpectrumTitle().contains("scan=6769ttt")) {
                 index = 13833838;
-            } 
+            }
 //            else if (selectedPsm.getSpectrumTitle().contains("scan=6612ttt")) {
 //                index = 13162541;
 //            } else if (selectedPsm.getSpectrumTitle().contains("scan=6689ttt")) {
@@ -1857,7 +1821,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      *
      * @return date object
      */
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
@@ -1866,7 +1830,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      *
      * @param createTime date object
      */
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
@@ -1892,15 +1856,150 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
     }
 
     /**
+     * Update the protein with Reactom pathway information
+     *
+     * @param proteinNodes nodes of protein to update
+     * @return set of network graph edges
+     */
+    public Set<NetworkGraphEdge> updateProteinPathwayInformation(Map<String, ProteinGroupObject> proteinNodes) {
+
+        proteinNodes.values().stream().filter((protein) -> !(protein.isProteoformUpdated())).forEachOrdered((protein) -> {
+            Map<String, NetworkGraphNode> subNodes;
+            try {
+                if (uploadedProject) {
+                    subNodes = null;
+                } else {
+                    subNodes = processPathwayMatcherFilesTask.call().get(protein.getAccession());
+                }
+
+                NetworkGraphNode parentNode = new NetworkGraphNode(protein.getAccession(), true, true) {
+                    @Override
+                    public void selected(String id) {
+                        System.out.println("at selected parent node  id " + id);
+                    }
+
+                };
+                if (subNodes == null) {
+                    NetworkGraphNode singleNode = new NetworkGraphNode(protein.getAccession() + ";", true, false) {
+                        @Override
+                        public void selected(String id) {
+                            System.out.println("at selected single id " + id);
+                        }
+
+                    };
+                    singleNode.setType(3);
+                    singleNode.setParentNode(parentNode);
+                    protein.addProteoformNode(singleNode);
+                } else {
+                    subNodes.values().stream().map((n) -> {
+                        n.setParentNode(parentNode);
+                        return n;
+                    }).forEachOrdered((n) -> {
+                        protein.addProteoformNode(n);
+                    });
+
+                }
+
+                protein.setParentNode(parentNode);
+                protein.setProteoformUpdated(true);
+            } catch (Exception ex) {
+                System.out.println("Error : line 2941 " + ex);
+            }
+        });
+
+        //get all edges
+        Set<String[]> edgesData = getPathwayEdges(proteinNodes.keySet());
+        Set<NetworkGraphEdge> edges = new HashSet<>();
+        Map<String, NetworkGraphNode> tNodes = new HashMap<>();
+        edgesData.stream().map((String[] arr) -> {
+            ProteinGroupObject p1 = proteinNodes.get(arr[0].split(";")[0].split("-")[0]);
+            ProteinGroupObject p2 = proteinNodes.get(arr[1].split(";")[0].split("-")[0]);
+            NetworkGraphNode n1;
+            NetworkGraphNode n2;
+            n2 = null;
+            if ((p1 == null || !(p1.getProteoformsNodes().containsKey(arr[0].trim()))) && !tNodes.containsKey(arr[0].trim())) {
+                n1 = new NetworkGraphNode(arr[0], false, false) {
+                    @Override
+                    public void selected(String id) {
+                        System.out.println("at selected node 2 " + id);
+                    }
+                };
+                tNodes.put(n1.getNodeId(), n1);
+                if (!tNodes.containsKey(n1.getAccession())) {
+                    NetworkGraphNode parentNode = new NetworkGraphNode(n1.getAccession(), false, true) {
+                        @Override
+                        public void selected(String id) {
+                            System.out.println("at selected parent node  id " + id);
+                        }
+                    };
+                    n1.setParentNode(parentNode);
+                    tNodes.put(n1.getAccession(), parentNode);
+                }
+            } else if (tNodes.containsKey(arr[0])) {
+                n1 = tNodes.get(arr[0]);
+
+            } else {//if (p1.getProteoformsNodes().containsKey(arr[0]))
+                n1 = p1.getProteoformsNodes().get(arr[0]);
+            }
+            if ((p2 == null || !(p2.getProteoformsNodes().containsKey(arr[1]))) && !tNodes.containsKey(arr[1])) {
+                n2 = new NetworkGraphNode(arr[1], false, false) {
+                    @Override
+                    public void selected(String id) {
+                        System.out.println("at selected node 2 " + id);
+                    }
+                };
+                tNodes.put(n2.getNodeId(), n2);
+                if (!tNodes.containsKey(n2.getAccession())) {
+                    NetworkGraphNode parentNode = new NetworkGraphNode(n2.getAccession(), false, true) {
+                        @Override
+                        public void selected(String id) {
+                            System.out.println("at selected parent node  id " + id);
+                        }
+
+                    };
+                    tNodes.put(n2.getAccession(), parentNode);
+
+                }
+                n2.setParentNode(tNodes.get(n2.getAccession()));
+            } else if (tNodes.containsKey(arr[1])) {
+                n2 = tNodes.get(arr[1]);
+
+            } else if (p2 != null && p2.getProteoformsNodes() != null) {//if (p1.getProteoformsNodes().containsKey(arr[1]))
+                n2 = p2.getProteoformsNodes().get(arr[1]);
+            }
+            NetworkGraphEdge edge;
+            edge = null;
+            if (n2 != null) {
+                edge = new NetworkGraphEdge(n1, n2, false);
+                n1.addEdge(edge);
+                n2.addEdge(edge);
+            }
+
+            return edge;
+        }).forEachOrdered((edge) -> {
+            edges.add(edge);
+        });
+        proteinNodes.values().forEach((protein) -> {
+            edges.addAll(protein.getLocalEdges());
+        });
+        return edges;
+
+    }
+
+    /**
+     * Get the pathway graph edges
+     *
+     * @param proteinAcc set of proteins accessions
+     * @return the protein network
+     */
+    public abstract Set<String[]> getPathwayEdges(Set<String> proteinAcc);
+
+    /**
      * This class is used to create task that is used to process output peptide
      * file.
      */
     private final class ProcessPeptidesTask implements Callable<ModificationMatrix> {
 
-        /**
-         * Calculated matrix for Diva Matrix Layout Chart Filter.
-         */
-        private ModificationMatrix modificationMatrix;
         /**
          * Protein modifications map (based on user search input).
          */
@@ -1923,24 +2022,24 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
          * Protein to intensity based on all peptides intensity value map.
          */
         private final TreeMap<Comparable, Set<Comparable>> proteinIntensityAllPeptideMap;
-
         /**
          * Protein to intensity based on unique peptides intensity value map.
          */
         private final TreeMap<Comparable, Set<Comparable>> proteinIntensityUniquePeptideMap;
+        private final Map<String, Integer> peptideFileHeaderIndexerMap;
 //        private RangeColorGenerator proteinIntensityColorGenerator;
 //        private TreeSet<Double> proteinIntensityValuesSet;
-
-        public Map<String, Set<String>> getUnMappedProteinMap() {
-            return unMappedProteinMap;
-        }
-        private final Map<String, Integer> peptideFileHeaderIndexerMap;
+        /**
+         * Calculated matrix for Diva Matrix Layout Chart Filter.
+         */
+        private ModificationMatrix modificationMatrix;
+        private TreeSet<Double> proteinIntensityValuesSet;
 
         /**
          * Constructor to initialise the main variables.
          *
-         * @param peptides_file output peptides file
-         * @param proteinsMap Protein map.
+         * @param peptides_file   output peptides file
+         * @param proteinsMap     Protein map.
          * @param modificationMap map of modifications used in search inputs.
          */
         public ProcessPeptidesTask(File peptides_file, Map<String, ProteinGroupObject> proteinsGroupMap, Map<String, Set<String>> protein_ProteinGroup_Map, ConcurrentHashMap<String, Set<Comparable>> modificationMap) {
@@ -1979,7 +2078,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             if (uploadedProject) {
                 intensitySet = new TreeSet<>();
             }
-            try {//           
+            try {//
 //                System.out.println("start loading peptides");
                 File f = peptides_file;
                 bufferedReader = new BufferedReader(new FileReader(f), 1024 * 100);
@@ -2118,6 +2217,10 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             }
         }
 
+        public Map<String, Set<String>> getUnMappedProteinMap() {
+            return unMappedProteinMap;
+        }
+
         private void calculateCoverage() {
             TreeMap<Comparable, Set<Comparable>> proteinCoverageMap = processProteinsTask.getProteinCoverageMap();
             processProteinsTask.getProteinsMap().keySet().forEach((proteinKey) -> {
@@ -2222,7 +2325,6 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
         public TreeSet<Double> getProteinIntensityValuesSet() {
             return proteinIntensityValuesSet;
         }
-        private TreeSet<Double> proteinIntensityValuesSet;
 
         public void calculateQuant(boolean uploadedProject) {
 
@@ -2317,19 +2419,6 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
     private class ProcessProteinsTask implements Callable<Map<String, ProteinGroupObject>> {
 
         /**
-         * Protein to related protein map.
-         */
-        private Map<String, Set<ProteinGroupObject>> protein_relatedProteins_Map;
-
-        /**
-         * Protein accession to protein group map.
-         */
-        private Map<String, Set<String>> protein_ProteinGroup_Map;
-        /**
-         * Proteins map (accession to proteins object).
-         */
-        private Map<String, ProteinGroupObject> proteinsMap;
-        /**
          * Protein inference map.
          */
         private final Map<String, Set<Comparable>> proteinInferenceMap;
@@ -2345,10 +2434,6 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
          * Map of proteins to the chromosome index.
          */
         private final Map<Integer, Set<Comparable>> chromosomeMap;
-//        /**
-//         * Map of proteins accession to groups keys.
-//         */
-//        private final Map<String, Set<Comparable>> accessionToGroupKeyMap;
         /**
          * Protein to coverage value map.
          */
@@ -2357,6 +2442,22 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
          * Protein to PSM numbers map.
          */
         private final TreeMap<Comparable, Set<Comparable>> proteinPSMNumberMap;
+        /**
+         * Protein to related protein map.
+         */
+        private Map<String, Set<ProteinGroupObject>> protein_relatedProteins_Map;
+//        /**
+//         * Map of proteins accession to groups keys.
+//         */
+//        private final Map<String, Set<Comparable>> accessionToGroupKeyMap;
+        /**
+         * Protein accession to protein group map.
+         */
+        private Map<String, Set<String>> protein_ProteinGroup_Map;
+        /**
+         * Proteins map (accession to proteins object).
+         */
+        private Map<String, ProteinGroupObject> proteinsMap;
         /**
          * Maximum molecular weight.
          */
@@ -2547,7 +2648,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                         if ((arr[proteinFileHeaderIndexerMap.get(table_headers.Confidently_Localized_Modification_Sites)] + "").trim().equalsIgnoreCase("")) {
                             proteinGroup.setConfidentlyLocalizedModificationSites("No Modification");
                         } else {
-                            proteinGroup.setConfidentlyLocalizedModificationSites(arr[proteinFileHeaderIndexerMap.get(table_headers.Confidently_Localized_Modification_Sites)]);//.split("\\(")[0]);                  
+                            proteinGroup.setConfidentlyLocalizedModificationSites(arr[proteinFileHeaderIndexerMap.get(table_headers.Confidently_Localized_Modification_Sites)]);//.split("\\(")[0]);
                         }
                         proteinGroup.setConfidentlyLocalizedModificationSitesNumber(arr[proteinFileHeaderIndexerMap.get(table_headers.Number_Confidently_Localized_Modification_Sites)]);
 
@@ -2776,9 +2877,9 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                 inStream = new FileInputStream(fasta_file);
                 FastaReader<ProteinSequence, AminoAcidCompound> fastaReader
                         = new FastaReader<>(
-                                inStream,
-                                new GenericFastaHeaderParser<>(),
-                                new ProteinSequenceCreator(AminoAcidCompoundSet.getAminoAcidCompoundSet()));
+                        inStream,
+                        new GenericFastaHeaderParser<>(),
+                        new ProteinSequenceCreator(AminoAcidCompoundSet.getAminoAcidCompoundSet()));
                 fastaProteinSequenceMap = fastaReader.process();
             } catch (IOException | NumberFormatException ex) {
 
@@ -2842,7 +2943,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             try {
                 InputStreamReader is = new InputStreamReader(new FileInputStream(proteoform_file.getFile()), "UTF-8");
                 try ( // Always wrap FileReader in BufferedReader.
-                        BufferedReader bufferedReader = new BufferedReader(is)) {
+                      BufferedReader bufferedReader = new BufferedReader(is)) {
                     while ((line = bufferedReader.readLine()) != null) {
                         line = line.replace("\"", "");
                         readerSet.add(line);
@@ -2896,144 +2997,5 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
         }
 
     }
-
-    /**
-     * Update the protein with Reactom pathway information
-     *
-     * @param proteinNodes nodes of protein to update
-     * @return set of network graph edges
-     */
-    public Set<NetworkGraphEdge> updateProteinPathwayInformation(Map<String, ProteinGroupObject> proteinNodes) {
-
-        proteinNodes.values().stream().filter((protein) -> !(protein.isProteoformUpdated())).forEachOrdered((protein) -> {
-            Map<String, NetworkGraphNode> subNodes;
-            try {
-                if (uploadedProject) {
-                    subNodes = null;
-                } else {
-                    subNodes = processPathwayMatcherFilesTask.call().get(protein.getAccession());
-                }
-
-                NetworkGraphNode parentNode = new NetworkGraphNode(protein.getAccession(), true, true) {
-                    @Override
-                    public void selected(String id) {
-                        System.out.println("at selected parent node  id " + id);
-                    }
-
-                };
-                if (subNodes == null) {
-                    NetworkGraphNode singleNode = new NetworkGraphNode(protein.getAccession() + ";", true, false) {
-                        @Override
-                        public void selected(String id) {
-                            System.out.println("at selected single id " + id);
-                        }
-
-                    };
-                    singleNode.setType(3);
-                    singleNode.setParentNode(parentNode);
-                    protein.addProteoformNode(singleNode);
-                } else {
-                    subNodes.values().stream().map((n) -> {
-                        n.setParentNode(parentNode);
-                        return n;
-                    }).forEachOrdered((n) -> {
-                        protein.addProteoformNode(n);
-                    });
-
-                }
-
-                protein.setParentNode(parentNode);
-                protein.setProteoformUpdated(true);
-            } catch (Exception ex) {
-                System.out.println("Error : line 2941 " + ex);
-            }
-        });
-
-        //get all edges
-        Set<String[]> edgesData = getPathwayEdges(proteinNodes.keySet());
-        Set<NetworkGraphEdge> edges = new HashSet<>();
-        Map<String, NetworkGraphNode> tNodes = new HashMap<>();
-        edgesData.stream().map((String[] arr) -> {
-            ProteinGroupObject p1 = proteinNodes.get(arr[0].split(";")[0].split("-")[0]);
-            ProteinGroupObject p2 = proteinNodes.get(arr[1].split(";")[0].split("-")[0]);
-            NetworkGraphNode n1;
-            NetworkGraphNode n2;
-            n2 = null;
-            if ((p1 == null || !(p1.getProteoformsNodes().containsKey(arr[0].trim()))) && !tNodes.containsKey(arr[0].trim())) {
-                n1 = new NetworkGraphNode(arr[0], false, false) {
-                    @Override
-                    public void selected(String id) {
-                        System.out.println("at selected node 2 " + id);
-                    }
-                };
-                tNodes.put(n1.getNodeId(), n1);
-                if (!tNodes.containsKey(n1.getAccession())) {
-                    NetworkGraphNode parentNode = new NetworkGraphNode(n1.getAccession(), false, true) {
-                        @Override
-                        public void selected(String id) {
-                            System.out.println("at selected parent node  id " + id);
-                        }
-                    };
-                    n1.setParentNode(parentNode);
-                    tNodes.put(n1.getAccession(), parentNode);
-                }
-            } else if (tNodes.containsKey(arr[0])) {
-                n1 = tNodes.get(arr[0]);
-
-            } else {//if (p1.getProteoformsNodes().containsKey(arr[0]))
-                n1 = p1.getProteoformsNodes().get(arr[0]);
-            }
-            if ((p2 == null || !(p2.getProteoformsNodes().containsKey(arr[1]))) && !tNodes.containsKey(arr[1])) {
-                n2 = new NetworkGraphNode(arr[1], false, false) {
-                    @Override
-                    public void selected(String id) {
-                        System.out.println("at selected node 2 " + id);
-                    }
-                };
-                tNodes.put(n2.getNodeId(), n2);
-                if (!tNodes.containsKey(n2.getAccession())) {
-                    NetworkGraphNode parentNode = new NetworkGraphNode(n2.getAccession(), false, true) {
-                        @Override
-                        public void selected(String id) {
-                            System.out.println("at selected parent node  id " + id);
-                        }
-
-                    };
-                    tNodes.put(n2.getAccession(), parentNode);
-
-                }
-                n2.setParentNode(tNodes.get(n2.getAccession()));
-            } else if (tNodes.containsKey(arr[1])) {
-                n2 = tNodes.get(arr[1]);
-
-            } else if (p2 != null && p2.getProteoformsNodes() != null) {//if (p1.getProteoformsNodes().containsKey(arr[1])) 
-                n2 = p2.getProteoformsNodes().get(arr[1]);
-            }
-            NetworkGraphEdge edge;
-            edge = null;
-            if (n2 != null) {
-                edge = new NetworkGraphEdge(n1, n2, false);
-                n1.addEdge(edge);
-                n2.addEdge(edge);
-            }
-
-            return edge;
-        }).forEachOrdered((edge) -> {
-            edges.add(edge);
-        });
-        proteinNodes.values().forEach((protein) -> {
-            edges.addAll(protein.getLocalEdges());
-        });
-        return edges;
-
-    }
-
-    /**
-     * Get the pathway graph edges
-     *
-     * @param proteinAcc set of proteins accessions
-     * @return the protein network
-     */
-    public abstract Set<String[]> getPathwayEdges(Set<String> proteinAcc);
 
 }

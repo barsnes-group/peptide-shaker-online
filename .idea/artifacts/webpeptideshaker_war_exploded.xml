@@ -1,0 +1,159 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="webpeptideshaker:war exploded">
+    <output-path>$PROJECT_DIR$/target/webpeptideshaker-1.0-SNAPSHOT</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <exploded>true</exploded>
+        <module>webpeptideshaker</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="webpeptideshaker" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: com.vaadin:vaadin-server:7.7.17" />
+          <element id="library" level="project" name="Maven: com.vaadin:vaadin-sass-compiler:0.9.13" />
+          <element id="library" level="project" name="Maven: org.w3c.css:sac:1.3" />
+          <element id="library" level="project" name="Maven: com.vaadin.external.flute:flute:1.3.0.gg2" />
+          <element id="library" level="project" name="Maven: com.vaadin:vaadin-shared:7.7.17" />
+          <element id="library" level="project" name="Maven: org.jsoup:jsoup:1.8.3" />
+          <element id="library" level="project" name="Maven: com.vaadin:vaadin-push:7.7.17" />
+          <element id="library" level="project" name="Maven: com.vaadin.external.atmosphere:atmosphere-runtime:2.2.13.vaadin1" />
+          <element id="library" level="project" name="Maven: com.vaadin.external.slf4j:vaadin-slf4j-jdk14:1.6.1" />
+          <element id="library" level="project" name="Maven: com.vaadin:vaadin-client-compiled:7.7.17" />
+          <element id="library" level="project" name="Maven: com.vaadin:vaadin-themes:7.7.17" />
+          <element id="library" level="project" name="Maven: com.github.jmchilton.blend4j:blend4j:0.2.0" />
+          <element id="library" level="project" name="Maven: com.sun.jersey:jersey-client:1.19.1" />
+          <element id="library" level="project" name="Maven: com.sun.jersey:jersey-json:1.19.1" />
+          <element id="library" level="project" name="Maven: com.sun.xml.bind:jaxb-impl:2.2.3-1" />
+          <element id="library" level="project" name="Maven: javax.xml.bind:jaxb-api:2.2.2" />
+          <element id="library" level="project" name="Maven: javax.xml.stream:stax-api:1.0-2" />
+          <element id="library" level="project" name="Maven: javax.activation:activation:1.1" />
+          <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-xc:1.9.2" />
+          <element id="library" level="project" name="Maven: com.sun.jersey:jersey-core:1.19.1" />
+          <element id="library" level="project" name="Maven: javax.ws.rs:jsr311-api:1.1.1" />
+          <element id="library" level="project" name="Maven: com.sun.jersey.contribs:jersey-multipart:1.19.1" />
+          <element id="library" level="project" name="Maven: org.jvnet.mimepull:mimepull:1.9.3" />
+          <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.12" />
+          <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.9.12" />
+          <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-jaxrs:1.9.12" />
+          <element id="library" level="project" name="Maven: com.google.guava:guava:16.0.1" />
+          <element id="library" level="project" name="Maven: org.vaadin.addons:refresher:1.2.3.7" />
+          <element id="library" level="project" name="Maven: com.vaadin:vaadin-icons:2.0.0" />
+          <element id="library" level="project" name="Maven: com.googlecode.json-simple:json-simple:1.1.1" />
+          <element id="library" level="project" name="Maven: junit:junit:4.10" />
+          <element id="library" level="project" name="Maven: org.hamcrest:hamcrest-core:1.1" />
+          <element id="library" level="project" name="Maven: com.vaadin.addon:tableexport-for-vaadin:1.6.2" />
+          <element id="library" level="project" name="Maven: commons-io:commons-io:2.2" />
+          <element id="library" level="project" name="Maven: org.apache.poi:poi:3.13" />
+          <element id="library" level="project" name="Maven: org.vaadin.addons:filteringtable:0.9.15.v7" />
+          <element id="library" level="project" name="Maven: org.vaadin.addons:popupbutton:2.5.0" />
+          <element id="library" level="project" name="Maven: com.compomics:utilities:5.0.0-beta" />
+          <element id="library" level="project" name="Maven: javax.servlet:servlet-api:2.2" />
+          <element id="library" level="project" name="Maven: org.zoodb:zoodb:0.6.0" />
+          <element id="library" level="project" name="Maven: javax.jdo:jdo-api:3.1" />
+          <element id="library" level="project" name="Maven: javax.transaction:transaction-api:1.1" />
+          <element id="library" level="project" name="Maven: javax.transaction:jta:1.1" />
+          <element id="library" level="project" name="Maven: log4j:log4j:1.2.12" />
+          <element id="library" level="project" name="Maven: xpp3:xpp3:1.1.3.4-RC3" />
+          <element id="library" level="project" name="Maven: com.jgoodies:looks:2.2.2" />
+          <element id="library" level="project" name="Maven: org.swinglabs:swing-layout:1.0.3" />
+          <element id="library" level="project" name="Maven: com.carrotsearch:jsuffixarrays:0.1.0" />
+          <element id="library" level="project" name="Maven: com.carrotsearch:hppc:0.3.3" />
+          <element id="library" level="project" name="Maven: org.swinglabs:swingx:0.9.1" />
+          <element id="library" level="project" name="Maven: batik:batik-all:1.6" />
+          <element id="library" level="project" name="Maven: batik:pdf-transcoder:1.0" />
+          <element id="library" level="project" name="Maven: xerces:xercesImpl:2.12.0" />
+          <element id="library" level="project" name="Maven: xml-apis:xml-apis:1.4.01" />
+          <element id="library" level="project" name="Maven: uk.ac.ebi.jmzml:jmzml:1.7.11" />
+          <element id="library" level="project" name="Maven: org.slf4j:jcl-over-slf4j:1.7.19" />
+          <element id="library" level="project" name="Maven: ch.qos.logback:logback-core:1.1.6" />
+          <element id="library" level="project" name="Maven: ch.qos.logback:logback-classic:1.1.6" />
+          <element id="library" level="project" name="Maven: commons-collections:commons-collections:3.2.2" />
+          <element id="library" level="project" name="Maven: psidev.psi.tools:xxindex:0.23" />
+          <element id="library" level="project" name="Maven: net.sourceforge.cpdetector:cpdetector:1.0.7" />
+          <element id="library" level="project" name="Maven: antlr:antlr:2.7.7" />
+          <element id="library" level="project" name="Maven: net.sourceforge.jchardet:jchardet:1.0" />
+          <element id="library" level="project" name="Maven: net.sourceforge.jargs:jargs:1.0" />
+          <element id="library" level="project" name="Maven: org.mozilla.intl:chardet:1.0" />
+          <element id="library" level="project" name="Maven: jfree:jfreechart:1.0.13" />
+          <element id="library" level="project" name="Maven: jfree:jcommon:1.0.16" />
+          <element id="library" level="project" name="Maven: no.uib:jsparklines:1.0.12" />
+          <element id="library" level="project" name="Maven: no.uib:ols-dialog:3.4.0" />
+          <element id="library" level="project" name="Maven: uk.ac.ebi.ols:ols-client:1.18" />
+          <element id="library" level="project" name="Maven: axis:axis:1.4" />
+          <element id="library" level="project" name="Maven: org.apache.axis:axis-jaxrpc:1.4" />
+          <element id="library" level="project" name="Maven: axis:axis-wsdl4j:1.5.1" />
+          <element id="library" level="project" name="Maven: commons-discovery:commons-discovery:0.2" />
+          <element id="library" level="project" name="Maven: org.apache.axis:axis-saaj:1.4" />
+          <element id="library" level="project" name="Maven: commons-cli:commons-cli:1.4" />
+          <element id="library" level="project" name="Maven: commons-net:commons-net:2.2" />
+          <element id="library" level="project" name="Maven: commons-httpclient:commons-httpclient:3.1" />
+          <element id="library" level="project" name="Maven: commons-logging:commons-logging:1.0.4" />
+          <element id="library" level="project" name="Maven: org.apache.commons:commons-compress:1.8.1" />
+          <element id="library" level="project" name="Maven: org.apache.commons:commons-lang3:3.1" />
+          <element id="library" level="project" name="Maven: org.apache.commons:commons-math:2.2" />
+          <element id="library" level="project" name="Maven: org.apache.derby:derby:10.10.1.1" />
+          <element id="library" level="project" name="Maven: uk.ac.ebi.pride.tools:braf:1.0.1" />
+          <element id="library" level="project" name="Maven: uk.ac.ebi.pride.archive:web-service-model:0.2.12" />
+          <element id="library" level="project" name="Maven: uk.ac.ebi.pride.archive:archive-data-provider-api:2.0.6" />
+          <element id="library" level="project" name="Maven: com.wordnik:swagger-annotations:1.3.5" />
+          <element id="library" level="project" name="Maven: umontreal.iro.lecuyer.gof:ssj:2.5.0" />
+          <element id="library" level="project" name="Maven: msv:msv:20050913" />
+          <element id="library" level="project" name="Maven: msv:isorelax:20050913" />
+          <element id="library" level="project" name="Maven: msv:relaxngDatatype:20050913" />
+          <element id="library" level="project" name="Maven: msv:xsdlib:20050913" />
+          <element id="library" level="project" name="Maven: net.jimmc:jshortcut:0.4-oberzalek" />
+          <element id="library" level="project" name="Maven: uk.ac.ebi.jmzidml:jmzidentml:1.1.9" />
+          <element id="library" level="project" name="Maven: com.sun.xml.bind:jaxb-xjc:2.2.7" />
+          <element id="library" level="project" name="Maven: com.sun.xml.bind:jaxb-core:2.2.7" />
+          <element id="library" level="project" name="Maven: com.sun.istack:istack-commons-runtime:2.16" />
+          <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.4" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.core:jersey-client:2.31" />
+          <element id="library" level="project" name="Maven: jakarta.ws.rs:jakarta.ws.rs-api:2.1.6" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.core:jersey-common:2.31" />
+          <element id="library" level="project" name="Maven: jakarta.annotation:jakarta.annotation-api:1.3.5" />
+          <element id="library" level="project" name="Maven: org.glassfish.hk2:osgi-resource-locator:1.0.3" />
+          <element id="library" level="project" name="Maven: com.sun.activation:jakarta.activation:1.2.2" />
+          <element id="library" level="project" name="Maven: org.glassfish.hk2.external:jakarta.inject:2.6.1" />
+          <element id="library" level="project" name="Maven: org.vaadin.addons:canvas:2.1" />
+          <element id="library" level="project" name="Maven: org.vaadin.addons:sizereporter:0.1.4" />
+          <element id="library" level="project" name="Maven: net.sf.jung:jung-visualization:2.0.1" />
+          <element id="library" level="project" name="Maven: net.sf.jung:jung-api:2.0.1" />
+          <element id="library" level="project" name="Maven: net.sf.jung:jung-algorithms:2.0.1" />
+          <element id="library" level="project" name="Maven: colt:colt:1.2.0" />
+          <element id="library" level="project" name="Maven: concurrent:concurrent:1.3.4" />
+          <element id="library" level="project" name="Maven: net.sf.jung:jung-graph-impl:2.0.1" />
+          <element id="library" level="project" name="Maven: net.sourceforge.collections:collections-generic:4.01" />
+          <element id="library" level="project" name="Maven: com.itextpdf:itextpdf:5.5.9" />
+          <element id="library" level="project" name="Maven: org.biojava:biojava-core:5.0.2" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.25" />
+          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.6.2" />
+          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-api:2.6.2" />
+          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-core:2.6.2" />
+          <element id="library" level="project" name="Maven: pl.exsio:plupload-vaadin:2.1.0" />
+          <element id="library" level="project" name="Maven: commons-fileupload:commons-fileupload:1.3.2" />
+          <element id="library" level="project" name="Maven: org.vaadin.addons:simplefiledownloader:1.0.4" />
+          <element id="library" level="project" name="Maven: org.jfree:jfreesvg:3.3" />
+          <element id="library" level="project" name="Maven: mysql:mysql-connector-java:8.0.16" />
+          <element id="library" level="project" name="Maven: com.google.protobuf:protobuf-java:3.6.1" />
+          <element id="library" level="project" name="Maven: org.vaadin.alump.gofullscreen:gofullscreen-addon:0.5.3" />
+          <element id="library" level="project" name="Maven: com.github.vaadin4qbanos:jsclipboard:1.0.12" />
+          <element id="library" level="project" name="Maven: org.codehaus.jettison:jettison:1.4.1" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.10.5" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.10" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.9.10" />
+          <element id="library" level="project" name="Maven: javax.ws.rs:javax.ws.rs-api:2.1.1" />
+          <element id="library" level="project" name="Maven: commons-codec:commons-codec:1.10" />
+        </element>
+      </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/target/webpeptideshaker-1.0-SNAPSHOT/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="javaee-facet-resources" facet="webpeptideshaker/web/Web" />
+    </root>
+  </artifact>
+</component>

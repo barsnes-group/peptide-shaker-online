@@ -46,14 +46,14 @@ public class ChainBlock {
     /**
      * Constructor
      *
-     * @param struct_asym_id Chain structure id.
-     * @param chain_id Chain id.
+     * @param struct_asym_id              Chain structure id.
+     * @param chain_id                    Chain id.
      * @param start_author_residue_number Author index of last residue.
-     * @param start_residue_number Index of start residue.
-     * @param end_author_residue_number Author index of last residue.
-     * @param end_residue_number Index of last residue.
-     * @param uniprot_chain_sequence Chain sequence.
-     * @param chain_sequence actual chain sequence
+     * @param start_residue_number        Index of start residue.
+     * @param end_author_residue_number   Author index of last residue.
+     * @param end_residue_number          Index of last residue.
+     * @param uniprot_chain_sequence      Chain sequence.
+     * @param chain_sequence              actual chain sequence
      */
     public ChainBlock(String struct_asym_id, String chain_id, int start_author_residue_number, int start_residue_number, int end_author_residue_number, int end_residue_number, String uniprot_chain_sequence, String chain_sequence) {
         this.struct_asym_id = struct_asym_id;
@@ -64,7 +64,7 @@ public class ChainBlock {
         this.end_residue_number = end_residue_number;
         this.uniprot_chain_sequence = uniprot_chain_sequence;
         this.chain_sequence = chain_sequence;
-      
+
     }
 
     public String getChain_sequence() {

@@ -17,11 +17,11 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- *
  * @author y-mok
  */
 public class AndromedaAdvancedSettingsPanel extends PopupWindow {
@@ -63,7 +63,7 @@ public class AndromedaAdvancedSettingsPanel extends PopupWindow {
         AndromedaAdvancedSettingsPanel.this.setContent(container);
         AndromedaAdvancedSettingsPanel.this.setClosable(true);
 
-        peptideLength = new HorizontalLabel2TextField("Peptide Length No Enzyme", 0, 0, new IntegerRangeValidator("Only integer values allowd", (-1* Integer.MAX_VALUE), Integer.MAX_VALUE));
+        peptideLength = new HorizontalLabel2TextField("Peptide Length No Enzyme", 0, 0, new IntegerRangeValidator("Only integer values allowd", (-1 * Integer.MAX_VALUE), Integer.MAX_VALUE));
         subContainer.addComponent(peptideLength);
         peptideLength.setSpacing(true);
 
@@ -133,7 +133,7 @@ public class AndromedaAdvancedSettingsPanel extends PopupWindow {
         decoyMode.updateData(values2);
 
         String helpText = "<a href='http://coxdocs.org/doku.php?id=maxquant:andromeda:start' target='_blank'>";
-        Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open the Andromeda help page.</font>",100,20);
+        Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open the Andromeda help page.</font>", 100, 20);
         container.addComponent(help, "left:10px;bottom:10px;");
         Button okBtn = new Button("OK");
         okBtn.setWidth(76, Unit.PIXELS);
@@ -145,7 +145,7 @@ public class AndromedaAdvancedSettingsPanel extends PopupWindow {
                 setPopupVisible(false);
             }
         });
-        
+
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);

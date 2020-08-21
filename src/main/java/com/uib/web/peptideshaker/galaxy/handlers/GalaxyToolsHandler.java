@@ -2,53 +2,34 @@ package com.uib.web.peptideshaker.galaxy.handlers;
 
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.github.jmchilton.blend4j.galaxy.HistoriesClient;
 import com.github.jmchilton.blend4j.galaxy.ToolsClient;
 import com.github.jmchilton.blend4j.galaxy.WorkflowsClient;
-import com.github.jmchilton.blend4j.galaxy.beans.History;
-import com.github.jmchilton.blend4j.galaxy.beans.OutputDataset;
-import com.github.jmchilton.blend4j.galaxy.beans.Tool;
-import com.github.jmchilton.blend4j.galaxy.beans.ToolSection;
-import com.github.jmchilton.blend4j.galaxy.beans.Workflow;
-import com.github.jmchilton.blend4j.galaxy.beans.WorkflowInputs;
-import com.github.jmchilton.blend4j.galaxy.beans.WorkflowOutputs;
+import com.github.jmchilton.blend4j.galaxy.beans.*;
 import com.github.jmchilton.blend4j.galaxy.beans.collection.request.CollectionDescription;
 import com.github.jmchilton.blend4j.galaxy.beans.collection.request.HistoryDatasetElement;
 import com.github.jmchilton.blend4j.galaxy.beans.collection.response.CollectionResponse;
-
+import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
+import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import pl.exsio.plupload.PluploadFile;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class responsible for interaction with tools on Galaxy Server
@@ -57,15 +38,6 @@ import pl.exsio.plupload.PluploadFile;
  * @author Yehia Farag
  */
 public abstract class GalaxyToolsHandler {
-
-    /**
-     * Galaxy Server contains valid Search-GUI and Peptide Shaker tools.
-     */
-    private boolean validIDToolsAvailable;
-    /**
-     * Galaxy Server contains valid Search-GUI and Peptide Shaker tools.
-     */
-    private boolean validQuantToolsAvailable;
 
     /**
      * The main galaxy Work-Flow Client on Galaxy Server.
@@ -79,6 +51,15 @@ public abstract class GalaxyToolsHandler {
      * The main galaxy Tools Client on Galaxy Server.
      */
     private final ToolsClient galaxyToolClient;
+    String payLoad = "";
+    /**
+     * Galaxy Server contains valid Search-GUI and Peptide Shaker tools.
+     */
+    private boolean validIDToolsAvailable;
+    /**
+     * Galaxy Server contains valid Search-GUI and Peptide Shaker tools.
+     */
+    private boolean validQuantToolsAvailable;
     /**
      * SearchGUI tool representation for the tool on Galaxy Server.
      */
@@ -97,58 +78,13 @@ public abstract class GalaxyToolsHandler {
     private History galaxyWorkingHistory;
 
     /**
-     * Get SearchGui tool object
-     *
-     * @return galaxy tool
-     */
-    public Tool getSearch_GUI_Tool() {
-        return search_GUI_Tool;
-    }
-
-    /**
-     * Get PeptideShaker tool object
-     *
-     * @return galaxy tool object
-     */
-    public Tool getPeptideShaker_Tool() {
-        return peptideShaker_Tool;
-    }
-
-    /**
-     * Get the release version of SearchGUI tool
-     *
-     * @return release version
-     */
-    public String getSearch_GUI_Tool_version() {
-        if (search_GUI_Tool != null) {
-            return search_GUI_Tool.getVersion();
-        } else {
-            return "Not available";
-        }
-
-    }
-
-    /**
-     * Get the release version of PeptideShaker tool
-     *
-     * @return release version
-     */
-    public String getPeptideShaker_Tool_Version() {
-        if (peptideShaker_Tool != null) {
-            return peptideShaker_Tool.getVersion();
-        } else {
-            return "Not available";
-        }
-    }
-
-    /**
      * Constructor to initialise the main data structure and other variables.
      *
-     * @param galaxyToolClient The main galaxy Tools Client on Galaxy Server.
-     * @param galaxyWorkFlowClient The main galaxy Work-Flow Client on Galaxy
-     * Server.
+     * @param galaxyToolClient      The main galaxy Tools Client on Galaxy Server.
+     * @param galaxyWorkFlowClient  The main galaxy Work-Flow Client on Galaxy
+     *                              Server.
      * @param galaxyHistoriesClient The main galaxy History Client on Galaxy
-     * Server
+     *                              Server
      */
     public GalaxyToolsHandler(ToolsClient galaxyToolClient, WorkflowsClient galaxyWorkFlowClient, HistoriesClient galaxyHistoriesClient) {
 
@@ -212,16 +148,59 @@ public abstract class GalaxyToolsHandler {
     }
 
     /**
+     * Get SearchGui tool object
+     *
+     * @return galaxy tool
+     */
+    public Tool getSearch_GUI_Tool() {
+        return search_GUI_Tool;
+    }
+
+    /**
+     * Get PeptideShaker tool object
+     *
+     * @return galaxy tool object
+     */
+    public Tool getPeptideShaker_Tool() {
+        return peptideShaker_Tool;
+    }
+
+    /**
+     * Get the release version of SearchGUI tool
+     *
+     * @return release version
+     */
+    public String getSearch_GUI_Tool_version() {
+        if (search_GUI_Tool != null) {
+            return search_GUI_Tool.getVersion();
+        } else {
+            return "Not available";
+        }
+
+    }
+
+    /**
+     * Get the release version of PeptideShaker tool
+     *
+     * @return release version
+     */
+    public String getPeptideShaker_Tool_Version() {
+        if (peptideShaker_Tool != null) {
+            return peptideShaker_Tool.getVersion();
+        } else {
+            return "Not available";
+        }
+    }
+
+    /**
      * Re-Index the files MGF files (Convert the stored files in MGF file format
      * to Tab separated format to support byte serving on the server side)
      *
-     * @param id file id on Galaxy Server
-     * @param historyId the history id that the file belong to
+     * @param id            file id on Galaxy Server
+     * @param historyId     the history id that the file belong to
      * @param workHistoryId the history id that the new re-indexed file will be
-     * stored in
-     *
+     *                      stored in
      * @return new re-indexed file id on galaxy
-     *
      */
     private String reIndexFile(String id, String peptideShakerViewID, String workHistoryId) {
 
@@ -249,13 +228,13 @@ public abstract class GalaxyToolsHandler {
     /**
      * Save search settings file into galaxy
      *
-     * @param galaxyURL Galaxy Server web address
-     * @param user_folder Personal user folder where the user temporary files
-     * are stored
-     * @param searchParameters searchParameters .par file
-     * @param workHistoryId The working History ID on Galaxy Server
+     * @param galaxyURL                Galaxy Server web address
+     * @param user_folder              Personal user folder where the user temporary files
+     *                                 are stored
+     * @param searchParameters         searchParameters .par file
+     * @param workHistoryId            The working History ID on Galaxy Server
      * @param searchParametersFilesMap The Search Parameters files (.par) Map
-     * @param isNew the .par file is new
+     * @param isNew                    the .par file is new
      * @return updated Search Parameters files (.par) Map
      */
     public Map<String, GalaxyTransferableFile> saveSearchGUIParameters(String galaxyURL, File user_folder, Map<String, GalaxyTransferableFile> searchParametersFilesMap, String workHistoryId, IdentificationParameters searchParameters, boolean isNew) {
@@ -314,7 +293,7 @@ public abstract class GalaxyToolsHandler {
         try {
             FileReader fileReader = new FileReader(file);
             try ( // Always wrap FileReader in BufferedReader.
-                    BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+                  BufferedReader bufferedReader = new BufferedReader(fileReader)) {
                 while ((line = bufferedReader.readLine()) != null) {
                     json += (line);
                 }
@@ -335,7 +314,7 @@ public abstract class GalaxyToolsHandler {
      *
      * @param galaxyURL Galaxy Server web address
      * @param historyId The Galaxy Server History ID where the file belong
-     * @param dsId The file (galaxy dataset) ID on Galaxy Server
+     * @param dsId      The file (galaxy dataset) ID on Galaxy Server
      */
     public void deleteDataset(String galaxyURL, String historyId, String dsId, boolean collection) {
         try {
@@ -392,15 +371,15 @@ public abstract class GalaxyToolsHandler {
     /**
      * Run Online Peptide-Shaker (Search-GUI -> Peptide Shaker) work-flow
      *
-     * @param projectName The project name
-     * @param fastaFileId FASTA file dataset id
+     * @param projectName           The project name
+     * @param fastaFileId           FASTA file dataset id
      * @param searchParameterFileId .par file id
-     * @param inputFileIdsList list of input MGF file dataset IDs on Galaxy
-     * Server
-     * @param searchEnginesList List of selected search engine names
-     * @param historyId Galaxy history id that will store the results
-     * @param searchParameters Search Parameter object
-     * @param quant full quant pipe-line
+     * @param inputFileIdsList      list of input MGF file dataset IDs on Galaxy
+     *                              Server
+     * @param searchEnginesList     List of selected search engine names
+     * @param historyId             Galaxy history id that will store the results
+     * @param searchParameters      Search Parameter object
+     * @param quant                 full quant pipe-line
      * @return invoking the workflow is successful
      */
     public boolean execute_SearchGUI_PeptideShaker_WorkFlow(String galaxyUrl, String projectName, String fastaFileId, String searchParameterFileId, Map<String, String> inputFileIdsList, Set<String> searchEnginesList, String historyId, IdentificationParameters searchParameters, boolean quant) {
@@ -488,9 +467,8 @@ public abstract class GalaxyToolsHandler {
             while (t.isAlive()) {
 
             }
-            if (inputFileIdsList.size() != 1) {
-                Notification.show(projectName.split("___")[0], "Progress will appear in projects overview when process start", Notification.Type.TRAY_NOTIFICATION);
-            }
+            Notification.show(projectName, "Progress will appear in projects overview when process start", Notification.Type.TRAY_NOTIFICATION);
+
             final String workFlowId = selectedWf.getId();
             ScheduledExecutorService exe = Executors.newSingleThreadScheduledExecutor();
             ScheduledFuture f = exe.schedule(() -> {
@@ -516,10 +494,10 @@ public abstract class GalaxyToolsHandler {
      * Prepares a work flow which takes as input a collection list.
      *
      * @param inputSource The type of input source for this work flow.
-     * @param dsIds The set of files IDs on Galaxy Server that will be used to
-     * generate the collection dataset
-     * @param historyId The history ID on Galaxy Server where the collection
-     * will be saved
+     * @param dsIds       The set of files IDs on Galaxy Server that will be used to
+     *                    generate the collection dataset
+     * @param historyId   The history ID on Galaxy Server where the collection
+     *                    will be saved
      * @return A WorkflowInputs describing the work flow.
      */
     private WorkflowInputs.WorkflowInput prepareWorkflowCollectionList(WorkflowInputs.InputSourceType inputSource, Set<String> dsIds, String historyId) {
@@ -534,9 +512,9 @@ public abstract class GalaxyToolsHandler {
      * history.
      *
      * @param historyId The history id on Galaxy Server to store the collection
-     * in.
-     * @param inputIds The IDs of the files (galaxy datasets) on Galaxy Server
-     * that will be added to the collection.
+     *                  in.
+     * @param inputIds  The IDs of the files (galaxy datasets) on Galaxy Server
+     *                  that will be added to the collection.
      * @return A CollectionResponse object for the constructed collection.
      */
     private CollectionResponse constructFileCollectionList(String historyId, Set<String> inputIds) {
@@ -637,14 +615,13 @@ public abstract class GalaxyToolsHandler {
      * @param keepfollow invoke history tracker
      */
     public abstract void jobIsExecuted(boolean keepfollow);
-    String payLoad = "";
 
     /**
      * Delete files (galaxy datasets) from Galaxy server
      *
-     * @param galaxyURL Galaxy Server web address
+     * @param galaxyURL  Galaxy Server web address
      * @param workflowId The Galaxy Server History ID where the file belong
-     * @param dsId The file (galaxy dataset) ID on Galaxy Server
+     * @param dsId       The file (galaxy dataset) ID on Galaxy Server
      */
     private boolean invokeWorkflow(String galaxyURL, String historyId, WorkflowInputs workflowInputs, boolean quant, boolean single) {
         try {

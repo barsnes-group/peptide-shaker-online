@@ -7,31 +7,22 @@ import com.compomics.util.parameters.identification.advanced.PsmScoringParameter
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
 import com.vaadin.data.Item;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+
+import java.util.*;
 
 /**
- *
  * @author y-mok
  */
 public class PSMScoringPanel extends PopupWindow {
 
+    private final VerticalLayout subContainer;
     private IdentificationParameters webSearchParameters;
     private Table psmScoreSelectionTable;
-    private final VerticalLayout subContainer;
     private HashMap<Integer, HashSet<Integer>> spectrumMatchingScores;
     private HashMap<String, HashSet<Integer>> spectrumMatchingScoresName;
+    private ArrayList<String> scoresNames;
 
     public PSMScoringPanel() {
         super(VaadinIcons.COG.getHtml() + " PSM Scoring");
@@ -78,19 +69,18 @@ public class PSMScoringPanel extends PopupWindow {
             PSMScoringPanel.this.setPopupVisible(false);
 
         });
-        
+
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);
         cancelBtn.setHeight(20, Unit.PIXELS);
         container.addComponent(okBtn, "bottom:10px;right:96px");
-        container.addComponent(cancelBtn , "bottom:10px;right:10px");
+        container.addComponent(cancelBtn, "bottom:10px;right:10px");
         cancelBtn.addClickListener((Button.ClickEvent event) -> {
             PSMScoringPanel.this.setPopupVisible(false);
         });
 
     }
-    private ArrayList<String> scoresNames;
 
     public void updateGUI(IdentificationParameters webSearchParameters) {
         this.webSearchParameters = webSearchParameters;

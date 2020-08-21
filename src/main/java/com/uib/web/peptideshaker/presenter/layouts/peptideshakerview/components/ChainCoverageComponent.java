@@ -2,19 +2,16 @@ package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components
 
 import com.itextpdf.text.pdf.codec.Base64;
 import com.uib.web.peptideshaker.presenter.core.Protein3DStructureCoverage;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import org.jfree.chart.encoders.ImageEncoder;
+import org.jfree.chart.encoders.ImageEncoderFactory;
+import org.jfree.chart.encoders.ImageFormat;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.jfree.chart.encoders.ImageEncoder;
-import org.jfree.chart.encoders.ImageEncoderFactory;
-import org.jfree.chart.encoders.ImageFormat;
 
 /**
  * This class responsible for generate change coverage images and do all
@@ -25,19 +22,19 @@ import org.jfree.chart.encoders.ImageFormat;
 public class ChainCoverageComponent {
 
     private final int proteinSequenceLength;
-    private final Map<String, Rectangle> chainsBlocks;    
+    private final Map<String, Rectangle> chainsBlocks;
     private final double iconCorrectFactor;
 
     private final double layoutToPercentageFactor;
     private final int[] coverageArr;
-//    private final Image chainCoverageWebComponent;
+    //    private final Image chainCoverageWebComponent;
     private final Protein3DStructureCoverage chainCoverageWebComponent;
+    private final DecimalFormat df = new DecimalFormat("#.#");
     private int counter = 1;
     private String lasteSelectedChain;
     private double coverage = -1;
     private Color chaincolor;
     private Color bordercolor;
-    private final DecimalFormat df = new DecimalFormat("#.#");
 
     public ChainCoverageComponent(int proteinSequenceLength) {
         this.proteinSequenceLength = proteinSequenceLength;
@@ -155,9 +152,6 @@ public class ChainCoverageComponent {
         return base64;
     }
 
-  
-
-   
 
     public Protein3DStructureCoverage getChainCoverageWebComponent() {
         return chainCoverageWebComponent;

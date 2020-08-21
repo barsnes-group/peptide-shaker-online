@@ -1,13 +1,9 @@
 package com.uib.web.peptideshaker.presenter.core;
 
 import com.vaadin.data.Property;
-import com.vaadin.server.Page;
 import com.vaadin.server.Resource;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
+
 import java.util.Map;
 
 /**
@@ -21,9 +17,9 @@ public class DropDownList extends AbsoluteLayout {
      * Drop down list component.
      */
     private final ComboBox list;
+    private final VerticalLayout container;
     private Property.ValueChangeListener listener;
     private Object lastSelectedId;
-    private final VerticalLayout container;
 
     /**
      * Constructor to initialise the main attributes.
@@ -58,7 +54,7 @@ public class DropDownList extends AbsoluteLayout {
     /**
      * Set the list is required to have a value.
      *
-     * @param required the selection is required
+     * @param required        the selection is required
      * @param requiredMessage the error appear if no data selected
      */
     public void setRequired(boolean required, String requiredMessage) {

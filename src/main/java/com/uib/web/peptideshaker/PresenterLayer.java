@@ -1,20 +1,18 @@
 package com.uib.web.peptideshaker;
 
 import com.compomics.util.parameters.identification.IdentificationParameters;
-import com.uib.web.peptideshaker.galaxy.GalaxyInteractiveLayer;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.presenter.PresenterContainer;
 import com.uib.web.peptideshaker.presenter.PresenterManager;
 import com.uib.web.peptideshaker.presenter.ViewableFrame;
-import com.uib.web.peptideshaker.presenter.core.PopupWindow;
-import com.uib.web.peptideshaker.presenter.core.SmallSideBtn;
 import com.vaadin.ui.UI;
+import pl.exsio.plupload.PluploadFile;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import pl.exsio.plupload.PluploadFile;
 
 /**
  * This class represents presenter layer that responsible for front-end
@@ -34,7 +32,6 @@ public abstract class PresenterLayer {
 
     /**
      * Initialise the main presenter components.
-     *
      *
      * @param availableGalaxyServer galaxy server available online
      */
@@ -69,7 +66,7 @@ public abstract class PresenterLayer {
 
             @Override
             public void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl) {
-                 PresenterLayer.this.viewToShareDataset(galaxyServerUrl, userDataFolderUrl);
+                PresenterLayer.this.viewToShareDataset(galaxyServerUrl, userDataFolderUrl);
             }
 
             @Override
@@ -142,7 +139,7 @@ public abstract class PresenterLayer {
      * View selected dataset
      *
      * @param peptideShakerVisualizationDataset web PS visualisation dataset
-     * object
+     *                                          object
      */
     public void viewDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
         presenterContainer.viewDataset(peptideShakerVisualizationDataset);
@@ -158,9 +155,9 @@ public abstract class PresenterLayer {
      * processes
      *
      * @param tempHistoryFilesMap list of all files including under processing
-     * files or datasets
-     * @param historyFilesMap list of already processed files and datasets
-     * @param jobsInProgress check if there is still jobs in progress
+     *                            files or datasets
+     * @param historyFilesMap     list of already processed files and datasets
+     * @param jobsInProgress      check if there is still jobs in progress
      */
     public void updatePresenter(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
         presenterContainer.updateProjectOverviewPresenter(tempHistoryFilesMap, historyFilesMap, jobsInProgress);
@@ -171,16 +168,17 @@ public abstract class PresenterLayer {
     /**
      * Connect the system to Galaxy Server
      *
-     * @param galaxyServerUrl the address of Galaxy Server
-     * @param userAPI Galaxy user API key
+     * @param galaxyServerUrl   the address of Galaxy Server
+     * @param userAPI           Galaxy user API key
      * @param userDataFolderUrl main folder for storing users data
      * @return System connected to Galaxy server or not
      */
     public abstract List<String> connectToGalaxyServer(String galaxyServerUrl, String userAPI, String userDataFolderUrl);
+
     /**
      * Connect the system to Galaxy Server
      *
-     * @param galaxyServerUrl the address of Galaxy Server
+     * @param galaxyServerUrl   the address of Galaxy Server
      * @param userDataFolderUrl main folder for storing users data
      */
     public abstract void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl);
@@ -189,37 +187,34 @@ public abstract class PresenterLayer {
      * Get user statues for the left panel at the welcome page
      *
      * @return list of user information at galaxy server
-     *
      */
     public abstract List<String> getUserOverviewData();
 
     /**
      * Run Online Peptide-Shaker work-flow
      *
-     * @param projectName The project name
-     * @param fastaFileId FASTA file dataset id
+     * @param projectName           The project name
+     * @param fastaFileId           FASTA file dataset id
      * @param searchParameterFileId .par file id
-     * @param mgfIdsList list of MGF file dataset ids
-     * @param searchEnginesList List of selected search engine names
-     * @param searchParam the identification search parameter file
-     * @param quant is the data is including quant information or only
-     * identification
+     * @param mgfIdsList            list of MGF file dataset ids
+     * @param searchEnginesList     List of selected search engine names
+     * @param searchParam           the identification search parameter file
+     * @param quant                 is the data is including quant information or only
+     *                              identification
      */
     public abstract void execute_SearchGUI_PeptideShaker_WorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> mgfIdsList, Set<String> searchEnginesList, IdentificationParameters searchParam, boolean quant);
 
     /**
      * Save search settings file into galaxy
      *
-     *
      * @param searchParameters searchParameters .par file
-     * @param isNew is new search parameter file
+     * @param isNew            is new search parameter file
      * @return updated search parameters file list
      */
     public abstract Map<String, GalaxyTransferableFile> saveSearchGUIParameters(IdentificationParameters searchParameters, boolean isNew);
 
     /**
      * upload file into galaxy
-     *
      *
      * @param toUploadFiles files to be uploaded to galaxy
      * @return updated files map
@@ -245,7 +240,7 @@ public abstract class PresenterLayer {
     /**
      * Store and retrieve dataset details index to share in link
      *
-     * @param dsDetails encoded dataset details to store in database
+     * @param dsDetails   encoded dataset details to store in database
      * @param dsUniqueKey
      * @return dataset public key
      */

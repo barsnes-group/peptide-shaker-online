@@ -4,11 +4,8 @@ import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 
 /**
  * This class represents the protein sequence container that shows the protein
@@ -50,7 +47,7 @@ public class PeptideSequenceContainer extends AbsoluteLayout {
     /**
      * List of all protein peptides components.
      */
-    private final List< StackedBarPeptideComponent> stackedPeptides = new ArrayList<>();
+    private final List<StackedBarPeptideComponent> stackedPeptides = new ArrayList<>();
     /**
      * The protein has PTMs.
      */
@@ -59,10 +56,10 @@ public class PeptideSequenceContainer extends AbsoluteLayout {
     /**
      * Constructor ti initialize the main attributes
      *
-     * @param width the width of the component.
+     * @param width                              the width of the component.
      * @param allPeptidesStackedBarComponentsMap List of all peptide layout
-     * components for the protein sequence coverage.
-     * @param sequence the protein sequence.
+     *                                           components for the protein sequence coverage.
+     * @param sequence                           the protein sequence.
      */
     public PeptideSequenceContainer(int width, LinkedHashSet<StackedBarPeptideComponent> allPeptidesStackedBarComponentsMap, String sequence) {
         this.allPeptidesStackedBarComponentsMap = allPeptidesStackedBarComponentsMap;
@@ -98,10 +95,9 @@ public class PeptideSequenceContainer extends AbsoluteLayout {
      * Add terminal labels (N and C terminals) to protein sequence coverage
      * layout.
      *
-     * @param top the top location (on y access)
+     * @param top   the top location (on y access)
      * @param width the width of the component used to set the left location (on
-     * x access).
-     *
+     *              x access).
      */
     private void addTerminalLabels(int top, int width) {
 
@@ -129,7 +125,6 @@ public class PeptideSequenceContainer extends AbsoluteLayout {
 
     /**
      * Initialize the protein sequence coverage layout.
-     *
      *
      * @param sequence the protein sequence.
      */
@@ -234,18 +229,18 @@ public class PeptideSequenceContainer extends AbsoluteLayout {
      * Initialize the protein sequence peptides container (set the location of
      * each peptide component).
      *
-     * @param stackedBarComponents Set of protein coverage peptide layout.
+     * @param stackedBarComponents        Set of protein coverage peptide layout.
      * @param peptidesComponentsContainer The peptide container need to be
-     * initialize
-     * (IncreasedPeptidesSequencesBar,EqualPeptidesSequencesBar,DecreasedPeptidesSequencesBar).
-     * @param rotate rotate the layout 180 degree (ex.
-     * IncreasedPeptidesSequencesBar layout container).
+     *                                    initialize
+     *                                    (IncreasedPeptidesSequencesBar,EqualPeptidesSequencesBar,DecreasedPeptidesSequencesBar).
+     * @param rotate                      rotate the layout 180 degree (ex.
+     *                                    IncreasedPeptidesSequencesBar layout container).
      */
     private void initPeptidesStackedBarComponentsLayout(LinkedHashSet<StackedBarPeptideComponent> stackedBarComponents, AbsoluteLayout peptidesComponentsContainer, boolean rotate) {
         int top = 0;
-        List< StackedBarPeptideComponent> initLevel = new ArrayList<>(stackedBarComponents);
-        List< StackedBarPeptideComponent> updatedLevel = new ArrayList<>(stackedBarComponents);
-        List< StackedBarPeptideComponent> nextLevel = new ArrayList<>();
+        List<StackedBarPeptideComponent> initLevel = new ArrayList<>(stackedBarComponents);
+        List<StackedBarPeptideComponent> updatedLevel = new ArrayList<>(stackedBarComponents);
+        List<StackedBarPeptideComponent> nextLevel = new ArrayList<>();
 
         boolean existedPeptides = false;
         boolean intersect = true;
@@ -350,9 +345,9 @@ public class PeptideSequenceContainer extends AbsoluteLayout {
      * Check if there is intersection between 2 components.
      *
      * @param smallXComp The first peptide component located on the protein
-     * sequence coverage (smaller x).
-     * @param bigXComp The next peptide component located on the protein
-     * sequence coverage (larger x).
+     *                   sequence coverage (smaller x).
+     * @param bigXComp   The next peptide component located on the protein
+     *                   sequence coverage (larger x).
      */
     private boolean checkIntersect(StackedBarPeptideComponent smallXComp, StackedBarPeptideComponent bigXComp) {
         int area = smallXComp.getX0() + smallXComp.getWidthArea() - 1;
@@ -381,7 +376,6 @@ public class PeptideSequenceContainer extends AbsoluteLayout {
     }
 
     /**
-     *
      * Initialize protein sequence coverage layout (highlight the quantified
      * areas on the protein sequence)
      *

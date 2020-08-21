@@ -5,6 +5,9 @@ import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFile
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.vaadin.ui.VerticalLayout;
+import pl.exsio.plupload.PluploadFile;
+
+import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -14,8 +17,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import javax.net.ssl.HttpsURLConnection;
-import pl.exsio.plupload.PluploadFile;
 
 /**
  * This class represents the main landing Online PeptideShaker application
@@ -23,17 +24,6 @@ import pl.exsio.plupload.PluploadFile;
  * @author Yehia Farag
  */
 public class WebPeptideShakerApp {
-
-    /**
-     * Get the main User Interface layer
-     *
-     * @return main user interface container
-     */
-    public VerticalLayout getApplicationUserInterface() {
-        while (!presenterFuture.isDone()) {
-        }
-        return Presenter_layer.getPresenterContainer();
-    }
 
     private PresenterLayer Presenter_layer;
     /**
@@ -43,7 +33,6 @@ public class WebPeptideShakerApp {
     private Future presenterFuture;
     private Future modelFuture;
     private boolean availableGalaxyServer;
-
     /**
      * Constructor to initialise the application.
      *
@@ -99,7 +88,7 @@ public class WebPeptideShakerApp {
 
                     @Override
                     public void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl) {
-                           while (!modelFuture.isDone()) {
+                        while (!modelFuture.isDone()) {
                         }
                         Model_Layer.viewToShareDataset(galaxyServerUrl, userDataFolderUrl);
                     }
@@ -166,9 +155,20 @@ public class WebPeptideShakerApp {
                 };
 
             }
-     
-              
+
+
         });
+    }
+
+    /**
+     * Get the main User Interface layer
+     *
+     * @return main user interface container
+     */
+    public VerticalLayout getApplicationUserInterface() {
+        while (!presenterFuture.isDone()) {
+        }
+        return Presenter_layer.getPresenterContainer();
     }
 
     public void loginAsGuest() {
@@ -179,7 +179,8 @@ public class WebPeptideShakerApp {
         }
 
     }
-     public void retriveToShareDataset() {
+
+    public void retriveToShareDataset() {
         while (!presenterFuture.isDone()) {
         }
         if (availableGalaxyServer) {

@@ -9,14 +9,8 @@ import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+
+import java.util.*;
 
 /**
  * This class represents protein coverage layout that contain the distribution
@@ -34,12 +28,13 @@ public abstract class ProteinCoverageComponent extends AbsoluteLayout {
     private final Set<PeptideObject> peptideObjectsSet;
     private final Map<String, Set<PeptideLayout>> modificationPeptideMap;
     private final int layoutHeight;
-    private int layoutHeightProteoform;
     private final int proteinSequenceLength;
-    private boolean proteoformInit;
     private final ProteinGroupObject mainProteinObject;
     private final float resizeFactor;
-private boolean suspendListener;
+    private int layoutHeightProteoform;
+    private boolean proteoformInit;
+    private boolean suspendListener;
+
     public ProteinCoverageComponent(ProteinGroupObject protein, Map<String, PeptideObject> peptidesNodes, RangeColorGenerator colorScale) {
         ProteinCoverageComponent.this.setWidth(100, Unit.PERCENTAGE);
         HashMap<String, String> styles = new HashMap<>();
@@ -108,13 +103,13 @@ private boolean suspendListener;
 
         LayoutEvents.LayoutClickListener peptidesListener = (LayoutEvents.LayoutClickEvent event) -> {
 
-            if(suspendListener)
+            if (suspendListener)
                 return;
-            suspendListener=true;
+            suspendListener = true;
             Component clickedComp = event.getClickedComponent();
-           if (clickedComp == null) {
+            if (clickedComp == null) {
                 return;
-            }            
+            }
             if ((clickedComp.getStyleName().contains("proteoformcoverage") || clickedComp.getStyleName().contains("proteoformmodstyle") || (clickedComp.getStyleName().contains("peptidelayout") && (clickedComp instanceof VerticalLayout)))) {
 
             } else if (clickedComp.getStyleName().contains("peptidelayout")) {
@@ -127,12 +122,12 @@ private boolean suspendListener;
                     selectPeptide(protein.getAccession(), ((Label) clickedComp).getData());
 //                    resetHeighlightedProteoforms();
                 }
-            } else if (clickedComp instanceof VerticalLayout) {                  
+            } else if (clickedComp instanceof VerticalLayout) {
                 selectPeptide(protein.getAccession(), ((VerticalLayout) clickedComp).getData());
 //                resetHeighlightedProteoforms();
 
             }
-             suspendListener=false;
+            suspendListener = false;
         };
 
         peptideDistributionLayout.addLayoutClickListener(peptidesListener);

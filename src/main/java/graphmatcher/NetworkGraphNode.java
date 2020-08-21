@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package graphmatcher;
+
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
@@ -14,15 +15,10 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.VerticalLayout;
 import graphmatcher.NetworkGraphComponent.WrappedComponent;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
+
+import java.awt.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class represents NetworkGraphNode for graph layout
@@ -32,39 +28,23 @@ import java.util.Set;
 public abstract class NetworkGraphNode extends VerticalLayout implements LayoutEvents.LayoutClickListener {
 
     private final String nodeId;
-    private boolean selected;
-    private String defaultStyleName;
-    private int edgesNumber;
     private final Set<NetworkGraphEdge> edges;
     private final boolean internal;
     private final boolean proteoform;
     private final String accession;
     private final boolean parent;
-    private NetworkGraphNode parentNode;
     private final ModificationFactory modificationFactory = ModificationFactory.getInstance();
     private final Map<String, Integer> modificationsLocationsMap;
     private final Color finalColor;
+    private boolean selected;
+    private String defaultStyleName;
+    private int edgesNumber;
+    private NetworkGraphNode parentNode;
     private Label modificationLabel;
-
-    public NetworkGraphNode getParentNode() {
-        if (parent || parentNode == null) {
-            return this;
-        }
-        return parentNode;
-    }
-
-    public void setParentNode(NetworkGraphNode parentNode) {
-        this.parentNode = parentNode;
-    }
     private NetworkGraphComponent.WrappedComponent wrappedComponent;
-
-    public WrappedComponent getWrappedComponent() {
-        return wrappedComponent;
-    }
-
-    public void setWrappedComponent(WrappedComponent wrappedComponent) {
-        this.wrappedComponent = wrappedComponent;
-    }
+    private int type;
+    private double x;
+    private double y;
 
     public NetworkGraphNode(String id, boolean internal, boolean parentNode) {
 
@@ -106,7 +86,7 @@ public abstract class NetworkGraphNode extends VerticalLayout implements LayoutE
         NetworkGraphNode.this.setSelected(false);
         this.edges = new LinkedHashSet<>();
         String newIds = nodeId;
-        if (nodeId.contains(":")) {            
+        if (nodeId.contains(":")) {
             String mods = "";
             String mod = nodeId.split(";")[1];
             for (String subMod : mod.split(",")) {
@@ -119,7 +99,7 @@ public abstract class NetworkGraphNode extends VerticalLayout implements LayoutE
             Map<String, Color> colorsSet = new HashMap<>();
             Map<String, List<String>> modMap = new HashMap<>();
             Map<String, Color> covertedModColors = new HashMap<>();
-            
+
 //            for(String smodification : modificationsSet) {
 //                System.out.println("modification to map _ "+smodification);
 //                List<String> modList = PSIModificationFactory.getModificationsForPsiAccession(smodification);
@@ -130,10 +110,10 @@ public abstract class NetworkGraphNode extends VerticalLayout implements LayoutE
 //                    modMap.get(smodification).addAll(modList);
 //                }
 //            }
-            
-            
+
+
             modificationsSet.stream().map((modification) -> modification.split(":")[0]).forEachOrdered((smodification) -> {
-                List<String> modList = modificationFactory.getModificationsForPsiAccession(smodification);        
+                List<String> modList = modificationFactory.getModificationsForPsiAccession(smodification);
                 if (!modMap.containsKey(smodification)) {
                     modMap.put(smodification, new ArrayList<>());
                 }
@@ -206,6 +186,25 @@ public abstract class NetworkGraphNode extends VerticalLayout implements LayoutE
         }
     }
 
+    public NetworkGraphNode getParentNode() {
+        if (parent || parentNode == null) {
+            return this;
+        }
+        return parentNode;
+    }
+
+    public void setParentNode(NetworkGraphNode parentNode) {
+        this.parentNode = parentNode;
+    }
+
+    public WrappedComponent getWrappedComponent() {
+        return wrappedComponent;
+    }
+
+    public void setWrappedComponent(WrappedComponent wrappedComponent) {
+        this.wrappedComponent = wrappedComponent;
+    }
+
     public Map<String, Integer> getModificationsLocationsMap() {
         return modificationsLocationsMap;
     }
@@ -226,6 +225,10 @@ public abstract class NetworkGraphNode extends VerticalLayout implements LayoutE
         return type;
     }
 
+    public void setType(int type) {
+        this.type = type;
+    }
+
     public String getDefaultStyleName() {
         return defaultStyleName;
     }
@@ -240,11 +243,6 @@ public abstract class NetworkGraphNode extends VerticalLayout implements LayoutE
         this.setStyleName(defaultStyleName);
         this.setSelected(selected);
     }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-    private int type;
 
     public double getX() {
         return x;
@@ -261,8 +259,6 @@ public abstract class NetworkGraphNode extends VerticalLayout implements LayoutE
     public void setY(double y) {
         this.y = y;
     }
-    private double x;
-    private double y;
 
     public boolean isSelected() {
 

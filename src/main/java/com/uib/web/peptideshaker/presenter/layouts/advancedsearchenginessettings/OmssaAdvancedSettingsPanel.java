@@ -12,18 +12,13 @@ import com.vaadin.data.Property;
 import com.vaadin.data.validator.DoubleRangeValidator;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- *
  * @author y-mok
  */
 public class OmssaAdvancedSettingsPanel extends PopupWindow {
@@ -241,7 +236,7 @@ public class OmssaAdvancedSettingsPanel extends PopupWindow {
         subContainer.addTab(tab5, "Semi-Enzymatic");
         this.peptideLength = new HorizontalLabel2TextField("Peptide Length (min-max)", 0, 0, new IntegerRangeValidator("Only integer number allowed ", (-1 * Integer.MAX_VALUE), Integer.MAX_VALUE));
         tab5.addComponent(peptideLength);
-       
+
 
         /*tab 6*/
         VerticalLayout tab6 = new VerticalLayout();
@@ -253,7 +248,7 @@ public class OmssaAdvancedSettingsPanel extends PopupWindow {
 
         this.maximumHitListLength = new HorizontalLabelTextField("Maximum HitList Length", 0, new IntegerRangeValidator("Only positive integer allowed", 0, Integer.MAX_VALUE));
         tab6.addComponent(maximumHitListLength);
-maximumHitListLength.updateExpandingRatio(0.7f, 0.3f);
+        maximumHitListLength.updateExpandingRatio(0.7f, 0.3f);
         values2.clear();
         values2.add("OMX");
         values2.add("CSV");

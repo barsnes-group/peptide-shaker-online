@@ -4,6 +4,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -16,34 +17,6 @@ import java.util.Set;
  */
 public class ProteinSequenceCoverageComponent extends VerticalLayout {
 
-    /**
-     * Layout that contains peptides components with significant and not
-     * significant fold change.
-     */
-    private VerticalLayout allPeptidesLayout;
-    /**
-     * Layout that contains peptides components with significant fold change
-     * only.
-     */
-    private VerticalLayout significantPeptidesLayout;
-    /**
-     * List of peptide layout components.
-     */
-    private List< StackedBarPeptideComponent> stackedPeptides;
-    /**
-     * The protein sequence container that shows the protein coverage and
-     * available quantified peptides with its information.
-     */
-    private PeptideSequenceContainer allPeptidesComponent;
-    /**
-     * The protein sequence container that shows the protein coverage and
-     * available significantly quantified peptides with its information.
-     */
-    private PeptideSequenceContainer significantPeptidesComponent;
-    /**
-     * The protein sequence container width.
-     */
-    private double componentWidth = 0;
     /**
      * The protein sequence.
      */
@@ -60,6 +33,90 @@ public class ProteinSequenceCoverageComponent extends VerticalLayout {
      * The index of the dataset that contain this component.
      */
     private final int datasetIndex;
+    /**
+     * Layout that contains peptides components with significant and not
+     * significant fold change.
+     */
+    private VerticalLayout allPeptidesLayout;
+    /**
+     * Layout that contains peptides components with significant fold change
+     * only.
+     */
+    private VerticalLayout significantPeptidesLayout;
+    /**
+     * List of peptide layout components.
+     */
+    private List<StackedBarPeptideComponent> stackedPeptides;
+    /**
+     * The protein sequence container that shows the protein coverage and
+     * available quantified peptides with its information.
+     */
+    private PeptideSequenceContainer allPeptidesComponent;
+    /**
+     * The protein sequence container that shows the protein coverage and
+     * available significantly quantified peptides with its information.
+     */
+    private PeptideSequenceContainer significantPeptidesComponent;
+    /**
+     * The protein sequence container width.
+     */
+    private double componentWidth = 0;
+
+    /**
+     * Constructor to initialize the main attributes.
+     *
+     * @param sequence                      protein sequence
+     * @param quantPepSet                   set of quantitative peptides object that has the
+     *                                      peptides information
+     * @param proteinSequenceContainerWidth the column with for generating
+     *                                      protein sequence coverage component
+     * @param datasetIndex                  the dataset index for the protein row
+     * @param proteinName                   the main protein name.
+     */
+    public ProteinSequenceCoverageComponent(String sequence, Set<QuantPeptide> quantPepSet, int proteinSequenceContainerWidth, final int datasetIndex, String proteinName) {
+        this.setWidth(100, Unit.PERCENTAGE);
+        this.addStyleName("roundedborder");
+        this.addStyleName("padding20");
+        this.addStyleName("whitelayout");
+        this.quantPeptidesSet = quantPepSet;
+        this.proteinName = proteinName;
+        this.sequence = sequence;
+        this.datasetIndex = datasetIndex;
+        Label noPeptideAvailable = new Label("Peptide information not available");
+        noPeptideAvailable.addStyleName(ValoTheme.LABEL_TINY);
+        Set<QuantPeptide> filteredQuantPepSet = new LinkedHashSet<>();
+        if (sequence == null || sequence.trim().equalsIgnoreCase("") || quantPepSet == null || quantPepSet.isEmpty()) {  //no peptides available
+            this.addComponent(noPeptideAvailable);
+        } else {
+            quantPepSet.stream().filter((peptide) -> (peptide.getQuantDatasetIndex() == datasetIndex)).forEach((peptide) -> {
+                filteredQuantPepSet.add(peptide);
+            });
+            if (filteredQuantPepSet.isEmpty()) {
+                this.addComponent(noPeptideAvailable);
+                return;
+            }
+            allPeptidesLayout = new VerticalLayout();
+            this.addComponent(allPeptidesLayout);
+
+            significantPeptidesLayout = new VerticalLayout();
+            this.addComponent(significantPeptidesLayout);
+
+            stackedPeptides = new ArrayList<>();
+            final LinkedHashSet<StackedBarPeptideComponent> allPeptidesStackedBarComponentsMap = this.initAllBarChartComponents(false, proteinSequenceContainerWidth - 160, sequence, filteredQuantPepSet);
+            stackedPeptides.addAll(allPeptidesStackedBarComponentsMap);
+//            allPeptidesComponent = new PeptideSequenceContainer((int) componentWidth + 40, allPeptidesStackedBarComponentsMap, sequence);
+            allPeptidesComponent = new PeptideSequenceContainer((proteinSequenceContainerWidth - 110), allPeptidesStackedBarComponentsMap, sequence);
+            allPeptidesLayout.addComponent(allPeptidesComponent);
+            allPeptidesLayout.setComponentAlignment(allPeptidesComponent, Alignment.MIDDLE_CENTER);
+            final LinkedHashSet<StackedBarPeptideComponent> significantPeptidesStackedBarComponentsMap = this.initAllBarChartComponents(true, proteinSequenceContainerWidth - 160, sequence, filteredQuantPepSet);
+//            significantPeptidesComponent = new PeptideSequenceContainer((int) componentWidth + 40, significantPeptidesStackedBarComponentsMap, sequence);
+            significantPeptidesComponent = new PeptideSequenceContainer((proteinSequenceContainerWidth - 110), significantPeptidesStackedBarComponentsMap, sequence);
+            significantPeptidesLayout.addComponent(significantPeptidesComponent);
+            significantPeptidesLayout.setComponentAlignment(significantPeptidesComponent, Alignment.MIDDLE_CENTER);
+            significantPeptidesLayout.setVisible(false);
+
+        }
+    }
 
     /**
      * Get protein sequence
@@ -98,70 +155,14 @@ public class ProteinSequenceCoverageComponent extends VerticalLayout {
     }
 
     /**
-     * Constructor to initialize the main attributes.
-     *
-     * @param sequence protein sequence
-     * @param quantPepSet set of quantitative peptides object that has the
-     * peptides information
-     * @param proteinSequenceContainerWidth the column with for generating
-     * protein sequence coverage component
-     * @param datasetIndex the dataset index for the protein row
-     * @param proteinName the main protein name.
-     */
-    public ProteinSequenceCoverageComponent(String sequence, Set<QuantPeptide> quantPepSet, int proteinSequenceContainerWidth, final int datasetIndex, String proteinName) {
-        this.setWidth(100, Unit.PERCENTAGE);
-        this.addStyleName("roundedborder");
-        this.addStyleName("padding20");
-        this.addStyleName("whitelayout");
-        this.quantPeptidesSet = quantPepSet;
-        this.proteinName = proteinName;
-        this.sequence = sequence;
-        this.datasetIndex = datasetIndex;
-        Label noPeptideAvailable = new Label("Peptide information not available");
-        noPeptideAvailable.addStyleName(ValoTheme.LABEL_TINY);
-        Set<QuantPeptide> filteredQuantPepSet = new LinkedHashSet<>();
-        if (sequence == null || sequence.trim().equalsIgnoreCase("") || quantPepSet == null || quantPepSet.isEmpty()) {  //no peptides available
-            this.addComponent(noPeptideAvailable);
-        } else {
-            quantPepSet.stream().filter((peptide) -> (peptide.getQuantDatasetIndex() == datasetIndex)).forEach((peptide) -> {
-                filteredQuantPepSet.add(peptide);
-            });
-            if (filteredQuantPepSet.isEmpty()) {
-                this.addComponent(noPeptideAvailable);
-                return;
-            }
-            allPeptidesLayout = new VerticalLayout();
-            this.addComponent(allPeptidesLayout);
-
-            significantPeptidesLayout = new VerticalLayout();
-            this.addComponent(significantPeptidesLayout);
-
-            stackedPeptides = new ArrayList<>();
-            final LinkedHashSet<StackedBarPeptideComponent> allPeptidesStackedBarComponentsMap = this.initAllBarChartComponents(false, proteinSequenceContainerWidth - 160, sequence, filteredQuantPepSet);
-            stackedPeptides.addAll(allPeptidesStackedBarComponentsMap);
-//            allPeptidesComponent = new PeptideSequenceContainer((int) componentWidth + 40, allPeptidesStackedBarComponentsMap, sequence);
-            allPeptidesComponent = new PeptideSequenceContainer((proteinSequenceContainerWidth-110), allPeptidesStackedBarComponentsMap, sequence);
-            allPeptidesLayout.addComponent(allPeptidesComponent);
-            allPeptidesLayout.setComponentAlignment(allPeptidesComponent, Alignment.MIDDLE_CENTER);
-            final LinkedHashSet<StackedBarPeptideComponent> significantPeptidesStackedBarComponentsMap = this.initAllBarChartComponents(true, proteinSequenceContainerWidth - 160, sequence, filteredQuantPepSet);
-//            significantPeptidesComponent = new PeptideSequenceContainer((int) componentWidth + 40, significantPeptidesStackedBarComponentsMap, sequence);
-            significantPeptidesComponent = new PeptideSequenceContainer((proteinSequenceContainerWidth-110), significantPeptidesStackedBarComponentsMap, sequence);
-            significantPeptidesLayout.addComponent(significantPeptidesComponent);
-            significantPeptidesLayout.setComponentAlignment(significantPeptidesComponent, Alignment.MIDDLE_CENTER);
-            significantPeptidesLayout.setVisible(false);
-            
-        }
-    }
-
-    /**
      * Initialize the bar chart components for the protein sequence coverage.
      *
-     * @param significatOnly Show peptides with significant fold change only.
-     * @param width The column width for generating protein sequence coverage
-     * component.
-     * @param sequence The main protein sequence..
+     * @param significatOnly   Show peptides with significant fold change only.
+     * @param width            The column width for generating protein sequence coverage
+     *                         component.
+     * @param sequence         The main protein sequence..
      * @param quantPeptidesSet Set of peptide objects that has all peptide
-     * information.
+     *                         information.
      */
     private LinkedHashSet<StackedBarPeptideComponent> initAllBarChartComponents(boolean significatOnly, int width, String sequence, Set<QuantPeptide> quantPeptidesSet) {
         final LinkedHashSet<StackedBarPeptideComponent> barComponentMap = new LinkedHashSet<>();
@@ -182,7 +183,7 @@ public class ProteinSequenceCoverageComponent extends VerticalLayout {
                 componentWidth = componentWidth + ((x0 + peptideLayoutWidth) - componentWidth);
             }
             if (!significatOnly) {
-                StackedBarPeptideComponent peptideStackedBarComponent = new StackedBarPeptideComponent(x0, (int) (peptideLayoutWidth),  quantPeptide.getPeptideModification(), quantPeptide, proteinName);
+                StackedBarPeptideComponent peptideStackedBarComponent = new StackedBarPeptideComponent(x0, (int) (peptideLayoutWidth), quantPeptide.getPeptideModification(), quantPeptide, proteinName);
                 peptideStackedBarComponent.setWidth((int) peptideLayoutWidth, Unit.PIXELS);
                 if (sequence.startsWith("ZZZZZZZZ")) {
                     peptideStackedBarComponent.setDescription("" + 1 + "~" + quantPeptide.getPeptideSequence() + "~" + peptideSequence.length() + "");
@@ -267,7 +268,7 @@ public class ProteinSequenceCoverageComponent extends VerticalLayout {
      * Set show peptides layout with significant or not significant fold change
      *
      * @param showNotSignificantpeptide show peptides layout with significant or
-     * not significant fold change
+     *                                  not significant fold change
      */
     public void setShowNotSignificantPeptides(boolean showNotSignificantpeptide) {
         if (allPeptidesLayout == null) {

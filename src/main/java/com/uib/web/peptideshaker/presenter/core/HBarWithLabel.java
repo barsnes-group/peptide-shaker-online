@@ -18,9 +18,9 @@ import com.vaadin.ui.VerticalLayout;
 public class HBarWithLabel extends AbsoluteLayout {
     private final int barValue;
 
-    public HBarWithLabel(String labelText,int barValue) {
+    public HBarWithLabel(String labelText, int barValue) {
         HBarWithLabel.this.setStyleName("barwlabel");
-        this.barValue=barValue;
+        this.barValue = barValue;
         Label l = new Label("<font>" + labelText + "</font>", ContentMode.HTML);
         HBarWithLabel.this.addComponent(l, "top:10px;left:0px");
         l.setHeight(12, Unit.PIXELS);

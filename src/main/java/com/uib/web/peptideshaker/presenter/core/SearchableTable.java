@@ -7,23 +7,11 @@ import com.vaadin.event.FieldEvents;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.ui.MultiSelectMode;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Table;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import org.apache.poi.ss.usermodel.CellStyle;
+import java.util.*;
 
 /**
  * This class represents table that support search and selection
@@ -32,21 +20,24 @@ import org.apache.poi.ss.usermodel.CellStyle;
  */
 public abstract class SearchableTable extends AbsoluteLayout implements Property.ValueChangeListener {
 
-    private Label searchResultsLabel;
     private final String tableMainTitle;
     private final Map<Integer, String> tableSearchingResults;
-    private boolean resetSearching = false;
     private final Map<String, String> tableSearchingMap;
     private final Table mainTable;
-    private Button searchBtn;
     private final HorizontalLayout serachComponent;
+    private final Map<Comparable, Object[]> tableData;
+    private Label searchResultsLabel;
+    private boolean resetSearching = false;
+    private Button searchBtn;
+    private boolean suspendColumnResizeListener;
+    private boolean disableHtmlColumnHeader;
 
     /**
      * Initialise table component with search in table support
      *
-     * @param title table title
+     * @param title                   table title
      * @param defaultSearchingMessage default message in blank search field
-     * @param tableHeaders array of table headers
+     * @param tableHeaders            array of table headers
      */
     public SearchableTable(String title, String defaultSearchingMessage, TableColumnHeader[] tableHeaders) {
         SearchableTable.this.setSizeFull();
@@ -188,9 +179,6 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
 
     }
 
-    private boolean suspendColumnResizeListener;
-    private boolean disableHtmlColumnHeader;
-
     public boolean isDisableHtmlColumnHeader() {
         return disableHtmlColumnHeader;
     }
@@ -305,7 +293,6 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
         }
         mainTable.setSortEnabled(false);
     }
-    private final Map<Comparable, Object[]> tableData;
 
     /**
      * Get table data items
@@ -338,8 +325,8 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
     /**
      * Add item (row) to the table
      *
-     * @param dataKey row id
-     * @param value row data as array
+     * @param dataKey          row id
+     * @param value            row data as array
      * @param searchingKeyword keyword to search/select added row
      */
     public void addTableItem(Comparable dataKey, Object[] value, String searchingKeyword) {

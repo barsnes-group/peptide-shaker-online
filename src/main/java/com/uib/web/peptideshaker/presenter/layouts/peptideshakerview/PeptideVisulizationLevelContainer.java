@@ -9,6 +9,7 @@ import com.uib.web.peptideshaker.presenter.pscomponents.SpectrumInformation;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +19,6 @@ import java.util.Set;
  * overview
  *
  * @author Yehia Farag
- *
  */
 public class PeptideVisulizationLevelContainer extends HorizontalLayout implements RegistrableFilter {
 
@@ -26,8 +26,8 @@ public class PeptideVisulizationLevelContainer extends HorizontalLayout implemen
     private final Label headerLabel;
     private final SelectionManager Selection_Manager;
     private final PresenterSubViewSideBtn psmViewBtn;
-    private PeptideShakerVisualizationDataset peptideShakerVisualizationDataset;
     private final PSMViewComponent psmViewComponent;
+    private PeptideShakerVisualizationDataset peptideShakerVisualizationDataset;
 
     /**
      * Constructor to initialise the main layout and variables.
@@ -189,7 +189,7 @@ public class PeptideVisulizationLevelContainer extends HorizontalLayout implemen
                 headerLabel.setDescription("");
             }
 
-        } else  {
+        } else {
             headerLabel.setValue("Peptide Spectrum Matches");
             this.psmViewBtn.updateIconByResource(null);
             headerLabel.setDescription("");

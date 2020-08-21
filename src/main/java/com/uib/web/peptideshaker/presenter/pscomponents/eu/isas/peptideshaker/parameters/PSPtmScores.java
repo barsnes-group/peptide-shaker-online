@@ -1,6 +1,7 @@
 package com.uib.web.peptideshaker.presenter.pscomponents.eu.isas.peptideshaker.parameters;
 
 import com.compomics.util.experiment.personalization.UrParameter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,7 +53,7 @@ public class PSPtmScores implements UrParameter {
     /**
      * Adds a scoring result for the modification of interest.
      *
-     * @param ptmName the modification of interest
+     * @param ptmName    the modification of interest
      * @param ptmScoring the corresponding scoring
      */
     public void addPtmScoring(String ptmName, PtmScoring ptmScoring) {
@@ -92,7 +93,7 @@ public class PSPtmScores implements UrParameter {
     /**
      * Adds a confident modification site.
      *
-     * @param ptmName the modification name
+     * @param ptmName          the modification name
      * @param modificationSite the modification site
      */
     public void addConfidentModificationSite(String ptmName, int modificationSite) {
@@ -126,11 +127,11 @@ public class PSPtmScores implements UrParameter {
     /**
      * Removes a site from the ambiguous sites maps if found in there.
      *
-     * @param ptmName the name of the PTM of interest
+     * @param ptmName          the name of the PTM of interest
      * @param modificationSite the site of interest
      */
     private void removeFromAmbiguousSitesMaps(String ptmName, int modificationSite) {
-        
+
         if (ambiguousModificationsByPTM != null) {
             HashMap<Integer, ArrayList<Integer>> modificationSites = ambiguousModificationsByPTM.get(ptmName);
             if (modificationSites != null) {
@@ -163,10 +164,10 @@ public class PSPtmScores implements UrParameter {
     /**
      * Adds a group of modifications to the mapping of ambiguous sites.
      *
-     * @param representativeSite the representative site of this modification
-     * group
+     * @param representativeSite    the representative site of this modification
+     *                              group
      * @param possibleModifications the possible modifications in a map: site &gt;
-     * PTM name
+     *                              PTM name
      */
     public void addAmbiguousModificationSites(int representativeSite, HashMap<Integer, ArrayList<String>> possibleModifications) {
         if (ambiguousModificationsByRepresentativeSite == null) {
@@ -217,9 +218,9 @@ public class PSPtmScores implements UrParameter {
      * Changes the representative site for a given ambiguously localized PTM in
      * all maps.
      *
-     * @param ptmName the name of the PTM of interest
+     * @param ptmName                    the name of the PTM of interest
      * @param originalRepresentativeSite the original representative site
-     * @param newRepresentativeSite the new representative site
+     * @param newRepresentativeSite      the new representative site
      */
     public void changeRepresentativeSite(String ptmName, Integer originalRepresentativeSite, Integer newRepresentativeSite) {
 
@@ -284,9 +285,8 @@ public class PSPtmScores implements UrParameter {
      * Indicates whether a site is already registered as confident modification
      * site.
      *
-     * @param site the site of interest
+     * @param site             the site of interest
      * @param modificationName the name of the modification
-     *
      * @return a boolean indicating whether a site is already registered as
      * confident modification site
      */
@@ -305,7 +305,7 @@ public class PSPtmScores implements UrParameter {
      * Returns the main potential modifications at the given amino acid index.
      *
      * @param site the index in the sequence (0 is first amino acid) //@TODO:
-     * check that it is 0 and not 1
+     *             check that it is 0 and not 1
      * @return a list containing all potential modifications as main match, an
      * empty list if none found
      */
@@ -325,7 +325,6 @@ public class PSPtmScores implements UrParameter {
      * site.
      *
      * @param site the index in the sequence (0 is first amino acid)
-     *
      * @return a list of PTMs which have a representative ambiguous site at the
      * given site
      */
@@ -348,7 +347,6 @@ public class PSPtmScores implements UrParameter {
      * found.
      *
      * @param PtmName the name of the PTM of interest
-     *
      * @return the confident sites for the given PTM
      */
     public ArrayList<Integer> getConfidentSitesForPtm(String PtmName) {
@@ -367,7 +365,6 @@ public class PSPtmScores implements UrParameter {
      * representative site in a map: secondary site &gt; PTMs.
      *
      * @param representativeSite the representative site of interest
-     *
      * @return the ambiguous PTM assignments registered at the given
      * representative site
      */
@@ -386,7 +383,6 @@ public class PSPtmScores implements UrParameter {
      * Returns the ambiguous modification sites registered for the given PTM.
      *
      * @param ptmName the name of the PTM of interest
-     *
      * @return the ambiguous modification sites registered for the given PTM
      */
     public HashMap<Integer, ArrayList<Integer>> getAmbiguousModificationsSites(String ptmName) {

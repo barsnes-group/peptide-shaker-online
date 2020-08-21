@@ -33,7 +33,7 @@ public class HorizontalLabel2TextField extends HorizontalLayout {
      * Constructor to initialize the main attributes
      *
      * @param caption title
-     * @param values the drop-down list values
+     * @param values  the drop-down list values
      */
     public HorizontalLabel2TextField(String title, Object defaultValue1, Object defaultValue2, Validator validator) {
 
@@ -110,17 +110,17 @@ public class HorizontalLabel2TextField extends HorizontalLayout {
 
     }
 
+    public void setFirstSelectedValue(Object value) {
+        textField1.setValue(value + "");
+        textField1.setData(value);
+
+    }
+
     public String getSecondSelectedValue() {
         if (textField2.getValue() == null) {
             return defaultValue2;
         }
         return textField2.getValue();
-
-    }
-
-    public void setFirstSelectedValue(Object value) {
-        textField1.setValue(value + "");
-        textField1.setData(value);
 
     }
 
@@ -144,20 +144,20 @@ public class HorizontalLabel2TextField extends HorizontalLayout {
         boolean check3;
         if (validator != null && validator instanceof IntegerRangeValidator) {
             check3 = Integer.valueOf(this.getFirstSelectedValue()) < Integer.valueOf(this.getSecondSelectedValue());
-   }else  if (validator != null && validator instanceof DoubleRangeValidator) {
-        check3 = Double.valueOf(this.getFirstSelectedValue()) <= Double.valueOf(this.getSecondSelectedValue());
-       
-   }else{
-       check3=true;
-   }
-            if (!check3) {
-                textField1.setValue("Error");
-                textField2.setValue("Error");
-            }
-            return check1 && check2 && check3;
-     
+        } else if (validator != null && validator instanceof DoubleRangeValidator) {
+            check3 = Double.valueOf(this.getFirstSelectedValue()) <= Double.valueOf(this.getSecondSelectedValue());
+
+        } else {
+            check3 = true;
+        }
+        if (!check3) {
+            textField1.setValue("Error");
+            textField2.setValue("Error");
+        }
+        return check1 && check2 && check3;
+
     }
-    
+
 
     public boolean isModified() {
         return (!textField1.getValue().equalsIgnoreCase(textField1.getData() + "")) || (!textField2.getValue().equalsIgnoreCase(textField2.getData() + ""));

@@ -4,7 +4,8 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import java.awt.Color;
+
+import java.awt.*;
 import java.text.DecimalFormat;
 
 /**
@@ -17,25 +18,6 @@ public class SparkLine extends HorizontalLayout {
     private final DecimalFormat df = new DecimalFormat("0.00E00");// new DecimalFormat("#.##");
     private ColorLabel spark;
     private Label textLabel;
-
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-        if (spark == null) {
-            return;
-        }
-        if (selected) {
-            textLabel.addStyleName("selected");
-//            spark.updateColor(new Color(25, 125, 225));
-        } else {
-            textLabel.removeStyleName("selected");
-//            spark.updateColor(Color.lightGray);
-        }
-
-    }
     private boolean selected;
 
     /**
@@ -103,7 +85,7 @@ public class SparkLine extends HorizontalLayout {
         } else if (max != -100000) {
             Label empty = new Label();
             SparkLine.this.addComponent(empty);
-             SparkLine.this.setExpandRatio(empty, 20);
+            SparkLine.this.setExpandRatio(empty, 20);
             SparkLine.this.addComponent(textLabel);
             SparkLine.this.setComponentAlignment(textLabel, Alignment.MIDDLE_LEFT);
             SparkLine.this.setExpandRatio(textLabel, 80);
@@ -144,6 +126,25 @@ public class SparkLine extends HorizontalLayout {
 //            SparkLine.this.addComponent(colorLegend);
 //            SparkLine.this.setComponentAlignment(colorLegend, Alignment.MIDDLE_LEFT);
 //            SparkLine.this.setExpandRatio(colorLegend, 0.1f);
+        }
+
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+        if (spark == null) {
+            return;
+        }
+        if (selected) {
+            textLabel.addStyleName("selected");
+//            spark.updateColor(new Color(25, 125, 225));
+        } else {
+            textLabel.removeStyleName("selected");
+//            spark.updateColor(Color.lightGray);
         }
 
     }

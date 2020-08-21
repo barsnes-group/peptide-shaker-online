@@ -28,7 +28,7 @@ public class ProteinCoverageLayout extends AbsoluteLayout {
             this.addStyleName(validationStatuesStyle);
         } else if (statues.equalsIgnoreCase("Protein Evidence")) {
             this.addStyleName(proteinEvidenceStyle);
-        }else{
+        } else {
         }
 
     }

@@ -5,15 +5,17 @@
  */
 package selectioncanvas;
 
-import com.vaadin.annotations.JavaScript;
 import com.vaadin.ui.AbstractJavaScriptComponent;
 import elemental.json.JsonArray;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
 //@JavaScript({"../../VAADIN/js/mylibrary.js", "../../VAADIN/js/mycomponent-connector.js", "https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.touch/1.1.0/jquery.touch.min.js"})
 public abstract class SelectioncanvasComponent extends AbstractJavaScriptComponent {
 
+    ArrayList<ValueChangeListener> listeners
+            = new ArrayList<>();
     private String lastSelectedValue = "";
 
     public SelectioncanvasComponent() {
@@ -28,7 +30,7 @@ public abstract class SelectioncanvasComponent extends AbstractJavaScriptCompone
         });
 
         SelectioncanvasComponent.this.addValueChangeListener(() -> {
-           
+
             String value = SelectioncanvasComponent.this.getValue();
             String[] valueArr = value.split(",");
             if (valueArr.length < 4) {
@@ -65,36 +67,34 @@ public abstract class SelectioncanvasComponent extends AbstractJavaScriptCompone
 
     public abstract void leftSelectionIsPerformed(double startX, double startY);
 
-    public interface ValueChangeListener extends Serializable {
-
-        void valueChange();
-    }
-    ArrayList<ValueChangeListener> listeners
-            = new ArrayList<>();
-
     public void addValueChangeListener(
             ValueChangeListener listener) {
         listeners.add(listener);
-    }
-
-    public void setValue(String value) {
-        getState().setValue(value);
     }
 
     public String getValue() {
         return getState().getValue();
     }
 
-    public void setSize(int width, int height,boolean freeYSelection) {
+    public void setValue(String value) {
+        getState().setValue(value);
+    }
+
+    public void setSize(int width, int height, boolean freeYSelection) {
         this.setWidth(width, Unit.PIXELS);
         this.setHeight(height, Unit.PIXELS);
-        this.setValue(width + "," + height+","+freeYSelection);
+        this.setValue(width + "," + height + "," + freeYSelection);
 
     }
 
     @Override
     protected SelectioncanvasComponentState getState() {
         return (SelectioncanvasComponentState) super.getState();
+    }
+
+    public interface ValueChangeListener extends Serializable {
+
+        void valueChange();
     }
 
 }

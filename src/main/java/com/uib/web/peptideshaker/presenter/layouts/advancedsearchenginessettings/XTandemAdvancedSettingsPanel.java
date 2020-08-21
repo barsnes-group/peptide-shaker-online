@@ -14,26 +14,18 @@ import com.vaadin.data.Property;
 import com.vaadin.data.validator.DoubleRangeValidator;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import java.awt.Color;
+
+import java.awt.*;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
- *
  * @author y-mok
  */
 public class XTandemAdvancedSettingsPanel extends PopupWindow {
@@ -50,7 +42,7 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
     private final HorizontalLabelDropDownList quickPyrolidone;
     private final HorizontalLabelDropDownList stPbias;
     private final HorizontalLabelTextField ptmComplexity;
-//
+    //
     private final HorizontalLabelDropDownList outputResults;
     private final HorizontalLabelTextField eValueCutoff;
     private final HorizontalLabelDropDownList outputProteins;
@@ -73,7 +65,6 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
      */
     private final Table allModificationsTable;
     private final DecimalFormat df = new DecimalFormat("0.00E00");//new DecimalFormat("#.##");
-    private IdentificationParameters webSearchParameters;
     private final Set<String> refModificationSelection = new LinkedHashSet<>();
     /**
      * The post translational modifications factory.
@@ -83,6 +74,7 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
      * The modification items that is used for initialise modifications tables.
      */
     private final Map<Object, Object[]> completeModificationItems = new LinkedHashMap<>();
+    private IdentificationParameters webSearchParameters;
     /**
      * The post translational modifications factory.
      */

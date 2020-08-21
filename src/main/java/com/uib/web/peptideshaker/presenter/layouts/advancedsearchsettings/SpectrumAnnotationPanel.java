@@ -20,20 +20,14 @@ import com.vaadin.data.validator.DoubleRangeValidator;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- *
  * @author y-mok
  */
 public class SpectrumAnnotationPanel extends PopupWindow {
@@ -46,14 +40,15 @@ public class SpectrumAnnotationPanel extends PopupWindow {
     private final OptionGroup listII;
     private final ComboBox list;
     private final GridLayout peakMatchingContainer;
-    private IdentificationParameters webSearchParameters;
     private final VerticalLayout subContainer;
     private final AbsoluteLayout subSubContainer;
+    private IdentificationParameters webSearchParameters;
     private ArrayList<NeutralLoss> possibleNeutralLosses;
     /**
      * List of possible reporter ions.
      */
     private ArrayList<Integer> reporterIons;
+    private AnnotationParameters annotationParameters;
 
     public SpectrumAnnotationPanel() {
         super(VaadinIcons.COG.getHtml() + " Spectrum Annotation");
@@ -263,8 +258,6 @@ public class SpectrumAnnotationPanel extends PopupWindow {
         }
 
     }
-
-    private AnnotationParameters annotationParameters;
 
     private void saveParameters() {
         annotationParameters = getAnnotationSettings();

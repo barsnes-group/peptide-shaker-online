@@ -12,7 +12,6 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
- *
  * @author y-mok
  */
 public class FractionAnalysisPanel extends PopupWindow {
@@ -32,7 +31,7 @@ public class FractionAnalysisPanel extends PopupWindow {
         subContainer.setSizeFull();
         subContainer.setCaption("Fractions (Beta)");
         subContainer.setStyleName("importfiltersubcontainer");
-         subContainer.addStyleName("fractionsubcontainer");
+        subContainer.addStyleName("fractionsubcontainer");
 
         container.addComponent(title, "left:10px;top:10px");
         container.addComponent(subContainer, "left:10px;top:70px;right:10px;bottom:40px");
@@ -52,12 +51,12 @@ public class FractionAnalysisPanel extends PopupWindow {
                 setPopupVisible(false);
             }
         });
-       
+
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
         cancelBtn.setWidth(76, Unit.PIXELS);
         cancelBtn.setHeight(20, Unit.PIXELS);
-        container.addComponent(okBtn, "bottom:10px;right:96px"); 
+        container.addComponent(okBtn, "bottom:10px;right:96px");
         container.addComponent(cancelBtn, "bottom:10px;right:10px");
         cancelBtn.addClickListener((Button.ClickEvent event) -> {
             FractionAnalysisPanel.this.setPopupVisible(false);
@@ -88,7 +87,7 @@ public class FractionAnalysisPanel extends PopupWindow {
     }
 
     private void updateParameters() {
-       webSearchParameters.getFractionParameters().setProteinConfidenceMwPlots(Double.valueOf(proteinConfidenceMW.getSelectedValue()));
+        webSearchParameters.getFractionParameters().setProteinConfidenceMwPlots(Double.valueOf(proteinConfidenceMW.getSelectedValue()));
 
 
     }

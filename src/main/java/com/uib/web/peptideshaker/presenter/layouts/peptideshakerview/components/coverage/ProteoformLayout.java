@@ -4,14 +4,13 @@ import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Link;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import graphmatcher.ReactomWindow;
-import java.awt.Color;
+
+import java.awt.*;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -26,6 +25,7 @@ public abstract class ProteoformLayout extends AbsoluteLayout implements LayoutE
 
     private final String proteoformKey;
     private final Set<ProteoformModificationLayout> includedModifications;
+    ReactomWindow w = new ReactomWindow();
 
     public ProteoformLayout(int index, int topLocation, Color finalBackgroundColor, String proteoformKey, boolean availableOnReactome) {
         ProteoformLayout.this.setWidth(100, Unit.PERCENTAGE);
@@ -79,7 +79,6 @@ public abstract class ProteoformLayout extends AbsoluteLayout implements LayoutE
         }
 
     }
-    ReactomWindow w = new ReactomWindow();
 
     @Override
     public void layoutClick(LayoutEvents.LayoutClickEvent event) {

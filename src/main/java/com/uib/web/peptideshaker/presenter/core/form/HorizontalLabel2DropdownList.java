@@ -1,12 +1,10 @@
 package com.uib.web.peptideshaker.presenter.core.form;
 
-import com.vaadin.data.Validator;
-import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,13 +30,13 @@ public class HorizontalLabel2DropdownList extends HorizontalLayout {
      * Constructor to initialize the main attributes
      *
      * @param caption title
-     * @param values the drop-down list values
+     * @param values  the drop-down list values
      */
     public HorizontalLabel2DropdownList(String title, Set<String> values, Set<String> values2) {
 
         HorizontalLabel2DropdownList.this.setSizeFull();
-         HorizontalLabel2DropdownList.this.setSpacing(true);
-         cap = new Label(title);
+        HorizontalLabel2DropdownList.this.setSpacing(true);
+        cap = new Label(title);
         cap.addStyleName(ValoTheme.LABEL_TINY);
         cap.addStyleName(ValoTheme.LABEL_SMALL);
         cap.addStyleName("smallundecorated");
@@ -126,10 +124,11 @@ public class HorizontalLabel2DropdownList extends HorizontalLayout {
 
     public boolean isModified() {
 
-        return (!list1.getValue().toString().equalsIgnoreCase(list1.getData()+"")) || (!list2.getValue().toString().equalsIgnoreCase(list2.getData()+""));
+        return (!list1.getValue().toString().equalsIgnoreCase(list1.getData() + "")) || (!list2.getValue().toString().equalsIgnoreCase(list2.getData() + ""));
     }
-    public String fullLabelValue(){
-        return "<b>"+cap.getValue()+": </b><font style='word-spacing: 1px;'>"+list1.getValue()+"_-_"+list2.getValue()+"</font>";
-    
+
+    public String fullLabelValue() {
+        return "<b>" + cap.getValue() + ": </b><font style='word-spacing: 1px;'>" + list1.getValue() + "_-_" + list2.getValue() + "</font>";
+
     }
 }

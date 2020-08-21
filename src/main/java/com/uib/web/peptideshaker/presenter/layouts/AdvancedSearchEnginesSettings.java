@@ -2,16 +2,7 @@ package com.uib.web.peptideshaker.presenter.layouts;
 
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.presenter.core.PopupWindow;
-import com.uib.web.peptideshaker.presenter.layouts.advancedsearchenginessettings.AndromedaAdvancedSettingsPanel;
-import com.uib.web.peptideshaker.presenter.layouts.advancedsearchenginessettings.CometAdvancedSettingsPanel;
-import com.uib.web.peptideshaker.presenter.layouts.advancedsearchenginessettings.DirecTagAdvancedSettingsPanel;
-import com.uib.web.peptideshaker.presenter.layouts.advancedsearchenginessettings.MSAmandaAdvancedSettingsPanel;
-import com.uib.web.peptideshaker.presenter.layouts.advancedsearchenginessettings.MsGFAdvancedSettingsPanel;
-import com.uib.web.peptideshaker.presenter.layouts.advancedsearchenginessettings.MyriMatchAdvancedSettingsPanel;
-import com.uib.web.peptideshaker.presenter.layouts.advancedsearchenginessettings.NovorAdvancedSettingsPanel;
-import com.uib.web.peptideshaker.presenter.layouts.advancedsearchenginessettings.OmssaAdvancedSettingsPanel;
-import com.uib.web.peptideshaker.presenter.layouts.advancedsearchenginessettings.TideAdvancedSettingsPanel;
-import com.uib.web.peptideshaker.presenter.layouts.advancedsearchenginessettings.XTandemAdvancedSettingsPanel;
+import com.uib.web.peptideshaker.presenter.layouts.advancedsearchenginessettings.*;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Label;

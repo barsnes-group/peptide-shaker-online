@@ -11,7 +11,8 @@ import com.vaadin.event.LayoutEvents;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import java.awt.Color;
+
+import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -29,25 +30,27 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
     private final VerticalLayout modificationLayout;
     private final VerticalLayout psmNumberLayout;
     private final VerticalLayout intensityLayout;
-    private boolean selected;
-    private String defaultStyleName;
-    private String validationStatuesStyle;
-    private String proteinEvidenceStyle;
     private final String modificationStyleName = "nodemodificationbackground";
-    private int edgesNumber;
     private final DecimalFormat df1 = new DecimalFormat("0.00E00");// new DecimalFormat("#.##");
     private final Set<Edge> edges;
-    private Color validationColor=Color.lightGray;
-    private Color modificationColor=Color.lightGray;
-    private Color evidenceColor=Color.lightGray;
-    private Color psmColor=Color.lightGray;
-    private Color intensityColor=Color.lightGray;
-    private Color currentActiveColor;
-
     /**
      * The post translational modifications factory.
      */
     private final ModificationFactory PTM = ModificationFactory.getInstance();
+    private boolean selected;
+    private String defaultStyleName;
+    private String validationStatuesStyle;
+    private String proteinEvidenceStyle;
+    private int edgesNumber;
+    private Color validationColor = Color.lightGray;
+    private Color modificationColor = Color.lightGray;
+    private Color evidenceColor = Color.lightGray;
+    private Color psmColor = Color.lightGray;
+    private Color intensityColor = Color.lightGray;
+    private Color currentActiveColor;
+    private int type;
+    private double x;
+    private double y;
 
     public Node(String id, String tooltip, String modifications, String sequence, int psmNumber, String PSMNumberColor, double inteinsity, String inteinsityColor) {
 
@@ -128,10 +131,6 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
 
     }
 
-    public Color getCurrentActiveColor() {
-        return currentActiveColor;
-    }
-
     public Node(String id, String tooltip, ModificationMatch[] modifications, String sequence, int psmNumber, Color PSMNumberColor, double inteinsity, Color inteinsityColor) {
 
         Node.this.setStyleName("node");
@@ -184,7 +183,7 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
             PSMNumberColor = Color.RED;
             tooltipExt = "";
         }
-        Label psmsColorLabel = new Label("<div  style='background:rgb(" + PSMNumberColor.getRed()+","+PSMNumberColor.getGreen()+","+ PSMNumberColor.getBlue()+ ");border-radius:100%;width: 100%;height: 100%;opacity:0.2;'></div>", ContentMode.HTML);
+        Label psmsColorLabel = new Label("<div  style='background:rgb(" + PSMNumberColor.getRed() + "," + PSMNumberColor.getGreen() + "," + PSMNumberColor.getBlue() + ");border-radius:100%;width: 100%;height: 100%;opacity:0.2;'></div>", ContentMode.HTML);
         psmsColorLabel.setSizeFull();
         psmNumberLayout.addComponent(psmsColorLabel);
         psmNumberLayout.setVisible(false);
@@ -196,7 +195,7 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
         if (inteinsity == -10000) {
             tooltipExt2 = "";
         }
-        Label intensityColorLabel = new Label("<div  style='background:rgb(" + inteinsityColor.getRed()+","+inteinsityColor.getGreen()+","+ inteinsityColor.getBlue()+ ");border-radius:100%;width: 100%;height: 100%;opacity:0.2;'></div>", ContentMode.HTML);
+        Label intensityColorLabel = new Label("<div  style='background:rgb(" + inteinsityColor.getRed() + "," + inteinsityColor.getGreen() + "," + inteinsityColor.getBlue() + ");border-radius:100%;width: 100%;height: 100%;opacity:0.2;'></div>", ContentMode.HTML);
         intensityColorLabel.setSizeFull();
         intensityColorLabel.setStyleName("intensitycolornode");
         intensityLayout.addComponent(intensityColorLabel);
@@ -205,10 +204,14 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
         tooltip += tooltipExt;
         tooltip += tooltipExt2;
         this.intensityColor = inteinsityColor;
-        this.psmColor=PSMNumberColor;
-        Node.this.setDescription(tooltip);      
+        this.psmColor = PSMNumberColor;
+        Node.this.setDescription(tooltip);
         this.edges = new LinkedHashSet<>();
 
+    }
+
+    public Color getCurrentActiveColor() {
+        return currentActiveColor;
     }
 
     public void setValidationColor(Color validationColor) {
@@ -243,28 +246,47 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
         return type;
     }
 
+    public void setType(int type) {
+        this.type = type;
+        switch (type) {
+            case 1:
+                Node.this.setWidth(28, Unit.PIXELS);
+                Node.this.setHeight(28, Unit.PIXELS);
+                break;
+            case 2:
+                Node.this.setWidth(20, Unit.PIXELS);
+                Node.this.setHeight(20, Unit.PIXELS);
+                break;
+            case 3:
+                Node.this.setWidth(10, Unit.PIXELS);
+                Node.this.setHeight(10, Unit.PIXELS);
+                Node.this.setSelected(false);
+
+        }
+    }
+
     public void setNodeStatues(String statues) {
         this.resetStyle();
         if (statues.equalsIgnoreCase("Molecule Type")) {
             this.addStyleName(defaultStyleName);
         } else if (statues.equalsIgnoreCase("Validation")) {
             this.addStyleName(validationStatuesStyle);
-            this.currentActiveColor=validationColor;
+            this.currentActiveColor = validationColor;
         } else if (statues.equalsIgnoreCase("Protein Evidence")) {
             this.addStyleName(proteinEvidenceStyle);
-            this.currentActiveColor=evidenceColor;
+            this.currentActiveColor = evidenceColor;
         } else if (statues.equalsIgnoreCase("Modifications")) {
             modificationLayout.setVisible(true);
             this.addStyleName(modificationStyleName);
-            this.currentActiveColor=modificationColor;
+            this.currentActiveColor = modificationColor;
         } else if (statues.equalsIgnoreCase("PSMNumber")) {
             this.psmNumberLayout.setVisible(true);
             this.addStyleName(modificationStyleName);
-            this.currentActiveColor=psmColor;
+            this.currentActiveColor = psmColor;
         } else if (statues.equalsIgnoreCase("Intensity")) {
             this.intensityLayout.setVisible(true);
             this.addStyleName(modificationStyleName);
-            this.currentActiveColor=intensityColor;
+            this.currentActiveColor = intensityColor;
 
         }
 
@@ -296,26 +318,6 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
         this.intensityLayout.setVisible(false);
     }
 
-    public void setType(int type) {
-        this.type = type;
-        switch (type) {
-            case 1:
-                Node.this.setWidth(28, Unit.PIXELS);
-                Node.this.setHeight(28, Unit.PIXELS);
-                break;
-            case 2:
-                Node.this.setWidth(20, Unit.PIXELS);
-                Node.this.setHeight(20, Unit.PIXELS);
-                break;
-            case 3:
-                Node.this.setWidth(10, Unit.PIXELS);
-                Node.this.setHeight(10, Unit.PIXELS);
-                Node.this.setSelected(false);
-
-        }
-    }
-    private int type;
-
     public double getX() {
         return x;
     }
@@ -331,8 +333,6 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
     public void setY(double y) {
         this.y = y;
     }
-    private double x;
-    private double y;
 
     public boolean isSelected() {
 

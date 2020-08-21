@@ -1,12 +1,11 @@
-
 // Define the namespace
 var mylibrary2 = mylibrary2 || {};
 mylibrary2.SelectioncanvasComponent2 = function (element) {
     element.innerHTML =
-            "<canvas id='selectioncanvas2' oncontextmenu='return false;'></canvas>" +
-            "<input id='coords2' style='visibility:hidden;' type='text' name='value'/>" +
-            "<input id='tbox2' style='visibility:hidden;' type='text' name='value'/>" +
-            "<input id='hiddenbtn2' style='visibility:hidden;' type='button' value='Click'/>";
+        "<canvas id='selectioncanvas2' oncontextmenu='return false;'></canvas>" +
+        "<input id='coords2' style='visibility:hidden;' type='text' name='value'/>" +
+        "<input id='tbox2' style='visibility:hidden;' type='text' name='value'/>" +
+        "<input id='hiddenbtn2' style='visibility:hidden;' type='button' value='Click'/>";
     var document = element.ownerDocument;
     var thecoordsText = document.getElementById('coords2');
     var tBox = document.getElementById('tbox2');
@@ -15,7 +14,8 @@ mylibrary2.SelectioncanvasComponent2 = function (element) {
     var cBtn = document.getElementById('hiddenbtn2');
     cBtn.style.visibility = "hidden";
 
-    window.alert = function () {};
+    window.alert = function () {
+    };
 
     window.onload = function () {
         var frameWidth = document.getElementById()("selectioncanvas2").offsetWidth;
@@ -54,21 +54,15 @@ mylibrary2.SelectioncanvasComponent2 = function (element) {
     var self = this; // Can't use this inside the function
 
 
-
-
     button.onclick = function () {
         self.click();
         button.disabled = true;
         setTimeout(activateBtn, 1000);
     };
+
     function activateBtn() {
         button.disabled = false;
     }
-
-
-
-
-
 
 
     var theCanvas = document.getElementById('selectioncanvas2');
@@ -184,15 +178,15 @@ mylibrary2.SelectioncanvasComponent2 = function (element) {
     });
 
 
-
-
-    selectionCanvasElement.touch({preventDefault: {
+    selectionCanvasElement.touch({
+        preventDefault: {
             drag: true,
             swipe: true,
             tap: true,
             panzoom: true,
             contextmenu: true
-        }});
+        }
+    });
 
     selectionCanvasElement.on('doubleTap', function (e) {
         touchevent = true;
@@ -211,8 +205,14 @@ mylibrary2.SelectioncanvasComponent2 = function (element) {
         ctx.lineCap = 'round';
         ctx.beginPath();
         clearCanvas();
-        startTouchI = {x: parseInt(ev.originalEvent.touches[0].pageX - canvasOffset.left, 10), y: parseInt(ev.originalEvent.touches[0].pageY - canvasOffset.top, 10)};
-        startTouchII = {x: parseInt(ev.originalEvent.touches[1].pageX - canvasOffset.left, 10), y: parseInt(ev.originalEvent.touches[1].pageY - canvasOffset.top, 10)};
+        startTouchI = {
+            x: parseInt(ev.originalEvent.touches[0].pageX - canvasOffset.left, 10),
+            y: parseInt(ev.originalEvent.touches[0].pageY - canvasOffset.top, 10)
+        };
+        startTouchII = {
+            x: parseInt(ev.originalEvent.touches[1].pageX - canvasOffset.left, 10),
+            y: parseInt(ev.originalEvent.touches[1].pageY - canvasOffset.top, 10)
+        };
     });
 
     selectionCanvasElement.on('touchend', function (ev) {
@@ -224,6 +224,7 @@ mylibrary2.SelectioncanvasComponent2 = function (element) {
         clearCanvas();
         document.dis;
     });
+
     function zoomout() {
         startPos.x = -1;
         startPos.y = -1;
@@ -232,7 +233,8 @@ mylibrary2.SelectioncanvasComponent2 = function (element) {
         thecoordsText.value = startPos.x + "," + startPos.y + "," + finalPos.x + "," + finalPos.y + "," + 2;
         button.click(2);
     }
-    function  touchEnd() {
+
+    function touchEnd() {
 
         //get direction of each touch
         var firstTouchToLeft = false;
@@ -280,6 +282,7 @@ mylibrary2.SelectioncanvasComponent2 = function (element) {
         }
         touchevent = false;
     }
+
     var timer;
     selectionCanvasElement.on('touchmove', function (ev) {
         if (mouseevent)
@@ -287,8 +290,14 @@ mylibrary2.SelectioncanvasComponent2 = function (element) {
         touchevent = true;
         if (ev.originalEvent.touches.length !== 2)
             return;
-        finalTouchI = {x: parseInt(ev.originalEvent.touches[0].pageX - canvasOffset.left, 10), y: parseInt(ev.originalEvent.touches[0].pageY - canvasOffset.top, 10)};
-        finalTouchII = {x: parseInt(ev.originalEvent.touches[1].pageX - canvasOffset.left, 10), y: parseInt(ev.originalEvent.touches[1].pageY - canvasOffset.top, 10)};
+        finalTouchI = {
+            x: parseInt(ev.originalEvent.touches[0].pageX - canvasOffset.left, 10),
+            y: parseInt(ev.originalEvent.touches[0].pageY - canvasOffset.top, 10)
+        };
+        finalTouchII = {
+            x: parseInt(ev.originalEvent.touches[1].pageX - canvasOffset.left, 10),
+            y: parseInt(ev.originalEvent.touches[1].pageY - canvasOffset.top, 10)
+        };
         rect(ctx);
         clearTimeout(timer);
         timer = setTimeout(touchEnd, 300);

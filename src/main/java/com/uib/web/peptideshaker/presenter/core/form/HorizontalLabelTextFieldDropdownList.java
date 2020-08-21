@@ -6,6 +6,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
+
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -27,13 +28,13 @@ public class HorizontalLabelTextFieldDropdownList extends HorizontalLayout {
      */
     private final ComboBox list2;
     private final String defaultValue;
-    private final Label cap ;
+    private final Label cap;
 
     /**
      * Constructor to initialize the main attributes
      *
      * @param caption title
-     * @param values the drop-down list values
+     * @param values  the drop-down list values
      */
     public HorizontalLabelTextFieldDropdownList(String title, Object defaultValue, Set<String> values, Validator validator) {
 
@@ -66,12 +67,12 @@ public class HorizontalLabelTextFieldDropdownList extends HorizontalLayout {
         textField.setWidth(100, Unit.PERCENTAGE);
         textField.addStyleName(ValoTheme.TEXTFIELD_TINY);
         textField.setNullRepresentation(this.defaultValue);
-        
+
         textField.setWidth(100, Unit.PERCENTAGE);
         textField.setHeight(20, Unit.PIXELS);
         textField.setValue(this.defaultValue);
         textField.setData(this.defaultValue);
-       
+
         HorizontalLabelTextFieldDropdownList.this.addComponent(textField);
         HorizontalLabelTextFieldDropdownList.this.setExpandRatio(textField, 27.5f);
 
@@ -97,7 +98,7 @@ public class HorizontalLabelTextFieldDropdownList extends HorizontalLayout {
     public String getFirstSelectedValue() {
         if (textField.getValue() == null) {
             return this.defaultValue;
-        
+
         }
         return textField.getValue();
 
@@ -108,10 +109,11 @@ public class HorizontalLabelTextFieldDropdownList extends HorizontalLayout {
 
     }
 
-    public void setTextValue(Object value){
+    public void setTextValue(Object value) {
         this.textField.setValue(value.toString());
         textField.setData(textField.getValue());
     }
+
     public void setSelected(Object objectId) {
         list2.select(objectId);
         list2.setData(objectId);
@@ -126,13 +128,15 @@ public class HorizontalLabelTextFieldDropdownList extends HorizontalLayout {
         list2.setRequired(!check2);
         return check1 && check2;
     }
-     public boolean isModified() {
-         return (!textField.getValue().equalsIgnoreCase(textField.getData()+"")) || (!list2.getValue().toString().equalsIgnoreCase(list2.getData()+""));
-    
+
+    public boolean isModified() {
+        return (!textField.getValue().equalsIgnoreCase(textField.getData() + "")) || (!list2.getValue().toString().equalsIgnoreCase(list2.getData() + ""));
+
     }
-     public String fullLabelValue(){
-        return "<b>"+cap.getValue()+": </b> <font style='word-spacing: 1px;'>"+textField.getValue()+"_-_ "+list2.getValue()+"</font>";
-    
+
+    public String fullLabelValue() {
+        return "<b>" + cap.getValue() + ": </b> <font style='word-spacing: 1px;'>" + textField.getValue() + "_-_ " + list2.getValue() + "</font>";
+
     }
 
 }

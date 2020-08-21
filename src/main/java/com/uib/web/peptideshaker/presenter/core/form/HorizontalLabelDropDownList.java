@@ -6,6 +6,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.themes.ValoTheme;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,18 +22,18 @@ public class HorizontalLabelDropDownList extends HorizontalLayout {
      * Main drop-down list.
      */
     private final ComboBox list;
-    private final Label cap ;
+    private final Label cap;
 
     /**
      * Constructor to initialize the main attributes
      *
      * @param caption title
-     * @param values the drop-down list values
+     * @param values  the drop-down list values
      */
     public HorizontalLabelDropDownList(String caption) {
         HorizontalLabelDropDownList.this.setSizeFull();
         HorizontalLabelDropDownList.this.setSpacing(true);
-        cap = new Label(caption,ContentMode.HTML);
+        cap = new Label(caption, ContentMode.HTML);
         cap.addStyleName(ValoTheme.LABEL_TINY);
         cap.addStyleName(ValoTheme.LABEL_SMALL);
         cap.addStyleName("smallundecorated");
@@ -64,15 +65,16 @@ public class HorizontalLabelDropDownList extends HorizontalLayout {
             list.addItem(str);
         }
         list.setValue(values.toArray()[0]);
-         list.commit();
-        }
+        list.commit();
+    }
 
     public String getSelectedValue() {
         return list.getValue().toString();
 
     }
-    public void setItemCaption(Object itemId,String caption){
-   
+
+    public void setItemCaption(Object itemId, String caption) {
+
         list.setItemCaption(itemId, caption);
     }
 
@@ -85,20 +87,24 @@ public class HorizontalLabelDropDownList extends HorizontalLayout {
         list.setData(objectId);
 
     }
-    public boolean isValid(){
-        list.setRequired(true);        
+
+    public boolean isValid() {
+        list.setRequired(true);
         boolean check = list.isValid();
         list.setRequired(!check);
         return check;
     }
-    public boolean isModified() {    
-        return !list.getValue().toString().equalsIgnoreCase(list.getData()+"");
+
+    public boolean isModified() {
+        return !list.getValue().toString().equalsIgnoreCase(list.getData() + "");
     }
-public String fullLabelValue(){
-        return "<b>"+cap.getValue()+": </b>"+list.getValue();
-    
+
+    public String fullLabelValue() {
+        return "<b>" + cap.getValue() + ": </b>" + list.getValue();
+
     }
- public void updateExpandingRatio(float first, float secound) {
+
+    public void updateExpandingRatio(float first, float secound) {
         HorizontalLabelDropDownList.this.setExpandRatio(cap, first);
         HorizontalLabelDropDownList.this.setExpandRatio(list, secound);
     }

@@ -1,5 +1,12 @@
 package com.uib.web.peptideshaker.model.core;
 
+import org.apache.commons.codec.binary.Base64;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESedeKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -9,12 +16,6 @@ import java.util.Date;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESedeKeySpec;
-import org.apache.commons.codec.binary.Base64;
 
 /**
  * This class is utility for sharing links cross Web PeptideShaker users
@@ -23,16 +24,16 @@ import org.apache.commons.codec.binary.Base64;
  */
 public class LinkUtil {
 
-    private final Random rand;
-    private static final String UNICODE_FORMAT = "UTF8";
     public static final String DESEDE_ENCRYPTION_SCHEME = "DESede";
+    private static final String UNICODE_FORMAT = "UTF8";
+    private final Random rand;
+    byte[] arrayBytes;
+    SecretKey key;
     private KeySpec ks;
     private SecretKeyFactory skf;
     private Cipher cipher;
-    byte[] arrayBytes;
     private String myEncryptionKey;
     private String myEncryptionScheme;
-    SecretKey key;
 
     /**
      * Initialise the utility

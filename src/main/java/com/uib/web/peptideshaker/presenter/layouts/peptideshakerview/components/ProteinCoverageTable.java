@@ -1,14 +1,13 @@
 package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components;
 
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
-import com.ejt.vaadin.sizereporter.ComponentResizeListener;
 import com.ejt.vaadin.sizereporter.SizeReporter;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.ProteinGroupObject;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage.ProteinCoverageComponent;
 import com.uib.web.peptideshaker.presenter.core.ActionLabel;
 import com.uib.web.peptideshaker.presenter.core.ColorLabelWithPopupTooltip;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.components.RangeColorGenerator;
+import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage.ProteinCoverageComponent;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
@@ -18,9 +17,10 @@ import com.vaadin.ui.Link;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+import org.apache.commons.collections15.map.LinkedMap;
+
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.collections15.map.LinkedMap;
 
 /**
  * This class represents proteins coverage container component
@@ -36,7 +36,8 @@ public abstract class ProteinCoverageTable extends VerticalLayout {
     private int rowIndex = 1;
     private boolean allowReize = false;
     private double intensityWidth = 120.0;
-    private int lastCapturedWidth ;
+    private int lastCapturedWidth;
+    private Map<String, ProteinGroupObject> proteinNodes;
 
     public ProteinCoverageTable(AbsoluteLayout chainCoverageLayout) {
         ProteinCoverageTable.this.setSizeFull();
@@ -61,12 +62,12 @@ public abstract class ProteinCoverageTable extends VerticalLayout {
 
         if ((boolean) VaadinSession.getCurrent().getAttribute("mobilescreenstyle")) {
             proteinCoverageTable.setColumnWidth("coverage", 600);
-            proteinCoverageTable.setColumnWidth("proteinIntensity", (int)intensityWidth);
+            proteinCoverageTable.setColumnWidth("proteinIntensity", (int) intensityWidth);
         } else {
             proteinCoverageTable.setColumnWidth("index", 37);
             proteinCoverageTable.setColumnWidth("acc", 80);
             proteinCoverageTable.setColumnWidth("name", 300);
-            proteinCoverageTable.setColumnWidth("proteinIntensity", (int)intensityWidth);
+            proteinCoverageTable.setColumnWidth("proteinIntensity", (int) intensityWidth);
         }
 
         proteinCoverageTable.setCacheRate(1);
@@ -81,8 +82,8 @@ public abstract class ProteinCoverageTable extends VerticalLayout {
         tablesizeReporter.addResizeListener((ComponentResizeEvent event) -> {
             //disable column resize listener
             allowReize = true;
-             lastCapturedWidth = event.getWidth();
-            double availableWidth = lastCapturedWidth - 37 - 80 - intensityWidth-8-16;
+            lastCapturedWidth = event.getWidth();
+            double availableWidth = lastCapturedWidth - 37 - 80 - intensityWidth - 8 - 16;
             double nameWidth = availableWidth * 20.0 / 100.0;
             double coverageWidth = availableWidth - nameWidth;
             proteinCoverageTable.setColumnWidth("name", (int) nameWidth);
@@ -143,7 +144,6 @@ public abstract class ProteinCoverageTable extends VerticalLayout {
     public Map<Object, Object[]> getTableData() {
         return tableData;
     }
-    private Map<String, ProteinGroupObject> proteinNodes;
 
     public void selectDataset(Map<String, ProteinGroupObject> proteinNodes, Map<String, PeptideObject> peptidesNodes, Set<Object> defaultSelectedProteinsItems, Set<Object> defaultSelectedPeptidesItems, RangeColorGenerator colorScale, boolean quantDataset) {
         tableData.clear();
@@ -153,10 +153,10 @@ public abstract class ProteinCoverageTable extends VerticalLayout {
             proteinCoverageTable.setColumnCollapsingAllowed(true);
             proteinCoverageTable.setColumnCollapsible("proteinIntensity", true);
             proteinCoverageTable.setColumnCollapsed("proteinIntensity", true);
-            intensityWidth=0;
+            intensityWidth = 0;
             //disable column resize listener
             allowReize = true;
-            double availableWidth = lastCapturedWidth - 37 - 80 - intensityWidth-8-16;
+            double availableWidth = lastCapturedWidth - 37 - 80 - intensityWidth - 8 - 16;
             double nameWidth = availableWidth * 20.0 / 100.0;
             double coverageWidth = availableWidth - nameWidth;
             proteinCoverageTable.setColumnWidth("name", (int) nameWidth);

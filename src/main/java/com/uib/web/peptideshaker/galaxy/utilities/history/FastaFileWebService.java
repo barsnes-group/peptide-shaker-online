@@ -1,6 +1,7 @@
 package com.uib.web.peptideshaker.galaxy.utilities.history;
 
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.ProteinGroupObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +25,7 @@ public class FastaFileWebService {
     /**
      * Update protein information from Uniprot web service.
      *
-     * @param protein protein object to store/update protein information
+     * @param protein   protein object to store/update protein information
      * @param accession the protein accession;
      * @return updated protein object
      */
@@ -55,7 +56,7 @@ public class FastaFileWebService {
 
             }
         }
-       
+
         return protein;
 
     }

@@ -13,22 +13,21 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.PopupView;
 
 /**
- *
  * @author Yehia Farag
  */
 public class Help extends AbsoluteLayout {
 
     private final PopupView infoPopup;
 
-    public Help(String text, String noteText ,int width,int height) {
+    public Help(String text, String noteText, int width, int height) {
         Help.this.setHeight(40, Unit.PIXELS);
         Help.this.setStyleName("infopopupcontainer");
         Help.this.setDescription("Information");
 
         AbsoluteLayout closableLayout = new AbsoluteLayout();
         closableLayout.setStyleName("infolayout");
-        closableLayout.setWidth(width,Unit.PIXELS);
-        closableLayout.setHeight(height,Unit.PIXELS);
+        closableLayout.setWidth(width, Unit.PIXELS);
+        closableLayout.setHeight(height, Unit.PIXELS);
 
         String popupCaption = VaadinIcons.QUESTION_CIRCLE.getHtml();
         if (text.startsWith("<a")) {

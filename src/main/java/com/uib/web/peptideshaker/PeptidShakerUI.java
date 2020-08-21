@@ -2,19 +2,9 @@ package com.uib.web.peptideshaker;
 
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.Push;
-import javax.servlet.annotation.WebServlet;
-
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.server.BootstrapFragmentResponse;
-import com.vaadin.server.BootstrapListener;
-import com.vaadin.server.BootstrapPageResponse;
-import com.vaadin.server.ErrorHandler;
-import com.vaadin.server.Page;
-import com.vaadin.server.SessionInitEvent;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinServlet;
-import com.vaadin.server.VaadinSession;
+import com.vaadin.server.*;
 import com.vaadin.shared.communication.PushMode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.shared.ui.window.WindowMode;
@@ -22,13 +12,15 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser
@@ -178,13 +170,13 @@ public class PeptidShakerUI extends UI {
             e.printStackTrace();
         }
         VaadinSession.getCurrent().setErrorHandler(new ErrorHandler() {
-            @Override
-            public void error(com.vaadin.server.ErrorEvent event) {
-                System.out.println("at ----------- error handler is working ------------------- ");
-                event.getThrowable().printStackTrace();
+                                                       @Override
+                                                       public void error(com.vaadin.server.ErrorEvent event) {
+                                                           System.out.println("at ----------- error handler is working ------------------- ");
+                                                           event.getThrowable().printStackTrace();
 //                Page.getCurrent().reload();
-            }
-        }
+                                                       }
+                                                   }
         );
         String requestToShare = Page.getCurrent().getLocation().toString();
 
@@ -204,7 +196,7 @@ public class PeptidShakerUI extends UI {
      * update main style for the application.
      *
      * @param mobileDeviceStyle the device is mobile phone
-     * @param portrait the screen is in portrait mode
+     * @param portrait          the screen is in portrait mode
      */
     private void updateMainStyleMode(boolean mobileDeviceStyle, boolean portrait) {
         if (webPeptideShakerApp == null) {
@@ -227,7 +219,8 @@ public class PeptidShakerUI extends UI {
      * Main application Servlet.
      */
     @WebServlet(urlPatterns = "/*", name = "PeptidShakerUIServlet", asyncSupported = true)
-    @VaadinServletConfiguration(ui = PeptidShakerUI.class, productionMode = true, resourceCacheTime = 0)//, resourceCacheTime = 1
+    @VaadinServletConfiguration(ui = PeptidShakerUI.class, productionMode = true, resourceCacheTime = 0)
+//, resourceCacheTime = 1
     public static class PeptidShakerUIServlet extends VaadinServlet {
 
         @Override

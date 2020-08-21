@@ -3,23 +3,16 @@ package com.uib.web.peptideshaker.galaxy.utilities.history;
 import com.compomics.util.experiment.mass_spectrometry.spectra.Peak;
 import com.compomics.util.experiment.mass_spectrometry.spectra.Precursor;
 import com.compomics.util.experiment.mass_spectrometry.spectra.Spectrum;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import java.net.*;
+import java.util.*;
 
 /**
  * Utility class for galaxy files that helps in managing the integration and
@@ -48,7 +41,7 @@ public class GalaxyDatasetServingUtil {
     public GalaxyDatasetServingUtil(String galaxyLink, String userApiKey) {
         this.galaxyLink = galaxyLink;
         params = new GalaxyDatasetServingUtil.ParameterNameValue[]{
-            new GalaxyDatasetServingUtil.ParameterNameValue("key", userApiKey), new GalaxyDatasetServingUtil.ParameterNameValue("offset", ""),};
+                new GalaxyDatasetServingUtil.ParameterNameValue("key", userApiKey), new GalaxyDatasetServingUtil.ParameterNameValue("offset", ""),};
 
     }
 
@@ -56,8 +49,8 @@ public class GalaxyDatasetServingUtil {
      * Get MSn spectrum object using HTML request to Galaxy server (byte serving
      * support).
      *
-     * @param startIndex the spectra index on the MGF file
-     * @param historyId the Galaxy Server History ID that contain the MGF file
+     * @param startIndex  the spectra index on the MGF file
+     * @param historyId   the Galaxy Server History ID that contain the MGF file
      * @param MGFGalaxyID The ID of the MGF file on Galaxy Server
      * @param MGFFileName The MGF file name
      * @return MSnSpectrum spectrum object
@@ -110,7 +103,7 @@ public class GalaxyDatasetServingUtil {
                             try {
                                 spectrumTitle = URLDecoder.decode(spectrumTitle, "utf-8");
                             } catch (UnsupportedEncodingException e) {
-                                System.out.println("Error: 113 :An exception was thrown when trying to decode an mgf title: " + spectrumTitle+"  "+e);
+                                System.out.println("Error: 113 :An exception was thrown when trying to decode an mgf title: " + spectrumTitle + "  " + e);
                             }
                         } else if (line.startsWith("CHARGE")) {
                             precursorCharges = parseCharges(line);
@@ -269,40 +262,6 @@ public class GalaxyDatasetServingUtil {
     }
 
     /**
-     * Private inner class represents encoded name and value of parameters that
-     * is used in HTML requests
-     *
-     * @author Yehia Farag
-     *
-     */
-    private class ParameterNameValue {
-
-        /**
-         * Parameter name
-         */
-        private String name;
-        /**
-         * Parameter value
-         */
-        private String value;
-
-        /**
-         * Initialise the parameters objects
-         *
-         * @param name parameter name
-         * @param value parameter value
-         */
-        public ParameterNameValue(String name, String value) {
-            try {
-                this.name = URLEncoder.encode(name, "UTF-8");
-                this.value = URLEncoder.encode(value, "UTF-8");
-            } catch (UnsupportedEncodingException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    /**
      * Convert JSON object to Java readable map
      *
      * @param object JSON object to be converted
@@ -346,5 +305,38 @@ public class GalaxyDatasetServingUtil {
             list.add(value);
         }
         return list;
+    }
+
+    /**
+     * Private inner class represents encoded name and value of parameters that
+     * is used in HTML requests
+     *
+     * @author Yehia Farag
+     */
+    private class ParameterNameValue {
+
+        /**
+         * Parameter name
+         */
+        private String name;
+        /**
+         * Parameter value
+         */
+        private String value;
+
+        /**
+         * Initialise the parameters objects
+         *
+         * @param name  parameter name
+         * @param value parameter value
+         */
+        public ParameterNameValue(String name, String value) {
+            try {
+                this.name = URLEncoder.encode(name, "UTF-8");
+                this.value = URLEncoder.encode(value, "UTF-8");
+            } catch (UnsupportedEncodingException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 }

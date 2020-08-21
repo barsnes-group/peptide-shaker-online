@@ -3,7 +3,6 @@ package com.uib.web.peptideshaker.presenter.core.filtercharts.filters;
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.SizeReporter;
 import com.google.common.collect.Sets;
-
 import com.uib.web.peptideshaker.model.core.ModificationMatrix;
 import com.uib.web.peptideshaker.presenter.core.HBarWithLabel;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.components.SelectableNode;
@@ -14,14 +13,10 @@ import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
+
+import java.awt.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class represents matrix layout filter
@@ -31,6 +26,14 @@ import java.util.Set;
 public abstract class MatrixDiagramRedraw extends VerticalLayout {
 
     private final AbsoluteLayout container;
+    private final Map<String, Integer> rows = new LinkedHashMap<>();
+    private final Set<Comparable> fullItemsSet;
+    private final Map<Integer, Double> barChartValues;
+    private final Map<Comparable, List<SelectableNode>> nodesTable;
+    private final LayoutEvents.LayoutClickListener barListener;
+    private final Map<String, HBarWithLabel> columnMap;
+    private final Map<String, SparkLine> rowLabelsMap;
+    private final Set<Integer> selectedIndexes;
     /**
      * The width of the filter container.
      */
@@ -43,22 +46,14 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
      * The title text of the filter.
      */
     private Map<String, Set<Comparable>> columns;
-    private final Map<String, Integer> rows = new LinkedHashMap<>();
-    private final Set<Comparable> fullItemsSet;
-    private final Map<Integer, Double> barChartValues;
-    private final Map<Comparable, List<SelectableNode>> nodesTable;
-
-    private final LayoutEvents.LayoutClickListener barListener;
-    private final Map<String, HBarWithLabel> columnMap;
-    private final Map<String, SparkLine> rowLabelsMap;
     private Map<String, Color> dataColors;
-    private final Set<Integer> selectedIndexes;
     private int rowLabelsWidth;
     private int minimumWidth;
     private boolean allowRedraw = false;
     private VerticalLayout spacer;
     private int frameWidth;
     private int frameHeight;
+    private boolean visibleScrollbar;
 
     public MatrixDiagramRedraw() {
         this.container = new AbsoluteLayout();
@@ -140,14 +135,14 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
 
         int step;
         if (columnMap.size() > 1) {
-            step = (frameWidth - 30-rowLabelsWidth - 20) / (columnMap.size() - 1);
+            step = (frameWidth - 30 - rowLabelsWidth - 20) / (columnMap.size() - 1);
             if (step < 25) {
                 step = 25;
             }
         } else {
-            step = (frameWidth - rowLabelsWidth - 20-20);
+            step = (frameWidth - rowLabelsWidth - 20 - 20);
         }
-        int x = rowLabelsWidth+20;
+        int x = rowLabelsWidth + 20;
         AbsoluteLayout.ComponentPosition position = container.getPosition(spacer);
         position.setLeftValue((float) x);
         container.setPosition(spacer, position);
@@ -306,7 +301,7 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
             for (String columnKey : columnMap.keySet()) {
                 SelectableNode node = new SelectableNode(rowKey, columnIndex, columns.get(columnKey).isEmpty(), dataColors.get(rowKey)) {
                     @Override
-                    public void selectNode(int columnIndex) {//                           
+                    public void selectNode(int columnIndex) {//
                         if (selectedIndexes.contains(columnIndex)) {
                             selectedIndexes.remove(columnIndex);
                         } else {
@@ -429,12 +424,11 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
                 }
             }
 
-        };
+        }
+        ;
         localDrawLayout(rowSet, columnSet);
         reDrawLayout(true);
     }
-
-    private boolean visibleScrollbar;
 
     public abstract void setVisibleScrollbar(boolean visible);
 

@@ -17,14 +17,14 @@ public class CSFPRLabel extends Link implements Comparable<CSFPRLabel> {
 
     public CSFPRLabel(String accession, boolean available) {
         this.available = available;
-        if (available) {  
-             link=  (VaadinSession.getCurrent().getAttribute("csfprLink")+"").replace("VAADIN/","searchby:Protein*Accession___searchkey:" + accession + "__");
-            
+        if (available) {
+            link = (VaadinSession.getCurrent().getAttribute("csfprLink") + "").replace("VAADIN/", "searchby:Protein*Accession___searchkey:" + accession + "__");
+
 //            link = "/searchby:Protein*Accession___searchkey:" + accession + "__";
             CSFPRLabel.this.setIcon(new ThemeResource("img/csf_logo.png"));
             CSFPRLabel.this.setResource(new ExternalResource(link));
             CSFPRLabel.this.setDescription("View in CSF-PR");
-          
+
         } else {
             link = "not available on CSF-PR";
             CSFPRLabel.this.setIcon(new ThemeResource("img/csf_logo_disable.png"));

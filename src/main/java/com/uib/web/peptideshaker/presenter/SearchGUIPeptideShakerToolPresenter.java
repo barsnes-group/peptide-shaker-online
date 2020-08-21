@@ -3,25 +3,23 @@ package com.uib.web.peptideshaker.presenter;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
-
-import com.uib.web.peptideshaker.presenter.layouts.SearchGUIPeptideShakerWorkFlowInputLayout;
-import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
 import com.uib.web.peptideshaker.presenter.core.ButtonWithLabel;
+import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
 import com.uib.web.peptideshaker.presenter.core.SmallSideBtn;
+import com.uib.web.peptideshaker.presenter.layouts.SearchGUIPeptideShakerWorkFlowInputLayout;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import pl.exsio.plupload.PluploadFile;
+
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import pl.exsio.plupload.PluploadFile;
 
 /**
  * This class represent web tool presenter which is responsible for managing the
@@ -50,7 +48,6 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
 
     /**
      * Initialise the web tool main attributes
-     *
      */
     public SearchGUIPeptideShakerToolPresenter() {
         SearchGUIPeptideShakerToolPresenter.this.setSizeFull();
@@ -61,7 +58,7 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
 
     private void initLayout() {
         smallPresenterButton = new SmallSideBtn("img/searchguiblue.png");//spectra2.pngimg/searchgui-medium-shadow-2.png
-       
+
         smallPresenterButton.setData(SearchGUIPeptideShakerToolPresenter.this.getViewId());
         smallPresenterButton.setDescription("Search and process data (SearchGUI and PeptideShaker)");
         smallPresenterButton.addStyleName("smalltoolsbtn");
@@ -129,13 +126,6 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
         this.mainPresenterBtn.setDescription("Search and process data (SearchGUI and PeptideShaker)");
     }
 
-    private Label initBusyUploadPanel() {
-        Label busyUploadPanel = new Label("<img src='VAADIN/themes/webpeptideshakertheme/img/globeearthanimation.gif' alt='' style='width: 17px;top: 10px;background-color: white;position: relative!important;z-index: 3!important;'>", ContentMode.HTML);
-        busyUploadPanel.setSizeFull();
-        busyUploadPanel.setStyleName("busypanel");
-        return busyUploadPanel;
-    }
-
     /**
      * Update Online PeptideShaker files from Galaxy Server
      *
@@ -147,7 +137,8 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
             Map<String, GalaxyFileObject> fastaFilesMap = new LinkedHashMap<>();
             Map<String, GalaxyFileObject> mgfFilesMap = new LinkedHashMap<>();
             Map<String, GalaxyFileObject> rawFilesMap = new LinkedHashMap<>();
-             Map<String, GalaxyFileObject> mzMLFilesMap = new LinkedHashMap<>();
+            Map<String, GalaxyFileObject> mzMLFilesMap = new LinkedHashMap<>();
+            Set<String> datasetNames = new HashSet<>();
             for (String fileKey : historyFilesMap.keySet()) {
                 GalaxyFileObject fileObject = historyFilesMap.get(fileKey);
                 String type = fileObject.getType();
@@ -166,20 +157,24 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
                     case "Thermo.raw":
                         rawFilesMap.put(fileKey, fileObject);
                         break;
-                         case "mzML":
+                    case "mzML":
                         mzMLFilesMap.put(fileKey, fileObject);
+                        break;
+                    case "User uploaded Project":
+                    case "Web Peptide Shaker Dataset":
+                        datasetNames.add(fileObject.getName().trim().toLowerCase());
                         break;
                 }
 
             }
             if (smallPresenterButton.getStyleName().contains("selectedpresenterbtn")) {
                 UI.getCurrent().accessSynchronously(() -> {
-                    peptideshakerToolInputForm.updateForm(searchSettingFilesMap, fastaFilesMap, mgfFilesMap, rawFilesMap,mzMLFilesMap);
+                    peptideshakerToolInputForm.updateForm(searchSettingFilesMap, fastaFilesMap, mgfFilesMap, rawFilesMap, mzMLFilesMap, datasetNames);
                     UI.getCurrent().push();
                 });
 
             } else {
-                peptideshakerToolInputForm.updateForm(searchSettingFilesMap, fastaFilesMap, mgfFilesMap, rawFilesMap,mzMLFilesMap);
+                peptideshakerToolInputForm.updateForm(searchSettingFilesMap, fastaFilesMap, mgfFilesMap, rawFilesMap, mzMLFilesMap, datasetNames);
             }
 
         }
@@ -267,30 +262,28 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
     /**
      * Run Online Peptide-Shaker work-flow
      *
-     * @param projectName The project name
-     * @param fastaFileId FASTA file dataset id
+     * @param projectName           The project name
+     * @param fastaFileId           FASTA file dataset id
      * @param searchParameterFileId .par file id
-     * @param mgfIdsList list of MGF file dataset ids
-     * @param searchEnginesList List of selected search engine names
-     * @param searchParam search parameter object
-     * @param quant the dataset has raw files (quant data analysis will be
-     * invoked)
+     * @param mgfIdsList            list of MGF file dataset ids
+     * @param searchEnginesList     List of selected search engine names
+     * @param searchParam           search parameter object
+     * @param quant                 the dataset has raw files (quant data analysis will be
+     *                              invoked)
      */
     public abstract void execute_SearchGUI_PeptideShaker_WorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> mgfIdsList, Set<String> searchEnginesList, IdentificationParameters searchParam, boolean quant);
 
     /**
      * Save search settings file into galaxy
      *
-     *
      * @param searchParameters searchParameters .par file
-     * @param isNew is new search parameter file
+     * @param isNew            is new search parameter file
      * @return updated search parameters file list
      */
     public abstract Map<String, GalaxyTransferableFile> saveSearchGUIParameters(IdentificationParameters searchParameters, boolean isNew);
 
     /**
      * upload file into galaxy
-     *
      *
      * @param toUploadFiles files to be uploaded to galaxy
      * @return updated files map
