@@ -86277,8 +86277,7 @@ var LiteMol;
                     }
                     if (!extras.length)
                         return '';
-                    return " <small>[" + extras.join(', ') + "]</small>
-                    ";
+                    return " <small>[" + extras.join(', ') + "]</small>";
                 }
 
                 function formatAtom(a) {

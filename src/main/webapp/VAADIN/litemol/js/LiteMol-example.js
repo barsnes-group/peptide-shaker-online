@@ -1041,7 +1041,6 @@ var LiteMolPluginInstance;
         var button = document.createElement('h6');
         button.innerText = name;
         button.onclick = action;
-        button.className = 'pdbbutton';
         actions.appendChild(button);
     }
 
@@ -1111,7 +1110,7 @@ var LiteMolPluginInstance;
         Command.Tree.RemoveNode.dispatch(plugin.context, 'sequence-selection');
     }
 
-    addHeader('Create & Destroy');
+//    addHeader('Create & Destroy');
     addButton('Create Plugin', function () {
         // you will want to do a browser version check here
         // it will not work on IE <= 10 (no way around this, no WebGL in IE10)

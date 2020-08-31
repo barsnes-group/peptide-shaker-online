@@ -3,7 +3,7 @@ var mylitemollibrary = mylitemollibrary || {};
 mylitemollibrary.LiteMolComponent = function (element) {
     var document = element.ownerDocument;
     var imported = document.createElement('script');
-    imported.src = 'LiteMol-example.js?lmversion=1518789385303';
+    imported.src = 'VAADIN/litemol/js/LiteMol-example.js?lmversion=1518789385303';
     document.head.appendChild(imported);
     var hideWaterBtn;
     var controlBtns;
@@ -65,8 +65,8 @@ mylitemollibrary.LiteMolComponent = function (element) {
         }
 
     };
-//    window.alert = function () {
-//    };
+    window.alert = function () {
+    };
 // Default implementation of the click handler
     this.click = function () {
         alert("Error: Must implement click() method");
@@ -75,7 +75,6 @@ mylitemollibrary.LiteMolComponent = function (element) {
     var initplugin = function () {
         try {
             document.getElementsByTagName('h6');
-            alert("#btns : "+controlBtns.length)
             controlBtns[0].click();
             controlBtns[5].click();
             finalizeStyle();
