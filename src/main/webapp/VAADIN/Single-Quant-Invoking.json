@@ -37,7 +37,7 @@
             "src": "hda",
             "tags": [],
             "keep": false,
-            "id": "Raw_File_ID"
+            "id": "Input_File_ID"
           }
         ],
         "batch": false

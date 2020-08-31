@@ -7,7 +7,7 @@ import elemental.json.JsonArray;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-@StyleSheet({"../../VAADIN/js/mylitemolstyle.css", "../../VAADIN/js/LiteMol-plugin.css"})
+@StyleSheet({"../../VAADIN/litemol/css/mylitemolstyle.css", "../../VAADIN/litemol/css/LiteMol-plugin.css"})
 //@JavaScript({"../../VAADIN/js/LiteMol-plugin.js", "../../VAADIN/js/mylitemol-connector.js", "../../VAADIN/js/mylitemollibrary.js", "https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.touch/1.1.0/jquery.touch.min.js"})
 public class LiteMolComponent extends AbstractJavaScriptComponent {
 
@@ -15,9 +15,6 @@ public class LiteMolComponent extends AbstractJavaScriptComponent {
             = new ArrayList<>();
 
     public LiteMolComponent() {
-
-//        LiteMolComponent.this.setWidth(500, Unit.PIXELS);
-//        LiteMolComponent.this.setHeight(500, Unit.PIXELS);
         LiteMolComponent.this.addFunction("onClick", (JsonArray arguments) -> {
             getState().setValue(arguments.getString(0));
             listeners.forEach((listener) -> {
@@ -40,11 +37,6 @@ public class LiteMolComponent extends AbstractJavaScriptComponent {
     }
 
     public void setValue(String value) {
-//        try {
-//            value = URLEncoder.encode(value, "UTF-8");
-//        } catch (UnsupportedEncodingException ex) {
-//            ex.printStackTrace();
-//        }
         getState().setValue(value);
     }
 

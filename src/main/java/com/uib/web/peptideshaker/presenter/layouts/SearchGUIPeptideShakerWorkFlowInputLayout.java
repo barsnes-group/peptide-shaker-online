@@ -159,7 +159,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
          * Search settings layout.
          */
         AbsoluteLayout searchParameterContainer = new AbsoluteLayout();
-        searchParameterContainer.setCaption("Search Settings (Search Parameter File)");
+        searchParameterContainer.setCaption("Search Settings");
         searchParameterContainer.setWidth(100, Unit.PERCENTAGE);
         searchParameterContainer.setHeight(37, Unit.PERCENTAGE);
         searchParameterContainer.setStyleName("titleinborder");
@@ -182,7 +182,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
          *
          */
         fastaFileContainer = new AbsoluteLayout();
-        fastaFileContainer.setCaption("Protein Database (FASTA File)");
+        fastaFileContainer.setCaption("Protein Database (FASTA)");
         fastaFileContainer.setWidth(100, Unit.PERCENTAGE);
         fastaFileContainer.setHeight(28, Unit.PERCENTAGE);
         fastaFileContainer.setStyleName("titleinborder");
@@ -195,7 +195,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
          * Initialise Raw/MGF available files controller.
          */
         spectrumFileContainer = new AbsoluteLayout();
-        spectrumFileContainer.setCaption("Spectrum Files (Raw/MGF Files)");
+        spectrumFileContainer.setCaption("Spectrum");
         spectrumFileContainer.setWidth(100, Unit.PERCENTAGE);
         spectrumFileContainer.setHeight(58, Unit.PERCENTAGE);
         spectrumFileContainer.setStyleName("titleinborder");
@@ -592,7 +592,6 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
             if (!_rawFileList.isEmpty()) {
                 executeWorkFlow(projectName, fastFileId, searchParamerterId, rawIds, searchEnginesIds, _searchParameterForm.getSearchParameters(), true);
             } else if (!_mgfFileList.isEmpty()) {
-
                 executeWorkFlow(projectName, fastFileId, searchParamerterId, spectrumIds, searchEnginesIds, _searchParameterForm.getSearchParameters(), false);
             } else {
                 executeWorkFlow(projectName, fastFileId, searchParamerterId, mzmlIds, searchEnginesIds, _searchParameterForm.getSearchParameters(), false);

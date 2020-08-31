@@ -1038,9 +1038,10 @@ var LiteMolPluginInstance;
 
     function addButton(name, action) {
         var actions = document.getElementById('actions');
-        var button = document.createElement('button');
+        var button = document.createElement('h6');
         button.innerText = name;
         button.onclick = action;
+        button.className = 'pdbbutton';
         actions.appendChild(button);
     }
 

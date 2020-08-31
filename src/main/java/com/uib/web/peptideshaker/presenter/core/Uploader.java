@@ -4,6 +4,7 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.themes.ValoTheme;
@@ -128,6 +129,13 @@ public abstract class Uploader extends AbsoluteLayout {
          */
         uploaderComponent.addErrorListener((PluploadError error) -> {
             Notification.show("Error", "Only " + filterSet + " file format allowed", Notification.Type.TRAY_NOTIFICATION);
+        });
+        
+        uploaderComponent.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                System.out.println("fasta file uploader clicked");
+            }
         });
 
     }

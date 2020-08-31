@@ -332,7 +332,7 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
     public void addTableItem(Comparable dataKey, Object[] value, String searchingKeyword) {
         try {
             this.mainTable.addItem(value, dataKey);
-        } catch (Exception e) {
+        } catch (UnsupportedOperationException e) {
             e.printStackTrace();
             this.mainTable.addItem(value, dataKey);
         }

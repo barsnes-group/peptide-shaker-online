@@ -173,7 +173,19 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
     /**
      * Creating time for the datasets (to sort based on creation date).
      */
-    private String createTime;
+    private Date createTime;
+    /**
+     * Creating time for the datasets (to sort based on creation date).
+     */
+    private String createTimeAsString;
+
+    public String getCreateTimeAsString() {
+        return createTimeAsString;
+    }
+
+    public void setCreateTimeAsString(String createTimeAsString) {
+        this.createTimeAsString = createTimeAsString;
+    }
     /**
      * Datasets statues (valid, not valid, or in progress).
      */
@@ -1708,36 +1720,12 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                     galaxyFileId = ds.getGalaxyId();
                     galaxyHistoryId = ds.getHistoryId();
                     break;
-                } else if (ds.getName().endsWith("-Multi-Indexed-MGF") && ds.getName().contains(selectedPsm.getSpectrumFile().replace(".mgf", ""))) {
-                    galaxyFileId = ds.getGalaxyId();
-                    galaxyHistoryId = ds.getHistoryId();
-                    break;
-                }
+                } 
             }
             if (mgfIndex == null) {
                 return null;
-            }
-            long index = 0;
-            if (false || selectedPsm.getSpectrumTitle().contains("scan=6769ttt")) {
-                index = 13833838;
-            }
-//            else if (selectedPsm.getSpectrumTitle().contains("scan=6612ttt")) {
-//                index = 13162541;
-//            } else if (selectedPsm.getSpectrumTitle().contains("scan=6689ttt")) {
-//                index = 13499177;
-//            } else if (selectedPsm.getSpectrumTitle().contains("scan=6750tttt")) {
-//                index = 13499177;
-//            } else if (selectedPsm.getSpectrumTitle().contains("scan=6849tttt")) {
-//                index = 14122145;
-//            } else if (selectedPsm.getSpectrumTitle().contains("scan=6652ttt")) {
-//                index = 13334512;
-//            } 
-            else {
-//                System.out.println("selectedPsm.getSpectrumTitle() " + selectedPsm.getSpectrumTitle());//mgfIndex.getIndex(selectedPsm.getSpectrumTitle())
-                continue;
-            }
-            Spectrum spectrum = galaxyDatasetServingUtil.getSpectrum(index, galaxyHistoryId, galaxyFileId, selectedPsm.getSpectrumFile(), Integer.parseInt(selectedPsm.getIdentificationCharge().replace("+", "")));
-
+            }    
+            Spectrum spectrum = galaxyDatasetServingUtil.getSpectrum(mgfIndex.getIndex(selectedPsm.getSpectrumTitle()), galaxyHistoryId, galaxyFileId, selectedPsm.getSpectrumFile(), Integer.parseInt(selectedPsm.getIdentificationCharge().replace("+", "")));
             int tCharge = 0;
             if (!selectedPsm.getMeasuredCharge().trim().equalsIgnoreCase("")) {
                 try {
@@ -1761,12 +1749,9 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                     psModificationMatches.add(seModMatch);
                 }
             }
-
-            //            Protein psProtein = new Protein(galaxyLink, enzyme)
-            Peptide psPeptide = new Peptide(peptideObject.getSequence(), peptideObject.getVariableModifications());//modifiedPeptideSequence.replace("NH2-", "").replace("-COOH", "")
-//            psPeptide.setProteinMapping(new ArrayList<>(selectedPsm.getProteins()));
+            
+            Peptide psPeptide = new Peptide(peptideObject.getSequence(), peptideObject.getVariableModifications());
             PeptideAssumption psAssumption = new PeptideAssumption(psPeptide, tCharge);
-
             SpectrumMatch spectrumMatch = new SpectrumMatch(selectedPsm.getSpectrumFile(), selectedPsm.getSpectrumTitle());
             spectrumMatch.setBestPeptideAssumption(psAssumption);
             SpectrumInformation spectrumInformation = new SpectrumInformation();
@@ -1777,7 +1762,6 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             spectrumInformation.setSpectrumId(selectedPsm.getIndex());
             spectrumInformation.setSpectrum(spectrum);
             spectrumInformationMap.put(selectedPsm.getIndex(), spectrumInformation);
-
         }
         for (SpectrumInformation spectrumInformation : spectrumInformationMap.values()) {
             spectrumInformation.setMaxCharge(maxCharge);
@@ -1787,41 +1771,12 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
 
     }
 
-    private MgfIndex converIndex(com.compomics.util.experiment.io.mass_spectrometry.mgf.MgfIndex oldIndex) {
-        /**
-         * The map of all indexes: spectrum title &gt; index in the file.
-         */
-        HashMap<String, Long> indexMap = new HashMap<>();
-        /**
-         * A map of all the spectrum titles and which rank they have in the
-         * file, i.e., the first spectrum has rank 0, the second rank 1, etc.
-         */
-        HashMap<String, Integer> spectrumNumberIndexMap = new HashMap<>();
-        /**
-         * Map of the precursor mz values.
-         */
-        HashMap<Integer, Double> precursorMzMap = new HashMap<>();
-        oldIndex.getSpectrumTitles().stream().map((key) -> {
-            indexMap.put(key, oldIndex.getIndex(key));
-            return key;
-        }).forEachOrdered((key) -> {
-            spectrumNumberIndexMap.put(key, oldIndex.getSpectrumIndex(key));
-        });
-
-        spectrumNumberIndexMap.values().forEach((index) -> {
-            precursorMzMap.put(index, oldIndex.getPrecursorMz(index));
-        });
-
-        return new MgfIndex(oldIndex.getSpectrumTitles(), indexMap, spectrumNumberIndexMap, precursorMzMap, oldIndex.getFileName(), oldIndex.getMinRT(), oldIndex.getMaxRT(), oldIndex.getMaxMz(), oldIndex.getMaxIntensity(), oldIndex.getMaxCharge(), oldIndex.getMaxPeakCount(), oldIndex.isPeakPicked(), oldIndex.isPrecursorChargesMissing(), oldIndex.getLastModified());
-
-    }
-
     /**
      * Get creating time for the datasets (to sort based on creation date).
      *
      * @return date object
      */
-    public String getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
@@ -1830,7 +1785,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      *
      * @param createTime date object
      */
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
@@ -1938,7 +1893,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             } else if (tNodes.containsKey(arr[0])) {
                 n1 = tNodes.get(arr[0]);
 
-            } else {//if (p1.getProteoformsNodes().containsKey(arr[0]))
+            } else {
                 n1 = p1.getProteoformsNodes().get(arr[0]);
             }
             if ((p2 == null || !(p2.getProteoformsNodes().containsKey(arr[1]))) && !tNodes.containsKey(arr[1])) {
@@ -1964,7 +1919,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             } else if (tNodes.containsKey(arr[1])) {
                 n2 = tNodes.get(arr[1]);
 
-            } else if (p2 != null && p2.getProteoformsNodes() != null) {//if (p1.getProteoformsNodes().containsKey(arr[1]))
+            } else if (p2 != null && p2.getProteoformsNodes() != null) {
                 n2 = p2.getProteoformsNodes().get(arr[1]);
             }
             NetworkGraphEdge edge;

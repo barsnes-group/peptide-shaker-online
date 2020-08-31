@@ -1,79 +1,67 @@
 {
-  "new_history_name": null,
-  "history_id": "History_ID",
-  "resource_params": {},
-  "replacement_params": {},
-  "parameters": {
-    "0": {
-      "input": {
-        "values": [
-          {
-            "src": "hda",
-            "tags": [],
-            "keep": false,
-            "id": "Param_File_ID"
-          }
-        ],
-        "batch": false
-      }
+    "new_history_name": null,
+    "history_id": "History_ID",
+    "resource_params": {},
+    "replacement_params": {},
+    "parameters": {
+        "0": {
+            "input": {
+                "values": [{
+                        "src": "hda",
+                        "tags": [],
+                        "keep": false,
+                        "id": "Param_File_ID"
+                    }],
+                "batch": false
+            }
+        },
+        "1": {
+            "input": {
+                "values": [{
+                        "src": "hda",
+                        "tags": [],
+                        "keep": false,
+                        "id": "Fasta_File_ID"
+                    }],
+                "batch": false
+            }
+        },
+        "2": {
+            "input": {
+                "values": [{
+                        "src": "hdca",
+                        "tags": [],
+                        "id": "Input_List_ID"
+                    }],
+                "batch": false
+            }
+        },
+        "3": {
+          
+        },
+        "4": {
+            "optional_main_parameters|input_optional_identification_parameters": null,
+            "optional_main_parameters|input_fasta_file": null,
+            "optional_main_parameters|input_optional_spectrum_files": null,
+            "exporting_options|zip_conditional|zip_output_boolean": "true",
+            "exporting_options|zip_conditional|export_reports_when_zip": "true",
+            "exporting_options|zip_conditional|export_mgf_when_zip": "true",
+            "exporting_options|mzidentml_conditional|mzidentml_creation": "false",
+            "exporting_options|followup_conditional|followup_conditional_selector": "yes",
+            "exporting_options|followup_conditional|followup_export_spectra": "off",
+            "exporting_options|followup_conditional|followup_export_accession_numbers": "off",
+            "exporting_options|followup_conditional|followup_export_sequences": "off",
+            "exporting_options|followup_conditional|followup_export_proteoforms": "on",
+            "exporting_options|followup_conditional|followup_export_progenesis_conditional|followup_export_progenesis_selector": "off",
+            "exporting_options|followup_conditional|followup_export_inclusion_list_conditional|followup_export_inclusion_list_selector": "off",
+            "exporting_options|output_reports": ["4", "7", "10"]
+        },
+        "5": {
+            "convert_from": "s",
+            "strip": "true",
+            "condense": "true"
+        }
     },
-    "1": {
-      "input": {
-        "values": [
-          {
-            "src": "hda",
-            "tags": [],
-            "keep": false,
-            "id": "Fasta_File_ID"
-          }
-        ],
-        "batch": false
-      }
-    },
-    "2": {
-      "input": {
-        "values": [
-          {
-            "src": "hdca",
-            "tags": [],
-            "id": "Input_List_ID"
-          }
-        ],
-        "batch": false
-      }
-    },
-    "3": {
-    },
-    "4": {
-      "optional_main_parameters|input_optional_identification_parameters": null,
-      "optional_main_parameters|input_fasta_file": null,
-      "optional_main_parameters|input_optional_spectrum_files": null,
-      "exporting_options|zip_conditional|zip_output_boolean": "true",
-      "exporting_options|zip_conditional|export_reports_when_zip": "true",
-      "exporting_options|zip_conditional|export_mgf_when_zip": "true",
-      "exporting_options|mzidentml_conditional|mzidentml_creation": "false",
-      "exporting_options|followup_conditional|followup_conditional_selector": "yes",
-      "exporting_options|followup_conditional|followup_export_spectra": "off",
-      "exporting_options|followup_conditional|followup_export_accession_numbers": "off",
-      "exporting_options|followup_conditional|followup_export_sequences": "off",
-      "exporting_options|followup_conditional|followup_export_proteoforms": "on",
-      "exporting_options|followup_conditional|followup_export_progenesis_conditional|followup_export_progenesis_selector": "off",
-      "exporting_options|followup_conditional|followup_export_inclusion_list_conditional|followup_export_inclusion_list_selector": "off",
-      "exporting_options|output_reports": [
-        "4",
-        "7",
-        "10"
-      ]
-    },
-    "5": {
-      "join_identifier": "_"
-    },
-    "6": {
-      "convert_from": "s",
-      "strip": "true",
-      "condense": "true"
-    }
-  },
-  "parameters_normalized": true,
-  "batch": true
+    "parameters_normalized": true,
+    "batch": true
 }

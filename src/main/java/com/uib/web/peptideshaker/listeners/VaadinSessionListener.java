@@ -38,7 +38,7 @@ public class VaadinSessionListener implements HttpSessionListener {
         }
         ScheduledFuture schedulerFuture = (ScheduledFuture) hse.getSession().getAttribute("schedulerfuture");
         if (schedulerFuture != null) {
-            System.out.println("at schedulerfuture termonated " + schedulerFuture.cancel(true));
+            schedulerFuture.cancel(true);
         }
         ScheduledExecutorService scheduler = (ScheduledExecutorService) hse.getSession().getAttribute("scheduler");
         if (scheduler != null) {

@@ -183,12 +183,8 @@ public abstract class GalaxyInteractiveLayer {
      */
     public void execute_SearchGUI_PeptideShaker_WorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> inputFilesIdsList, Set<String> searchEnginesList, IdentificationParameters searchParameters, boolean quant) {
         Map<String, String> inputFilesMap = new LinkedHashMap<>();
-        inputFilesIdsList.forEach((inputFileId) -> {
-            if (quant) {
-                inputFilesMap.put(inputFileId, historyHandler.getRawFilesMap().get(inputFileId).getName());
-            } else {
-                inputFilesMap.put(inputFileId, historyHandler.getMgfFilesMap().get(inputFileId).getName());
-            }
+        inputFilesIdsList.forEach((inputFileId) -> {           
+                inputFilesMap.put(inputFileId, historyHandler.getHistoryFilesMap().get(inputFileId).getName());           
         });
         if (inputFilesMap.isEmpty()) {
             return;

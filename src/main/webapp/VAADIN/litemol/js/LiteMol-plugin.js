@@ -1,4 +1,4 @@
-;var __LiteMol_Plugin = function () {
+var __LiteMol_Plugin = function () {
     'use strict';
     /*!
  * @overview es6-promise - a tiny implementation of Promises/A+.

@@ -88,7 +88,6 @@ public class DatasetVisulizationLevelComponent extends AbsoluteLayout implements
                 selectedIds.clear();
                 selectedIds.add(itemId + "");
                 peptideShakerVisualizationDataset.selectUpdateProteins(selectedIds);
-//                peptideShakerVisualizationDataset.processPSMFile();
                 Selection_Manager.setSelection("protein_selection", selectedIds, null, getFilterId());
 
             }

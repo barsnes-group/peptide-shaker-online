@@ -26,6 +26,10 @@ public class GalaxyClient {
         this.galaxy_Server_Url = galaxyServerUrl;
         this.user_API = userAPI;
     }
+    public JobsClient getJobClient(){
+    
+        return Galaxy_Instance.getJobsClient();
+    }
 
     public HistoriesClient getHistoriesClient() {
         try {

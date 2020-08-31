@@ -34,7 +34,7 @@ import java.util.concurrent.ScheduledFuture;
  * @author Yehia Farag
  */
 @Theme("webpeptideshakertheme")
-@JavaScript({"../../VAADIN/js/venn.js", "../../VAADIN/js/myD3library.js", "../../VAADIN/js/myD3component-connector.js", "../../VAADIN/js/d3.v5.min.js", "../../VAADIN/js/LiteMol-plugin.js", "../../VAADIN/js/mylitemol-connector.js", "../../VAADIN/js/mylitemollibrary.js", "https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.touch/1.1.0/jquery.touch.min.js", "../../VAADIN/js/mylibrary.js", "../../VAADIN/js/mycomponent-connector.js", "https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.touch/1.1.0/jquery.touch.min.js", "../../VAADIN/js/mylibrary2.js", "../../VAADIN/js/mycomponent-connector2.js", "../../VAADIN/js/jquery.mousewheel.js"})
+@JavaScript({"../../VAADIN/js/venn.js", "../../VAADIN/js/myD3library.js", "../../VAADIN/js/myD3component-connector.js", "../../VAADIN/js/d3.v5.min.js", "../../VAADIN/litemol/js/LiteMol-plugin.js", "../../VAADIN/litemol/js/mylitemol-connector.js", "../../VAADIN/litemol/js/mylitemollibrary.js","../../VAADIN/litemol/js/LiteMol-example.js?lmversion=1518789385303", "https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.touch/1.1.0/jquery.touch.min.js", "../../VAADIN/js/mylibrary.js", "../../VAADIN/js/mycomponent-connector.js", "https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.touch/1.1.0/jquery.touch.min.js", "../../VAADIN/js/mylibrary2.js", "../../VAADIN/js/mycomponent-connector2.js", "../../VAADIN/js/jquery.mousewheel.js"})
 @Push(PushMode.MANUAL)
 public class PeptidShakerUI extends UI {
 
@@ -54,12 +54,11 @@ public class PeptidShakerUI extends UI {
     protected void init(VaadinRequest vaadinRequest) {
         ScheduledFuture schedulerFuture = (ScheduledFuture) VaadinSession.getCurrent().getAttribute("schedulerfuture");
         if (schedulerFuture != null) {
-            System.out.println("at schedulerfuture termonated " + schedulerFuture.cancel(true));
+            schedulerFuture.cancel(true);
         }
         ScheduledExecutorService scheduler = (ScheduledExecutorService) VaadinSession.getCurrent().getAttribute("scheduler");
         if (scheduler != null) {
             scheduler.shutdown();
-            System.out.println("at scheduler shoutdown ");
         }
         String brwserApp = Page.getCurrent().getWebBrowser().getBrowserApplication();
         int screenWidth = Page.getCurrent().getBrowserWindowWidth();
@@ -126,7 +125,7 @@ public class PeptidShakerUI extends UI {
             String dbURL = (scx.getInitParameter("url"));
             String dbDriver = (scx.getInitParameter("driver"));
             String dbUserName = (scx.getInitParameter("userName"));
-            String dbPassword = (scx.getInitParameter("password"));//"d#%[Q=`+<8U,)Pxw";//
+            String dbPassword = "d#%[Q=`+<8U,)Pxw";//(scx.getInitParameter("password"));//d#%[Q=`+<8U,)Pxw
             String dbName = (scx.getInitParameter("dbName"));
             String appName = (scx.getInitParameter("appName"));
             VaadinSession.getCurrent().setAttribute("dbName", dbName);

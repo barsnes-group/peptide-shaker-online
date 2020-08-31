@@ -168,10 +168,7 @@ public class PeptideVisulizationLevelContainer extends HorizontalLayout implemen
         }
         if (type.equalsIgnoreCase("peptide_selection") && !peptideShakerVisualizationDataset.isUploadedProject()) {
 
-            if (Selection_Manager.getSelectedPeptide() != null) {
-                if (!peptideShakerVisualizationDataset.getProjectName().contains("SingleQuant") || !Selection_Manager.getSelectedPeptide().getModifiedSequence().equalsIgnoreCase("NH2-LYGSAGPPPTGEEDTAEKDEL-COOH")) {
-                    return;
-                }
+            if (Selection_Manager.getSelectedPeptide() != null) {               
                 headerLabel.setValue("Peptide Spectrum Matches (" + Selection_Manager.getSelectedPeptide().getModifiedSequence() + ")");
                 headerLabel.setDescription(Selection_Manager.getSelectedPeptide().getTooltip());
                 String psmTooltip = "";
