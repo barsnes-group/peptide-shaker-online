@@ -16,8 +16,6 @@ import pl.exsio.plupload.PluploadFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -522,16 +520,34 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         searchEngines.setSizeFull();
         searchEngines.updateList(searchEnginesList);
         searchEngines.setSelectedValue("X!Tandem");
-        searchEngines.setSelectedValue("MS-GF+");
-        searchEngines.setSelectedValue("OMSSA");
+//        searchEngines.setSelectedValue("MS-GF+");
+//        searchEngines.setSelectedValue("OMSSA");
+        searchEngines.addValueChangeListener(new Property.ValueChangeListener() {
+            private boolean selfSelection=false;
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if(selfSelection)
+                    return;
+                Object[] objArr = ((Set<Object>) event.getProperty().getValue()).toArray();
+                Object lastSelected = objArr[objArr.length - 1];
+                if (searchEngines.getSelectedValue() != null && searchEngines.getSelectedValue().size() > 3) {
+                    if (searchEngines.getSelectedValue().contains(lastSelected.toString())) {
+                        selfSelection=true;
+                        searchEngines.unselect(lastSelected);
+                        Notification.show("Maximum 3 Search Engines", Notification.Type.TRAY_NOTIFICATION);
+                        selfSelection=false;
+                    }
+                }
+            }
+        });
         return searchEngines;
     }
 
     /**
      * Initialise workflow invoking button
      *
-     * @param layout            button container
-     * @param searchEngines     search engine input container
+     * @param layout button container
+     * @param searchEngines search engine input container
      * @param searchEnginesList available search engine list
      * @return button
      */
@@ -575,7 +591,6 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
                 return;
             }
 
-
             String fastFileId = this.getFastaFileId();
             Set<String> spectrumIds = _mgfFileList;
             Set<String> rawIds = _rawFileList;
@@ -604,46 +619,46 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
      * Initialise listeners to validate input fields
      *
      * @param searchSettingsFileList parameter files drop-down list .par files
-     * @param searchSettingInfo      search parameter overview label
-     * @param searchEngines          search engines selection container
-     * @param executeWorkFlowBtn     work flow invoking button
+     * @param searchSettingInfo search parameter overview label
+     * @param searchEngines search engines selection container
+     * @param executeWorkFlowBtn work flow invoking button
      */
     protected void initialiseInputComponentsListener(DropDownList searchSettingsFileList, Label searchSettingInfo, MultiSelectOptionGroup searchEngines, Button executeWorkFlowBtn) {
 
         _searchSettingsFileList.addValueChangeListener((Property.ValueChangeEvent event) -> {
-                    if (_searchSettingsFileList.getSelectedValue() != null) {
-                        if (_searchSettingsFileList.getSelectedValue().equalsIgnoreCase("Add new")) {
-                            String basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
-                            try {
-                                File file = new File(basepath + "/VAADIN/SEARCHGUI_IdentificationParameters.json");
-                                IdentificationParameters searchParamUtil = IdentificationParameters.getIdentificationParameters(file);
-                                _searchParameterForm.updateForms(searchParamUtil);
-                                _searchParameterFormContainer.setPopupVisible(true);
-                            } catch (IOException ex) {
-                                System.err.println("Error: IOException at line : 655 " + ex);
-                            }
-                            return;
-                        }
-
-                        try {
-                            File file = _searchSettingsMap.get(_searchSettingsFileList.getSelectedValue()).getFile();
-                            if (IdentificationParameters.supportedVersion(file)) {
-                                _searchParameters = IdentificationParameters.getIdentificationParameters(file);
-                            }
-                            String descrip = "Fixed:" + _searchParameters.getSearchParameters().getModificationParameters().getFixedModifications() + "</br>Variable:" + _searchParameters.getSearchParameters().getModificationParameters().getVariableModifications() + "<br/>Fragment Tolerance:" + _searchParameters.getSearchParameters().getFragmentIonAccuracyInDaltons();
-                            descrip = descrip.replace("[", "").replace("]", "").replace("null", "No modifications");
-                            for (String mod : _searchParameterForm.getUpdatedModiList().keySet()) {
-                                if (descrip.contains(mod)) {
-                                    descrip = descrip.replace(mod, _searchParameterForm.getUpdatedModiList().get(mod));
-                                }
-
-                            }
-                            searchSettingInfo.setValue(descrip);
-                        } catch (IOException ex) {
-                            System.err.println("Error: IOException at line : 666 " + ex);
-                        }
+            if (_searchSettingsFileList.getSelectedValue() != null) {
+                if (_searchSettingsFileList.getSelectedValue().equalsIgnoreCase("Add new")) {
+                    String basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
+                    try {
+                        File file = new File(basepath + "/VAADIN/SEARCHGUI_IdentificationParameters.json");
+                        IdentificationParameters searchParamUtil = IdentificationParameters.getIdentificationParameters(file);
+                        _searchParameterForm.updateForms(searchParamUtil);
+                        _searchParameterFormContainer.setPopupVisible(true);
+                    } catch (IOException ex) {
+                        System.err.println("Error: IOException at line : 655 " + ex);
                     }
+                    return;
                 }
+
+                try {
+                    File file = _searchSettingsMap.get(_searchSettingsFileList.getSelectedValue()).getFile();
+                    if (IdentificationParameters.supportedVersion(file)) {
+                        _searchParameters = IdentificationParameters.getIdentificationParameters(file);
+                    }
+                    String descrip = "Fixed:" + _searchParameters.getSearchParameters().getModificationParameters().getFixedModifications() + "</br>Variable:" + _searchParameters.getSearchParameters().getModificationParameters().getVariableModifications() + "<br/>Fragment Tolerance:" + _searchParameters.getSearchParameters().getFragmentIonAccuracyInDaltons();
+                    descrip = descrip.replace("[", "").replace("]", "").replace("null", "No modifications");
+                    for (String mod : _searchParameterForm.getUpdatedModiList().keySet()) {
+                        if (descrip.contains(mod)) {
+                            descrip = descrip.replace(mod, _searchParameterForm.getUpdatedModiList().get(mod));
+                        }
+
+                    }
+                    searchSettingInfo.setValue(descrip);
+                } catch (IOException ex) {
+                    System.err.println("Error: IOException at line : 666 " + ex);
+                }
+            }
+        }
         );
     }
 
@@ -670,11 +685,11 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
      * Update the tools input forms
      *
      * @param searchSettingsMap search settings .par files map
-     * @param fastaFilesMap     FASTA files map
-     * @param mgfFilesMap       MGF file map
-     * @param rawFilesMap       Raw file map
-     * @param mzMLFilesMap      mzML files map
-     * @param datasetNames      set of user dataset names
+     * @param fastaFilesMap FASTA files map
+     * @param mgfFilesMap MGF file map
+     * @param rawFilesMap Raw file map
+     * @param mzMLFilesMap mzML files map
+     * @param datasetNames set of user dataset names
      */
     public void updateForm(Map<String, GalaxyTransferableFile> searchSettingsMap, Map<String, GalaxyFileObject> fastaFilesMap, Map<String, GalaxyFileObject> mgfFilesMap, Map<String, GalaxyFileObject> rawFilesMap, Map<String, GalaxyFileObject> mzMLFilesMap, Set<String> datasetNames) {
         this.datasetNames = datasetNames;
@@ -752,30 +767,30 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
         });
         indexer = 1;
         rawFilesMap.keySet().forEach((id) -> {
-                    GalaxyFileObject ds = rawFilesMap.get(id);
-                    StatusLabel statusLabel = new StatusLabel();
-                    statusLabel.setStatus(ds.getStatus());
-                    if (!ds.getStatus().equalsIgnoreCase("ok")) {
-                        spectrumFileUploaderBusy = true;
-                    }
-                    Label nameLabel = new Label(ds.getName());
-                    Label type = new Label();
-                    type.setValue("<b>" + ds.getType() + "</b>");
-                    type.setContentMode(ContentMode.HTML);
-                    type.setDescription(ds.getType());
-                    RadioButton selectionRadioBtn = new RadioButton(id) {
-                        @Override
-                        public void selectItem(Object itemId) {
+            GalaxyFileObject ds = rawFilesMap.get(id);
+            StatusLabel statusLabel = new StatusLabel();
+            statusLabel.setStatus(ds.getStatus());
+            if (!ds.getStatus().equalsIgnoreCase("ok")) {
+                spectrumFileUploaderBusy = true;
+            }
+            Label nameLabel = new Label(ds.getName());
+            Label type = new Label();
+            type.setValue("<b>" + ds.getType() + "</b>");
+            type.setContentMode(ContentMode.HTML);
+            type.setDescription(ds.getType());
+            RadioButton selectionRadioBtn = new RadioButton(id) {
+                @Override
+                public void selectItem(Object itemId) {
 
-                        }
-                    };
-
-                    HorizontalLayout rowLayout = initializeRowData(new Component[]{new Label(indexer + ""), selectionRadioBtn, nameLabel, type, statusLabel}, false);
-                    rowLayout.setId(id);
-                    rowLayout.addLayoutClickListener(rawClickListener);
-                    rawDataListLayout.addComponent(rowLayout);
-                    indexer++;
                 }
+            };
+
+            HorizontalLayout rowLayout = initializeRowData(new Component[]{new Label(indexer + ""), selectionRadioBtn, nameLabel, type, statusLabel}, false);
+            rowLayout.setId(id);
+            rowLayout.addLayoutClickListener(rawClickListener);
+            rawDataListLayout.addComponent(rowLayout);
+            indexer++;
+        }
         );
 
         UI.getCurrent().accessSynchronously(() -> {
@@ -795,14 +810,14 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
     /**
      * Run Online Peptide-Shaker work-flow
      *
-     * @param projectName           name of the project to store
-     * @param fastaFileId           FASTA file dataset id
+     * @param projectName name of the project to store
+     * @param fastaFileId FASTA file dataset id
      * @param searchParameterFileId .par file id
-     * @param inputIdsList          list of MGF file dataset ids
-     * @param searchEnginesList     List of selected search engine names
-     * @param searchParameters      searching parameters // * @param searchEngines
-     *                              search engines
-     * @param quant                 the dataset is quantification dataset
+     * @param inputIdsList list of MGF file dataset ids
+     * @param searchEnginesList List of selected search engine names
+     * @param searchParameters searching parameters // * @param searchEngines
+     * search engines
+     * @param quant the dataset is quantification dataset
      */
     public abstract void executeWorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> inputIdsList, Set<String> searchEnginesList, IdentificationParameters searchParameters, boolean quant);
 
@@ -811,7 +826,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
      * use.
      *
      * @param searchParameters selected search parameters
-     * @param isNew            create new file or edit exist file
+     * @param isNew create new file or edit exist file
      */
     private void checkAndSaveSearchSettingsFile(IdentificationParameters searchParameters, boolean isNew) {
         this._searchParameters = searchParameters;
@@ -878,7 +893,7 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
      * Save search settings file into galaxy
      *
      * @param searchParameters searchParameters .par file
-     * @param isNew            create new file or edit exist file
+     * @param isNew create new file or edit exist file
      * @return updated search parameters files map
      */
     public abstract Map<String, GalaxyTransferableFile> saveSearchGUIParameters(IdentificationParameters searchParameters, boolean isNew);
@@ -976,7 +991,6 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
             valid = false;
             _projectNameField.addStyleName("errorstyle");
             Notification.show("Dataset name exist, please use different name", Notification.Type.TRAY_NOTIFICATION);
-
 
         }
 

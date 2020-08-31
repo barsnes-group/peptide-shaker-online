@@ -296,6 +296,13 @@ public class MultiSelectOptionGroup extends HorizontalLayout implements LayoutEv
             selectByIndex(index);
         });
     }
+    public void unselect(Object id){
+        
+    listI.unselect(id);
+    listII.unselect(id);
+    listIII.unselect(id);
+    listIV.unselect(id);
+    }
 
     public void selectByIndex(int index) {
         if (index < 3) {
