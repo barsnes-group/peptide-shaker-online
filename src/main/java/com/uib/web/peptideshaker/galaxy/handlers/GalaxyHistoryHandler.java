@@ -809,6 +809,7 @@ public abstract class GalaxyHistoryHandler {
                     } else if (map.get("extension").toString().equalsIgnoreCase("tabular")) {
                         GalaxyFileObject ds = new GalaxyFileObject();
                         ds.setName(map.get("name").toString());
+                        ds.setType("tabular");
                         ds.setHistoryId(map.get("history_id") + "");
                         ds.setGalaxyId(map.get("id").toString());
                         ds.setDownloadUrl(Galaxy_Instance.getGalaxyUrl() + "/api/histories/" + ds.getHistoryId() + "/contents/" + ds.getGalaxyId() + "/display?key=" + Galaxy_Instance.getApiKey());
@@ -1381,6 +1382,7 @@ public abstract class GalaxyHistoryHandler {
 
         private void populatePeptideShakerDataset() {
             mgfToTabularMap.clear();
+            Map<String, String> psmToDsMap = new HashMap<>();
             for (String toolId : toolsJobMap.keySet()) {
                 if (toolId.contains("Convert characters")) {
                     String mgfinput = "";
@@ -1418,6 +1420,9 @@ public abstract class GalaxyHistoryHandler {
                                 String dsId = job.getOutputs().get(output).getId();
                                 if (output.contains("output_proteins") || output.contains("output_proteoforms") || output.contains("output_peptides") || output.contains("output_psm")) {
                                     toDeleteMap.add(searchGUIDs.getHistoryId() + ";" + dsId);
+                                    if (output.contains("psm")) {
+                                        psmToDsMap.put(dsId, psZipId);
+                                    }
                                 } else {
                                     if (output.contains("__new_primary_file_output_mgf")) {
                                         if (mgfToTabularMap.containsKey(dsId) && tabFilesMap.containsKey(mgfToTabularMap.get(dsId))) {
@@ -1466,10 +1471,63 @@ public abstract class GalaxyHistoryHandler {
 
                     }
 
-                }  
-//                else {
-//                    System.out.println("at tool id : " + toolId);
-//                }
+                } else if (toolId.contains("proteomics_moff")) {
+
+                    Set<JobDetails> convertTabjobs = toolsJobMap.get(toolId);
+                    Set<GalaxyTransferableFile> moffFileSet = new HashSet<>();
+                    String dsID = "";
+                    for (JobDetails job : convertTabjobs) {
+
+                        for (String input : job.getInputs().keySet()) {
+                            String moffinput = job.getInputs().get(input).getId();
+                            if (psmToDsMap.containsKey(moffinput)) {
+                                dsID = psmToDsMap.get(moffinput);
+                            }
+
+                        }
+                        Set<String> dsInfo = new HashSet<>();
+                        for (String output : job.getOutputs().keySet()) {
+                            String moffoutput = job.getOutputs().get(output).getId();
+                            if (tabFilesMap.containsKey(moffoutput)) {
+                                GalaxyFileObject gfo =  tabFilesMap.get(moffoutput);
+                                 GalaxyTransferableFile file = new GalaxyTransferableFile(user_folder, gfo, false);
+                                file.setDownloadUrl(gfo.getDownloadUrl());
+                                try {
+                                    file.setCreate_time(df6.parse(gfo.getCreate_time()));
+                                } catch (ParseException ex) {
+                                    System.err.println("Error: " + ex);
+                                }
+//
+                                moffFileSet.add(file);
+                                dsInfo.add(gfo.getCreate_time());
+                                dsInfo.add(gfo.getGalaxyId());
+                                dsInfo.add(gfo.getHistoryId());
+                            } else if (txtFilesMap.containsKey(moffoutput)) {
+                                toDeleteMap.add(txtFilesMap.get(moffoutput).getHistoryId() + ";" + moffoutput);
+                            }
+
+                        }
+                        if (!moffFileSet.isEmpty()) {
+                            peptideShakerVisualizationMap.get(dsID).setMoff_quant_files(getContainerCollection(dsInfo), moffFileSet);
+                            System.out.println("at moff in ds " + peptideShakerVisualizationMap.get(dsID).getMoffGalaxyId() + "   " + peptideShakerVisualizationMap.get(dsID).getMoff_quant_file().size());
+                        }
+
+                    }
+
+                } else if (toolId.contains("thermo_raw_file_converter")) {
+
+                    Set<JobDetails> convertTabjobs = toolsJobMap.get(toolId);
+                    convertTabjobs.forEach((job) -> {
+                        System.out.println("add thermo to todelerte map ");
+                        job.getOutputs().keySet().stream().map((output) -> job.getOutputs().get(output).getId()).filter((id) -> (mgfFilesMap.containsKey(id))).forEachOrdered((id) -> {
+                            System.out.println("to dele added");
+                            toDeleteMap.add(mgfFilesMap.get(id).getHistoryId() + ";" + id);
+                        });
+                    });
+
+                } else {
+                    System.out.println("at tool id : " + toolId);
+                }
 
             }
         }
@@ -1478,7 +1536,7 @@ public abstract class GalaxyHistoryHandler {
             for (String collectionId : collectionsFilesMap.keySet()) {
                 try {
                     Map<String, Object> map = collectionsFilesMap.get(collectionId);
-                    if (map.get("job_source_id") == null) { 
+                    if (map.get("job_source_id") == null) {
                         toDeleteMap.add(map.get("history_id") + ";" + map.get("id").toString() + ";" + false);
                         continue;
                     }
@@ -1491,7 +1549,7 @@ public abstract class GalaxyHistoryHandler {
                             if (toDeleteMap.contains(toDeleteElement)) {
                                 toDeleteMap.add(map.get("history_id") + ";" + map.get("id").toString() + ";" + true);
                                 break;
-                            } 
+                            }
 
                         }
 

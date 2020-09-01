@@ -431,22 +431,12 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
 
     public Set<String> getInputDataFiles() {
         inputMgffilesName.clear();
-        if (quantDataset) {
-            if (moff_quant_files != null && SearchGUIResultFile.getOverview() != null) {
-                for (GalaxyTransferableFile ds : moff_quant_files) {
-                    System.out.println("search gui " + ds.getOverview());
+        if (SearchGUIResultFile != null && SearchGUIResultFile.getOverview() != null) {
+            String[] arr = SearchGUIResultFile.getOverview().split("\\n");
+            for (String spec : arr) {
+                if (spec.startsWith("Spectrums:")) {
+                    inputMgffilesName.add(spec.replace("Spectrums:", "").split("(API")[0]);
                 }
-            }
-        } else {
-
-            if (SearchGUIResultFile != null && SearchGUIResultFile.getOverview() != null) {
-                String[] arr = SearchGUIResultFile.getOverview().split("\\n");
-                for (String spec : arr) {
-                    if (spec.startsWith("Spectrums:")) {
-                        inputMgffilesName.add(spec.replace("Spectrums:", "").split("(API")[0]);
-                    }
-                }
-
             }
 
         }
@@ -1234,6 +1224,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             List<PSMObject> innerPSMList = new ArrayList<>();
             try {//     
                 for (GalaxyTransferableFile moff_quant_file : moff_quant_files) {
+
                     File f = moff_quant_file.getFile();
                     bufferedReader = new BufferedReader(new FileReader(f), 1024 * 100);
                     /**
@@ -1701,7 +1692,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
         for (PSMObject selectedPsm : PSMs) {
             try {
                 if (!importedMgfIndexObjectMap.containsKey(selectedPsm.getSpectrumFile())) {
-                    Object object = SerializationUtils.readObject(cuiFileMap.get(selectedPsm.getSpectrumFile()));
+                    Object object = SerializationUtils.readObject(cuiFileMap.get(selectedPsm.getSpectrumFile().replace(".thermo", "")));
                     importedMgfIndexObjectMap.put(selectedPsm.getSpectrumFile(), (MgfIndex) object);
                 }
 
@@ -1713,7 +1704,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             String galaxyFileId = "";
             String galaxyHistoryId = "";
             for (GalaxyFileObject ds : indexedMGFFilesMap.values()) {
-                if (ds.getName().equalsIgnoreCase(selectedPsm.getSpectrumFile())) {
+                if (ds.getName().equalsIgnoreCase(selectedPsm.getSpectrumFile().replace(".thermo", ""))) {
                     galaxyFileId = ds.getGalaxyId();
                     galaxyHistoryId = ds.getHistoryId();
                     break;
@@ -1722,7 +1713,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             if (mgfIndex == null) {
                 return null;
             }
-            Spectrum spectrum = galaxyDatasetServingUtil.getSpectrum(mgfIndex.getIndex(selectedPsm.getSpectrumTitle()), galaxyHistoryId, galaxyFileId, selectedPsm.getSpectrumFile(), Integer.parseInt(selectedPsm.getIdentificationCharge().replace("+", "")));
+            Spectrum spectrum = galaxyDatasetServingUtil.getSpectrum(mgfIndex.getIndex(selectedPsm.getSpectrumTitle()), galaxyHistoryId, galaxyFileId, selectedPsm.getSpectrumFile().replace(".thermo", ""), Integer.parseInt(selectedPsm.getIdentificationCharge().replace("+", "")));
             int tCharge = 0;
             if (!selectedPsm.getMeasuredCharge().trim().equalsIgnoreCase("")) {
                 try {
