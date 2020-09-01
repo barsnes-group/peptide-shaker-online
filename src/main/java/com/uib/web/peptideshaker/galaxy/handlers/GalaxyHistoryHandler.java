@@ -663,7 +663,6 @@ public abstract class GalaxyHistoryHandler {
             this.indexedMgfGalaxyIdsMap = new LinkedHashMap<>();
             this.activeJobsIDs = new HashSet<>();
             this.toolsJobMap = new TreeMap<>();
-
             this.invokeTracker = keepfollow;
             try {
                 String requestToShare = Page.getCurrent().getLocation().toString();
@@ -1330,9 +1329,10 @@ public abstract class GalaxyHistoryHandler {
                  */
                 populatePeptideShakerDataset();
                 /**
-                 * manage dataset input and output files*
+                 * Delete unused collections
                  */
-//                manageDatasetInputOutputData();
+                cleanCollections();
+
                 List<PeptideShakerVisualizationDataset> collection = new ArrayList<>(peptideShakerVisualizationMap.values());
                 Collections.sort(collection);
                 Collections.reverse(collection);
@@ -1375,6 +1375,7 @@ public abstract class GalaxyHistoryHandler {
                     toolsJobMap.put(jobDetails.getToolId(), new HashSet<>());
                 }
                 toolsJobMap.get(jobDetails.getToolId()).add(jobDetails);
+
             }
         }
 
@@ -1395,8 +1396,7 @@ public abstract class GalaxyHistoryHandler {
                         mgfToTabularMap.put(mgfinput, tabOutput);
                     }
 
-                }
-                if (toolId.contains("peptide_shaker")) {
+                } else if (toolId.contains("peptide_shaker")) {
                     Set<JobDetails> convertTabjobs = toolsJobMap.get(toolId);
                     for (JobDetails job : convertTabjobs) {
                         //set PS project
@@ -1417,15 +1417,15 @@ public abstract class GalaxyHistoryHandler {
                             for (String output : job.getOutputs().keySet()) {
                                 String dsId = job.getOutputs().get(output).getId();
                                 if (output.contains("output_proteins") || output.contains("output_proteoforms") || output.contains("output_peptides") || output.contains("output_psm")) {
-                                    toDeleteMap.add(dsId);
+                                    toDeleteMap.add(searchGUIDs.getHistoryId() + ";" + dsId);
                                 } else {
                                     if (output.contains("__new_primary_file_output_mgf")) {
                                         if (mgfToTabularMap.containsKey(dsId) && tabFilesMap.containsKey(mgfToTabularMap.get(dsId))) {
                                             GalaxyFileObject tabDs = tabFilesMap.get(mgfToTabularMap.get(dsId));
                                             tabDs.setName(output.replace("new_primary_file_output_mgf|", "").replace("__", ""));
                                             indexedMGFFileSet.add(tabDs);
-                                            toDeleteMap.add(dsId);
                                         }
+                                        toDeleteMap.add(searchGUIDs.getHistoryId() + ";" + dsId);
                                     } else if (output.contains("__new_primary_file_output_cui")) {
                                         if (cuiIndexFilesMap.containsKey(dsId)) {
                                             cuiFileSet.add(cuiIndexFilesMap.get(dsId));
@@ -1466,9 +1466,43 @@ public abstract class GalaxyHistoryHandler {
 
                     }
 
+                }  
+//                else {
+//                    System.out.println("at tool id : " + toolId);
+//                }
+
+            }
+        }
+
+        private void cleanCollections() {
+            for (String collectionId : collectionsFilesMap.keySet()) {
+                try {
+                    Map<String, Object> map = collectionsFilesMap.get(collectionId);
+                    if (map.get("job_source_id") == null) { 
+                        toDeleteMap.add(map.get("history_id") + ";" + map.get("id").toString() + ";" + false);
+                        continue;
+                    }
+                    if (map.containsKey("elements")) {
+                        List elements = ((List) map.get("elements"));
+                        for (Object element : elements) {
+                            Map<String, Object> elementsMap = (Map<String, Object>) element;
+                            elementsMap = ((Map<String, Object>) elementsMap.get("object"));
+                            String toDeleteElement = map.get("history_id") + ";" + elementsMap.get("id").toString();
+                            if (toDeleteMap.contains(toDeleteElement)) {
+                                toDeleteMap.add(map.get("history_id") + ";" + map.get("id").toString() + ";" + true);
+                                break;
+                            } 
+
+                        }
+
+                    }
+
+                } catch (Exception ex) {
+                    System.err.println("Error :1520 ParseException: " + ex.getCause().getMessage());
                 }
 
             }
+
         }
 
         private String getContainerCollection(Set<String> dsInfo) {
