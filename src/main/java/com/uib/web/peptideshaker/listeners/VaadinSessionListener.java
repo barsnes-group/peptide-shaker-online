@@ -1,5 +1,9 @@
 package com.uib.web.peptideshaker.listeners;
 
+import com.vaadin.annotations.JavaScript;
+import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinSession;
+import com.vaadin.ui.Notification;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import java.io.File;
@@ -7,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import javax.servlet.ServletContext;
 
 /**
  * This class responsible for cleaning folders after user session expire
@@ -17,7 +22,17 @@ public class VaadinSessionListener implements HttpSessionListener {
 
     @Override
     public void sessionCreated(HttpSessionEvent hse) {
-        System.out.println("at *****welcome user*******");
+        ServletContext scx = VaadinServlet.getCurrent().getServletContext();
+//        int max = Integer.parseUnsignedInt(scx.getAttribute("maxusernumb") + "");
+//        int current = Integer.parseUnsignedInt(scx.getAttribute("currentuser") + "");
+//        System.out.println("at *****welcome user*******" + current + "  " + scx.);
+//        current++;
+//        if (current > max) {
+//            Notification.show("Sorry System is full please try again later");
+//            VaadinSession.getCurrent().close();
+//        } else {
+//            scx.setAttribute("currentuser", current);
+//        }
 
     }
 
@@ -45,6 +60,7 @@ public class VaadinSessionListener implements HttpSessionListener {
             scheduler.shutdown();
             System.out.println("at scheduler shoutdown ");
         }
+//        VaadinSession.getCurrent().close();
     }
 
     private void deletFile(File file) throws IOException {

@@ -979,13 +979,13 @@ public abstract class SearchGUIPeptideShakerWorkFlowInputLayout extends Panel {
 
     private boolean validateProjectName() {
         boolean valid = false;
-        if (_projectNameField.getValue().matches("^((?=[A-Za-z0-9_])(?![åäö\\\\-]).)*$")) {
+        if (_projectNameField.getValue().matches("^((?=[A-Za-z0-9_-])(?![åäö\\\\]).)*$")) {
             _projectNameField.removeStyleName("errorstyle");
             valid = true;
 
         } else {
             _projectNameField.addStyleName("errorstyle");
-            Notification.show("Please use alphabets, numbers and '_' only ", Notification.Type.TRAY_NOTIFICATION);
+            Notification.show("Please use alphabets, numbers, '-' and '_' only ", Notification.Type.TRAY_NOTIFICATION);
         }
         if (valid && datasetNames.contains(_projectNameField.getValue().trim().toLowerCase())) {
             valid = false;
