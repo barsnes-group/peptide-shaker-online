@@ -22,18 +22,6 @@ public class VaadinSessionListener implements HttpSessionListener {
 
     @Override
     public void sessionCreated(HttpSessionEvent hse) {
-        ServletContext scx = VaadinServlet.getCurrent().getServletContext();
-//        int max = Integer.parseUnsignedInt(scx.getAttribute("maxusernumb") + "");
-//        int current = Integer.parseUnsignedInt(scx.getAttribute("currentuser") + "");
-//        System.out.println("at *****welcome user*******" + current + "  " + scx.);
-//        current++;
-//        if (current > max) {
-//            Notification.show("Sorry System is full please try again later");
-//            VaadinSession.getCurrent().close();
-//        } else {
-//            scx.setAttribute("currentuser", current);
-//        }
-
     }
 
     @Override

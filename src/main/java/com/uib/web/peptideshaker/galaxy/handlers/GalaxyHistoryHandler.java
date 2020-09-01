@@ -727,7 +727,7 @@ public abstract class GalaxyHistoryHandler {
                         externaldataset.setCuiFiles(dsInformationMap.get("cui").toString(), cuiSet);
 
                         Set<GalaxyFileObject> indexedMGFSet = new LinkedHashSet<>();
-                        Map<String, String> indexedMGFFileIdMap = (Map<String, String>) dsInformationMap.get("cuiSet");
+                        Map<String, String> indexedMGFFileIdMap = (Map<String, String>) dsInformationMap.get("mgfIdSet");
                         for (String galaxyId : indexedMGFFileIdMap.keySet()) {
                             ds = new GalaxyFileObject();
                             ds.setName(indexedMGFFileIdMap.get(galaxyId));

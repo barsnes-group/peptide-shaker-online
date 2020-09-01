@@ -17,13 +17,7 @@ public class VaadinContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        
-         ServletContext scx =sce.getServletContext();
-            if (scx.getAttribute("maxusernumb") == null) {
-                scx.setAttribute("maxusernumb", scx.getInitParameter("maxusernumb"));
-                scx.setAttribute("currentuser", 0);
-            }
-            System.out.println("at welcome back to life :-) "+scx.getInitParameter("maxusernumb"));
+            System.out.println("at welcome back to life :-) ");
     }
 
     @Override

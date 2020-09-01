@@ -240,13 +240,13 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * Constructor to initialise the main variables required to visualise
      * PeptideShaker results
      *
-     * @param projectName              Dataset (Project) name.
-     * @param user_folder              User data files folder
-     * @param galaxyLink               Galaxy Server web address
-     * @param apiKey                   Galaxy server user API key.
+     * @param projectName Dataset (Project) name.
+     * @param user_folder User data files folder
+     * @param galaxyLink Galaxy Server web address
+     * @param apiKey Galaxy server user API key.
      * @param galaxyDatasetServingUtil Managing the integration and data
-     *                                 transfer between Galaxy Server and Online Peptide Shaker (managing
-     *                                 requests and responses)
+     * transfer between Galaxy Server and Online Peptide Shaker (managing
+     * requests and responses)
      * @param csf_pr_Accession_List
      */
     public PeptideShakerVisualizationDataset(String projectName, File user_folder, String galaxyLink, String apiKey, GalaxyDatasetServingUtil galaxyDatasetServingUtil, Set<String> csf_pr_Accession_List) {
@@ -266,11 +266,12 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
         this.table_headers = new TableHeaderConstatnts();
         this.inputMgffilesName = new LinkedHashSet<>();
     }
+
     /**
      * Constructor to initialise the main variables required to visualise
      * PeptideShaker results for uploaded projects type 1 ad 2
      *
-     * @param projectName           Dataset (Project) name.
+     * @param projectName Dataset (Project) name.
      * @param fastaFile
      * @param csf_pr_Accession_List
      * @param peptideFile
@@ -403,8 +404,6 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                         filesIdName.put(file.getGalaxyId(), file.getName());
                     }
                     object.put("moffSet", filesIdName);
-
-//                    linkToShare = this.getProjectName() + "-_-sgi-_:_-" + SearchGUIResultFile.getGalaxyId() + "-_-pszip-_:_-" + PeptideShakerResultsFileId + "-_-mgf-_:_-" + indexedMgfGalaxyId + "-_-mgfindexfolder-_:_-" + cuiListGalaxyId + "-_-sgioverview-_:_-" + SearchGUIResultFile.getOverview() + "-_-quant-_:_-" + moffGalaxyId;
                 }
                 linkToShare = URLEncoder.encode(object.toString(), "UTF-8");
             } catch (JSONException ex) {
@@ -530,7 +529,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
     /**
      * Set current state of the dataset
      *
-     * @param status   dataset state
+     * @param status dataset state
      * @param external dataset is external
      */
     public void setStatus(String status, boolean external) {
@@ -617,12 +616,11 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
 //        return indexedMGFFilesMap;
 //    }
 //    private boolean multiMgf = false;
-
     /**
      * Add MGF file to the dataset
      *
      * @param indexedMgfGalaxyId MGF file id on Galaxy Server
-     * @param mgfDs              MGF file representation on Online PeptideShaker
+     * @param mgfDs MGF file representation on Online PeptideShaker
      */
     public void setIndexedMgfFiles(String indexedMgfGalaxyId, Set<GalaxyFileObject> indexedMgfFiles) {
         for (GalaxyFileObject file : indexedMgfFiles) {
@@ -636,7 +634,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * Add MGF file to the dataset
      *
      * @param cuiListGalaxyId MGF file id on Galaxy Server
-     * @param mgfDs           MGF file representation on Online PeptideShaker
+     * @param mgfDs MGF file representation on Online PeptideShaker
      */
     public void setCuiFiles(String cuiListGalaxyId, Set<GalaxyTransferableFile> cuiFileSet) {
         this.cuiFileSet = cuiFileSet;
@@ -657,8 +655,8 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * Set PeptideShaker Results File Id on Galaxy Server
      *
      * @param PeptideShakerResultsFileId PeptideShaker Results File Id on Galaxy
-     *                                   Server
-     * @param external                   shared dataset with other users
+     * Server
+     * @param external shared dataset with other users
      */
     public void setPeptideShakerResultsFileId(String PeptideShakerResultsFileId, final boolean external) {
         this.PeptideShakerResultsFileId = PeptideShakerResultsFileId;
@@ -680,7 +678,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * Initialise PeptideShaker Results File and prepare inside folder files
      *
      * @param PeptideShakerResultsFileId PeptideShaker Results File Id on Galaxy
-     *                                   Server
+     * Server
      */
     private void initialiseDataFiles(String PeptideShakerResultsFileId) {
         //validate zipFile
@@ -802,7 +800,6 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
 //        }
 //
 //    }
-
     /**
      * Get Input FASTA file used in the search name
      *
@@ -1481,7 +1478,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * Update protein information to be display
      *
      * @param proteinObject protein object
-     * @param proteinKey    protein key (accession)
+     * @param proteinKey protein key (accession)
      * @return updated protein object
      */
     public ProteinGroupObject updateProteinInformation(ProteinGroupObject proteinObject, String proteinKey) {
@@ -1524,8 +1521,8 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * peptides are enzymatic, even if not all mappings are enzymatic.
      *
      * @param sequence
-     * @param peptideSequence             the peptide sequence to check
-     * @param enzyme                      the enzyme to use
+     * @param peptideSequence the peptide sequence to check
+     * @param enzyme the enzyme to use
      * @param sequenceMatchingPreferences the sequence matching preferences
      * @return true of the peptide is non-enzymatic
      */
@@ -1555,12 +1552,12 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * given protein in a map: peptide start index &gt; (amino acids before,
      * amino acids after).
      *
-     * @param peptide                     the sequence of the peptide of interest
-     * @param nAA                         the number of amino acids to include
+     * @param peptide the sequence of the peptide of interest
+     * @param nAA the number of amino acids to include
      * @param sequenceMatchingPreferences the sequence matching preferences
      * @return the amino acids surrounding a peptide in the protein sequence
      * @throws IOException Exception thrown whenever an error occurred while
-     *                     parsing the protein sequence
+     * parsing the protein sequence
      */
     private HashMap<Integer, String[]> getSurroundingAA(String sequence, String peptide, int nAA, SequenceMatchingParameters sequenceMatchingPreferences) {
 
@@ -1596,7 +1593,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * Returns the list of indexes where a peptide can be found in the protein
      * sequence. 1 is the first amino acid.
      *
-     * @param peptideSequence             the sequence of the peptide of interest
+     * @param peptideSequence the sequence of the peptide of interest
      * @param sequenceMatchingPreferences the sequence matching preferences
      * @return the list of indexes where a peptide can be found in a protein
      * sequence
@@ -1678,7 +1675,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
     /**
      * Get selected spectrum data that is related to selected peptide.
      *
-     * @param PSMs          selected PSMs files
+     * @param PSMs selected PSMs files
      * @param peptideObject peptide object
      * @return map of Spectrum Information
      */
@@ -1720,11 +1717,11 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                     galaxyFileId = ds.getGalaxyId();
                     galaxyHistoryId = ds.getHistoryId();
                     break;
-                } 
+                }
             }
             if (mgfIndex == null) {
                 return null;
-            }    
+            }
             Spectrum spectrum = galaxyDatasetServingUtil.getSpectrum(mgfIndex.getIndex(selectedPsm.getSpectrumTitle()), galaxyHistoryId, galaxyFileId, selectedPsm.getSpectrumFile(), Integer.parseInt(selectedPsm.getIdentificationCharge().replace("+", "")));
             int tCharge = 0;
             if (!selectedPsm.getMeasuredCharge().trim().equalsIgnoreCase("")) {
@@ -1749,7 +1746,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                     psModificationMatches.add(seModMatch);
                 }
             }
-            
+
             Peptide psPeptide = new Peptide(peptideObject.getSequence(), peptideObject.getVariableModifications());
             PeptideAssumption psAssumption = new PeptideAssumption(psPeptide, tCharge);
             SpectrumMatch spectrumMatch = new SpectrumMatch(selectedPsm.getSpectrumFile(), selectedPsm.getSpectrumTitle());
@@ -1993,8 +1990,8 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
         /**
          * Constructor to initialise the main variables.
          *
-         * @param peptides_file   output peptides file
-         * @param proteinsMap     Protein map.
+         * @param peptides_file output peptides file
+         * @param proteinsMap Protein map.
          * @param modificationMap map of modifications used in search inputs.
          */
         public ProcessPeptidesTask(File peptides_file, Map<String, ProteinGroupObject> proteinsGroupMap, Map<String, Set<String>> protein_ProteinGroup_Map, ConcurrentHashMap<String, Set<Comparable>> modificationMap) {
@@ -2832,9 +2829,9 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
                 inStream = new FileInputStream(fasta_file);
                 FastaReader<ProteinSequence, AminoAcidCompound> fastaReader
                         = new FastaReader<>(
-                        inStream,
-                        new GenericFastaHeaderParser<>(),
-                        new ProteinSequenceCreator(AminoAcidCompoundSet.getAminoAcidCompoundSet()));
+                                inStream,
+                                new GenericFastaHeaderParser<>(),
+                                new ProteinSequenceCreator(AminoAcidCompoundSet.getAminoAcidCompoundSet()));
                 fastaProteinSequenceMap = fastaReader.process();
             } catch (IOException | NumberFormatException ex) {
 
@@ -2898,7 +2895,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             try {
                 InputStreamReader is = new InputStreamReader(new FileInputStream(proteoform_file.getFile()), "UTF-8");
                 try ( // Always wrap FileReader in BufferedReader.
-                      BufferedReader bufferedReader = new BufferedReader(is)) {
+                        BufferedReader bufferedReader = new BufferedReader(is)) {
                     while ((line = bufferedReader.readLine()) != null) {
                         line = line.replace("\"", "");
                         readerSet.add(line);
