@@ -3,9 +3,7 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          id="WebApp_ID" version="2.5">
     <display-name>web-peptide-shaker-1.0</display-name>
-    <session-config>
-        <session-timeout>15</session-timeout>
-    </session-config>
+
     <listener>
         <listener-class>com.uib.web.peptideshaker.listeners.VaadinSessionListener</listener-class>
     </listener>
@@ -17,15 +15,20 @@
         <param-name>csfprservice</param-name>
         <param-value>https://proteomics.uib.no/csf-pr/VAADIN/</param-value>
     </context-param>
+     <context-param>
+        <description>maximum number of users</description>
+        <param-name>maxusernumb</param-name>
+        <param-value>15</param-value>
+    </context-param>
     <context-param>
         <description>galaxy url</description>
         <param-name>galaxyServerUrl</param-name>
         <param-value>http://158.39.74.194/</param-value>
     </context-param>
     <context-param>
-        <description>Test user API key for galaxy  3b5754c5b177864e6b1e3dc34f4016d7</description>
+        <description>Test user API key for galaxy  </description>
         <param-name>testUserAPIKey</param-name>
-        <param-value>b3957817ac246192ddf4b7e624f21150</param-value>
+        <param-value></param-value>
     </context-param>
     <context-param>
         <description>peptide shaker tool version</description>
@@ -55,12 +58,12 @@
     <context-param>
         <description>Database Password</description>
         <param-name>password</param-name>
-        <param-value>qwe1212qwe1212</param-value>
+        <param-value></param-value>
     </context-param>
     <context-param>
         <description>Database Username</description>
         <param-name>userName</param-name>
-        <param-value>phpmyadminuser</param-value>
+        <param-value></param-value>
     </context-param>
     <context-param>
         <description>Web Application name (same as war file)</description>
@@ -70,27 +73,13 @@
     <context-param>
         <description>database name</description>
         <param-name>dbName</param-name>
-        <param-value>web_peptide_shaker_may_2020</param-value>
+        <param-value></param-value>
     </context-param>
     <!-- Session Configuration -->
     <session-config>
         <session-timeout>15</session-timeout>
     </session-config>
-    <servlet>
-        <servlet-name>jsmol</servlet-name>
-        <jsp-file>/VAADIN/jsmol/jsptest.jsp</jsp-file>
-    </servlet>
-    <servlet>
-        <servlet-name>litemol</servlet-name>
-        <jsp-file>/VAADIN/litemol/LiteMolFrame.jsp</jsp-file>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>jsmol</servlet-name>
-        <url-pattern>/jsmol</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>litemol</servlet-name>
-        <url-pattern>/litemol</url-pattern>
-    </servlet-mapping>
+  
+   
 
 </web-app>

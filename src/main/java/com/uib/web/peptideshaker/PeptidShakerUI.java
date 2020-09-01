@@ -1,5 +1,6 @@
 package com.uib.web.peptideshaker;
 
+import com.uib.web.peptideshaker.listeners.VaadinSessionControlListener;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
@@ -21,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import javax.servlet.ServletConfig;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser
@@ -34,7 +36,7 @@ import java.util.concurrent.ScheduledFuture;
  * @author Yehia Farag
  */
 @Theme("webpeptideshakertheme")
-@JavaScript({"../../VAADIN/js/venn.js", "../../VAADIN/js/myD3library.js", "../../VAADIN/js/myD3component-connector.js", "../../VAADIN/js/d3.v5.min.js", "../../VAADIN/litemol/js/LiteMol-plugin.js", "../../VAADIN/litemol/js/mylitemol-connector.js", "../../VAADIN/litemol/js/mylitemollibrary.js","../../VAADIN/litemol/js/LiteMol-example.js?lmversion=1518789385303", "https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.touch/1.1.0/jquery.touch.min.js", "../../VAADIN/js/mylibrary.js", "../../VAADIN/js/mycomponent-connector.js", "https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.touch/1.1.0/jquery.touch.min.js", "../../VAADIN/js/mylibrary2.js", "../../VAADIN/js/mycomponent-connector2.js", "../../VAADIN/js/jquery.mousewheel.js"})
+@JavaScript({"../../VAADIN/js/venn.js", "../../VAADIN/js/myD3library.js", "../../VAADIN/js/myD3component-connector.js", "../../VAADIN/js/d3.v5.min.js", "../../VAADIN/litemol/js/LiteMol-plugin.js", "../../VAADIN/litemol/js/mylitemol-connector.js", "../../VAADIN/litemol/js/mylitemollibrary.js", "../../VAADIN/litemol/js/LiteMol-example.js?lmversion=1518789385303", "https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.touch/1.1.0/jquery.touch.min.js", "../../VAADIN/js/mylibrary.js", "../../VAADIN/js/mycomponent-connector.js", "https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.touch/1.1.0/jquery.touch.min.js", "../../VAADIN/js/mylibrary2.js", "../../VAADIN/js/mycomponent-connector2.js", "../../VAADIN/js/jquery.mousewheel.js"})
 @Push(PushMode.MANUAL)
 public class PeptidShakerUI extends UI {
 
@@ -113,7 +115,6 @@ public class PeptidShakerUI extends UI {
              * VaadinSession.
              */
             ServletContext scx = VaadinServlet.getCurrent().getServletContext();
-            scx.setAttribute("tempFolder", tempFolder);
             VaadinSession.getCurrent().setAttribute("userDataFolderUrl", localFileSystemFolderPath);
             VaadinSession.getCurrent().getSession().setAttribute("userDataFolderUrl", localFileSystemFolderPath);
             VaadinSession.getCurrent().setAttribute("ctxPath", vaadinRequest.getContextPath());
@@ -125,7 +126,7 @@ public class PeptidShakerUI extends UI {
             String dbURL = (scx.getInitParameter("url"));
             String dbDriver = (scx.getInitParameter("driver"));
             String dbUserName = (scx.getInitParameter("userName"));
-            String dbPassword = "d#%[Q=`+<8U,)Pxw";//(scx.getInitParameter("password"));//d#%[Q=`+<8U,)Pxw
+            String dbPassword = (scx.getInitParameter("password"));
             String dbName = (scx.getInitParameter("dbName"));
             String appName = (scx.getInitParameter("appName"));
             VaadinSession.getCurrent().setAttribute("dbName", dbName);
@@ -143,22 +144,29 @@ public class PeptidShakerUI extends UI {
             VaadinSession.getCurrent().setAttribute("moffvirsion", moffVersion);
             VaadinSession.getCurrent().setAttribute("mobilescreenstyle", (mobileDeviceStyle));
             VaadinSession.getCurrent().setAttribute("smallscreenstyle", smallDeviceStyle);
-
-            webPeptideShakerApp = new WebPeptideShakerApp(galaxyServerUrl);
-            PeptidShakerUI.this.setContent(webPeptideShakerApp.getApplicationUserInterface());
-            /**
-             * On resize the browser re-arrange all the created pop-up windows
-             * to the page center.
-             */
-            Page.getCurrent().addBrowserWindowResizeListener((Page.BrowserWindowResizeEvent event) -> {
-                portraitScreenMode = (Page.getCurrent().getBrowserWindowWidth() < Page.getCurrent().getBrowserWindowHeight());
-                updateMainStyleMode(mobileDeviceStyle, portraitScreenMode);
-                UI.getCurrent().getWindows().forEach((w) -> {
-                    w.center();
+            int max = Integer.parseUnsignedInt(scx.getAttribute("maxusernumb") + "");
+            if (VaadinSessionControlListener.getActiveSessions() < max) {
+                VaadinSession.getCurrent().getSession().setMaxInactiveInterval(60*15);
+                webPeptideShakerApp = new WebPeptideShakerApp(galaxyServerUrl);
+                PeptidShakerUI.this.setContent(webPeptideShakerApp.getApplicationUserInterface());
+                /**
+                 * On resize the browser re-arrange all the created pop-up
+                 * windows to the page center.
+                 */
+                Page.getCurrent().addBrowserWindowResizeListener((Page.BrowserWindowResizeEvent event) -> {
+                    portraitScreenMode = (Page.getCurrent().getBrowserWindowWidth() < Page.getCurrent().getBrowserWindowHeight());
+                    updateMainStyleMode(mobileDeviceStyle, portraitScreenMode);
+                    UI.getCurrent().getWindows().forEach((w) -> {
+                        w.center();
+                    });
                 });
-            });
-            updateMainStyleMode(mobileDeviceStyle, portraitScreenMode);
-            Page.getCurrent().setTitle("PeptideShaker Online");
+                updateMainStyleMode(mobileDeviceStyle, portraitScreenMode);
+                Page.getCurrent().setTitle("PeptideShaker Online");
+            } else {
+                com.vaadin.ui.JavaScript.getCurrent().execute("alert('Sorry current users reach the maximum please try again later')");
+                VaadinSession.getCurrent().getSession().invalidate();
+                return;
+            }
         } catch (IllegalArgumentException | NullPointerException e) {
             System.err.println("Error in UI Class : " + e);
             e.printStackTrace();
@@ -169,13 +177,13 @@ public class PeptidShakerUI extends UI {
             e.printStackTrace();
         }
         VaadinSession.getCurrent().setErrorHandler(new ErrorHandler() {
-                                                       @Override
-                                                       public void error(com.vaadin.server.ErrorEvent event) {
-                                                           System.out.println("at ----------- error handler is working ------------------- ");
-                                                           event.getThrowable().printStackTrace();
+            @Override
+            public void error(com.vaadin.server.ErrorEvent event) {
+                System.out.println("at ----------- error handler is working ------------------- ");
+                event.getThrowable().printStackTrace();
 //                Page.getCurrent().reload();
-                                                       }
-                                                   }
+            }
+        }
         );
         String requestToShare = Page.getCurrent().getLocation().toString();
 
@@ -195,7 +203,7 @@ public class PeptidShakerUI extends UI {
      * update main style for the application.
      *
      * @param mobileDeviceStyle the device is mobile phone
-     * @param portrait          the screen is in portrait mode
+     * @param portrait the screen is in portrait mode
      */
     private void updateMainStyleMode(boolean mobileDeviceStyle, boolean portrait) {
         if (webPeptideShakerApp == null) {
@@ -221,6 +229,19 @@ public class PeptidShakerUI extends UI {
     @VaadinServletConfiguration(ui = PeptidShakerUI.class, productionMode = true, resourceCacheTime = 0)
 //, resourceCacheTime = 1
     public static class PeptidShakerUIServlet extends VaadinServlet {
+
+        @Override
+        public void init(ServletConfig servletConfig) throws ServletException {
+
+            super.init(servletConfig);
+
+            /**
+             * VaadinSessionListener
+             */
+            getService().addSessionInitListener(new VaadinSessionControlListener.VaadinSessionInitListener());
+            getService().addSessionDestroyListener(new VaadinSessionControlListener.VaadinSessionDestroyListener());
+             
+        }
 
         @Override
         protected void servletInitialized() throws ServletException {
