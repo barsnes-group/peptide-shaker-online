@@ -1489,15 +1489,9 @@ public abstract class GalaxyHistoryHandler {
                         for (String output : job.getOutputs().keySet()) {
                             String moffoutput = job.getOutputs().get(output).getId();
                             if (tabFilesMap.containsKey(moffoutput)) {
-                                GalaxyFileObject gfo =  tabFilesMap.get(moffoutput);
-                                 GalaxyTransferableFile file = new GalaxyTransferableFile(user_folder, gfo, false);
+                                GalaxyFileObject gfo = tabFilesMap.get(moffoutput);
+                                GalaxyTransferableFile file = new GalaxyTransferableFile(user_folder, gfo, false);
                                 file.setDownloadUrl(gfo.getDownloadUrl());
-                                try {
-                                    file.setCreate_time(df6.parse(gfo.getCreate_time()));
-                                } catch (ParseException ex) {
-                                    System.err.println("Error: " + ex);
-                                }
-//
                                 moffFileSet.add(file);
                                 dsInfo.add(gfo.getCreate_time());
                                 dsInfo.add(gfo.getGalaxyId());
@@ -1509,7 +1503,6 @@ public abstract class GalaxyHistoryHandler {
                         }
                         if (!moffFileSet.isEmpty()) {
                             peptideShakerVisualizationMap.get(dsID).setMoff_quant_files(getContainerCollection(dsInfo), moffFileSet);
-                            System.out.println("at moff in ds " + peptideShakerVisualizationMap.get(dsID).getMoffGalaxyId() + "   " + peptideShakerVisualizationMap.get(dsID).getMoff_quant_file().size());
                         }
 
                     }
@@ -1525,8 +1518,6 @@ public abstract class GalaxyHistoryHandler {
                         });
                     });
 
-                } else {
-                    System.out.println("at tool id : " + toolId);
                 }
 
             }
