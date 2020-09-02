@@ -1511,9 +1511,7 @@ public abstract class GalaxyHistoryHandler {
 
                     Set<JobDetails> convertTabjobs = toolsJobMap.get(toolId);
                     convertTabjobs.forEach((job) -> {
-                        System.out.println("add thermo to todelerte map ");
                         job.getOutputs().keySet().stream().map((output) -> job.getOutputs().get(output).getId()).filter((id) -> (mgfFilesMap.containsKey(id))).forEachOrdered((id) -> {
-                            System.out.println("to dele added");
                             toDeleteMap.add(mgfFilesMap.get(id).getHistoryId() + ";" + id);
                         });
                     });

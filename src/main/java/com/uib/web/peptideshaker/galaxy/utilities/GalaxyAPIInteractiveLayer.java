@@ -253,6 +253,7 @@ public class GalaxyAPIInteractiveLayer {
         String stringToParse;
         try (BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
             stringToParse = bin.readLine();
+          
         }
         JSONParser parser = new JSONParser();
         JSONObject json = (JSONObject) parser.parse(stringToParse);
@@ -272,6 +273,7 @@ public class GalaxyAPIInteractiveLayer {
             String stringToParse;
             try (BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
                 stringToParse = bin.readLine();
+               
             }
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(stringToParse);
@@ -282,7 +284,7 @@ public class GalaxyAPIInteractiveLayer {
             jobs = (List<String>) dataList.get("new");
             runningJobs.addAll(jobs);
             jobs = (List<String>) dataList.get("paused");
-            runningJobs.addAll(jobs);
+//            runningJobs.addAll(jobs);
             jobs = (List<String>) dataList.get("queued");
             runningJobs.addAll(jobs);
             jobs = (List<String>) dataList.get("upload");

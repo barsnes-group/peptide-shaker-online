@@ -347,7 +347,6 @@ public class WebSpectrumPanel extends SpectrumPanel {
     public void paint(Graphics g) {
 
 //        
-
         super.paint(g);
         if (iXAxisData != null) {
             if (iDragged && iDragXLoc > 0) {
@@ -466,7 +465,6 @@ public class WebSpectrumPanel extends SpectrumPanel {
             }
         }
 
-
     }
 
     /**
@@ -474,8 +472,8 @@ public class WebSpectrumPanel extends SpectrumPanel {
      * annotation.
      *
      * @param xAxisValue the x-axis value
-     * @param mirrored   if true checks for the mirrored peaks, false checks the
-     *                   normal peaks
+     * @param mirrored if true checks for the mirrored peaks, false checks the
+     * normal peaks
      * @return true of the given x-axis value is annotated with at least one
      * annotation
      */

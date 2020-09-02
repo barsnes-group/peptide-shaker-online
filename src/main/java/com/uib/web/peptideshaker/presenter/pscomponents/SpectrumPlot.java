@@ -198,6 +198,7 @@ public class SpectrumPlot extends AbsoluteLayout {
 
         chargeItem = menue.addItem("Charge", VaadinIcons.PLUS, null);
         resetAnnoItem = menue.addItem("Reset Annotations", VaadinIcons.RETWEET, (MenuItem selectedItem) -> {
+            defaultAnnotationInUse=true;
             selectedItem.setEnabled(false);
             resetAnnotations();
             updateAnnotationPreferences();
@@ -287,18 +288,18 @@ public class SpectrumPlot extends AbsoluteLayout {
             updatedComponentWidth = event.getWidth();
             updatedComponentHeight = event.getHeight();
 
-            if (this.waitingTimer == null && identificationParameters != null) {
-                /* Start waiting for DELAY to elapse. */
-
-                this.waitingTimer = new Timer(DELAY, (ActionEvent ae) -> {
+//            if (this.waitingTimer == null && identificationParameters != null) {
+//                /* Start waiting for DELAY to elapse. */
+//update this with excuter
+//                this.waitingTimer = new Timer(DELAY, (ActionEvent ae) -> {
                     UI.getCurrent().access(this::reDraw);
-                });
-                this.waitingTimer.setRepeats(false);
-                this.waitingTimer.start();
-            } else if (waitingTimer != null) {
-                /* Event came too soon, swallow it by resetting the timer.. */
-                this.waitingTimer.restart();
-            }
+//                });
+//                this.waitingTimer.setRepeats(false);
+//                this.waitingTimer.start();
+//            } else if (waitingTimer != null) {
+//                /* Event came too soon, swallow it by resetting the timer.. */
+//                this.waitingTimer.restart();
+//            }
 
         };
         mainSizeReporter.addResizeListener(compResizeListener);
@@ -316,6 +317,7 @@ public class SpectrumPlot extends AbsoluteLayout {
 
         resetAnnoItem.setEnabled(false);
         disableSizeReporter = false;
+        defaultAnnotationInUse=true;
 
         HorizontalLayout spectrumSliderContainer = new HorizontalLayout();
         spectrumSliderContainer.setHeight(200, Unit.PIXELS);
@@ -641,7 +643,7 @@ public class SpectrumPlot extends AbsoluteLayout {
             spectrumPanel.setSpectrumPeakColor(Color.RED);
             spectrumPanel.setSpectrumProfileModeLineColor(Color.RED);
             spectrumPanel.rescale(0.0, spectrumPanel.getMaxXAxisValue());
-            this.defaultAnnotationInUse = true;
+//            this.defaultAnnotationInUse = true;
             chargeItem.removeChildren();
             int precursorCharge = 1;
             int currentCharge = spectrumMatch.getBestPeptideAssumption().getIdentificationCharge();
