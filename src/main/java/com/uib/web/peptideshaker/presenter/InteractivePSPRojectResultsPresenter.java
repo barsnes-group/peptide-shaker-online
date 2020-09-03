@@ -211,7 +211,7 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
             Component c = event.getClickedComponent();
 
             if (c != null && c.getId() != null && c.getId().contains("suspend")) {
-                Notification.show("You need to select Project or upload your own files to visualize data", Notification.Type.WARNING_MESSAGE);
+                Notification.show("You need to select Project or upload your own files to visualize data", Notification.Type.TRAY_NOTIFICATION);
             }
         };
         viewControlButtonContainer.addLayoutClickListener(notificationListener);
@@ -282,7 +282,7 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
                 datasetVisulizationLevelContainer.setMargin(new MarginInfo(false, false, false, false));
                 maximisedMode = true;
                 viewControlButtonContainer.addStyleName("visible");
-                if (dataprocessFuture == null) {
+                if (dataprocessFuture == null && peptideShakerVisualizationDataset==null) {
                     datasetsOverviewBtn.setId("suspend");
                     datasetsOverviewBtn.setEnabled(false);
                     datasetsOverviewBtn.setDescription("Select project or upload your own project data");
@@ -292,9 +292,9 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
                     return;
 
                 }
-                datasetsOverviewBtn.setId(null);
+                datasetsOverviewBtn.setId(null);  
                 datasetsOverviewBtn.setEnabled(true);
-                while (!dataprocessFuture.isDone()) {
+                while (dataprocessFuture != null && !dataprocessFuture.isDone()) {
                 }
                 removeStyleName("hidepanel");
                 selectSubviewButton(datasetsOverviewBtn);
@@ -381,12 +381,7 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
     public void setSelectedDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
         this.peptideShakerVisualizationDataset = peptideShakerVisualizationDataset;
         ExecutorService executorService = Executors.newFixedThreadPool(4);
-        Runnable runnableTask = () -> {
-            mainPresenterBtn.setEnabled(peptideShakerVisualizationDataset != null);
-            smallPresenterBtn.setEnabled(peptideShakerVisualizationDataset != null);
-            Selection_Manager.reset();
-            Selection_Manager.selectBtn(0);
-        };
+
         Runnable runnableTask1 = () -> {
             mainPresenterBtn.setEnabled(peptideShakerVisualizationDataset != null);
             smallPresenterBtn.setEnabled(peptideShakerVisualizationDataset != null);
@@ -404,7 +399,6 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
 
         };
         dataprocessFuture = executorService.submit(runnableTask1);
-//        executorService.submit(runnableTask);
         executorService.submit(runnableTask2);
         executorService.submit(runnableTask3);
         executorService.shutdown();
@@ -412,13 +406,15 @@ public abstract class InteractivePSPRojectResultsPresenter extends VerticalLayou
         while (!dataprocessFuture.isDone()) {
         }
         uploadOwnDataBtn.updateIconByHTMLCode(VaadinIcons.FILE_TEXT_O.getHtml() + "<div class='overlayicon'>" + VaadinIcons.ARROW_CIRCLE_UP_O.getHtml() + "</div>");
-        if (!peptideShakerVisualizationDataset.isUploadedProject()) {
+        if (!peptideShakerVisualizationDataset.isUploadedProject() || !maximisedMode) {
             maximisedMode = false;
             this.maximizeView();
         } else {
             UI.getCurrent().removeStyleName("busybrocess");
             selectSubviewButton(datasetsOverviewBtn);
             datasetsOverviewBtn.removeStyleName("inactive");
+            datasetsOverviewBtn.setId(null);  
+            datasetsOverviewBtn.setEnabled(true);
         }
 
     }

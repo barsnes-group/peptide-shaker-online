@@ -142,7 +142,7 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
 
             @Override
             public void viewDataset(PeptideShakerVisualizationDataset ds) {
-                FileSystemPresenter.this.viewDataset(ds);
+                FileSystemPresenter.this.viewDataset(ds,"");
             }
 
             @Override
@@ -163,25 +163,22 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
      * @param historyFilesMap List of available files on Galaxy Server
      * @param jobInProgress   Jobs are running
      */
-    public void updateData(Map<String, GalaxyFileObject> historyFilesMap, boolean jobInProgress) {
+    public void updateData(Map<String, GalaxyFileObject> historyFilesMap, boolean jobInProgress,String viewDsId) {
         this.historyFilesMap = historyFilesMap;
         this.jobInProgress = jobInProgress;
 //        if (smallPresenterButton.getStyleName().contains("selectedpresenterbtn")) {
-        UI.getCurrent().access(new Runnable() {
-            @Override
-            public void run() {
-                updatelayout();
-                try {
-                    UI.getCurrent().push();
-                } catch (Exception e) {
-                    Page.getCurrent().reload();
-                }
+        UI.getCurrent().access(() -> {
+            updatelayout(viewDsId);
+            try {
+                UI.getCurrent().push();
+            } catch (Exception e) {
+                Page.getCurrent().reload();
             }
         });
 
     }
 
-    private void updatelayout() {
+    private void updatelayout(String viewDsId) {
         if (jobInProgress) {
             smallPresenterButton.updateIconSourceURL("img/globeearthanimation1.gif");
             mainPresenterButton.updateIconResource(new ThemeResource("img/globeearthanimation1.gif"));
@@ -198,7 +195,7 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
             viewDataBtn.removeStyleName("nopadding");
         }
         if (historyFilesMap != null) {
-            this.dataLayout.updateDatasetsTable(historyFilesMap);
+            this.dataLayout.updateDatasetsTable(historyFilesMap,viewDsId);
 
         }
 
@@ -334,8 +331,9 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
      * Abstract method to allow customised view action for PeptideShaker dataset
      *
      * @param PeptideShakerDataset selected Peptide Shaker dataset to view
+     * @param viewDsId current viewed dataset
      */
-    public abstract void viewDataset(PeptideShakerVisualizationDataset PeptideShakerDataset);
+    public abstract void viewDataset(PeptideShakerVisualizationDataset PeptideShakerDataset,String viewDsId);
 
     /**
      * Store and retrieve dataset details index to share in link

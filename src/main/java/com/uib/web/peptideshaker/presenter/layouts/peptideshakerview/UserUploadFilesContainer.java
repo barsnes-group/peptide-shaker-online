@@ -281,7 +281,6 @@ public abstract class UserUploadFilesContainer extends HorizontalLayout {
             projectNameField.setRequired(true);
             projectNameField.addStyleName("errorstyle");
             Notification.show("Error", "Check the input fields", Notification.Type.TRAY_NOTIFICATION);
-
             return;
 
         }

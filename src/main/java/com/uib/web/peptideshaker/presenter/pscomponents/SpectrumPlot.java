@@ -198,7 +198,7 @@ public class SpectrumPlot extends AbsoluteLayout {
 
         chargeItem = menue.addItem("Charge", VaadinIcons.PLUS, null);
         resetAnnoItem = menue.addItem("Reset Annotations", VaadinIcons.RETWEET, (MenuItem selectedItem) -> {
-            defaultAnnotationInUse=true;
+            defaultAnnotationInUse = true;
             selectedItem.setEnabled(false);
             resetAnnotations();
             updateAnnotationPreferences();
@@ -292,7 +292,7 @@ public class SpectrumPlot extends AbsoluteLayout {
 //                /* Start waiting for DELAY to elapse. */
 //update this with excuter
 //                this.waitingTimer = new Timer(DELAY, (ActionEvent ae) -> {
-                    UI.getCurrent().access(this::reDraw);
+            UI.getCurrent().access(this::reDraw);
 //                });
 //                this.waitingTimer.setRepeats(false);
 //                this.waitingTimer.start();
@@ -317,7 +317,7 @@ public class SpectrumPlot extends AbsoluteLayout {
 
         resetAnnoItem.setEnabled(false);
         disableSizeReporter = false;
-        defaultAnnotationInUse=true;
+        defaultAnnotationInUse = true;
 
         HorizontalLayout spectrumSliderContainer = new HorizontalLayout();
         spectrumSliderContainer.setHeight(200, Unit.PIXELS);

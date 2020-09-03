@@ -131,12 +131,7 @@ public abstract class Uploader extends AbsoluteLayout {
             Notification.show("Error", "Only " + filterSet + " file format allowed", Notification.Type.TRAY_NOTIFICATION);
         });
         
-        uploaderComponent.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                System.out.println("fasta file uploader clicked");
-            }
-        });
+      
 
     }
 

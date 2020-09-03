@@ -53,7 +53,7 @@ public abstract class BasicUploader extends AbsoluteLayout {
          * show notification after file is uploaded*
          */
         uploaderComponent.addFileUploadedListener((PluploadFile file) -> {
-            Notification.show("File Uploaded: " + file.getName());
+            Notification.show("File Uploaded: " + file.getName(),Notification.Type.TRAY_NOTIFICATION);
         });
 
         /**

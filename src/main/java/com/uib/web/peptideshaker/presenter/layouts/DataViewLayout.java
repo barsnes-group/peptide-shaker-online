@@ -121,7 +121,7 @@ public abstract class DataViewLayout extends Panel {
 
     }
 
-    public void updateDatasetsTable(Map<String, GalaxyFileObject> historyFilesMap) {
+    public void updateDatasetsTable(Map<String, GalaxyFileObject> historyFilesMap, String viewDsId) {
         datasetLabelSet.clear();
         topDataTable.removeAllComponents();
         bottomDataTable.removeAllComponents();
@@ -150,7 +150,11 @@ public abstract class DataViewLayout extends Panel {
             };
             HorizontalLayout rowLayout;
             if (ds.getType().equalsIgnoreCase("User uploaded Project")) {
-                nameLabel = new ActionLabel(VaadinIcons.CLUSTER, ds.getName(), "Uploaded Project results ") {
+                String dsName = ds.getName();
+                if (ds.getGalaxyId().equalsIgnoreCase(viewDsId)) {
+                    dsName += html_Img;
+                }
+                nameLabel = new ActionLabel(VaadinIcons.CLUSTER, dsName, "Uploaded Project results ") {
                     @Override
                     public void layoutClick(LayoutEvents.LayoutClickEvent event) {
                         DataViewLayout.this.setEnabled(false);
@@ -173,7 +177,8 @@ public abstract class DataViewLayout extends Panel {
                 labelContainer.addStyleName("maxwidth90per");
                 labelContainer.setWidthUndefined();
                 labelContainer.setHeight(260, Unit.PIXELS);
-                Label l = new Label("<h1>Uploaded Project</h1><p>Project:      " + ds.getName() + "</p><p>Upload time: " + ds.getCreate_time() + "</p><p>FASTA:       " + ds.getName().split("___")[2].split(",")[0] + "</p><p>Proteins:    " + ds.getName().split("___")[2].split(",")[1] + "</p><p>Peptides:    " + ds.getName().split("___")[2].split(",")[2] + "</p>", ContentMode.HTML);
+                PeptideShakerVisualizationDataset vDs = (PeptideShakerVisualizationDataset) ds;
+                Label l = new Label("<h1>Uploaded Project</h1><p>Project:      " + vDs.getName() + "</p><p>Upload time: " + vDs.getCreate_time() + "</p><p>FASTA:       " + vDs.getUploadedFastaFileName()+ "</p><p>Proteins:    " + vDs.getUploadedProteinFileName()+ "</p><p>Peptides:    " + vDs.getUploadedPeptideFileName()+ "</p>", ContentMode.HTML);
                 l.setSizeFull();
                 l.setStyleName("uploadeddsinfo");
                 labelContainer.addComponent(l);
@@ -364,7 +369,7 @@ public abstract class DataViewLayout extends Panel {
     /**
      * Store and retrieve dataset details index to share in link
      *
-     * @param dsDetails   encoded dataset details to store in database
+     * @param dsDetails encoded dataset details to store in database
      * @param dsUniqueKey
      * @return dataset public key
      */

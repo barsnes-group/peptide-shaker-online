@@ -61,7 +61,7 @@ public abstract class UploadedProjectUtility {
         if (!checkFiles[0] || !checkFiles[1]) {
             return checkFiles;
         }
-        //projectName = projectName.replace(" ", "_").replace("-", "_") + "___" + (new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss").format(new Timestamp(System.currentTimeMillis())) + "___" + filesnames.toString().replace(" ", "").replace("[", "").replace("]", ""));
+//        projectName = projectName.replace(" ", "_").replace("-", "_") + "___" + (new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss").format(new Timestamp(System.currentTimeMillis())) + "___" + filesnames.toString().replace(" ", "").replace("[", "").replace("]", ""));
 
         PeptideShakerVisualizationDataset psDs = new PeptideShakerVisualizationDataset(projectName, fastaFile, proteinFile, peptideFile, csf_pr_Accession_List) {
             @Override
@@ -70,6 +70,10 @@ public abstract class UploadedProjectUtility {
             }
         };
         psDs.setCreate_time(new Timestamp(System.currentTimeMillis()));
+        psDs.setUploadedFastaFileName(filesnames.get(0));
+        psDs.setUploadedProteinFileName(filesnames.get(1));
+        psDs.setUploadedPeptideFileName(filesnames.get(2));
+        
         viewUploadedProjectDataset(psDs);
         return checkFiles;
 

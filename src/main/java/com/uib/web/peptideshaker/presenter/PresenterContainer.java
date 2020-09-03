@@ -197,7 +197,7 @@ public abstract class PresenterContainer extends VerticalLayout {
                 /**
                  * Invoke busy history only : active globe
                  */
-                fileSystemPresenter.updateData(null, check);
+                fileSystemPresenter.updateData(null, check,"");
                 return check;
 
             }
@@ -226,12 +226,12 @@ public abstract class PresenterContainer extends VerticalLayout {
                     Map<String, GalaxyFileObject> historyFilesMap = new LinkedHashMap<>();
                     fileSystemPresenter.getHistoryFilesMap().remove(ds.getName());
                     historyFilesMap.putAll(fileSystemPresenter.getHistoryFilesMap());
-                    fileSystemPresenter.updateData(historyFilesMap, fileSystemPresenter.isJobInProgress());
+                    fileSystemPresenter.updateData(historyFilesMap, fileSystemPresenter.isJobInProgress(),"");
                 }
             }
 
             @Override
-            public void viewDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
+            public void viewDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset,String viewDsId) {
                 if (peptideShakerVisualizationDataset == null) {
                     return;
                 }
@@ -276,7 +276,7 @@ public abstract class PresenterContainer extends VerticalLayout {
                 Map<String, GalaxyFileObject> historyFilesMap = new LinkedHashMap<>();
                 historyFilesMap.put(peptideShakerVisualizationDataset.getProjectName(), peptideShakerVisualizationDataset);
                 historyFilesMap.putAll(fileSystemPresenter.getHistoryFilesMap());
-                fileSystemPresenter.updateData(historyFilesMap, fileSystemPresenter.isJobInProgress());
+                fileSystemPresenter.updateData(historyFilesMap, fileSystemPresenter.isJobInProgress(),peptideShakerVisualizationDataset.getGalaxyId());
                 interactivePSPRojectResultsPresenter.setSelectedDataset(peptideShakerVisualizationDataset);
 //                viewLayout(interactivePSPRojectResultsPresenter.getViewId());
             }
@@ -339,11 +339,11 @@ public abstract class PresenterContainer extends VerticalLayout {
     }
 
     public void viewDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
-        fileSystemPresenter.viewDataset(peptideShakerVisualizationDataset);
+        fileSystemPresenter.viewDataset(peptideShakerVisualizationDataset,"");
     }
 
     public void updateProjectOverviewPresenter(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
-        fileSystemPresenter.updateData(tempHistoryFilesMap, jobsInProgress);
+        fileSystemPresenter.updateData(tempHistoryFilesMap, jobsInProgress,"");
         searchGUIPeptideShakerToolPresenter.updateData(historyFilesMap);
     }
 

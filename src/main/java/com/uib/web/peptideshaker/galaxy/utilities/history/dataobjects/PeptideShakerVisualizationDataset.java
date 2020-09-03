@@ -235,6 +235,34 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
     private File uploadedPeptideFile;
     private boolean toShareDataset;
     private boolean externalDataset;
+    
+    private String uploadedFastaFileName;
+    private String uploadedProteinFileName;
+    private String uploadedPeptideFileName;
+
+    public String getUploadedFastaFileName() {
+        return uploadedFastaFileName;
+    }
+
+    public void setUploadedFastaFileName(String uploadedFastaFileName) {
+        this.uploadedFastaFileName = uploadedFastaFileName;
+    }
+
+    public String getUploadedProteinFileName() {
+        return uploadedProteinFileName;
+    }
+
+    public void setUploadedProteinFileName(String uploadedProteinFileName) {
+        this.uploadedProteinFileName = uploadedProteinFileName;
+    }
+
+    public String getUploadedPeptideFileName() {
+        return uploadedPeptideFileName;
+    }
+
+    public void setUploadedPeptideFileName(String uploadedPeptideFileName) {
+        this.uploadedPeptideFileName = uploadedPeptideFileName;
+    }
 
     /**
      * Constructor to initialise the main variables required to visualise
@@ -796,6 +824,9 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * @return FASTA file name
      */
     public String getFastaFileName() {
+        if (uploadedFastaFile != null) {
+            return uploadedFastaFile.getName();
+        }
         if (SearchGUIResultFile != null && SearchGUIResultFile.getOverview() != null) {
             return SearchGUIResultFile.getOverview().split("sequences:")[0].split("DB:")[1].trim();
         }
@@ -1026,6 +1057,22 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
         PSMFileInitialized = true;
         if (cuiFileSet != null) {
             initCUIFilesMap();
+        }
+    }
+
+    public String getProteinFileName() {
+        if (uploadedProteinFile != null) {
+            return uploadedProteinFile.getName();
+        } else {
+            return "Default_Protein_Report_with_non-validated_matches.txt";
+        }
+    }
+
+    public String getPeptidesFileName() {
+        if (uploadedPeptideFile != null) {
+            return uploadedPeptideFile.getName();
+        } else {
+            return "Default_Peptide_Report_with_non-validated_matches.txt";
         }
     }
 
