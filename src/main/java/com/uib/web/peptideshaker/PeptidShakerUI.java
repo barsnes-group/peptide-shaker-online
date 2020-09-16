@@ -144,7 +144,7 @@ public class PeptidShakerUI extends UI {
             VaadinSession.getCurrent().setAttribute("moffvirsion", moffVersion);
             VaadinSession.getCurrent().setAttribute("mobilescreenstyle", (mobileDeviceStyle));
             VaadinSession.getCurrent().setAttribute("smallscreenstyle", smallDeviceStyle);
-            int max = Integer.parseUnsignedInt(scx.getAttribute("maxusernumb") + "");
+            int max = Integer.parseUnsignedInt(scx.getInitParameter("maxusernumb") + "");
             if (VaadinSessionControlListener.getActiveSessions() < max) {
                 VaadinSession.getCurrent().getSession().setMaxInactiveInterval(60*15);
                 webPeptideShakerApp = new WebPeptideShakerApp(galaxyServerUrl);
