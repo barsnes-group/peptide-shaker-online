@@ -27,7 +27,7 @@
     </context-param>
     <context-param>
         <description>Test user API key for galaxy  </description>
-        <param-name>28c55020d491930777dba4a7bc92187a</param-name>
+        <param-name>testUserAPIKey</param-name>
         <param-value></param-value>
     </context-param>
     <context-param>
