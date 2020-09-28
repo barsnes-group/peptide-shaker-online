@@ -33,12 +33,12 @@
     <context-param>
         <description>peptide shaker tool version</description>
         <param-name>psvirsion</param-name>
-        <param-value>2.0.0_BETA.14</param-value>
+        <param-value>2.0.0_BETA.15</param-value>
     </context-param>
     <context-param>
         <description>SearchGUI tool version</description>
         <param-name>searchguivirsion</param-name>
-        <param-value>4.0.0_BETA.13</param-value>
+        <param-value>4.0.0_BETA.14</param-value>
     </context-param>
     <context-param>
         <description>MoFF tool version</description>
