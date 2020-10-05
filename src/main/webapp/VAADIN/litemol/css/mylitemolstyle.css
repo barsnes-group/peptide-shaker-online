@@ -102,6 +102,7 @@ html, body, .litemolbody, center {
 
 .lm-layout-region.lm-layout-main, .lm-viewport-host3d canvas {
     width: 100% !important;
+    height: 100% !important;
 }
 
 .progress {

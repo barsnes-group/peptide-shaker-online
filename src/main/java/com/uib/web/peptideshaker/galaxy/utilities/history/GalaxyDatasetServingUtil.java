@@ -41,7 +41,7 @@ public class GalaxyDatasetServingUtil {
     public GalaxyDatasetServingUtil(String galaxyLink, String userApiKey) {
         this.galaxyLink = galaxyLink;
         params = new GalaxyDatasetServingUtil.ParameterNameValue[]{
-                new GalaxyDatasetServingUtil.ParameterNameValue("key", userApiKey), new GalaxyDatasetServingUtil.ParameterNameValue("offset", ""),};
+                new GalaxyDatasetServingUtil.ParameterNameValue("key", userApiKey),};
 
     }
 
@@ -55,10 +55,10 @@ public class GalaxyDatasetServingUtil {
      * @param MGFFileName The MGF file name
      * @return MSnSpectrum spectrum object
      */
-    public Spectrum getSpectrum(long startIndex, String historyId, String MGFGalaxyID, String MGFFileName, int charge) {
+    public Spectrum getSpectrum(long startIndex,String historyId, String MGFGalaxyID, String MGFFileName, int charge) {
         try {
             StringBuilder locationBuilder = new StringBuilder(galaxyLink + "/api/histories/" + historyId + "/contents/" + MGFGalaxyID + "/display?");
-            params[1].value = (startIndex - 11) + "";
+//            params[1].value = (startIndex - 11) + "";
             for (int i = 0; i < params.length; i++) {
                 if (i > 0) {
                     locationBuilder.append('&');
@@ -69,6 +69,9 @@ public class GalaxyDatasetServingUtil {
             URL website = new URL(location);
             URLConnection conn = website.openConnection();
             conn.addRequestProperty("Accept", "application/json, text/javascript, */*; q=0.01");
+            conn.addRequestProperty("Accept-Range", "bytes");
+            conn.addRequestProperty("Range", "bytes="+startIndex+"-");//+(startIndex+1000)
+            
             double precursorMz = 0, precursorIntensity = 0, rt = -1.0, rt1 = -1, rt2 = -1;
             int[] precursorCharges = null;
             String scanNumber = "", spectrumTitle = "";
@@ -80,11 +83,11 @@ public class GalaxyDatasetServingUtil {
 
             try (BufferedReader bin = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"))) {
                 while ((line = bin.readLine()) != null) {
-                    JSONObject jsonObject = new JSONObject(line);
-                    if (jsonObject != JSONObject.NULL) {
-                        Map<String, Object> map = jsonToMap(jsonObject);
-                        line = map.get("ck_data").toString();
-                    }
+//                    JSONObject jsonObject = new JSONObject(line);
+//                    if (jsonObject != JSONObject.NULL) {
+//                        Map<String, Object> map = jsonToMap(jsonObject);
+//                        line = map.get("ck_data").toString();
+//                    }
                     String[] spectrumData = line.split("\n");
                     for (String str : spectrumData) {
                         line = str;
@@ -179,6 +182,8 @@ public class GalaxyDatasetServingUtil {
                                             a -> a
                                     )
                                     .toArray();
+                            bin.close();
+                            conn.getInputStream().close();
                             return new Spectrum(precursor, mzArray, intensityArray);
 
                         } else if (insideSpectrum && !line.equals("")) {
@@ -197,7 +202,7 @@ public class GalaxyDatasetServingUtil {
 
                 }
 
-            } catch (JSONException ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
 

@@ -39,6 +39,10 @@ mylitemollibrary.LiteMolComponent = function (element) {
 
     this.setValue = function (value) {
         try {
+            var mobilemode = isMobileMode();
+            if (parentElement === null && mobilemode) {
+                locateParentElement();
+            }
             if ((value === null) || (value === undefined) || latestValue.includes(value)) {
                 return;
             }
@@ -51,7 +55,8 @@ mylitemollibrary.LiteMolComponent = function (element) {
                 }
                 tquery = value.split("-_-")[1];
                 var newid = (value.split("-_-")[2] === 'true');
-                if (!init) {
+                alert(parentElement)
+                if (!init && isParentVisible()) {
                     init = true;
                     initplugin();
                 }
@@ -65,8 +70,45 @@ mylitemollibrary.LiteMolComponent = function (element) {
         }
 
     };
-    window.alert = function () {
+    var parentElement = null;
+    function  isParentVisible() {
+        if (parentElement.classList.contains('v-absolutelayout-wrapper-hidepanel')) {
+            return false;
+        } else {
+            return true;
+        }
     };
+    
+        function isDescendant(parent, child) {
+            var node = child.parentNode;
+            while (node !== null) {
+                if (node === parent) {
+                    return true;
+                }
+                node = node.parentNode;
+            }
+            return false;
+        };
+        function  isMobileMode() {
+        var mobileMUI = document.getElementsByClassName("v-ui")[0];
+        if (!mobileMUI.classList.contains('mobilestyle')) {
+            return true;
+        }
+        return false;
+    };
+    function locateParentElement() {
+        var containers = document.getElementsByClassName("v-absolutelayout-wrapper v-absolutelayout-wrapper-transitionallayout");
+        for (i = 0; i < containers.length; i++) {
+            var elem = containers[i]
+            if (isDescendant(elem, document.getElementById('app'))) {
+                parentElement = elem;
+                alert("found parent element")
+            }
+        }
+    };
+    
+//    window.alert = function () {
+//    };
 // Default implementation of the click handler
     this.click = function () {
         alert("Error: Must implement click() method");
@@ -158,6 +200,8 @@ mylitemollibrary.LiteMolComponent = function (element) {
         hideWaterVar = !hideWaterVar;
         setTimeout(excutequery(true), 1000);
     }
+    window.alert = function () {
+    };
 
 
 };
