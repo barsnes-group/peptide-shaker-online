@@ -211,7 +211,7 @@ public class GalaxyDatasetServingUtil {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        System.out.println("we will return null spectrum");
+        System.out.println("Error: 214 : null spectrum is returned");
         return null;
     }
 

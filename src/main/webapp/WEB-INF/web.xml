@@ -11,11 +11,11 @@
         <listener-class>com.uib.web.peptideshaker.listeners.VaadinContextListener</listener-class>
     </listener>
     <context-param>
-        <description>link to csf-pr available proteins list https://proteomics.uib.no/csf-pr/VAADIN/</description>
+        <description>link to csf-pr available proteins list</description>
         <param-name>csfprservice</param-name>
         <param-value>https://proteomics.uib.no/csf-pr/VAADIN/</param-value>
     </context-param>
-     <context-param>
+    <context-param>
         <description>maximum number of users</description>
         <param-name>maxusernumb</param-name>
         <param-value>15</param-value>
@@ -23,7 +23,7 @@
     <context-param>
         <description>galaxy url</description>
         <param-name>galaxyServerUrl</param-name>
-        <param-value>http://158.39.74.194/</param-value>
+        <param-value></param-value>
     </context-param>
     <context-param>
         <description>Test user API key for galaxy  </description>
