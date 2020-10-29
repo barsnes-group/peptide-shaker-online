@@ -79559,6 +79559,11 @@ SOFTWARE.
             };
             Scene.prototype.handleResize = function () {
                 var w = this.parentElement.clientWidth, h = this.parentElement.clientHeight;
+                var mobileMUI = document.getElementsByClassName("v-ui")[0];
+                if (mobileMUI.classList.contains('mobilestyle') && w>(h*3)) {
+                   w = 2*h;
+                }
+                
                 this.camera.updateSize(w, h);
                 if (this.renderState.height === h && this.renderState.width === w) {
                     this.renderState.resizing = false;
@@ -79566,6 +79571,8 @@ SOFTWARE.
                 }
                 this.renderState.width = w;
                 this.renderState.height = h;
+                
+
                 this.renderer.setSize(w, h);
                 this.pickTarget = new Visualization.THREE.WebGLRenderTarget(w, h, { format: Visualization.THREE.RGBAFormat, minFilter: Visualization.THREE.LinearFilter });
                 this.pickTarget.generateMipmaps = false;

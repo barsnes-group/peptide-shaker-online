@@ -39,11 +39,15 @@ mylitemollibrary.LiteMolComponent = function (element) {
 
     this.setValue = function (value) {
         try {
-            var mobilemode = isMobileMode();
-            if (parentElement === null && mobilemode) {
-                locateParentElement();
+
+            if ((typeof value === 'undefined')) {
+                return;
             }
-            if ((value === null) || (value === undefined) || latestValue.includes(value)) {
+            //  var mobilemode = isMobileMode();
+            //  if (parentElement === null && mobilemode) {
+            locateParentElement();
+            // }
+            if (parentElement === null || (value === null) || (value === undefined) || latestValue.includes(value)) {
                 return;
             }
             latestValue = value + "";
@@ -55,12 +59,15 @@ mylitemollibrary.LiteMolComponent = function (element) {
                 }
                 tquery = value.split("-_-")[1];
                 var newid = (value.split("-_-")[2] === 'true');
-                alert(parentElement)
                 if (!init && isParentVisible()) {
                     init = true;
                     initplugin();
+
                 }
-                excutequery(newid);
+
+                if (init) {
+                    excutequery(newid);
+                }
             } else if (value.includes("update-_-")) {
                 latestValue = "";
                 redraw();
@@ -72,41 +79,48 @@ mylitemollibrary.LiteMolComponent = function (element) {
     };
     var parentElement = null;
     function  isParentVisible() {
-        if (parentElement.classList.contains('v-absolutelayout-wrapper-hidepanel')) {
+        if (parentElement === null) {
+            alert('parent elemint was null')
+        } else if (parentElement.classList.contains('v-absolutelayout-wrapper-hidepanel')) {
             return false;
         } else {
             return true;
         }
-    };
-    
-        function isDescendant(parent, child) {
-            var node = child.parentNode;
-            while (node !== null) {
-                if (node === parent) {
-                    return true;
-                }
-                node = node.parentNode;
+    }
+    ;
+
+    function isDescendant(parent, child) {
+        var node = child.parentNode;
+        while (node !== null) {
+            if (node === parent) {
+                return true;
             }
-            return false;
-        };
-        function  isMobileMode() {
-        var mobileMUI = document.getElementsByClassName("v-ui")[0];
-        if (!mobileMUI.classList.contains('mobilestyle')) {
-            return true;
+            node = node.parentNode;
         }
         return false;
-    };
+    }
+    ;
+    function  isMobileMode() {
+//        var mobileMUI = document.getElementsByClassName("v-ui")[0];
+//        if (mobileMUI.classList.contains('mobilestyle')) {
+//            return true;
+//        }
+        return true;
+    }
+    ;
     function locateParentElement() {
         var containers = document.getElementsByClassName("v-absolutelayout-wrapper v-absolutelayout-wrapper-transitionallayout");
         for (i = 0; i < containers.length; i++) {
             var elem = containers[i]
             if (isDescendant(elem, document.getElementById('app'))) {
                 parentElement = elem;
-                alert("found parent element")
+//                alert("found parent element")
             }
         }
-    };
-    
+//        alert('parent is found *?? '+parentElement)
+    }
+    ;
+
 //    window.alert = function () {
 //    };
 // Default implementation of the click handler
@@ -142,12 +156,17 @@ mylitemollibrary.LiteMolComponent = function (element) {
         try {
             var y = document.getElementsByClassName("lm-btn lm-btn-link");
             updatingBtn = y[4];
-            updatingBtn.setAttribute("style", " display:none !important; visibility:hidden;");
+            if (updatingBtn !== null && (typeof updatingBtn !== 'undefined')) {
+                updatingBtn.setAttribute("style", " display:none !important; visibility:hidden;");
+            }
+
             hideWaterBtn = y[3];
-            hideWaterBtn.removeChild(hideWaterBtn.firstChild);
-            hideWaterBtn.innerHTML = "<span class='lm-icon'>&#127778;</span>";
-            hideWaterBtn.onclick = hideWater;
-            hideWaterBtn.title = 'Show/Hide water, balls & sticks';
+            if (hideWaterBtn !== null && (typeof hideWaterBtn !== 'undefined')) {
+                hideWaterBtn.removeChild(hideWaterBtn.firstChild);
+                hideWaterBtn.innerHTML = "<span class='lm-icon'>&#127778;</span>";
+                hideWaterBtn.onclick = hideWater;
+                hideWaterBtn.title = 'Show/Hide water, balls & sticks';
+            }
             var app = document.getElementById("app");
             app.setAttribute("style", " z-index:1 !important; background-color:transparent !important;");
             app.style.zIndex = 1;
@@ -200,8 +219,8 @@ mylitemollibrary.LiteMolComponent = function (element) {
         hideWaterVar = !hideWaterVar;
         setTimeout(excutequery(true), 1000);
     }
-    window.alert = function () {
-    };
+//    window.alert = function () {
+//    };
 
 
 };

@@ -18,6 +18,7 @@ public class LiteMOL3DComponent extends VerticalLayout {
 
     private final LiteMolComponent proteinStructurePanel;
     private String pdbId;
+    private int litemolPluginInit = 0;
 
     public LiteMOL3DComponent() {
         LiteMOL3DComponent.this.setSizeFull();
@@ -43,6 +44,10 @@ public class LiteMOL3DComponent extends VerticalLayout {
             String json = mapper.writeValueAsString(jsonQuery);
             proteinStructurePanel.setValue("query-_-" + json + "-_-" + (!pdbId.equalsIgnoreCase(LiteMOL3DComponent.this.pdbId)));
             LiteMOL3DComponent.this.pdbId = pdbId;
+            if (litemolPluginInit==1) {
+                proteinStructurePanel.setValue("query-_-" + json + "-_-" + true);
+            }
+            litemolPluginInit++;
         } catch (IOException ex) {
             ex.printStackTrace();
         }
