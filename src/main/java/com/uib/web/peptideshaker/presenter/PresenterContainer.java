@@ -158,6 +158,7 @@ public abstract class PresenterContainer extends VerticalLayout {
             public void viewToShareDataset() {
                 String galaxyServerUrl = VaadinSession.getCurrent().getAttribute("galaxyServerUrl").toString();
                 String userDataFolderUrl = VaadinSession.getCurrent().getAttribute("userDataFolderUrl").toString();
+                System.out.println("to show shared ds");
                 PresenterContainer.this.viewToShareDataset(galaxyServerUrl, userDataFolderUrl);
             }
 

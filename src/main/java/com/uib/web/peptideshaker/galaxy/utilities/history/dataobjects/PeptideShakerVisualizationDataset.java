@@ -13,6 +13,7 @@ import com.compomics.util.experiment.mass_spectrometry.spectra.Spectrum;
 import com.compomics.util.io.file.SerializationUtils;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.advanced.SequenceMatchingParameters;
+import com.itextpdf.text.pdf.PdfName;
 import com.uib.web.peptideshaker.galaxy.utilities.history.FastaFileWebService;
 import com.uib.web.peptideshaker.galaxy.utilities.history.GalaxyDatasetServingUtil;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.utilities.TableHeaderConstatnts;
@@ -101,7 +102,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * SearchGUI results file.
      */
     private GalaxyFileObject SearchGUIResultFile;
-    private String indexedMgfGalaxyId;
+    private String indexedMgfGalaxyId="";
     /**
      * PeptideShaker results file (compressed folder) ID on Galaxy Server.
      */
@@ -146,7 +147,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * Output MOFF quant file representation on Online PeptideShaker.
      */
     private Set<GalaxyTransferableFile> moff_quant_files;
-    private String moffGalaxyId;
+    private String moffGalaxyId="";
     private boolean quantDataset = false;
     /**
      * FASTA utilities that allow getting protein FASTA information using the
@@ -157,7 +158,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * Zip Folder contains mgf index files (cui).
      */
     private Set<GalaxyTransferableFile> cuiFileSet;
-    private String cuiListGalaxyId;
+    private String cuiListGalaxyId="empty";
     /**
      * The sequence matching options.
      */

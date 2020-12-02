@@ -31,6 +31,7 @@ public class VaadinSessionControlListener {
 
         @Override
         public void sessionDestroy(SessionDestroyEvent event) {
+            System.out.println("at seesion control to distroy");
                 decSessionCounter();
         }
     }

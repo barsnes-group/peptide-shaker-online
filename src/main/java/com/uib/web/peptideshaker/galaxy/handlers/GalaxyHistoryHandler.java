@@ -684,6 +684,8 @@ public abstract class GalaxyHistoryHandler {
                         org.json.simple.JSONObject json = (org.json.simple.JSONObject) parser.parse(deCrypted);
                         Map<String, Object> dsInformationMap = jsonToMap(json);
 
+                        System.out.println("dsInformationMap "+dsInformationMap.keySet());
+                        System.out.println("dsInformationMap2 "+dsInformationMap);
                         user_folder = new File(userDataFolderUrl, dsInformationMap.get("apiKey").toString());
                         user_folder.mkdir();
                         galaxyDatasetServingUtil = new GalaxyDatasetServingUtil(galaxyServerUrl, dsInformationMap.get("apiKey").toString());
