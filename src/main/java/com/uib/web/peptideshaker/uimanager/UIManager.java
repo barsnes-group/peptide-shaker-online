@@ -1,5 +1,6 @@
-package com.uib.web.peptideshaker.presenter;
+package com.uib.web.peptideshaker.uimanager;
 
+import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
 import com.uib.web.peptideshaker.presenter.core.ButtonWithLabel;
 import com.uib.web.peptideshaker.presenter.core.SmallSideBtn;
 import com.vaadin.event.LayoutEvents;
@@ -16,7 +17,7 @@ import java.util.Map;
  *
  * @author Yehia Farag
  */
-public class PresenterManager implements LayoutEvents.LayoutClickListener {
+public class UIManager implements LayoutEvents.LayoutClickListener {
 
     /**
      * Top layout container.
@@ -48,25 +49,20 @@ public class PresenterManager implements LayoutEvents.LayoutClickListener {
      */
     private final Map<String, ViewableFrame> visualizationMap = new LinkedHashMap<>();
     private final Map<String, SmallSideBtn> presenterBtnsMap = new LinkedHashMap<>();
-    int x = 0;
-    int y = 0;
-    /**
-     * The column index number for the presenter buttons container
-     */
-    private int column = 0;
-    /**
-     * The rows index number for the presenter buttons container
-     */
-    private int rows = 0;
-    private boolean startDrag = false;
-    private long startX = 0;
-    private long endX = 0;
+    private int x = 0;
+    private int y = 0;
+
     private LayoutEvents.LayoutClickEvent lastEvent;
 
     /**
      * Constructor to initialise the layout.
+     *
+     * @param subViewButtonsActionContainer
+     * @param topMiddleLayoutContainer
+     * @param presenterButtonsContainerLayout
+     * @param subPresenterButtonsContainer
      */
-    public PresenterManager(AbsoluteLayout subViewButtonsActionContainer, AbsoluteLayout topMiddleLayoutContainer, AbsoluteLayout presenterButtonsContainerLayout, AbsoluteLayout subPresenterButtonsContainer) {
+    public UIManager(AbsoluteLayout subViewButtonsActionContainer, AbsoluteLayout topMiddleLayoutContainer, AbsoluteLayout presenterButtonsContainerLayout, AbsoluteLayout subPresenterButtonsContainer) {
         this.subViewButtonsActionContainer = subViewButtonsActionContainer;
         this.topMiddleLayoutContainer = topMiddleLayoutContainer;
         this.presenterButtonsContainerLayout = presenterButtonsContainerLayout;
@@ -74,9 +70,9 @@ public class PresenterManager implements LayoutEvents.LayoutClickListener {
 
     }
 
-    public AbsoluteLayout getPresenterButtonsContainerLayout() {
-        return presenterButtonsContainerLayout;
-    }
+//    public AbsoluteLayout getPresenterButtonsContainerLayout() {
+//        return presenterButtonsContainerLayout;
+//    }
 
     public AbsoluteLayout getSubViewButtonsActionContainer() {
         return subViewButtonsActionContainer;
@@ -105,7 +101,7 @@ public class PresenterManager implements LayoutEvents.LayoutClickListener {
             presenterBtnsMap.remove(view.getViewId());
             ViewableFrame tview = visualizationMap.get(view.getViewId());
             AbstractOrderedLayout cBtn = tview.getMainPresenterButton();
-            cBtn.removeLayoutClickListener(PresenterManager.this);
+            cBtn.removeLayoutClickListener(UIManager.this);
             subViewButtonsActionContainer.removeComponent(tview.getSubViewButtonsActionContainerLayout());
             topMiddleLayoutContainer.removeComponent(tview.getMainView());
             y = presenterButtonsContainerLayout.getPosition(cBtn).getTopValue().intValue();
@@ -119,9 +115,9 @@ public class PresenterManager implements LayoutEvents.LayoutClickListener {
 
         subViewButtonsActionContainer.addComponent(view.getSubViewButtonsActionContainerLayout());
         topMiddleLayoutContainer.addComponent(view.getMainView());
-        view.getSmallPresenterControlButton().addLayoutClickListener(PresenterManager.this);
+        view.getSmallPresenterControlButton().addLayoutClickListener(UIManager.this);
         if (!view.getViewId().equalsIgnoreCase("com.uib.web.peptideshaker.presenter.WelcomePagePresenter")) {
-            view.getMainPresenterButton().addLayoutClickListener(PresenterManager.this);
+            view.getMainPresenterButton().addLayoutClickListener(UIManager.this);
             presenterButtonsContainerLayout.addComponent(view.getMainPresenterButton(), "left:" + x + "%;top:" + y + "%;");
             y += 50;
             if (y == 100) {
@@ -130,7 +126,7 @@ public class PresenterManager implements LayoutEvents.LayoutClickListener {
             }
 
         } else {
-            view.getSmallPresenterControlButton().addLayoutClickListener(PresenterManager.this);
+            view.getSmallPresenterControlButton().addLayoutClickListener(UIManager.this);
         }
         reOrganizePresenterButtons();
     }
@@ -171,6 +167,9 @@ public class PresenterManager implements LayoutEvents.LayoutClickListener {
         lastEvent = event;
         Component com = event.getComponent();
         String selectedBtnData;
+        if (com == null) {
+            return;
+        }
         if (com instanceof SmallSideBtn) {
             selectedBtnData = ((SmallSideBtn) com).getData().toString();
         } else {
@@ -202,6 +201,5 @@ public class PresenterManager implements LayoutEvents.LayoutClickListener {
             }
         }
     }
-
 
 }

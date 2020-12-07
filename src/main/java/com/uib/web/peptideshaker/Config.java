@@ -5,6 +5,7 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import javax.servlet.ServletContext;
@@ -14,11 +15,16 @@ import javax.servlet.ServletContext;
  *
  * @author Yehia Mokhtar Farag
  */
-public class Config {
+public class Config implements Serializable{
 
     private boolean mobileDeviceStyle;
     private boolean smallDeviceStyle;
     private boolean portraitScreenMode;
+    private String testUserAPIKey;
+
+    public String getTestUserAPIKey() {
+        return testUserAPIKey;
+    }
 
     public boolean isSmallDeviceStyle() {
         return smallDeviceStyle;
@@ -31,7 +37,7 @@ public class Config {
     public void setPortraitScreenMode(boolean portraitScreenMode) {
         this.portraitScreenMode = portraitScreenMode;
     }
-    private int maximumAllowedUsers ;
+    private int maximumAllowedUsers;
 
     public boolean isMobileDeviceStyle() {
         return mobileDeviceStyle;
@@ -54,25 +60,24 @@ public class Config {
         /**
          * Initialise the context parameters and store them in VaadinSession.
          */
-        
-         Path path;
-         String localFileSystemFolderPath;
-            try {
-                path = Files.createTempDirectory("userTempFolder");
-                path.toFile().deleteOnExit();
-                localFileSystemFolderPath = path.toFile().getAbsolutePath();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                return;
-            }
-            
-        
+
+        Path path;
+        String localFileSystemFolderPath;
+        try {
+            path = Files.createTempDirectory("userTempFolder");
+            path.toFile().deleteOnExit();
+            localFileSystemFolderPath = path.toFile().getAbsolutePath();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return;
+        }
+
         ServletContext scx = VaadinServlet.getCurrent().getServletContext();
         VaadinSession.getCurrent().setAttribute("userDataFolderUrl", localFileSystemFolderPath);
         VaadinSession.getCurrent().getSession().setAttribute("userDataFolderUrl", localFileSystemFolderPath);
-        
+
         VaadinSession.getCurrent().setAttribute("ctxPath", scx.getContextPath());
-        String testUserAPIKey = (scx.getInitParameter("testUserAPIKey"));
+        testUserAPIKey =(scx.getInitParameter("testUserAPIKey"));
         VaadinSession.getCurrent().setAttribute("testUserAPIKey", testUserAPIKey);
         galaxyServerUrl = (scx.getInitParameter("galaxyServerUrl"));
         VaadinSession.getCurrent().setAttribute("galaxyServerUrl", galaxyServerUrl);
@@ -96,12 +101,11 @@ public class Config {
         VaadinSession.getCurrent().setAttribute("psVersion", psVersion);
         VaadinSession.getCurrent().setAttribute("searchGUIversion", searchGUIversion);
         VaadinSession.getCurrent().setAttribute("moffvirsion", moffVersion);
-         maximumAllowedUsers = Integer.parseUnsignedInt(scx.getInitParameter("maxusernumb") + "");
-        
-        
-           VaadinSession.getCurrent().setAttribute("mobilescreenstyle", (mobileDeviceStyle));
-            VaadinSession.getCurrent().setAttribute("smallscreenstyle", smallDeviceStyle);
-            
+        maximumAllowedUsers = Integer.parseUnsignedInt(scx.getInitParameter("maxusernumb") + "");
+
+        VaadinSession.getCurrent().setAttribute("mobilescreenstyle", (mobileDeviceStyle));
+        VaadinSession.getCurrent().setAttribute("smallscreenstyle", smallDeviceStyle);
+
         String brwserApp = Page.getCurrent().getWebBrowser().getBrowserApplication();
         int screenWidth = Page.getCurrent().getBrowserWindowWidth();
         int screenHeigh = Page.getCurrent().getBrowserWindowHeight();

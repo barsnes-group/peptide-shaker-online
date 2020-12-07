@@ -666,12 +666,12 @@ public abstract class GalaxyHistoryHandler {
             this.invokeTracker = keepfollow;
             try {
                 String requestToShare = Page.getCurrent().getLocation().toString();
-                if (requestToShare.contains("toShare_-_")) {
+                if (requestToShare.contains("toShare;")) {
                     int dsKey = -1;
                     final LinkUtil linkUtil = new LinkUtil();
-                    if (requestToShare.split("toShare_-_").length > 1) {
+                    if (requestToShare.split("toShare;").length > 1) {
                         try {
-                            String dsKeyAsString = requestToShare.split("toShare_-_")[1];
+                            String dsKeyAsString = requestToShare.split("toShare;")[1];
                             dsKey = Integer.valueOf(linkUtil.decrypt(dsKeyAsString));
                         } catch (NumberFormatException e) {
                             System.out.println("Error: 688 - " + e.getCause().getMessage());
@@ -767,7 +767,7 @@ public abstract class GalaxyHistoryHandler {
                         historyFilesMap.put(externaldataset.getProjectName() + "_ExternalDS", externaldataset);
                         return;
                     }
-                    Page.getCurrent().open(requestToShare.split("toShare_-_")[0] + ".error", "");
+                    Page.getCurrent().open(requestToShare.split("toShare;")[0] + ".error", "");
                     return;
                 }
 

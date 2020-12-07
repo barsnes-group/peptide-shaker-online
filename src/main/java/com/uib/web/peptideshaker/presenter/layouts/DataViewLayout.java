@@ -255,7 +255,7 @@ public abstract class DataViewLayout extends Panel {
                     String appName = VaadinSession.getCurrent().getAttribute("appName") + "";
                     String url = Page.getCurrent().getLocation().toString().split(appName)[0] + appName + "/";
                     String encryptedDsKey = linkUtil.encrypt(dsKey + "");
-                    link = url + "toShare_-_" + encryptedDsKey;
+                    link = url + "toShare;" + encryptedDsKey;
 
                 }
                 ClipboardUtil shareLabel = new ClipboardUtil(link);

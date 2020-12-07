@@ -1,8 +1,9 @@
-package com.uib.web.peptideshaker.presenter;
+package com.uib.web.peptideshaker.ui.views;
 
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
+import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
 import com.uib.web.peptideshaker.presenter.core.ButtonWithLabel;
 import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
 import com.uib.web.peptideshaker.presenter.core.SmallSideBtn;
@@ -27,7 +28,7 @@ import java.util.Set;
  *
  * @author Yehia Farag
  */
-public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout implements ViewableFrame, LayoutEvents.LayoutClickListener {
+public abstract class SearchGUIPSWorkflowView extends VerticalLayout implements ViewableFrame, LayoutEvents.LayoutClickListener {
 
     /**
      * The tools layout side button.
@@ -49,22 +50,22 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
     /**
      * Initialise the web tool main attributes
      */
-    public SearchGUIPeptideShakerToolPresenter() {
-        SearchGUIPeptideShakerToolPresenter.this.setSizeFull();
-        SearchGUIPeptideShakerToolPresenter.this.setStyleName("activelayout");
-        SearchGUIPeptideShakerToolPresenter.this.addStyleName("integratedframe");
+    public SearchGUIPSWorkflowView() {
+        SearchGUIPSWorkflowView.this.setSizeFull();
+        SearchGUIPSWorkflowView.this.setStyleName("activelayout");
+        SearchGUIPSWorkflowView.this.addStyleName("integratedframe");
         initLayout();
     }
 
     private void initLayout() {
         smallPresenterButton = new SmallSideBtn("img/searchguiblue.png");//spectra2.pngimg/searchgui-medium-shadow-2.png
 
-        smallPresenterButton.setData(SearchGUIPeptideShakerToolPresenter.this.getViewId());
+        smallPresenterButton.setData(SearchGUIPSWorkflowView.this.getViewId());
         smallPresenterButton.setDescription("Search and process data (SearchGUI and PeptideShaker)");
         smallPresenterButton.addStyleName("smalltoolsbtn");
         smallPresenterButton.addStyleName("searchguiicon");
         mainPresenterBtn = new ButtonWithLabel("Analyze Data</br><font>Search and process data</font>", 1);//spectra2.png
-        mainPresenterBtn.setData(SearchGUIPeptideShakerToolPresenter.this.getViewId());
+        mainPresenterBtn.setData(SearchGUIPSWorkflowView.this.getViewId());
         mainPresenterBtn.updateIconResource(new ThemeResource("img/searchguiblue.png"));//img/workflow3.png
         mainPresenterBtn.addStyleName("searchguiicon");
         btnContainer = new VerticalLayout();
@@ -82,18 +83,18 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
 //                    return;
 //                }
 
-                SearchGUIPeptideShakerToolPresenter.this.execute_SearchGUI_PeptideShaker_WorkFlow(projectName, fastaFileId, searchParameterFileId, inputFilesIdsList, searchEnginesList, searchParam, quant);
+                SearchGUIPSWorkflowView.this.execute_SearchGUI_PeptideShaker_WorkFlow(projectName, fastaFileId, searchParameterFileId, inputFilesIdsList, searchEnginesList, searchParam, quant);
                 this.reset();
             }
 
             @Override
             public boolean uploadToGalaxy(PluploadFile[] toUploadFiles) {
-                return SearchGUIPeptideShakerToolPresenter.this.uploadToGalaxy(toUploadFiles);
+                return SearchGUIPSWorkflowView.this.uploadToGalaxy(toUploadFiles);
             }
 
             @Override
             public Map<String, GalaxyTransferableFile> saveSearchGUIParameters(IdentificationParameters searchParameters, boolean isNEw) {
-                return SearchGUIPeptideShakerToolPresenter.this.saveSearchGUIParameters(searchParameters, isNEw);
+                return SearchGUIPSWorkflowView.this.saveSearchGUIParameters(searchParameters, isNEw);
             }
 
         };
@@ -106,7 +107,7 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
         workFlowBtn.setData("workflow");
         btnContainer.addComponent(workFlowBtn);
         btnContainer.setComponentAlignment(workFlowBtn, Alignment.TOP_CENTER);
-        workFlowBtn.addLayoutClickListener(SearchGUIPeptideShakerToolPresenter.this);
+        workFlowBtn.addLayoutClickListener(SearchGUIPSWorkflowView.this);
         workFlowBtn.setSelected(true);
 
         VerticalLayout toolViewFrame = new VerticalLayout();
@@ -122,7 +123,7 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
         toolViewFrame.addComponent(toolViewFrameContent);
         toolViewFrameContent.addComponent(peptideshakerToolInputForm);
 
-        SearchGUIPeptideShakerToolPresenter.this.minimizeView();
+        SearchGUIPSWorkflowView.this.minimizeView();
         this.mainPresenterBtn.setDescription("Search and process data (SearchGUI and PeptideShaker)");
     }
 
@@ -217,7 +218,7 @@ public abstract class SearchGUIPeptideShakerToolPresenter extends VerticalLayout
      */
     @Override
     public String getViewId() {
-        return SearchGUIPeptideShakerToolPresenter.class.getName();
+        return SearchGUIPSWorkflowView.class.getName();
     }
 
     /**

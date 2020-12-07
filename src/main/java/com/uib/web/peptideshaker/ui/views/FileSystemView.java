@@ -1,7 +1,8 @@
-package com.uib.web.peptideshaker.presenter;
+package com.uib.web.peptideshaker.ui.views;
 
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
+import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
 import com.uib.web.peptideshaker.presenter.core.ButtonWithLabel;
 import com.uib.web.peptideshaker.presenter.core.Help;
 import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
@@ -22,7 +23,7 @@ import java.util.Map;
  *
  * @author Yehia Farag
  */
-public abstract class FileSystemPresenter extends VerticalLayout implements ViewableFrame, LayoutEvents.LayoutClickListener {
+public abstract class FileSystemView extends VerticalLayout implements ViewableFrame, LayoutEvents.LayoutClickListener {
 
     /**
      * The small side button (normal size screen).
@@ -54,24 +55,24 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
     /**
      * Constructor to initialise the web tool main attributes.
      */
-    public FileSystemPresenter() {
-        FileSystemPresenter.this.setSizeFull();
-        FileSystemPresenter.this.setStyleName("activelayout");
-        FileSystemPresenter.this.addStyleName("hidelowerpanel");
+    public FileSystemView() {
+        FileSystemView.this.setSizeFull();
+        FileSystemView.this.setStyleName("activelayout");
+        FileSystemView.this.addStyleName("hidelowerpanel");
 
         this.smallPresenterButton = new SmallSideBtn("img/globeearthanimation.png");//VaadinIcons.GLOBE
-        this.smallPresenterButton.setData(FileSystemPresenter.this.getViewId());
+        this.smallPresenterButton.setData(FileSystemView.this.getViewId());
         this.smallPresenterButton.addStyleName("glubimg");
         smallPresenterButton.setDescription("Projects and available data files");
         this.smallPresenterButton.addStyleName("dataoverviewsmallbtn");
         this.mainPresenterButton = new ButtonWithLabel("Projects Overview</br><font>Available projects and data files</font>", 1);
-        this.mainPresenterButton.setData(FileSystemPresenter.this.getViewId());
+        this.mainPresenterButton.setData(FileSystemView.this.getViewId());
         this.mainPresenterButton.setDescription("Projects and available data files");
         this.mainPresenterButton.updateIconResource(new ThemeResource("img/globeearthanimation.png"));
         this.mainPresenterButton.addStyleName("glubimg");
         this.btnsLayoutMap = new LinkedHashMap<>();
         this.initLayout();
-        FileSystemPresenter.this.minimizeView();
+        FileSystemView.this.minimizeView();
     }
 
     /**
@@ -93,7 +94,7 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
         viewDataBtn.setData("datasetoverview");
         leftSideButtonsContainer.addComponent(viewDataBtn);
         leftSideButtonsContainer.setComponentAlignment(viewDataBtn, Alignment.TOP_CENTER);
-        viewDataBtn.addLayoutClickListener(FileSystemPresenter.this);
+        viewDataBtn.addLayoutClickListener(FileSystemView.this);
 
         VerticalLayout dataContainerLayout = initDataViewTableLayout();
         btnsLayoutMap.put(viewDataBtn, dataContainerLayout);
@@ -137,17 +138,17 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
         dataLayout = new DataViewLayout() {
             @Override
             public void deleteDataset(GalaxyFileObject ds) {
-                FileSystemPresenter.this.deleteDataset(ds);
+                FileSystemView.this.deleteDataset(ds);
             }
 
             @Override
             public void viewDataset(PeptideShakerVisualizationDataset ds) {
-                FileSystemPresenter.this.viewDataset(ds,"");
+                FileSystemView.this.viewDataset(ds,"");
             }
 
             @Override
             public int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey) {
-                return FileSystemPresenter.this.insertDatsetLinkToShare(dsDetails, dsUniqueKey);
+                return FileSystemView.this.insertDatsetLinkToShare(dsDetails, dsUniqueKey);
             }
 
         };
@@ -257,7 +258,7 @@ public abstract class FileSystemPresenter extends VerticalLayout implements View
      */
     @Override
     public String getViewId() {
-        return FileSystemPresenter.class.getName();
+        return FileSystemView.class.getName();
     }
 
     /**

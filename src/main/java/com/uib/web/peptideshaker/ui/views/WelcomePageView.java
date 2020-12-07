@@ -1,8 +1,11 @@
-package com.uib.web.peptideshaker.presenter;
+package com.uib.web.peptideshaker.ui.views;
 
+import com.uib.web.peptideshaker.AppManagmentBean;
+import com.uib.web.peptideshaker.model.CONSTANT;
+import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
 import com.uib.web.peptideshaker.presenter.core.ButtonWithLabel;
 import com.uib.web.peptideshaker.presenter.core.SmallSideBtn;
-import com.vaadin.event.FieldEvents;
+import com.uib.web.peptideshaker.ui.views.modal.GalaxyLoginPopup;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.*;
@@ -12,18 +15,16 @@ import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class represents the welcome page for Online PeptideShaker
  *
  * @author Yehia Farag
  */
-public abstract class WelcomePagePresenter extends VerticalLayout implements ViewableFrame {
+public class WelcomePageView extends VerticalLayout implements ViewableFrame {
 
     /**
      * The header layout panel.
@@ -33,38 +34,32 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
      * The header layout container layout.
      */
     private final HorizontalLayout headerPanelContentLayout;
-    /**
-     * The body layout panel.
-     */
-    private final VerticalLayout userConnectionPanel;
+
     /**
      * The connecting to galaxy progress label.
      */
-    private final Label connectingLabel;
+//    private final Label connectingLabel;
     /**
      * Galaxy login with API key button
      */
-    private final ButtonWithLabel galaxyLoginConnectionBtnLabel;
+//    private final ButtonWithLabel galaxyLoginConnectionBtnLabel;
     /**
      * Test user galaxy API key.
      */
     private final String testUserLogin = "test_User_Login";
-    /**
-     * Not valid API error message .
-     */
-    private final String apiErrorMessage = "Wrong API please try again";
+
     /**
      * Connection to galaxy statues label.
      */
-    private final ButtonWithLabel galaxyLoginBtn;
-    /**
-     * Galaxy login controls layout.
-     */
-    private final VerticalLayout galaxyLoginLayout;
-    /**
-     * User API login field.
-     */
-    private final TextField userAPIFeald;
+    private final GalaxyLoginPopup galaxyLoginBtn;
+//    /**
+//     * Galaxy login controls layout.
+//     */
+//    private final VerticalLayout galaxyLoginLayout;
+//    /**
+//     * User API login field.
+//     */
+//    private final TextField userAPIFeald;
     /**
      * The side home button .
      */
@@ -86,35 +81,36 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
     /**
      * Connection to galaxy progress window
      */
-    private final Window connectinoWindow;
+//    private final Window connectinoWindow;
     /**
      * Unique presenter id
      */
-    private final String viewId = WelcomePagePresenter.class.getName();
+    private final String viewId = WelcomePageView.class.getName();
     /**
      * Executor service to execute connection task to galaxy server.
      */
     private ExecutorService executorService = Executors.newFixedThreadPool(2);
+    /**
+     * Presenter buttons container layout container is layout container that
+     * contain the small presenter control buttons.
+     */
+    private final AbsoluteLayout viewBtnsContainer;
+    private final AppManagmentBean appManagmentBean;
 
     /**
      * Constructor to initialise the layout.
      *
      * @param availableGalaxy galaxy server is available
      */
-    public WelcomePagePresenter(boolean availableGalaxy) {
-
-        WelcomePagePresenter.this.setSizeFull();
-        WelcomePagePresenter.this.addStyleName("welcomepagestyle");
-
+    public WelcomePageView(boolean availableGalaxy) {
+        appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
+        WelcomePageView.this.setSizeFull();
+        WelcomePageView.this.addStyleName("welcomepagestyle");
         AbsoluteLayout container = new AbsoluteLayout();
         container.setSizeFull();
         container.setStyleName("welcomepagecontainer");
-//             final FullScreenButton button = new FullScreenButton("All (on)");
-//          button.addStyleName("fullscreenbtn");
-//         container.addComponent(button);
-
-        WelcomePagePresenter.this.addComponent(container);
-        WelcomePagePresenter.this.setComponentAlignment(container, Alignment.TOP_CENTER);
+        WelcomePageView.this.addComponent(container);
+        WelcomePageView.this.setComponentAlignment(container, Alignment.TOP_CENTER);
 
         mainHeaderPanel = new HorizontalLayout();
         mainHeaderPanel.setHeight(50, Unit.PIXELS);
@@ -125,16 +121,7 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
         mainHeaderPanel.addComponent(headerPanelContentLayout);
         mainHeaderPanel.setMargin(new MarginInfo(false, false, false, false));
 
-        galaxyLoginBtn = new ButtonWithLabel("Galaxy Login<br/><font>Login using API key</font>", 0);
-        galaxyLoginBtn.updateIconResource(new ThemeResource("img/galaxylogocolor.png"));
-        galaxyLoginBtn.addStyleName("galaxylabel");
-        if (availableGalaxy) {
-            galaxyLoginBtn.setDescription("Login to Galaxy - API key required");
-        } else {
-            galaxyLoginBtn.setDescription("Galaxy server is not available");
-            VaadinSession.getCurrent().setAttribute("psVersion", "offline");
-            VaadinSession.getCurrent().setAttribute("searchGUIversion", "offline");
-        }
+        galaxyLoginBtn = new GalaxyLoginPopup();
         galaxyLoginBtn.setEnabled(availableGalaxy);
 
         HorizontalLayout mainMiddlePanel = new HorizontalLayout();
@@ -246,55 +233,6 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
         presenterControlButtonsPanel.setExpandRatio(presenteControlButtonsLayout, 0.6f);
         presenteControlButtonsLayout.setEnabled(true);
         presenteControlButtonsLayout.addStyleName("disableasenable");
-        /**
-         * Pop-up window layout to connect to Galaxy Server.
-         */
-        userConnectionPanel = new VerticalLayout();
-        userConnectionPanel.setWidth(500, Unit.PIXELS);
-        userConnectionPanel.setHeightUndefined();
-        userConnectionPanel.setMargin(new MarginInfo(true, true, true, true));
-        userConnectionPanel.setSpacing(true);
-        connectingLabel = new Label("<h1 class='animation'>Connecting to galaxy, Please wait...</h1>");
-        connectingLabel.setVisible(false);
-        connectingLabel.setCaptionAsHtml(true);
-        connectingLabel.setContentMode(ContentMode.HTML);
-        connectingLabel.setHeight(25, Sizeable.Unit.PIXELS);
-        connectingLabel.setWidth(200, Sizeable.Unit.PIXELS);
-        connectingLabel.setStyleName(ValoTheme.LABEL_SMALL);
-        connectingLabel.addStyleName(ValoTheme.LABEL_BOLD);
-        connectingLabel.addStyleName(ValoTheme.LABEL_TINY);
-        connectingLabel.addStyleName(ValoTheme.LABEL_NO_MARGIN);
-
-        userConnectionPanel.addComponent(connectingLabel);
-        userConnectionPanel.setComponentAlignment(connectingLabel, Alignment.MIDDLE_CENTER);
-
-        connectinoWindow = new Window(null, userConnectionPanel) {
-            @Override
-            public void close() {
-                this.setVisible(false);
-            }
-
-            @Override
-            public void setVisible(boolean visible) {
-                super.setVisible(visible);
-                if (visible) {
-                    this.center();
-                }
-            }
-
-        };
-        connectinoWindow.setModal(true);
-        connectinoWindow.setDraggable(false);
-        connectinoWindow.setClosable(true);
-
-        connectinoWindow.setResizable(false);
-        connectinoWindow.setStyleName("connectionwindow");
-        connectinoWindow.center();
-        connectinoWindow.setWindowMode(WindowMode.NORMAL);
-        if (!UI.getCurrent().getWindows().contains(connectinoWindow)) {
-            UI.getCurrent().addWindow(connectinoWindow);
-        }
-        connectinoWindow.setVisible(false);
 
         presenterControlButtonsPanel.addLayoutClickListener((LayoutEvents.LayoutClickEvent event) -> {
             AbstractComponent comp = (AbstractComponent) event.getClickedComponent();
@@ -302,108 +240,26 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
                 return;
             }
 
-            if (galaxyLoginBtn.getData() == null) {
-                connectinoWindow.setVisible(true);
-            }
+//            if (galaxyLoginBtn.getData() == null) {
+//                connectinoWindow.setVisible(true);
+//            }
         });
-        galaxyLoginBtn.addLayoutClickListener((LayoutEvents.LayoutClickEvent event) -> {
-            if (galaxyLoginBtn.getData() == null) {
-                connectinoWindow.removeStyleName("connectionwindow");
-                connectinoWindow.setStyleName("windowcontainer");
-                connectinoWindow.setVisible(true);
-            } else {
-                Notification.show("error in connection..", Notification.Type.ERROR_MESSAGE);
-                VaadinSession.getCurrent().getSession().setMaxInactiveInterval(10);
-                Page.getCurrent().reload();
-            }
-        });
+//        galaxyLoginBtn.addLayoutClickListener((LayoutEvents.LayoutClickEvent event) -> {
+//            if (galaxyLoginBtn.getData() == null) {
+////                connectinoWindow.removeStyleName("connectionwindow");
+////                connectinoWindow.setStyleName("windowcontainer");
+////                connectinoWindow.setVisible(true);
+//            } else {
+//                Notification.show("error in connection..", Notification.Type.ERROR_MESSAGE);
+//                VaadinSession.getCurrent().getSession().setMaxInactiveInterval(10);
+//                Page.getCurrent().reload();
+//            }
+//        });
 
-        HorizontalLayout serviceButtonContainer = new HorizontalLayout();
-        serviceButtonContainer.setWidth(100, Unit.PERCENTAGE);
-        serviceButtonContainer.setHeight(40, Unit.PIXELS);
-        serviceButtonContainer.setMargin(false);
-        serviceButtonContainer.setSpacing(true);
-        userConnectionPanel.addComponent(serviceButtonContainer);
-        userConnectionPanel.setExpandRatio(serviceButtonContainer, 0.1f);
-        userConnectionPanel.setComponentAlignment(serviceButtonContainer, Alignment.TOP_LEFT);
-
-        galaxyLoginConnectionBtnLabel = new ButtonWithLabel("<font style='width: 100%;height: 100%;font-size: 14px;font-weight: 600;text-align: justify;line-height: 70px;'>Login to Galaxy Server using your API Key</font>", 1);
-        galaxyLoginConnectionBtnLabel.updateIconResource(new ThemeResource("img/galaxylogocolor.png"));
-
-        galaxyLoginConnectionBtnLabel.addStyleName("smaller");
-        serviceButtonContainer.addComponent(galaxyLoginConnectionBtnLabel);
-
-        galaxyLoginLayout = new VerticalLayout();
-        galaxyLoginLayout.setSizeFull();
-        galaxyLoginLayout.setSpacing(true);
-        galaxyLoginLayout.setVisible(true);
-        galaxyLoginLayout.setMargin(false);
-        userConnectionPanel.addComponent(galaxyLoginLayout);
-        userConnectionPanel.setExpandRatio(galaxyLoginLayout, 0.1f);
-        userConnectionPanel.setComponentAlignment(galaxyLoginLayout, Alignment.TOP_LEFT);
-
-        userAPIFeald = new TextField("User API");
-        userAPIFeald.addFocusListener((FieldEvents.FocusEvent event) -> {
-            if (userAPIFeald.getValue().equals(apiErrorMessage)) {
-                userAPIFeald.clear();
-                userAPIFeald.removeStyleName("redfont");
-            }
-        });
-        userAPIFeald.setSizeFull();
-        userAPIFeald.setStyleName(ValoTheme.TEXTFIELD_TINY);
-        userAPIFeald.setRequired(true);
-        userAPIFeald.setRequiredError("API key is required");
-        userAPIFeald.setInputPrompt("Enter Galaxy API Key");
-        galaxyLoginLayout.addComponent(userAPIFeald);
-
-        HorizontalLayout galaxyServiceBtns = new HorizontalLayout();
-        galaxyServiceBtns.setSizeFull();
-        galaxyServiceBtns.setSpacing(true);
-        galaxyLoginLayout.addComponent(galaxyServiceBtns);
-        Link regLink = new Link("Register", new ExternalResource(VaadinSession.getCurrent().getAttribute("galaxyServerUrl") + "login"));
-        regLink.setStyleName("newlink");
-        regLink.setTargetName("_blank");
-        galaxyServiceBtns.addComponent(regLink);
-        galaxyServiceBtns.setExpandRatio(regLink, 0.1f);
-
-        Link userAPI = new Link("Get User API", new ExternalResource(VaadinSession.getCurrent().getAttribute("galaxyServerUrl") + "user/api_key"));
-        userAPI.setStyleName("newlink");
-        userAPI.setTargetName("_blank");
-        galaxyServiceBtns.addComponent(userAPI);
-        galaxyServiceBtns.setExpandRatio(userAPI, 0.4f);
-
-        Button loginButton = new Button("Login");
-        loginButton.setStyleName(ValoTheme.BUTTON_TINY);
-        galaxyServiceBtns.addComponent(loginButton);
-        galaxyServiceBtns.setExpandRatio(loginButton, 0.4f);
-        galaxyServiceBtns.setComponentAlignment(loginButton, Alignment.TOP_RIGHT);
-
-        loginButton.addClickListener((Button.ClickEvent event) -> {
-            userAPIFeald.commit();
-            if (userAPIFeald.isValid() && !userAPIFeald.getValue().equalsIgnoreCase(testUserLogin)) {
-                connectingLabel.setVisible(true);
-                connectinoWindow.setClosable(false);
-                galaxyLoginConnectionBtnLabel.setVisible(false);
-                galaxyLoginLayout.setVisible(false);
-                Runnable task = () -> {
-                    connectinoWindow.removeStyleName("windowcontainer");
-                    connectinoWindow.setStyleName("connectionwindow");
-                    List<String> userOverviewData = connectToGalaxy(userAPIFeald.getValue(), viewId);
-                    updateConnectionStatusToGalaxy(userOverviewData);
-                };
-                if (executorService.isShutdown()) {
-                    executorService = Executors.newFixedThreadPool(2);
-                }
-
-                executorService.submit(task);
-                executorService.shutdown();
-
-            }
-        });
-
+//       
         viewControlButton = new SmallSideBtn(VaadinIcons.HOME_O);
         viewControlButton.addStyleName("homepagepresenterbtn");
-        viewControlButton.setData(WelcomePagePresenter.this.getViewId());
+        viewControlButton.setData(WelcomePageView.this.getViewId());
 
         this.viewControlButton.setDescription("Home page");
 
@@ -468,124 +324,117 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
             userOverviewPanel.addStyleName("hidecontent");
 
         }
+        this.viewBtnsContainer = new AbsoluteLayout();
+        viewBtnsContainer.setSizeFull();
+        viewBtnsContainer.addComponent(galaxyLoginBtn, "left:50%;top:50%;");
 
+        /**
+         * The workflow view button.
+         */
+        ButtonWithLabel workflowViewBtn = new ButtonWithLabel("Analyze Data</br><font>Search and process data</font>", 1);//spectra2.png
+        workflowViewBtn.setData(SearchGUIPSWorkflowView.class.getName());
+        workflowViewBtn.updateIconResource(new ThemeResource("img/searchguiblue.png"));//img/workflow3.png
+        workflowViewBtn.addStyleName("searchguiicon");
+        viewBtnsContainer.addComponent(workflowViewBtn, "left:0%;top:0%;");
+        /**
+         * The File System view button.
+         */
+        ButtonWithLabel fileSystemViewButton = new ButtonWithLabel("Projects Overview</br><font>Available projects and data files</font>", 1);
+        fileSystemViewButton.setData(FileSystemView.class.getName());
+        fileSystemViewButton.setDescription("Projects and available data files");
+        fileSystemViewButton.updateIconResource(new ThemeResource("img/globeearthanimation.png"));
+        fileSystemViewButton.addStyleName("glubimg");
+        viewBtnsContainer.addComponent(fileSystemViewButton, "left:0%;top:50%;");
+        /**
+         * The Results view button.
+         */
+        ButtonWithLabel resultsViewBtn = new ButtonWithLabel("Visualize Data</br><font>Visualize/Upload project</font>", 1);
+        resultsViewBtn.updateIcon(VaadinIcons.CLUSTER.getHtml());
+        resultsViewBtn.updateIconResource(new ThemeResource("img/venn_color.png"));
+        resultsViewBtn.setDescription("Visualize selected projects / Upload your own project files");
+        resultsViewBtn.setEnabled(true);
+        resultsViewBtn.addStyleName("orangeiconcolor");
+        resultsViewBtn.addStyleName("resultsbtn");
+        viewBtnsContainer.addComponent(resultsViewBtn, "left:50%;top:0%;");
+        presenteControlButtonsLayout.addComponent(viewBtnsContainer);
+        if (availableGalaxy) {
+            galaxyLoginBtn.setDescription("Login to Galaxy - API key required");
+            updateUserOverviewPanel();
+        } else {
+            galaxyLoginBtn.setDescription("Galaxy server is not available");
+        }
     }
 
     /**
      * Log in to galaxy as guest (test user API key).
      */
     public void loginAsGuest() {
-        String caption = "<b style=\"color:#cd6e1d !important\">Guest User <i>(public data)</i></b>";
-
-        galaxyLoginConnectionBtnLabel.setVisible(false);
-        connectinoWindow.setVisible(true);
-        galaxyLoginLayout.setVisible(false);
-        connectinoWindow.setClosable(false);
-        connectingLabel.setCaption(caption);
-        connectingLabel.setVisible(true);
-        Runnable task = () -> {
-            connectinoWindow.removeStyleName("windowcontainer");
-            connectinoWindow.setStyleName("connectionwindow");
-            List<String> userOverviewData = connectToGalaxy(testUserLogin, viewId);
-            updateConnectionStatusToGalaxy(userOverviewData);
-        };
-        if (executorService.isShutdown()) {
-            executorService = Executors.newSingleThreadExecutor();
-        }
-        executorService.submit(task);
-        executorService.shutdown();
+//        String caption = "<b style=\"color:#cd6e1d !important\">Guest User <i>(public data)</i></b>";
+//
+//        galaxyLoginConnectionBtnLabel.setVisible(false);
+//        connectinoWindow.setVisible(true);
+//        galaxyLoginLayout.setVisible(false);
+//        connectinoWindow.setClosable(false);
+//        connectingLabel.setCaption(caption);
+//        connectingLabel.setVisible(true);
+//        Runnable task = () -> {
+//            connectinoWindow.removeStyleName("windowcontainer");
+//            connectinoWindow.setStyleName("connectionwindow");
+//            List<String> userOverviewData = connectToGalaxy(testUserLogin, viewId);
+//            updateConnectionStatusToGalaxy(userOverviewData);
+//        };
+//        if (executorService.isShutdown()) {
+//            executorService = Executors.newSingleThreadExecutor();
+//        }
+//        executorService.submit(task);
+//        executorService.shutdown();
     }
 
     public void retriveToShareDataset() {
-        String caption = "<b style=\"color:#cd6e1d !important\">Retrieving Dataset Information</i></b>";
-        galaxyLoginConnectionBtnLabel.setVisible(false);
-        connectinoWindow.setVisible(true);
-        galaxyLoginLayout.setVisible(false);
-        connectinoWindow.setClosable(false);
-        connectingLabel.setCaption(caption);
-        connectingLabel.setVisible(true);
-        Runnable task = () -> {
-            connectinoWindow.removeStyleName("windowcontainer");
-            connectinoWindow.setStyleName("connectionwindow");
-            viewToShareDataset();
+//        String caption = "<b style=\"color:#cd6e1d !important\">Retrieving Dataset Information</i></b>";
+//        galaxyLoginConnectionBtnLabel.setVisible(false);
+//        connectinoWindow.setVisible(true);
+//        galaxyLoginLayout.setVisible(false);
+//        connectinoWindow.setClosable(false);
+//        connectingLabel.setCaption(caption);
+//        connectingLabel.setVisible(true);
+//        Runnable task = () -> {
+//            connectinoWindow.removeStyleName("windowcontainer");
+//            connectinoWindow.setStyleName("connectionwindow");
+//            viewToShareDataset();
+//
+//        };
+//        if (executorService.isShutdown()) {
+//            executorService = Executors.newSingleThreadExecutor();
+//        }
+//        executorService.submit(task);
+//        ScheduledExecutorService scd = Executors.newSingleThreadScheduledExecutor();
+//        scd.schedule(() -> {
+//            connectinoWindow.setVisible(false);
+//        }, 5, TimeUnit.SECONDS);
+//        scd.shutdown();
+//
+//        executorService.shutdown();
 
-        };
-        if (executorService.isShutdown()) {
-            executorService = Executors.newSingleThreadExecutor();
-        }
-        executorService.submit(task);
-        ScheduledExecutorService scd = Executors.newSingleThreadScheduledExecutor();
-        scd.schedule(() -> {
-            connectinoWindow.setVisible(false);
-        }, 5, TimeUnit.SECONDS);
-        scd.shutdown();
-
-        executorService.shutdown();
-
-    }
-
-    /**
-     * update the layout based on connection to galaxy.
-     *
-     * @param userOverviewData list of user data gathered from user account on
-     *                         Galaxy server
-     */
-    private void updateConnectionStatusToGalaxy(List<String> userOverviewData) {
-
-        UI.getCurrent().accessSynchronously(new Runnable() {
-            @Override
-            public void run() {
-
-                connectinoWindow.setClosable(true);
-                galaxyLoginConnectionBtnLabel.setVisible(true);
-                galaxyLoginLayout.setEnabled(true);
-                galaxyLoginLayout.setVisible(true);
-                galaxyLoginBtn.setData(null);
-                connectingLabel.setCaption(null);
-
-                if (userOverviewData != null && userOverviewData.get(0).contains("Guest User")) {
-                    connectinoWindow.setVisible(false);
-                    presenteControlButtonsLayout.setEnabled(true);
-                } else if (userOverviewData != null && !userOverviewData.get(0).contains("Guest User")) {
-                    connectinoWindow.setVisible(false);
-                    galaxyLoginBtn.updateText("Galaxy Logout");
-                    galaxyLoginBtn.setData("connected");
-                    galaxyLoginLayout.setEnabled(false);
-                    presenteControlButtonsLayout.setEnabled(true);
-
-                } else {
-                    userAPIFeald.setValue(apiErrorMessage);
-                    userAPIFeald.addStyleName("redfont");
-                    Notification.show("Public user is not available", Notification.Type.TRAY_NOTIFICATION);
-                    connectinoWindow.setVisible(false);
-                    presenteControlButtonsLayout.setEnabled(true);
-                }
-                updateUserOverviewPanel(userOverviewData);
-                connectingLabel.setVisible(false);
-                UI.getCurrent().push();
-            }
-        });
     }
 
     /**
      * update user overview panel.
      *
      * @param userOverviewData list of user data gathered from user account on
-     *                         Galaxy server
+     * Galaxy server
      */
-    public void updateUserOverviewPanel(List<String> userOverviewData) {
-        if (userOverviewData != null && !userOverviewData.isEmpty()) {
-            Label l1 = initLeftSideInfoLabel(VaadinIcons.USER.getHtml() + " <b class='rightsidediv' style='color:#cd6e1d !important'>" + userOverviewData.get(0) + "</b>", "");
-            l1.addStyleName("headerlabel");
-            userOverviewLayout.replaceComponent(userOverviewLayout.getComponent(1), l1);
-            for (int i = 2; i < userOverviewLayout.getComponentCount(); i++) {
-                Label l = (Label) userOverviewLayout.getComponent(i);
-                updateLeftSideInfoLabel(l, userOverviewData.get(i - 1));
-                if (i == 4) {
-                    break;
-                }
-            }
-        }
+    private void updateUserOverviewPanel() {
+        Map<String, String> userOverviewData = appManagmentBean.getUserLoginHandler().getUserInformation(); //List<String> userOverviewData
+        Label user_label = initLeftSideInfoLabel(VaadinIcons.USER.getHtml() + " <b class='rightsidediv' style='color:#cd6e1d !important'>" + userOverviewData.get(CONSTANT.USERNAME) + "</b>", "");
+        user_label.addStyleName("headerlabel");
+        userOverviewLayout.replaceComponent(userOverviewLayout.getComponent(1), user_label);
+        Label projects_label = (Label) userOverviewLayout.getComponent(2);
+        updateLeftSideInfoLabel(projects_label, userOverviewData.get(CONSTANT.PS_DATASET_NUMBER));
+        Label files_label = (Label) userOverviewLayout.getComponent(3);
+        updateLeftSideInfoLabel(files_label, userOverviewData.get(CONSTANT.FILES_NUMBER));
+        Label storage_label = (Label) userOverviewLayout.getComponent(4);
+        updateLeftSideInfoLabel(storage_label, userOverviewData.get(CONSTANT.STORAGE));
     }
 
     /**
@@ -672,21 +521,20 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
         return new VerticalLayout();
     }
 
-    /**
-     * Connect to galaxy server.
-     *
-     * @param presenterId button used to login
-     * @param userAPI     user API key that is required to connect to galaxy
-     * @return list of overview data for the user / null indicate failed to
-     * connect to Galaxy Server
-     */
-    public abstract List<String> connectToGalaxy(String userAPI, String presenterId);
-
-    /**
-     * View dataset that is shared by link.
-     */
-    public abstract void viewToShareDataset();
-
+//    /**
+//     * Connect to galaxy server.
+//     *
+//     * @param presenterId button used to login
+//     * @param userAPI     user API key that is required to connect to galaxy
+//     * @return list of overview data for the user / null indicate failed to
+//     * connect to Galaxy Server
+//     */
+//    public abstract List<String> connectToGalaxy(String userAPI, String presenterId);
+//
+//    /**
+//     * View dataset that is shared by link.
+//     */
+//    public abstract void viewToShareDataset();
     /**
      * Create unified labels for the user overview panel
      *
@@ -726,18 +574,6 @@ public abstract class WelcomePagePresenter extends VerticalLayout implements Vie
     @Override
     public ButtonWithLabel getMainPresenterButton() {
         return null;
-    }
-
-    /**
-     * Set the presenter buttons (large button with label) container that have
-     * button for each presenter in the system
-     *
-     * @param presenterBtnsContainer grid layout that contain all the large
-     *                               presenter buttons
-     */
-    public void setPresenterControlButtonContainer(AbsoluteLayout presenterBtnsContainer) {
-        presenterBtnsContainer.addComponent(galaxyLoginBtn, "left:50%;top:50%;");
-        presenteControlButtonsLayout.addComponent(presenterBtnsContainer);
     }
 
 }

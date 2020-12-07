@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.presenter;
+package com.uib.web.peptideshaker.ui.abstracts;
 
 import com.uib.web.peptideshaker.presenter.core.ButtonWithLabel;
 import com.uib.web.peptideshaker.presenter.core.SmallSideBtn;

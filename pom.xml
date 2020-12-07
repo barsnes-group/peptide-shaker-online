@@ -5,9 +5,8 @@
 
     <groupId>com.uib</groupId>
     <artifactId>webpeptideshaker</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>war</packaging>
-
     <name>web-peptide-shaker-1.0</name>
 
     <properties>
@@ -16,6 +15,9 @@
         <vaadin.version>7.7.17</vaadin.version>
         <vaadin.plugin.version>7.7.17</vaadin.plugin.version>
         <jetty.plugin.version>9.3.9.v20160517</jetty.plugin.version>
+        <compomics.version>5.0.1</compomics.version>
+        <jersey.version>2.32</jersey.version>
+         <vertx.version>3.4.2</vertx.version>
         <!-- If there are no local customisations, this can also be "fetch" or "cdn" -->
         <vaadin.widgetset.mode>local</vaadin.widgetset.mode>
     </properties>
@@ -92,7 +94,20 @@
             <groupId>com.github.jmchilton.blend4j</groupId>
             <artifactId>blend4j</artifactId>
             <version>0.2.0</version>
-
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-client</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.jersey.contribs</groupId>
+                    <artifactId>jersey-multipart</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -120,7 +135,7 @@
         <dependency>
             <groupId>com.compomics</groupId>
             <artifactId>utilities</artifactId>
-            <version>5.0.0-beta</version>
+            <version>${compomics.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -137,10 +152,32 @@
             </exclusions>
         </dependency>
         <dependency>
+   
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>2.31</version>
+            <version>${jersey.version}</version>
+             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-common</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+    <groupId>org.glassfish.jersey.containers</groupId>
+    <artifactId>jersey-container-servlet-core</artifactId>
+    <version>2.6</version>
+</dependency>
 
         <dependency>
             <groupId>org.vaadin.addons</groupId>
@@ -221,20 +258,20 @@
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
             <version>2.1.1</version>
-        </dependency>
+        </dependency>           
 
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.10</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.vaadin/vaadin-client-compiler -->
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-client-compiler</artifactId>
-            <version>${vaadin.version}</version>
-            <!--<scope>provided</scope>-->
+         <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-core</artifactId>
+            <version>${vertx.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.vaadin/vaadin-client-compiler -->
+        
 
 
     </dependencies>
@@ -285,7 +322,7 @@
                     <runTarget>http://localhost:8080/web-peptide-shaker-1.0</runTarget>
                     <logLevel>ALL</logLevel>
                     <compileReport>true</compileReport>
-                    <extraJvmArgs>-Xmx6000M</extraJvmArgs>
+                    <extraJvmArgs>-Xmx1000M</extraJvmArgs>
                     <localWorkers>4</localWorkers>
                 </configuration>
             </plugin>

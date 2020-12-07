@@ -1,12 +1,13 @@
-package com.uib.web.peptideshaker;
+package com.uib.web.peptideshaker.handler;
 
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
-import com.uib.web.peptideshaker.presenter.PresenterContainer;
-import com.uib.web.peptideshaker.presenter.PresenterManager;
-import com.uib.web.peptideshaker.presenter.ViewableFrame;
+import com.uib.web.peptideshaker.ui.UIContainer;
+import com.uib.web.peptideshaker.uimanager.UIManager;
+import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import pl.exsio.plupload.PluploadFile;
 
@@ -21,40 +22,41 @@ import java.util.Set;
  *
  * @author Yehia Farag
  */
-public abstract class PresenterLayer {
+public abstract class UIHandler {
 
     /**
      * PeptideShaker visualisation layer - Coordinator to organise the different
      * views (home, analysis, data, or results visualisation).
      */
-    private final PresenterManager presentationManager;
-    private final PresenterContainer presenterContainer;
+    private final UIManager uiManager;
+    private final UIContainer uiContainer;
 
     /**
      * Initialise the main presenter components.
      *
      * @param availableGalaxyServer galaxy server available online
      */
-    public PresenterLayer(boolean availableGalaxyServer) {
-        this.presenterContainer = new PresenterContainer(availableGalaxyServer) {
+    public UIHandler(boolean availableGalaxyServer) {
+      
+        this.uiContainer = new UIContainer(availableGalaxyServer) {
             private boolean connectedToGalaxy;
 
             @Override
             public void viewLayout(String viewId) {
-                presentationManager.viewLayout(viewId);
+                uiManager.viewLayout(viewId);
             }
 
             @Override
             public void registerView(ViewableFrame view) {
                 UI.getCurrent().access(() -> {
-                    presentationManager.registerView(view);
+                    uiManager.registerView(view);
                 });
 
             }
 
             @Override
             public List<String> connectToGalaxyServer(String galaxyServerUrl, String userAPI, String userDataFolderUrl) {
-                List<String> userData = PresenterLayer.this.connectToGalaxyServer(galaxyServerUrl, userAPI, userDataFolderUrl);
+                List<String> userData = UIHandler.this.connectToGalaxyServer(galaxyServerUrl, userAPI, userDataFolderUrl);
                 connectedToGalaxy = userData != null;
                 if (getSearchGUIPeptideShakerToolPresenter().getMainPresenterButton().isEnabled()) {
                     getSearchGUIPeptideShakerToolPresenter().getMainPresenterButton().setEnabled(connectedToGalaxy);
@@ -66,63 +68,66 @@ public abstract class PresenterLayer {
 
             @Override
             public void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl) {
-                PresenterLayer.this.viewToShareDataset(galaxyServerUrl, userDataFolderUrl);
+                UIHandler.this.viewToShareDataset(galaxyServerUrl, userDataFolderUrl);
             }
 
             @Override
             public List<String> getUserOverviewData() {
-                return PresenterLayer.this.getUserOverviewData();
+                return UIHandler.this.getUserOverviewData();
             }
 
             @Override
             public void execute_SearchGUI_PeptideShaker_WorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> mgfIdsList, Set<String> searchEnginesList, IdentificationParameters searchParam, boolean quant) {
-                PresenterLayer.this.execute_SearchGUI_PeptideShaker_WorkFlow(projectName, fastaFileId, searchParameterFileId, mgfIdsList, searchEnginesList, searchParam, quant);
+                UIHandler.this.execute_SearchGUI_PeptideShaker_WorkFlow(projectName, fastaFileId, searchParameterFileId, mgfIdsList, searchEnginesList, searchParam, quant);
             }
 
             @Override
             public Map<String, GalaxyTransferableFile> saveSearchGUIParameters(IdentificationParameters searchParameters, boolean isNew) {
-                return PresenterLayer.this.saveSearchGUIParameters(searchParameters, isNew);
+                return UIHandler.this.saveSearchGUIParameters(searchParameters, isNew);
 
             }
 
             @Override
             public boolean uploadToGalaxy(PluploadFile[] toUploadFiles) {
-                return PresenterLayer.this.uploadToGalaxy(toUploadFiles);
+                return UIHandler.this.uploadToGalaxy(toUploadFiles);
 
             }
 
             @Override
             public void deleteDataset(GalaxyFileObject fileObject) {
-                PresenterLayer.this.deleteDataset(fileObject);
+                UIHandler.this.deleteDataset(fileObject);
             }
 
             @Override
             public Set<String> getCsf_pr_Accession_List() {
-                return PresenterLayer.this.getCsf_pr_Accession_List();
+                return UIHandler.this.getCsf_pr_Accession_List();
             }
 
             @Override
             public int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey) {
-                return PresenterLayer.this.insertDatsetLinkToShare(dsDetails, dsUniqueKey);
+                return UIHandler.this.insertDatsetLinkToShare(dsDetails, dsUniqueKey);
             }
 
         };
-        presentationManager = new PresenterManager(presenterContainer.getSubViewButtonsActionContainer(), presenterContainer.getTopMiddleLayoutContainer(), presenterContainer.getPresenterButtonsContainerLayout(), presenterContainer.getSubPresenterButtonsContainer());
-        presentationManager.registerView(presenterContainer.getSearchGUIPeptideShakerToolPresenter());
-        presentationManager.registerView(presenterContainer.getWelcomePage());
-        presentationManager.viewLayout(presenterContainer.getWelcomePage().getViewId());
-        presentationManager.registerView(presenterContainer.getFileSystemPresenter());
-        presentationManager.registerView(presenterContainer.getInteractivePSPRojectResultsPresenter());
-        presentationManager.setSideButtonsVisible(true);
+           
+        UI.getCurrent().setContent(uiContainer);
+         
+        uiManager = new UIManager(uiContainer.getSubViewButtonsActionContainer(), uiContainer.getTopMiddleLayoutContainer(), uiContainer.getPresenterButtonsContainerLayout(), uiContainer.getSubPresenterButtonsContainer());
+//        uiManager.registerView(uiContainer.getSearchGUIPeptideShakerToolPresenter());
+        uiManager.registerView(uiContainer.getWelcomePage());
+        uiManager.viewLayout(uiContainer.getWelcomePage().getViewId());
+//        uiManager.registerView(uiContainer.getFileSystemPresenter());
+//        uiManager.registerView(uiContainer.getInteractivePSPRojectResultsPresenter());
+//        uiManager.setSideButtonsVisible(true);
 
     }
 
     public void loginAsGuest() {
-        presenterContainer.loginAsGuest();
+        uiContainer.loginAsGuest();
     }
 
     public void retriveToShareDataset() {
-        presenterContainer.retriveToShareDataset();
+        uiContainer.retriveToShareDataset();
 
     }
 
@@ -131,8 +136,8 @@ public abstract class PresenterLayer {
      *
      * @return main presenter controller
      */
-    public PresenterContainer getPresenterContainer() {
-        return presenterContainer;
+    public UIContainer getUiContainer() {
+        return uiContainer;
     }
 
     /**
@@ -142,10 +147,10 @@ public abstract class PresenterLayer {
      *                                          object
      */
     public void viewDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
-        presenterContainer.viewDataset(peptideShakerVisualizationDataset);
+        uiContainer.viewDataset(peptideShakerVisualizationDataset);
         if (peptideShakerVisualizationDataset.isToShareDataset()) {
-            for (String btn : presentationManager.getPresenterBtnsMap().keySet()) {
-                presentationManager.getPresenterBtnsMap().get(btn).setEnabled(false);
+            for (String btn : uiManager.getPresenterBtnsMap().keySet()) {
+                uiManager.getPresenterBtnsMap().get(btn).setEnabled(false);
             }
         }
     }
@@ -160,9 +165,9 @@ public abstract class PresenterLayer {
      * @param jobsInProgress      check if there is still jobs in progress
      */
     public void updatePresenter(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
-        presenterContainer.updateProjectOverviewPresenter(tempHistoryFilesMap, historyFilesMap, jobsInProgress);
+        uiContainer.updateProjectOverviewPresenter(tempHistoryFilesMap, historyFilesMap, jobsInProgress);
 
-//        presentationManager.viewLayout(presenterContainer.getFileSystemPresenter().getViewId());
+//        presentationManager.viewLayout(uiContainer.getFileSystemPresenter().getViewId());
     }
 
     /**
