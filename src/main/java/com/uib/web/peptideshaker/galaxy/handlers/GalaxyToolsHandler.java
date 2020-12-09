@@ -416,13 +416,13 @@ public abstract class GalaxyToolsHandler {
             exe.shutdown();
             while (!f.isDone()) {
             }
-            galaxyWorkFlowClient.deleteWorkflowRequest(workFlowId);
+//            galaxyWorkFlowClient.deleteWorkflowRequest(workFlowId);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error: workflow invoking error " + e);
             if (selectedWf != null) {
-                galaxyWorkFlowClient.deleteWorkflowRequest(selectedWf.getId());
+//                galaxyWorkFlowClient.deleteWorkflowRequest(selectedWf.getId());
             }
             jobIsExecuted(false);
             return false;
@@ -535,7 +535,7 @@ public abstract class GalaxyToolsHandler {
                 }
 
                 request.setDatasetName(file.getName());
-                galaxyToolClient.uploadRequest(request);
+//                galaxyToolClient.uploadRequest(request);
                 tFile.delete();
             }
             ScheduledExecutorService exe = Executors.newSingleThreadScheduledExecutor();

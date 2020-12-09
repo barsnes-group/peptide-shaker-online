@@ -17668,13 +17668,14 @@ div.v-layout.v-horizontal.v-widget {
 .webpeptideshakertheme .connectionwindow .v-verticallayout {
 	background-color: transparent;
 	top: 50% !important;
+	margin-top: -60px !important;
 	position: relative;
 	height: 120px !important;
-	min-width: 100% !important;
+	margin-left: 0px;
 }
 
 .webpeptideshakertheme .connectionwindow .v-label {
-	width: 100% !important;
+	min-width: 500px !important;
 }
 
 .webpeptideshakertheme .connectionwindow .popupContent h1 {
@@ -17683,6 +17684,7 @@ div.v-layout.v-horizontal.v-widget {
 	word-spacing: 5px;
 	letter-spacing: 1px;
 	font-family: cursive !important;
+	text-align: center !important;
 }
 
 .webpeptideshakertheme .tooltip {

@@ -167,7 +167,7 @@ public abstract class UIContainer extends VerticalLayout {
             public void maximizeView() {
                 List<String> userDataList = getUserOverviewData();
                 if (userDataList != null) {
-                    super.updateUserOverviewPanel(userDataList);
+//                    super.updateUserOverviewPanel(userDataList);
                 }
                 super.maximizeView();
             }

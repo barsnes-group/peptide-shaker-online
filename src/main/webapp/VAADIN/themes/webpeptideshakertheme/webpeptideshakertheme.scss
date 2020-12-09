@@ -4586,14 +4586,15 @@
   }
   .connectionwindow .v-verticallayout {
     background-color: transparent;
-    top: 50% !important;
-    position: relative;
-    height: 120px !important;
-    min-width: 100% !important;
+	top: 50% !important;
+	margin-top:-60px !important;
+	position: relative;
+	height: 120px !important;
+	margin-left:0px;
 
   }
   .connectionwindow .v-label {
-    width: 100% !important;
+    min-width:500px !important;
   }
   .connectionwindow .popupContent h1 {
     line-height: 30px;
@@ -4601,6 +4602,8 @@
     word-spacing: 5px;
     letter-spacing: 1px;
     font-family: cursive !important;
+    text-align:center !important;
+
 
   }
 

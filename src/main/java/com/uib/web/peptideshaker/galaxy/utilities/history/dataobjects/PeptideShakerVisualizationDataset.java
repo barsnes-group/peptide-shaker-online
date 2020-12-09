@@ -464,7 +464,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
             String[] arr = SearchGUIResultFile.getOverview().split("\\n");
             for (String spec : arr) {
                 if (spec.startsWith("Spectrums:")) {
-                    inputMgffilesName.add(spec.replace("Spectrums:", "").split("(API")[0]);
+                    inputMgffilesName.add(spec.replace("Spectrums:", "").split("\\(API")[0]);
                 }
             }
 
