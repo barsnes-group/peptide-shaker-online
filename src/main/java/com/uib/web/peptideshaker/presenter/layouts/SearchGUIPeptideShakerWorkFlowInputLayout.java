@@ -1,5 +1,7 @@
 package com.uib.web.peptideshaker.presenter.layouts;
 
+import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
+import com.uib.web.peptideshaker.ui.components.items.StatusLabel;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;

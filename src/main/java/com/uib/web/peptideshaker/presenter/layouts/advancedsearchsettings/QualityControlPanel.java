@@ -3,7 +3,7 @@ package com.uib.web.peptideshaker.presenter.layouts.advancedsearchsettings;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.advanced.ValidationQcParameters;
 import com.compomics.util.parameters.identification.search.SearchParameters;
-import com.uib.web.peptideshaker.presenter.core.PopupWindow;
+import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;

@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.model.core;
+package com.uib.web.peptideshaker.ui.components;
 
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.jsclipboard.JSClipboardButton;
@@ -12,7 +12,7 @@ import com.vaadin.ui.themes.ValoTheme;
  *
  * @author Yehia Farag
  */
-public class ClipboardUtil extends AbsoluteLayout {
+public class ClipboardComponent extends AbsoluteLayout {
 
     private final TextArea area;
     private final JSClipboardButton clipboard;
@@ -22,18 +22,18 @@ public class ClipboardUtil extends AbsoluteLayout {
      *
      * @param linkAstText to copy
      */
-    public ClipboardUtil(String linkAstText) {
-        ClipboardUtil.this.setSizeFull();
-        ClipboardUtil.this.addStyleName("clipboardcontainer");
+    public ClipboardComponent(String linkAstText) {
+        ClipboardComponent.this.setSizeFull();
+        ClipboardComponent.this.addStyleName("clipboardcontainer");
 
         area = new TextArea();
-        ClipboardUtil.this.addComponent(area);
+        ClipboardComponent.this.addComponent(area);
         area.setValue(linkAstText);
         area.setId("tocopie");
         clipboard = new JSClipboardButton(area, VaadinIcons.LINK);
         clipboard.setClipboardText(linkAstText);
         clipboard.setDescription("Click to copy the link");
-        ClipboardUtil.this.addComponent(clipboard);
+        ClipboardComponent.this.addComponent(clipboard);
         clipboard.addStyleName(ValoTheme.BUTTON_LINK);
         clipboard.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
         clipboard.addSuccessListener(() -> {

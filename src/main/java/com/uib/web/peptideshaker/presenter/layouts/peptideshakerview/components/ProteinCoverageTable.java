@@ -4,7 +4,7 @@ import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.SizeReporter;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.ProteinGroupObject;
-import com.uib.web.peptideshaker.presenter.core.ActionLabel;
+import com.uib.web.peptideshaker.ui.components.items.ActionLabel;
 import com.uib.web.peptideshaker.presenter.core.ColorLabelWithPopupTooltip;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.components.RangeColorGenerator;
 import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage.ProteinCoverageComponent;

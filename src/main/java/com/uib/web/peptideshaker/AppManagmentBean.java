@@ -3,6 +3,7 @@ package com.uib.web.peptideshaker;
 import com.uib.web.peptideshaker.facades.GalaxyFacade;
 import com.uib.web.peptideshaker.facades.NotificationsFacade;
 import com.uib.web.peptideshaker.handler.UserHandler;
+import com.uib.web.peptideshaker.uimanager.UIManager;
 import com.uib.web.peptideshaker.utils.HttpClientUtils;
 import java.io.Serializable;
 
@@ -14,10 +15,11 @@ import java.io.Serializable;
  */
 public class AppManagmentBean implements Serializable {
 
+    private UIManager UI_Manager;
     private Config appConfig;
     private GalaxyFacade galaxyFacad;
     private NotificationsFacade notificationFacade;
-    private UserHandler userLoginHandler;
+    private UserHandler userHandler;
     private HttpClientUtils httpClientUtil;
 
     public NotificationsFacade getNotificationFacade() {
@@ -41,11 +43,11 @@ public class AppManagmentBean implements Serializable {
         return galaxyFacad;
     }
 
-    public UserHandler getUserLoginHandler() {
-        if (userLoginHandler == null) {
-            userLoginHandler = new UserHandler();
+    public UserHandler getUserHandler() {
+        if (userHandler == null) {
+            userHandler = new UserHandler();
         }
-        return userLoginHandler;
+        return userHandler;
     }
 
     public AppManagmentBean() {
@@ -57,6 +59,14 @@ public class AppManagmentBean implements Serializable {
             appConfig = new Config();
         }
         return appConfig;
+    }
+
+    public UIManager getUI_Manager() {
+        return UI_Manager;
+    }
+
+    public void setUI_Manager(UIManager UI_Manager) {
+        this.UI_Manager = UI_Manager;
     }
 
 }

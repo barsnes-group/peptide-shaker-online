@@ -1,5 +1,6 @@
-package com.uib.web.peptideshaker.presenter.core;
+package com.uib.web.peptideshaker.ui.components.items;
 
+import com.uib.web.peptideshaker.model.CONSTANT;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Image;
@@ -12,16 +13,16 @@ import com.vaadin.ui.Image;
 public class StatusLabel extends Image {
 
     private final Resource ok;
-    private final Resource notValid;
+    private final Resource error;
     private final Resource processing;
-    private int status;
+    private String status;
 
     /**
      * Initialise statues label
      */
     public StatusLabel() {
         this.ok = new ThemeResource("img/check-circle.png");
-        this.notValid = new ThemeResource("img/close-circle.png");
+        this.error = new ThemeResource("img/close-circle.png");
         this.processing = new ThemeResource("img/indeterminateprogress.gif");
         StatusLabel.this.setSource(processing);
         StatusLabel.this.setWidth(16, Unit.PIXELS);
@@ -33,7 +34,7 @@ public class StatusLabel extends Image {
      *
      * @return label statues
      */
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -43,19 +44,17 @@ public class StatusLabel extends Image {
      * @param status label statues
      */
     public void setStatus(String status) {
-        status = status + "";
+        this.status = status;
         StatusLabel.this.setWidth(16, Unit.PIXELS);
         StatusLabel.this.setDescription((status + "").toUpperCase());
-        if (status.equalsIgnoreCase("ok")) {
+        if (status.equals(CONSTANT.OK_STATUS)) {
             StatusLabel.this.setSource(ok);
-            this.status = 0;
-        } else if (status.equalsIgnoreCase("new") || status.equalsIgnoreCase("running") || status.equalsIgnoreCase("queued")) {
+        } else if (status.equals(CONSTANT.RUNNING_STATUS)) {
             StatusLabel.this.setSource(processing);
             StatusLabel.this.setWidth(80, Unit.PIXELS);
-            this.status = 1;
         } else {
-            StatusLabel.this.setSource(notValid);
-            this.status = 2;
+            StatusLabel.this.setSource(error);
+
         }
 
     }

@@ -1,15 +1,11 @@
 package com.uib.web.peptideshaker.ui.views;
 
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
+
 import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
-import com.uib.web.peptideshaker.presenter.core.ButtonWithLabel;
 import com.uib.web.peptideshaker.presenter.core.Help;
 import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
-import com.uib.web.peptideshaker.presenter.core.SmallSideBtn;
-import com.uib.web.peptideshaker.presenter.layouts.DataViewLayout;
+import com.uib.web.peptideshaker.ui.components.FilesTablePanel;
 import com.vaadin.event.LayoutEvents;
-import com.vaadin.server.Page;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.*;
@@ -23,19 +19,19 @@ import java.util.Map;
  *
  * @author Yehia Farag
  */
-public abstract class FileSystemView extends VerticalLayout implements ViewableFrame, LayoutEvents.LayoutClickListener {
+public class FileSystemView extends AbsoluteLayout implements ViewableFrame, LayoutEvents.LayoutClickListener {
 
-    /**
-     * The small side button (normal size screen).
-     */
-    private final ButtonWithLabel mainPresenterButton;
-    /**
-     * The main left side buttons container in big screen mode.
-     */
-    /**
-     * The small side button (normal size screen).
-     */
-    private final SmallSideBtn smallPresenterButton;
+//    /**
+//     * The small side button (normal size screen).
+//     */
+//    private final ButtonWithLabel mainPresenterButton;
+//    /**
+//     * The main left side buttons container in big screen mode.
+//     */
+//    /**
+//     * The small side button (normal size screen).
+//     */
+//    private final SmallSideBtn smallPresenterButton;
     /**
      * Map of layouts to coordinate left side buttons actions.
      */
@@ -44,12 +40,11 @@ public abstract class FileSystemView extends VerticalLayout implements ViewableF
     /**
      * Main layout that contains the files and datasets table.
      */
-    private DataViewLayout dataLayout;
+    private FilesTablePanel filesTablePanel;
     /**
      * The main left side button (only support in a big screen).
      */
     private PresenterSubViewSideBtn viewDataBtn;
-    private Map<String, GalaxyFileObject> historyFilesMap;
     private boolean jobInProgress;
 
     /**
@@ -59,17 +54,6 @@ public abstract class FileSystemView extends VerticalLayout implements ViewableF
         FileSystemView.this.setSizeFull();
         FileSystemView.this.setStyleName("activelayout");
         FileSystemView.this.addStyleName("hidelowerpanel");
-
-        this.smallPresenterButton = new SmallSideBtn("img/globeearthanimation.png");//VaadinIcons.GLOBE
-        this.smallPresenterButton.setData(FileSystemView.this.getViewId());
-        this.smallPresenterButton.addStyleName("glubimg");
-        smallPresenterButton.setDescription("Projects and available data files");
-        this.smallPresenterButton.addStyleName("dataoverviewsmallbtn");
-        this.mainPresenterButton = new ButtonWithLabel("Projects Overview</br><font>Available projects and data files</font>", 1);
-        this.mainPresenterButton.setData(FileSystemView.this.getViewId());
-        this.mainPresenterButton.setDescription("Projects and available data files");
-        this.mainPresenterButton.updateIconResource(new ThemeResource("img/globeearthanimation.png"));
-        this.mainPresenterButton.addStyleName("glubimg");
         this.btnsLayoutMap = new LinkedHashMap<>();
         this.initLayout();
         FileSystemView.this.minimizeView();
@@ -104,7 +88,7 @@ public abstract class FileSystemView extends VerticalLayout implements ViewableF
         dataViewFrame.setStyleName("viewframe");
 
         this.addComponent(dataViewFrame);
-        this.setExpandRatio(dataViewFrame, 100);
+//        this.setExpandRatio(dataViewFrame, 100);
         AbsoluteLayout dataViewFrameContent = new AbsoluteLayout();
         dataViewFrameContent.addStyleName("viewframecontent");
         dataViewFrameContent.setSizeFull();
@@ -117,7 +101,6 @@ public abstract class FileSystemView extends VerticalLayout implements ViewableF
         dataViewFrameContent.addComponent(titleLabel, "left:40px;top:13px");
         Help helpBtn = new Help("<h1>Projects Overview</h1>Users can check the available ready to visualise datasets, get an overview for the processed data, check the dataset processing statues and have access for the dataset sharing links where users can visulize the dataset using dataset link.<br/>Also users can delete datasets and input files.", "", 400, 150);
         dataViewFrameContent.addComponent(helpBtn, "left:178;top:0px");
-
         dataViewFrameContent.addComponent(dataContainerLayout);
         viewDataBtn.setSelected(true);
 
@@ -135,25 +118,10 @@ public abstract class FileSystemView extends VerticalLayout implements ViewableF
         container.setSpacing(true);
         container.setStyleName("subframe");
         container.addStyleName("padding25");
-        dataLayout = new DataViewLayout() {
-            @Override
-            public void deleteDataset(GalaxyFileObject ds) {
-                FileSystemView.this.deleteDataset(ds);
-            }
+        filesTablePanel = new FilesTablePanel() ;
 
-            @Override
-            public void viewDataset(PeptideShakerVisualizationDataset ds) {
-                FileSystemView.this.viewDataset(ds,"");
-            }
-
-            @Override
-            public int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey) {
-                return FileSystemView.this.insertDatsetLinkToShare(dsDetails, dsUniqueKey);
-            }
-
-        };
-        container.addComponent(dataLayout);
-        container.setComponentAlignment(dataLayout, Alignment.MIDDLE_CENTER);
+        container.addComponent(filesTablePanel);
+        container.setComponentAlignment(filesTablePanel, Alignment.MIDDLE_CENTER);
 
         return container;
     }
@@ -162,55 +130,46 @@ public abstract class FileSystemView extends VerticalLayout implements ViewableF
      * Update Online PeptideShaker files from Galaxy Server
      *
      * @param historyFilesMap List of available files on Galaxy Server
-     * @param jobInProgress   Jobs are running
+     * @param jobInProgress Jobs are running
      */
-    public void updateData(Map<String, GalaxyFileObject> historyFilesMap, boolean jobInProgress,String viewDsId) {
-        this.historyFilesMap = historyFilesMap;
-        this.jobInProgress = jobInProgress;
-//        if (smallPresenterButton.getStyleName().contains("selectedpresenterbtn")) {
-        UI.getCurrent().access(() -> {
-            updatelayout(viewDsId);
-            try {
-                UI.getCurrent().push();
-            } catch (Exception e) {
-                Page.getCurrent().reload();
-            }
-        });
-
-    }
-
-    private void updatelayout(String viewDsId) {
-        if (jobInProgress) {
-            smallPresenterButton.updateIconSourceURL("img/globeearthanimation1.gif");
-            mainPresenterButton.updateIconResource(new ThemeResource("img/globeearthanimation1.gif"));
-            viewDataBtn.updateIconByResource(new ThemeResource("img/globeearthanimation1.gif"));
-            smallPresenterButton.addStyleName("nopadding");
-            mainPresenterButton.addStyleName("nopadding");
-            viewDataBtn.addStyleName("nopadding");
-        } else {
-            smallPresenterButton.updateIconSourceURL("img/globeearthanimation.png");
-            mainPresenterButton.updateIconResource(new ThemeResource("img/globeearthanimation.png"));
-            viewDataBtn.updateIconByResource(new ThemeResource("img/globeearthanimation.png"));
-            smallPresenterButton.removeStyleName("nopadding");
-            mainPresenterButton.removeStyleName("nopadding");
-            viewDataBtn.removeStyleName("nopadding");
-        }
-        if (historyFilesMap != null) {
-            this.dataLayout.updateDatasetsTable(historyFilesMap,viewDsId);
-
-        }
-
-    }
-
-    /**
-     * Map of files available on galaxy server
-     *
-     * @return map of galaxy files mapped to galaxy files ids
-     */
-    public Map<String, GalaxyFileObject> getHistoryFilesMap() {
-        return historyFilesMap;
-    }
-
+//    public void updateData(Map<String, GalaxyFileObject> historyFilesMap, boolean jobInProgress,String viewDsId) {
+//        this.historyFilesMap = historyFilesMap;
+//        this.jobInProgress = jobInProgress;
+////        if (smallPresenterButton.getStyleName().contains("selectedpresenterbtn")) {
+//        UI.getCurrent().access(() -> {
+//            updatelayout(viewDsId);
+//            try {
+//                UI.getCurrent().push();
+//            } catch (Exception e) {
+//                Page.getCurrent().reload();
+//            }
+//        });
+//
+//    }
+//
+//    private void updatelayout(String viewDsId) {
+//        if (jobInProgress) {
+////            smallPresenterButton.updateIconSourceURL("img/globeearthanimation1.gif");
+////            mainPresenterButton.updateIconResource(new ThemeResource("img/globeearthanimation1.gif"));
+//            viewDataBtn.updateIconByResource(new ThemeResource("img/globeearthanimation1.gif"));
+////            smallPresenterButton.addStyleName("nopadding");
+////            mainPresenterButton.addStyleName("nopadding");
+//            viewDataBtn.addStyleName("nopadding");
+//        } else {
+////            smallPresenterButton.updateIconSourceURL("img/globeearthanimation.png");
+////            mainPresenterButton.updateIconResource(new ThemeResource("img/globeearthanimation.png"));
+//            viewDataBtn.updateIconByResource(new ThemeResource("img/globeearthanimation.png"));
+////            smallPresenterButton.removeStyleName("nopadding");
+////            mainPresenterButton.removeStyleName("nopadding");
+//            viewDataBtn.removeStyleName("nopadding");
+//        }
+//        if (historyFilesMap != null) {
+////            this.dataLayout.updateDatasetsTable(historyFilesMap,viewDsId);
+//
+//        }
+//
+//    }
+   
     /**
      * Check if history is busy
      *
@@ -225,32 +184,29 @@ public abstract class FileSystemView extends VerticalLayout implements ViewableF
      *
      * @return File system presenter layout
      */
-    @Override
-    public VerticalLayout getMainView() {
-        return this;
-    }
-
+//    @Override
+//    public VerticalLayout getMainView() {
+//        return this;
+//    }
     /**
      * Get the small right side button component (represent view control button
      * in large screen mode)
      *
      * @return right view control button
      */
-    @Override
-    public SmallSideBtn getSmallPresenterControlButton() {
-        return smallPresenterButton;
-    }
-
+//    @Override
+//    public SmallSideBtn getSmallPresenterControlButton() {
+//        return smallPresenterButton;
+//    }
     /**
      * Get main presenter button
      *
      * @return large presenter button for welcome page
      */
-    @Override
-    public ButtonWithLabel getMainPresenterButton() {
-        return mainPresenterButton;
-    }
-
+//    @Override
+//    public ButtonWithLabel getMainPresenterButton() {
+//        return mainPresenterButton;
+//    }
     /**
      * Get the current view ID
      *
@@ -266,8 +222,6 @@ public abstract class FileSystemView extends VerticalLayout implements ViewableF
      */
     @Override
     public void minimizeView() {
-        smallPresenterButton.setSelected(false);
-        mainPresenterButton.setSelected(false);
         this.addStyleName("hidepanel");
         this.leftSideButtonsContainer.removeStyleName("visible");
 
@@ -278,9 +232,9 @@ public abstract class FileSystemView extends VerticalLayout implements ViewableF
      */
     @Override
     public void maximizeView() {
-        mainPresenterButton.setSelected(true);
-        dataLayout.setEnabled(true);
-        smallPresenterButton.setSelected(true);
+//        mainPresenterButton.setSelected(true);
+        filesTablePanel.setEnabled(true);
+//        smallPresenterButton.setSelected(true);
         this.leftSideButtonsContainer.addStyleName("visible");
         this.removeStyleName("hidepanel");
 
@@ -309,39 +263,12 @@ public abstract class FileSystemView extends VerticalLayout implements ViewableF
         }
     }
 
-    /**
-     * Get the left side container for left side big buttons (to be used in case
-     * of large screen mode)
-     *
-     * @return left side buttons container
-     */
+
+    
+   
     @Override
-    public VerticalLayout getSubViewButtonsActionContainerLayout() {
-        return leftSideButtonsContainer;
+    public void update() {
+            filesTablePanel.updateDatasetsTable();
+            filesTablePanel.updateViewDataset();
     }
-
-    /**
-     * Abstract method to allow customised delete action for files from Galaxy
-     * Server
-     *
-     * @param fileObject the file to be removed from Galaxy Server
-     */
-    public abstract void deleteDataset(GalaxyFileObject fileObject);
-
-    /**
-     * Abstract method to allow customised view action for PeptideShaker dataset
-     *
-     * @param PeptideShakerDataset selected Peptide Shaker dataset to view
-     * @param viewDsId current viewed dataset
-     */
-    public abstract void viewDataset(PeptideShakerVisualizationDataset PeptideShakerDataset,String viewDsId);
-
-    /**
-     * Store and retrieve dataset details index to share in link
-     *
-     * @param dsDetails   encoded dataset details to store in database
-     * @param dsUniqueKey
-     * @return dataset public key
-     */
-    public abstract int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey);
 }

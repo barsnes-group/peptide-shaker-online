@@ -4,9 +4,9 @@ import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
 import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
-import com.uib.web.peptideshaker.presenter.core.ButtonWithLabel;
+import com.uib.web.peptideshaker.ui.components.items.ButtonWithLabel;
 import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
-import com.uib.web.peptideshaker.presenter.core.SmallSideBtn;
+import com.uib.web.peptideshaker.ui.components.items.SmallSideBtn;
 import com.uib.web.peptideshaker.presenter.layouts.SearchGUIPeptideShakerWorkFlowInputLayout;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.ThemeResource;
@@ -28,12 +28,12 @@ import java.util.Set;
  *
  * @author Yehia Farag
  */
-public abstract class SearchGUIPSWorkflowView extends VerticalLayout implements ViewableFrame, LayoutEvents.LayoutClickListener {
+public abstract class WorkflowView extends VerticalLayout implements ViewableFrame, LayoutEvents.LayoutClickListener {
 
     /**
      * The tools layout side button.
      */
-    protected SmallSideBtn smallPresenterButton;
+//    protected SmallSideBtn smallPresenterButton;
     /**
      * The tools layout side button.
      */
@@ -50,22 +50,22 @@ public abstract class SearchGUIPSWorkflowView extends VerticalLayout implements 
     /**
      * Initialise the web tool main attributes
      */
-    public SearchGUIPSWorkflowView() {
-        SearchGUIPSWorkflowView.this.setSizeFull();
-        SearchGUIPSWorkflowView.this.setStyleName("activelayout");
-        SearchGUIPSWorkflowView.this.addStyleName("integratedframe");
+    public WorkflowView() {
+        WorkflowView.this.setSizeFull();
+        WorkflowView.this.setStyleName("activelayout");
+        WorkflowView.this.addStyleName("integratedframe");
         initLayout();
     }
 
     private void initLayout() {
-        smallPresenterButton = new SmallSideBtn("img/searchguiblue.png");//spectra2.pngimg/searchgui-medium-shadow-2.png
-
-        smallPresenterButton.setData(SearchGUIPSWorkflowView.this.getViewId());
-        smallPresenterButton.setDescription("Search and process data (SearchGUI and PeptideShaker)");
-        smallPresenterButton.addStyleName("smalltoolsbtn");
-        smallPresenterButton.addStyleName("searchguiicon");
+//        smallPresenterButton = new SmallSideBtn("img/searchguiblue.png");//spectra2.pngimg/searchgui-medium-shadow-2.png
+//
+//        smallPresenterButton.setData(WorkflowView.this.getViewId());
+//        smallPresenterButton.setDescription("Search and process data (SearchGUI and PeptideShaker)");
+//        smallPresenterButton.addStyleName("smalltoolsbtn");
+//        smallPresenterButton.addStyleName("searchguiicon");
         mainPresenterBtn = new ButtonWithLabel("Analyze Data</br><font>Search and process data</font>", 1);//spectra2.png
-        mainPresenterBtn.setData(SearchGUIPSWorkflowView.this.getViewId());
+        mainPresenterBtn.setData(WorkflowView.this.getViewId());
         mainPresenterBtn.updateIconResource(new ThemeResource("img/searchguiblue.png"));//img/workflow3.png
         mainPresenterBtn.addStyleName("searchguiicon");
         btnContainer = new VerticalLayout();
@@ -83,18 +83,18 @@ public abstract class SearchGUIPSWorkflowView extends VerticalLayout implements 
 //                    return;
 //                }
 
-                SearchGUIPSWorkflowView.this.execute_SearchGUI_PeptideShaker_WorkFlow(projectName, fastaFileId, searchParameterFileId, inputFilesIdsList, searchEnginesList, searchParam, quant);
+                WorkflowView.this.execute_SearchGUI_PeptideShaker_WorkFlow(projectName, fastaFileId, searchParameterFileId, inputFilesIdsList, searchEnginesList, searchParam, quant);
                 this.reset();
             }
 
             @Override
             public boolean uploadToGalaxy(PluploadFile[] toUploadFiles) {
-                return SearchGUIPSWorkflowView.this.uploadToGalaxy(toUploadFiles);
+                return WorkflowView.this.uploadToGalaxy(toUploadFiles);
             }
 
             @Override
             public Map<String, GalaxyTransferableFile> saveSearchGUIParameters(IdentificationParameters searchParameters, boolean isNEw) {
-                return SearchGUIPSWorkflowView.this.saveSearchGUIParameters(searchParameters, isNEw);
+                return WorkflowView.this.saveSearchGUIParameters(searchParameters, isNEw);
             }
 
         };
@@ -107,7 +107,7 @@ public abstract class SearchGUIPSWorkflowView extends VerticalLayout implements 
         workFlowBtn.setData("workflow");
         btnContainer.addComponent(workFlowBtn);
         btnContainer.setComponentAlignment(workFlowBtn, Alignment.TOP_CENTER);
-        workFlowBtn.addLayoutClickListener(SearchGUIPSWorkflowView.this);
+        workFlowBtn.addLayoutClickListener(WorkflowView.this);
         workFlowBtn.setSelected(true);
 
         VerticalLayout toolViewFrame = new VerticalLayout();
@@ -123,7 +123,7 @@ public abstract class SearchGUIPSWorkflowView extends VerticalLayout implements 
         toolViewFrame.addComponent(toolViewFrameContent);
         toolViewFrameContent.addComponent(peptideshakerToolInputForm);
 
-        SearchGUIPSWorkflowView.this.minimizeView();
+        WorkflowView.this.minimizeView();
         this.mainPresenterBtn.setDescription("Search and process data (SearchGUI and PeptideShaker)");
     }
 
@@ -168,15 +168,15 @@ public abstract class SearchGUIPSWorkflowView extends VerticalLayout implements 
                 }
 
             }
-            if (smallPresenterButton.getStyleName().contains("selectedpresenterbtn")) {
-                UI.getCurrent().accessSynchronously(() -> {
-                    peptideshakerToolInputForm.updateForm(searchSettingFilesMap, fastaFilesMap, mgfFilesMap, rawFilesMap, mzMLFilesMap, datasetNames);
-                    UI.getCurrent().push();
-                });
-
-            } else {
-                peptideshakerToolInputForm.updateForm(searchSettingFilesMap, fastaFilesMap, mgfFilesMap, rawFilesMap, mzMLFilesMap, datasetNames);
-            }
+//            if (smallPresenterButton.getStyleName().contains("selectedpresenterbtn")) {
+//                UI.getCurrent().accessSynchronously(() -> {
+//                    peptideshakerToolInputForm.updateForm(searchSettingFilesMap, fastaFilesMap, mgfFilesMap, rawFilesMap, mzMLFilesMap, datasetNames);
+//                    UI.getCurrent().push();
+//                });
+//
+//            } else {
+//                peptideshakerToolInputForm.updateForm(searchSettingFilesMap, fastaFilesMap, mgfFilesMap, rawFilesMap, mzMLFilesMap, datasetNames);
+//            }
 
         }
     }
@@ -186,30 +186,30 @@ public abstract class SearchGUIPSWorkflowView extends VerticalLayout implements 
      *
      * @return main layout container for the selected visualisation
      */
-    @Override
-    public VerticalLayout getMainView() {
-        return this;
-    }
+//    @Override
+//    public VerticalLayout getMainView() {
+//        return this;
+//    }
 
     /**
      * Get small presenter button for the top left side button container
      *
      * @return small button
      */
-    @Override
-    public SmallSideBtn getSmallPresenterControlButton() {
-        return smallPresenterButton;
-    }
+//    @Override
+//    public SmallSideBtn getSmallPresenterControlButton() {
+//        return smallPresenterButton;
+//    }
 
     /**
      * Get main presenter button (used in welcome page)
      *
      * @return presenter button
      */
-    @Override
-    public ButtonWithLabel getMainPresenterButton() {
-        return mainPresenterBtn;
-    }
+//    @Override
+//    public ButtonWithLabel getMainPresenterButton() {
+//        return mainPresenterBtn;
+//    }
 
     /**
      * Get the presenter id
@@ -218,7 +218,7 @@ public abstract class SearchGUIPSWorkflowView extends VerticalLayout implements 
      */
     @Override
     public String getViewId() {
-        return SearchGUIPSWorkflowView.class.getName();
+        return WorkflowView.class.getName();
     }
 
     /**
@@ -226,8 +226,8 @@ public abstract class SearchGUIPSWorkflowView extends VerticalLayout implements 
      */
     @Override
     public void minimizeView() {
-        smallPresenterButton.setSelected(false);
-        mainPresenterBtn.setSelected(false);
+//        smallPresenterButton.setSelected(false);
+//        mainPresenterBtn.setSelected(false);
         this.addStyleName("hidepanel");
         this.btnContainer.removeStyleName("visible");
 
@@ -239,7 +239,7 @@ public abstract class SearchGUIPSWorkflowView extends VerticalLayout implements 
     @Override
     public void maximizeView() {
 
-        smallPresenterButton.setSelected(true);
+//        smallPresenterButton.setSelected(true);
         mainPresenterBtn.setSelected(true);
         this.btnContainer.addStyleName("visible");
         this.removeStyleName("hidepanel");
@@ -255,10 +255,10 @@ public abstract class SearchGUIPSWorkflowView extends VerticalLayout implements 
      *
      * @return layout to contain sub view buttons
      */
-    @Override
-    public VerticalLayout getSubViewButtonsActionContainerLayout() {
-        return btnContainer;
-    }
+//    @Override
+//    public VerticalLayout getSubViewButtonsActionContainerLayout() {
+//        return btnContainer;
+//    }
 
     /**
      * Run Online Peptide-Shaker work-flow
@@ -291,4 +291,8 @@ public abstract class SearchGUIPSWorkflowView extends VerticalLayout implements 
      */
     public abstract boolean uploadToGalaxy(PluploadFile[] toUploadFiles);
 
+    @Override
+    public void update() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

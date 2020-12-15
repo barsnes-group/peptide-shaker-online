@@ -8,18 +8,37 @@ import java.util.Date;
  *
  * @author Yehia Mokhtar Farag
  */
-public class GalaxyFileModel implements Serializable{
+public class GalaxyFileModel implements Serializable, Comparable<GalaxyFileModel>{
 
     private String name;
     private String id;
     private String historyId;
     private final String galaxyType= CONSTANT.GALAXY_FILE;
-    private String url;
     private Date createdDate;
     private String extension;
     private String peek;
     private String galaxyJobId;
     private GalaxyJobModel galaxyJob;
+    private String status;
+    private String fileOverview;
+    private boolean deleted;
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public String getDownloadUrl() {
+        return downloadUrl;
+    }
+
+    public void setDownloadUrl(String downloadUrl) {
+        this.downloadUrl = downloadUrl;
+    }
+    private String downloadUrl;
 
     public String getGalaxyJobId() {
         return galaxyJobId;
@@ -74,13 +93,6 @@ public class GalaxyFileModel implements Serializable{
     }
 
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 
     public Date getCreatedDate() {
         return createdDate;
@@ -106,5 +118,27 @@ public class GalaxyFileModel implements Serializable{
     public void setGalaxyJob(GalaxyJobModel galaxyJob) {
         this.galaxyJob = galaxyJob;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @Override
+    public int compareTo(GalaxyFileModel o) {
+        return o.createdDate.compareTo(this.createdDate);
+    }
+
+    public String getFileOverview() {
+        return fileOverview;
+    }
+
+    public void setFileOverview(String fileOverview) {
+        this.fileOverview = fileOverview;
+    }
+    
 
 }

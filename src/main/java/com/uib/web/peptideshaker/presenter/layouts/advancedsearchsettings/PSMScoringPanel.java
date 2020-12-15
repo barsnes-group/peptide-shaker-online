@@ -4,7 +4,7 @@ import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.psm_scoring.PsmScore;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.advanced.PsmScoringParameters;
-import com.uib.web.peptideshaker.presenter.core.PopupWindow;
+import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
 import com.vaadin.data.Item;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.*;

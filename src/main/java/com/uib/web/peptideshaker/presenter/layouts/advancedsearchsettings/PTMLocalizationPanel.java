@@ -2,7 +2,7 @@ package com.uib.web.peptideshaker.presenter.layouts.advancedsearchsettings;
 
 import com.compomics.util.experiment.identification.modification.ModificationLocalizationScore;
 import com.compomics.util.parameters.identification.IdentificationParameters;
-import com.uib.web.peptideshaker.presenter.core.PopupWindow;
+import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
 import com.vaadin.data.validator.DoubleRangeValidator;

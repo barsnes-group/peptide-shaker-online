@@ -2,9 +2,9 @@ package com.uib.web.peptideshaker.ui.views;
 
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
-import com.uib.web.peptideshaker.presenter.core.ButtonWithLabel;
+import com.uib.web.peptideshaker.ui.components.items.ButtonWithLabel;
 import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
-import com.uib.web.peptideshaker.presenter.core.SmallSideBtn;
+import com.uib.web.peptideshaker.ui.components.items.SmallSideBtn;
 import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.*;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
@@ -29,11 +29,11 @@ public abstract class ResultsView extends VerticalLayout implements ViewableFram
     /**
      * The small side button (normal size screen).
      */
-    private final ButtonWithLabel mainPresenterBtn;
+//    private final ButtonWithLabel mainPresenterBtn;
     /**
      * The small side button (normal size screen).
      */
-    private final SmallSideBtn smallPresenterBtn;
+//    private final SmallSideBtn smallPresenterBtn;
     /**
      * The central selection manager .
      */
@@ -77,20 +77,20 @@ public abstract class ResultsView extends VerticalLayout implements ViewableFram
     public ResultsView(boolean sharedDataset) {
         ResultsView.this.setSizeFull();
         ResultsView.this.setStyleName("activelayout");
-        this.smallPresenterBtn = new SmallSideBtn(VaadinIcons.CLUSTER);
-        smallPresenterBtn.updateIconSourceURL("img/venn_color.png");
-        smallPresenterBtn.setDescription("Visualize selected projects / Upload your own project files");
-        this.smallPresenterBtn.setData(ResultsView.this.getViewId());
-        this.smallPresenterBtn.addStyleName("resultsmallbtn");
-        this.mainPresenterBtn = new ButtonWithLabel("Visualize Data</br><font>Visualize/Upload project</font>", 1);
-        this.mainPresenterBtn.setData(ResultsView.this.getViewId());
-        this.mainPresenterBtn.updateIcon(VaadinIcons.CLUSTER.getHtml());
-        this.mainPresenterBtn.updateIconResource(new ThemeResource("img/venn_color.png"));
-        this.mainPresenterBtn.setDescription("Visualize selected projects / Upload your own project files");
-        this.mainPresenterBtn.setEnabled(true);
-        this.mainPresenterBtn.addStyleName("orangeiconcolor");
-        this.mainPresenterBtn.addStyleName("resultsbtn");
-        this.smallPresenterBtn.setEnabled(true);
+//        this.smallPresenterBtn = new SmallSideBtn(VaadinIcons.CLUSTER);
+//        smallPresenterBtn.updateIconSourceURL("img/venn_color.png");
+//        smallPresenterBtn.setDescription("Visualize selected projects / Upload your own project files");
+//        this.smallPresenterBtn.setData(ResultsView.this.getViewId());
+//        this.smallPresenterBtn.addStyleName("resultsmallbtn");
+//        this.mainPresenterBtn = new ButtonWithLabel("Visualize Data</br><font>Visualize/Upload project</font>", 1);
+//        this.mainPresenterBtn.setData(ResultsView.this.getViewId());
+//        this.mainPresenterBtn.updateIcon(VaadinIcons.CLUSTER.getHtml());
+//        this.mainPresenterBtn.updateIconResource(new ThemeResource("img/venn_color.png"));
+//        this.mainPresenterBtn.setDescription("Visualize selected projects / Upload your own project files");
+//        this.mainPresenterBtn.setEnabled(true);
+//        this.mainPresenterBtn.addStyleName("orangeiconcolor");
+//        this.mainPresenterBtn.addStyleName("resultsbtn");
+//        this.smallPresenterBtn.setEnabled(true);
         this.Selection_Manager = new SelectionManager();
         this.initLayout(sharedDataset);
         ResultsView.this.minimizeView();
@@ -228,10 +228,10 @@ public abstract class ResultsView extends VerticalLayout implements ViewableFram
      *
      * @return PeptideShaker results view presenter layout
      */
-    @Override
-    public VerticalLayout getMainView() {
-        return this;
-    }
+//    @Override
+//    public VerticalLayout getMainView() {
+//        return this;
+//    }
 
     /**
      * Get the small right side button component (represent view control button
@@ -239,10 +239,10 @@ public abstract class ResultsView extends VerticalLayout implements ViewableFram
      *
      * @return right view control button
      */
-    @Override
-    public SmallSideBtn getSmallPresenterControlButton() {
-        return smallPresenterBtn;
-    }
+//    @Override
+//    public SmallSideBtn getSmallPresenterControlButton() {
+//        return smallPresenterBtn;
+//    }
 
     /**
      * Get the current view ID
@@ -259,8 +259,8 @@ public abstract class ResultsView extends VerticalLayout implements ViewableFram
      */
     @Override
     public void minimizeView() {
-        mainPresenterBtn.setSelected(false);
-        smallPresenterBtn.setSelected(false);
+//        mainPresenterBtn.setSelected(false);
+//        smallPresenterBtn.setSelected(false);
         this.addStyleName("hidepanel");
         this.viewControlButtonContainer.removeStyleName("visible");
         this.maximisedMode = false;
@@ -278,8 +278,8 @@ public abstract class ResultsView extends VerticalLayout implements ViewableFram
         UI.getCurrent().accessSynchronously(new Runnable() {
             @Override
             public void run() {
-                smallPresenterBtn.setSelected(true);
-                mainPresenterBtn.setSelected(true);
+//                smallPresenterBtn.setSelected(true);
+//                mainPresenterBtn.setSelected(true);
                 datasetVisulizationLevelContainer.setMargin(new MarginInfo(false, false, false, false));
                 maximisedMode = true;
                 viewControlButtonContainer.addStyleName("visible");
@@ -358,20 +358,20 @@ public abstract class ResultsView extends VerticalLayout implements ViewableFram
      *
      * @return left side buttons container
      */
-    @Override
-    public VerticalLayout getSubViewButtonsActionContainerLayout() {
-        return viewControlButtonContainer;
-    }
+//    @Override
+//    public VerticalLayout getSubViewButtonsActionContainerLayout() {
+//        return viewControlButtonContainer;
+//    }
 
     /**
      * Get presenter button
      *
      * @return main presenter button
      */
-    @Override
-    public ButtonWithLabel getMainPresenterButton() {
-        return mainPresenterBtn;
-    }
+//    @Override
+//    public ButtonWithLabel getMainPresenterButton() {
+//        return mainPresenterBtn;
+//    }
 
     /**
      * Activate PeptideShaker dataset visualisation upon user selection
@@ -384,8 +384,8 @@ public abstract class ResultsView extends VerticalLayout implements ViewableFram
         ExecutorService executorService = Executors.newFixedThreadPool(4);
 
         Runnable runnableTask1 = () -> {
-            mainPresenterBtn.setEnabled(peptideShakerVisualizationDataset != null);
-            smallPresenterBtn.setEnabled(peptideShakerVisualizationDataset != null);
+//            mainPresenterBtn.setEnabled(peptideShakerVisualizationDataset != null);
+//            smallPresenterBtn.setEnabled(peptideShakerVisualizationDataset != null);
             Selection_Manager.reset();
             Selection_Manager.selectBtn(0);
             datasetVisulizationLevelContainer.selectDataset(peptideShakerVisualizationDataset);
@@ -428,4 +428,9 @@ public abstract class ResultsView extends VerticalLayout implements ViewableFram
      * @return array of validated files confirmation
      */
     public abstract boolean[] processVisualizationDataset(String projectName, Map<String, PluploadFile> uploadedFileMap);
+    
+    @Override
+    public void update() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

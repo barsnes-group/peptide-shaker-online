@@ -7,7 +7,7 @@ package com.uib.web.peptideshaker.model;
  */
 public class CONSTANT {
 
-     public static final String WEB_PEPTEDSHAKER_FUNCTIONAL_HISTORY = "Web-PS-Functional-History";
+    public static final String WEB_PEPTEDSHAKER_FUNCTIONAL_HISTORY = "Web-PS-Functional-History";
     public static final String APP_MANAGMENT_BEAN = "AppManagmentBean";
     public static final String PUBLIC_USER_CAPTION = "Guest User <i>(public data)</i>";
     public static final String ID = "id";
@@ -29,6 +29,7 @@ public class CONSTANT {
     public static final String CREATE_TIME = "create_time";
     public static final String EXTENSION = "extension";
     public static final String PEEK = "peek";
+    public static final String GALAXY_FILE_OVERVIEW = "misc_info";
     public static final String COLLECTION_ELEMENTS = "elements";
     public static final String COLLECTION_OBJECT = "object";
     public static final String PS_DATASET_NUMBER = "#datasets";
@@ -39,10 +40,22 @@ public class CONSTANT {
     public static final String JOB_OUTPUTS = "outputs";
     public static final String QUANT_DATASET = "quant_ds";
     public static final String ID_DATASET = "id_ds";
-
+    public static final String USER_UPLOADED_DATASET = "user_ploaded_dataset";
     public static final String SEARCH_GUI_FILE_EXTENSION = "searchgui_archive";
     public static final String ZIP_FILE_EXTENSION = "zip";
     public static final String TABULAR_FILE_EXTENSION = "tabular";
     public static final String CUI_FILE_EXTENSION = "cui";
     public static final String MGF_FILE_EXTENSION = "mgf";
+    public static final String JSON_FILE_EXTENSION = "json";
+
+    public static final String OK_STATUS = "ok";
+    public static final String RUNNING_STATUS = "running";
+    public static final String ERROR_STATUS = "error";
+
+    public static final String DESEDE_ENCRYPTION_SCHEME = "DESede";
+    public static final String UNICODE_FORMAT = "UTF8";
+    
+     public static final String MOFF_TOOL_ID = "toolshed.g2.bx.psu.edu/repos/galaxyp/proteomics_moff/proteomics_moff/";
+      public static final String CONVERT_CHARACTERS_TOOL_ID = "Convert characters1";
+     
 }

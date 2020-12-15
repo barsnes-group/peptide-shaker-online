@@ -3,8 +3,7 @@ package com.uib.web.peptideshaker.ui.views;
 import com.uib.web.peptideshaker.AppManagmentBean;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
-import com.uib.web.peptideshaker.presenter.core.ButtonWithLabel;
-import com.uib.web.peptideshaker.presenter.core.SmallSideBtn;
+import com.uib.web.peptideshaker.ui.components.items.ButtonWithLabel;
 import com.uib.web.peptideshaker.ui.views.modal.GalaxyLoginPopup;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
@@ -16,13 +15,11 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * This class represents the welcome page for Online PeptideShaker
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class WelcomePageView extends VerticalLayout implements ViewableFrame {
 
@@ -34,62 +31,24 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
      * The header layout container layout.
      */
     private final HorizontalLayout headerPanelContentLayout;
-
-    /**
-     * The connecting to galaxy progress label.
-     */
-//    private final Label connectingLabel;
-    /**
-     * Galaxy login with API key button
-     */
-//    private final ButtonWithLabel galaxyLoginConnectionBtnLabel;
-    /**
-     * Test user galaxy API key.
-     */
-    private final String testUserLogin = "test_User_Login";
-
     /**
      * Connection to galaxy statues label.
      */
     private final GalaxyLoginPopup galaxyLoginBtn;
-//    /**
-//     * Galaxy login controls layout.
-//     */
-//    private final VerticalLayout galaxyLoginLayout;
-//    /**
-//     * User API login field.
-//     */
-//    private final TextField userAPIFeald;
     /**
-     * The side home button .
-     */
-    private final SmallSideBtn viewControlButton;
-    /**
-     * Busy connecting window
+     * Busy connecting window.
      */
     private final Window busyConnectinWindow;
     /**
      * Container for different presenters buttons (data overview, tools ,
-     * results, and galaxy connection)
+     * results, and galaxy connection).
      */
-    private final VerticalLayout presenteControlButtonsLayout;
+    private final VerticalLayout viewsControlButtonsLayout;
     /**
-     * Layout for labels that have user information gathered from user accountr
-     * on galaxy server
+     * Layout for labels that have user information gathered from user account
+     * on galaxy server.
      */
     private final VerticalLayout userOverviewLayout;
-    /**
-     * Connection to galaxy progress window
-     */
-//    private final Window connectinoWindow;
-    /**
-     * Unique presenter id
-     */
-    private final String viewId = WelcomePageView.class.getName();
-    /**
-     * Executor service to execute connection task to galaxy server.
-     */
-    private ExecutorService executorService = Executors.newFixedThreadPool(2);
     /**
      * Presenter buttons container layout container is layout container that
      * contain the small presenter control buttons.
@@ -173,7 +132,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         peptideShaker.setValue(peptideShaker.getValue().replace("<div style='white-space: nowrap;width: 65px;height: 20px;", "<div class='psversstyle' style='white-space: nowrap;width: 65px;height: 20px;"));
         userOverviewLayout.addComponent(peptideShaker);
 
-        Label moff = initLeftSideInfoLabel("<img src='VAADIN/themes/webpeptideshakertheme/img/mofficon21.png' alt style='width: auto;height:15px;margin-left:-2px;    margin-right: 4px;'>" + " Moff ", "<i class='nrightsidediv'>" + VaadinSession.getCurrent().getAttribute("moffvirsion") + "</i>");
+        Label moff = initLeftSideInfoLabel("<img src='VAADIN/themes/webpeptideshakertheme/img/mofficon21.png' alt style='width: auto;height:15px;margin-left:-2px;    margin-right: 4px;'>" + " moff ", "<i class='nrightsidediv'>" + VaadinSession.getCurrent().getAttribute("moffvirsion") + "</i>");
         moff.setValue(moff.getValue().replace("<div style='white-space: nowrap;width: 65px;height: 20px;", "<div class='psversstyle' style='white-space: nowrap;width: 65px;height: 20px;"));
         userOverviewLayout.addComponent(moff);
 
@@ -225,43 +184,14 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         /**
          * *Presenter control buttons container layout
          */
-        presenteControlButtonsLayout = new VerticalLayout();
-        presenteControlButtonsLayout.setHeight(180, Unit.PIXELS);
-        presenteControlButtonsLayout.setWidth(100, Unit.PERCENTAGE);
-        presenteControlButtonsLayout.setSpacing(true);
-        presenterControlButtonsPanel.addComponent(presenteControlButtonsLayout);
-        presenterControlButtonsPanel.setExpandRatio(presenteControlButtonsLayout, 0.6f);
-        presenteControlButtonsLayout.setEnabled(true);
-        presenteControlButtonsLayout.addStyleName("disableasenable");
-
-        presenterControlButtonsPanel.addLayoutClickListener((LayoutEvents.LayoutClickEvent event) -> {
-            AbstractComponent comp = (AbstractComponent) event.getClickedComponent();
-            if (presenteControlButtonsLayout.isEnabled() || comp == null || (comp.getData() != null && comp.getData().toString().equalsIgnoreCase("ignoreclick"))) {
-                return;
-            }
-
-//            if (galaxyLoginBtn.getData() == null) {
-//                connectinoWindow.setVisible(true);
-//            }
-        });
-//        galaxyLoginBtn.addLayoutClickListener((LayoutEvents.LayoutClickEvent event) -> {
-//            if (galaxyLoginBtn.getData() == null) {
-////                connectinoWindow.removeStyleName("connectionwindow");
-////                connectinoWindow.setStyleName("windowcontainer");
-////                connectinoWindow.setVisible(true);
-//            } else {
-//                Notification.show("error in connection..", Notification.Type.ERROR_MESSAGE);
-//                VaadinSession.getCurrent().getSession().setMaxInactiveInterval(10);
-//                Page.getCurrent().reload();
-//            }
-//        });
-
-//       
-        viewControlButton = new SmallSideBtn(VaadinIcons.HOME_O);
-        viewControlButton.addStyleName("homepagepresenterbtn");
-        viewControlButton.setData(WelcomePageView.this.getViewId());
-
-        this.viewControlButton.setDescription("Home page");
+        viewsControlButtonsLayout = new VerticalLayout();
+        viewsControlButtonsLayout.setHeight(180, Unit.PIXELS);
+        viewsControlButtonsLayout.setWidth(100, Unit.PERCENTAGE);
+        viewsControlButtonsLayout.setSpacing(true);
+        presenterControlButtonsPanel.addComponent(viewsControlButtonsLayout);
+        presenterControlButtonsPanel.setExpandRatio(viewsControlButtonsLayout, 0.6f);
+        viewsControlButtonsLayout.setEnabled(true);
+        viewsControlButtonsLayout.addStyleName("disableasenable");
 
         VerticalLayout mainBottomPanel = new VerticalLayout();
         mainBottomPanel.setStyleName("bluelayout");
@@ -328,14 +258,19 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         viewBtnsContainer.setSizeFull();
         viewBtnsContainer.addComponent(galaxyLoginBtn, "left:50%;top:50%;");
 
+        LayoutEvents.LayoutClickListener listener = (LayoutEvents.LayoutClickEvent event) -> {
+            String viewId = ((ButtonWithLabel) event.getComponent()).getData() + "";
+            appManagmentBean.getUI_Manager().viewLayout(viewId);
+        };
         /**
          * The workflow view button.
          */
-        ButtonWithLabel workflowViewBtn = new ButtonWithLabel("Analyze Data</br><font>Search and process data</font>", 1);//spectra2.png
-        workflowViewBtn.setData(SearchGUIPSWorkflowView.class.getName());
-        workflowViewBtn.updateIconResource(new ThemeResource("img/searchguiblue.png"));//img/workflow3.png
-        workflowViewBtn.addStyleName("searchguiicon");
-        viewBtnsContainer.addComponent(workflowViewBtn, "left:0%;top:0%;");
+        ButtonWithLabel workflowViewButton = new ButtonWithLabel("Analyze Data</br><font>Search and process data</font>", 1);//spectra2.png
+        workflowViewButton.setData(WorkflowView.class.getName());
+        workflowViewButton.updateIconResource(new ThemeResource("img/searchguiblue.png"));//img/workflow3.png
+        workflowViewButton.addStyleName("searchguiicon");
+        workflowViewButton.addLayoutClickListener(listener);
+        viewBtnsContainer.addComponent(workflowViewButton, "left:0%;top:0%;");
         /**
          * The File System view button.
          */
@@ -344,6 +279,8 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         fileSystemViewButton.setDescription("Projects and available data files");
         fileSystemViewButton.updateIconResource(new ThemeResource("img/globeearthanimation.png"));
         fileSystemViewButton.addStyleName("glubimg");
+        fileSystemViewButton.addLayoutClickListener(listener);
+        fileSystemViewButton.addLayoutClickListener(listener);
         viewBtnsContainer.addComponent(fileSystemViewButton, "left:0%;top:50%;");
         /**
          * The Results view button.
@@ -356,66 +293,14 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         resultsViewBtn.addStyleName("orangeiconcolor");
         resultsViewBtn.addStyleName("resultsbtn");
         viewBtnsContainer.addComponent(resultsViewBtn, "left:50%;top:0%;");
-        presenteControlButtonsLayout.addComponent(viewBtnsContainer);
+        resultsViewBtn.addLayoutClickListener(listener);
+        viewsControlButtonsLayout.addComponent(viewBtnsContainer);
         if (availableGalaxy) {
             galaxyLoginBtn.setDescription("Login to Galaxy - API key required");
-            updateUserOverviewPanel();
         } else {
             galaxyLoginBtn.setDescription("Galaxy server is not available");
         }
-    }
-
-    /**
-     * Log in to galaxy as guest (test user API key).
-     */
-    public void loginAsGuest() {
-//        String caption = "<b style=\"color:#cd6e1d !important\">Guest User <i>(public data)</i></b>";
-//
-//        galaxyLoginConnectionBtnLabel.setVisible(false);
-//        connectinoWindow.setVisible(true);
-//        galaxyLoginLayout.setVisible(false);
-//        connectinoWindow.setClosable(false);
-//        connectingLabel.setCaption(caption);
-//        connectingLabel.setVisible(true);
-//        Runnable task = () -> {
-//            connectinoWindow.removeStyleName("windowcontainer");
-//            connectinoWindow.setStyleName("connectionwindow");
-//            List<String> userOverviewData = connectToGalaxy(testUserLogin, viewId);
-//            updateConnectionStatusToGalaxy(userOverviewData);
-//        };
-//        if (executorService.isShutdown()) {
-//            executorService = Executors.newSingleThreadExecutor();
-//        }
-//        executorService.submit(task);
-//        executorService.shutdown();
-    }
-
-    public void retriveToShareDataset() {
-//        String caption = "<b style=\"color:#cd6e1d !important\">Retrieving Dataset Information</i></b>";
-//        galaxyLoginConnectionBtnLabel.setVisible(false);
-//        connectinoWindow.setVisible(true);
-//        galaxyLoginLayout.setVisible(false);
-//        connectinoWindow.setClosable(false);
-//        connectingLabel.setCaption(caption);
-//        connectingLabel.setVisible(true);
-//        Runnable task = () -> {
-//            connectinoWindow.removeStyleName("windowcontainer");
-//            connectinoWindow.setStyleName("connectionwindow");
-//            viewToShareDataset();
-//
-//        };
-//        if (executorService.isShutdown()) {
-//            executorService = Executors.newSingleThreadExecutor();
-//        }
-//        executorService.submit(task);
-//        ScheduledExecutorService scd = Executors.newSingleThreadScheduledExecutor();
-//        scd.schedule(() -> {
-//            connectinoWindow.setVisible(false);
-//        }, 5, TimeUnit.SECONDS);
-//        scd.shutdown();
-//
-//        executorService.shutdown();
-
+        WelcomePageView.this.minimizeView();
     }
 
     /**
@@ -425,7 +310,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
      * Galaxy server
      */
     private void updateUserOverviewPanel() {
-        Map<String, String> userOverviewData = appManagmentBean.getUserLoginHandler().getUserInformation(); //List<String> userOverviewData
+        Map<String, String> userOverviewData = appManagmentBean.getUserHandler().getUserInformation(); //List<String> userOverviewData
         Label user_label = initLeftSideInfoLabel(VaadinIcons.USER.getHtml() + " <b class='rightsidediv' style='color:#cd6e1d !important'>" + userOverviewData.get(CONSTANT.USERNAME) + "</b>", "");
         user_label.addStyleName("headerlabel");
         userOverviewLayout.replaceComponent(userOverviewLayout.getComponent(1), user_label);
@@ -469,7 +354,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
      */
     @Override
     public String getViewId() {
-        return viewId;
+        return WelcomePageView.class.getName();
     }
 
     /**
@@ -477,7 +362,6 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
      */
     @Override
     public void minimizeView() {
-        viewControlButton.setSelected(false);
         this.addStyleName("hidepanel");
     }
 
@@ -486,55 +370,9 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
      */
     @Override
     public void maximizeView() {
-        viewControlButton.setSelected(true);
         this.removeStyleName("hidepanel");
     }
 
-    /**
-     * Get presenter side menu button
-     *
-     * @return small side button for the presenter
-     */
-    @Override
-    public SmallSideBtn getSmallPresenterControlButton() {
-        return viewControlButton;
-    }
-
-    /**
-     * Get the main frame that contains the presenter view
-     *
-     * @return
-     */
-    @Override
-    public VerticalLayout getMainView() {
-        return this;
-    }
-
-    /**
-     * Get the left side (sub presenter action buttons) in welcome page the side
-     * view layout is not exist
-     *
-     * @return empty layout
-     */
-    @Override
-    public VerticalLayout getSubViewButtonsActionContainerLayout() {
-        return new VerticalLayout();
-    }
-
-//    /**
-//     * Connect to galaxy server.
-//     *
-//     * @param presenterId button used to login
-//     * @param userAPI     user API key that is required to connect to galaxy
-//     * @return list of overview data for the user / null indicate failed to
-//     * connect to Galaxy Server
-//     */
-//    public abstract List<String> connectToGalaxy(String userAPI, String presenterId);
-//
-//    /**
-//     * View dataset that is shared by link.
-//     */
-//    public abstract void viewToShareDataset();
     /**
      * Create unified labels for the user overview panel
      *
@@ -545,7 +383,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
     private Label initLeftSideInfoLabel(String title, String value) {
         Label label = new Label("<div class='lefttitle' style='width:120px;font-size: 14px;'>" + title + "</div><div style='white-space: nowrap;width: 65px;height: 20px;font-size: 12px;color:#cd6e1d;position: relative;top: -20px;left: 120px;text-overflow: ellipsis;overflow: hidden;'>  " + value + " </div>");
         label.setContentMode(ContentMode.HTML);
-        label.setHeight(55, Unit.PIXELS);
+        label.setHeight(40, Unit.PIXELS);
         label.setWidth(180, Unit.PIXELS);
         label.setStyleName(ValoTheme.LABEL_SMALL);
         label.addStyleName("leftsidelabel");
@@ -565,15 +403,19 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
 
     }
 
+    @Override
+    public void update() {
+        this.updateUserOverviewPanel();
+    }
+
     /**
      * Get the presenter button (large button with label) for the welcome page
      * (not exist for welcome page presenter)
      *
      * @return null no large button for welcome page presenter
      */
-    @Override
-    public ButtonWithLabel getMainPresenterButton() {
-        return null;
-    }
-
+//    @Override
+//    public ButtonWithLabel getMainPresenterButton() {
+//        return null;
+//    }
 }

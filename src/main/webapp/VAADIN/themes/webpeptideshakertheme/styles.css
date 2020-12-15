@@ -16756,10 +16756,6 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0px !important;
 }
 
-.webpeptideshakertheme .selectedbiglbtn .presenterbtn .v-icon, .webpeptideshakertheme .selectedpresenterbtn .v-icon {
-	font-size: 20px !important;
-}
-
 .webpeptideshakertheme .selectedbiglbtn .presenterbtn img {
 	border: none !important;
 }
@@ -16770,7 +16766,7 @@ div.v-layout.v-horizontal.v-widget {
 	line-height: 160%;
 }
 
-.webpeptideshakertheme .bigmenubtn .selectedpresenterbtn {
+.webpeptideshakertheme .selectedpresenterbtn {
 	border-color: orange !important;
 }
 
@@ -20167,6 +20163,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .webpeptideshakertheme .homepagepresenterbtn .v-icon {
 	color: #006d98;
+	font-size: 22px;
 }
 
 .webpeptideshakertheme .glubimg .v-image {
@@ -20713,7 +20710,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .v-absolutelayout-wrapper-searchguiicon {
-	top: 10px !important;
+	top: 9px !important;
 }
 
 .webpeptideshakertheme .mobilestyle .v-slot-leftsidelabel {
@@ -20950,8 +20947,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .v-absolutelayout-wrapper-homepagepresenterbtn {
-	padding-top: 2px !important;
-	top: 43px !important;
+	top: 53px !important;
 }
 
 .webpeptideshakertheme .mobilestyle .v-absolutelayout-wrapper-homepagepresenterbtn {
@@ -21438,7 +21434,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .averagescreenstyle .v-absolutelayout-wrapper-dataoverviewsmallbtn {
-	top: 40px !important;
+	top: 53px !important;
 }
 
 .webpeptideshakertheme .averagescreenstyle .middleviewcontainer {
@@ -21930,7 +21926,7 @@ div.v-layout.v-horizontal.v-widget {
 	max-height: 20px;
 	border-radius: 100%;
 	padding: 0px;
-	line-height: 20px;
+	line-height: 20px !important;
 }
 
 .webpeptideshakertheme .v-Notification.tray .v-Notification-caption + .v-Notification-description {
@@ -22282,4 +22278,39 @@ div.v-layout.v-horizontal.v-widget {
 
 .webpeptideshakertheme .v-horizontallayout .v-absolutelayout-infopopupcontainer .v-popupview-infopopup .v-icon {
 	line-height: 100% !important;
+}
+
+.webpeptideshakertheme .viewbuttonsactioncontainer {
+	border: 2px solid lightgray;
+	border-radius: 5px;
+	border-right-color: whitesmoke;
+	border-bottom-right-radius: 0px;
+	z-index: 2 !important;
+	position: absolute !important;
+	background-color: whitesmoke;
+}
+
+.webpeptideshakertheme .viewbuttonsactioncontainer .presenterbtn {
+	background-color: white;
+	border: 1px solid lightgray;
+	border-radius: 2px;
+	cursor: pointer;
+}
+
+.webpeptideshakertheme .confirmdialog .v-absolutelayout-margin .v-label {
+	color: gray !important;
+	font-weight: bold !important;
+	font-size: 14px;
+	text-align: left;
+	margin-left: 20px;
+	margin-top: 5px;
+	padding-left: 20px;
+}
+
+.webpeptideshakertheme .confirmdialog .v-icon {
+	margin-left: -40px;
+	line-height: 30px;
+	font-size: 30px;
+	margin-top: 5px;
+	position: absolute;
 }

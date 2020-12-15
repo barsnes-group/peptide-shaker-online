@@ -1,7 +1,7 @@
 package com.uib.web.peptideshaker.ui.abstracts;
 
-import com.uib.web.peptideshaker.presenter.core.ButtonWithLabel;
-import com.uib.web.peptideshaker.presenter.core.SmallSideBtn;
+import com.uib.web.peptideshaker.ui.components.items.ButtonWithLabel;
+import com.uib.web.peptideshaker.ui.components.items.SmallSideBtn;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -10,35 +10,7 @@ import com.vaadin.ui.VerticalLayout;
  *
  * @author Yehia Farag
  */
-public interface ViewableFrame {
-
-    /**
-     * Get Sub view action buttons container
-     *
-     * @return layout
-     */
-    VerticalLayout getSubViewButtonsActionContainerLayout();
-
-    /**
-     * Get main view container
-     *
-     * @return layout
-     */
-    VerticalLayout getMainView();
-
-    /**
-     * Get side button (top right button)
-     *
-     * @return button
-     */
-    SmallSideBtn getSmallPresenterControlButton();
-
-    /**
-     * Get main action button (in welcome page)
-     *
-     * @return main button with label
-     */
-    ButtonWithLabel getMainPresenterButton();
+public interface ViewableFrame {    
 
     /**
      * Get the presenter id
@@ -56,5 +28,9 @@ public interface ViewableFrame {
      * Show the presenter view
      */
     void maximizeView();
+    /**
+     * update all panels data
+     */
+    void update();
 
 }

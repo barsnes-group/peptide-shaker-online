@@ -9,7 +9,7 @@ import com.uib.web.peptideshaker.galaxy.utilities.history.GalaxyDatasetServingUt
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
-import com.uib.web.peptideshaker.model.core.LinkUtil;
+import com.uib.web.peptideshaker.utils.URLUtils;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Notification;
@@ -668,7 +668,7 @@ public abstract class GalaxyHistoryHandler {
                 String requestToShare = Page.getCurrent().getLocation().toString();
                 if (requestToShare.contains("toShare;")) {
                     int dsKey = -1;
-                    final LinkUtil linkUtil = new LinkUtil();
+                    final URLUtils linkUtil = new URLUtils();
                     if (requestToShare.split("toShare;").length > 1) {
                         try {
                             String dsKeyAsString = requestToShare.split("toShare;")[1];
@@ -684,8 +684,6 @@ public abstract class GalaxyHistoryHandler {
                         org.json.simple.JSONObject json = (org.json.simple.JSONObject) parser.parse(deCrypted);
                         Map<String, Object> dsInformationMap = jsonToMap(json);
 
-                        System.out.println("dsInformationMap "+dsInformationMap.keySet());
-                        System.out.println("dsInformationMap2 "+dsInformationMap);
                         user_folder = new File(userDataFolderUrl, dsInformationMap.get("apiKey").toString());
                         user_folder.mkdir();
                         galaxyDatasetServingUtil = new GalaxyDatasetServingUtil(galaxyServerUrl, dsInformationMap.get("apiKey").toString());

@@ -8,7 +8,7 @@ import com.compomics.util.parameters.identification.search.DigestionParameters;
 import com.compomics.util.parameters.identification.search.SearchParameters;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.presenter.core.MultiSelectOptionGroup;
-import com.uib.web.peptideshaker.presenter.core.PopupWindow;
+import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.form.*;
 import com.vaadin.data.Property;
 import com.vaadin.data.validator.DoubleRangeValidator;

@@ -3,7 +3,7 @@ package com.uib.web.peptideshaker.presenter.layouts.advancedsearchsettings;
 import com.compomics.util.experiment.biology.variants.AaSubstitutionMatrix;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.advanced.PeptideVariantsParameters;
-import com.uib.web.peptideshaker.presenter.core.PopupWindow;
+import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
 import com.vaadin.data.Property;

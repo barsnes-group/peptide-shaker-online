@@ -7,6 +7,8 @@ import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideSha
 import com.uib.web.peptideshaker.ui.UIContainer;
 import com.uib.web.peptideshaker.uimanager.UIManager;
 import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
+import com.uib.web.peptideshaker.ui.views.FileSystemView;
+import com.uib.web.peptideshaker.ui.views.WelcomePageView;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import pl.exsio.plupload.PluploadFile;
@@ -39,8 +41,6 @@ public abstract class UIHandler {
     public UIHandler(boolean availableGalaxyServer) {
       
         this.uiContainer = new UIContainer(availableGalaxyServer) {
-            private boolean connectedToGalaxy;
-
             @Override
             public void viewLayout(String viewId) {
                 uiManager.viewLayout(viewId);
@@ -52,30 +52,14 @@ public abstract class UIHandler {
                     uiManager.registerView(view);
                 });
 
-            }
-
-            @Override
-            public List<String> connectToGalaxyServer(String galaxyServerUrl, String userAPI, String userDataFolderUrl) {
-                List<String> userData = UIHandler.this.connectToGalaxyServer(galaxyServerUrl, userAPI, userDataFolderUrl);
-                connectedToGalaxy = userData != null;
-                if (getSearchGUIPeptideShakerToolPresenter().getMainPresenterButton().isEnabled()) {
-                    getSearchGUIPeptideShakerToolPresenter().getMainPresenterButton().setEnabled(connectedToGalaxy);
-                    getSearchGUIPeptideShakerToolPresenter().getSmallPresenterControlButton().setEnabled(connectedToGalaxy);
-                }
-
-                return userData;
-            }
+            }          
 
             @Override
             public void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl) {
                 UIHandler.this.viewToShareDataset(galaxyServerUrl, userDataFolderUrl);
             }
 
-            @Override
-            public List<String> getUserOverviewData() {
-                return UIHandler.this.getUserOverviewData();
-            }
-
+           
             @Override
             public void execute_SearchGUI_PeptideShaker_WorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> mgfIdsList, Set<String> searchEnginesList, IdentificationParameters searchParam, boolean quant) {
                 UIHandler.this.execute_SearchGUI_PeptideShaker_WorkFlow(projectName, fastaFileId, searchParameterFileId, mgfIdsList, searchEnginesList, searchParam, quant);
@@ -108,23 +92,22 @@ public abstract class UIHandler {
                 return UIHandler.this.insertDatsetLinkToShare(dsDetails, dsUniqueKey);
             }
 
-        };
-           
-        UI.getCurrent().setContent(uiContainer);
-         
-        uiManager = new UIManager(uiContainer.getSubViewButtonsActionContainer(), uiContainer.getTopMiddleLayoutContainer(), uiContainer.getPresenterButtonsContainerLayout(), uiContainer.getSubPresenterButtonsContainer());
+        };           
+        UI.getCurrent().setContent(uiContainer);         
+        uiManager = new UIManager();
+        
 //        uiManager.registerView(uiContainer.getSearchGUIPeptideShakerToolPresenter());
-        uiManager.registerView(uiContainer.getWelcomePage());
-        uiManager.viewLayout(uiContainer.getWelcomePage().getViewId());
-//        uiManager.registerView(uiContainer.getFileSystemPresenter());
+        uiManager.registerView(uiContainer.getWelcomePageView());
+//        uiManager.viewLayout(WelcomePageView.class.getName());
+        
+        uiManager.registerView(uiContainer.getFileSystemView());
+          uiManager.viewLayout(FileSystemView.class.getName());
 //        uiManager.registerView(uiContainer.getInteractivePSPRojectResultsPresenter());
 //        uiManager.setSideButtonsVisible(true);
 
     }
 
-    public void loginAsGuest() {
-        uiContainer.loginAsGuest();
-    }
+  
 
     public void retriveToShareDataset() {
         uiContainer.retriveToShareDataset();
@@ -149,9 +132,9 @@ public abstract class UIHandler {
     public void viewDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
         uiContainer.viewDataset(peptideShakerVisualizationDataset);
         if (peptideShakerVisualizationDataset.isToShareDataset()) {
-            for (String btn : uiManager.getPresenterBtnsMap().keySet()) {
-                uiManager.getPresenterBtnsMap().get(btn).setEnabled(false);
-            }
+//            for (String btn : uiManager.getPresenterBtnsMap().keySet()) {
+//                uiManager.getPresenterBtnsMap().get(btn).setEnabled(false);
+//            }
         }
     }
 
@@ -250,5 +233,11 @@ public abstract class UIHandler {
      * @return dataset public key
      */
     public abstract int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey);
+    
+    
+    
+    public void updateAllUI(){
+//    uiManager.
+    }
 
 }

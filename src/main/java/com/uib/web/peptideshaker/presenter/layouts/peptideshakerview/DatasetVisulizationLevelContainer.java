@@ -4,7 +4,7 @@ import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.presenter.core.FilterButton;
 import com.uib.web.peptideshaker.presenter.core.Help;
-import com.uib.web.peptideshaker.presenter.core.PopupWindow;
+import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
 import com.uib.web.peptideshaker.presenter.layouts.SearchParametersForm;
 import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.DatasetVisulizationLevelComponent;

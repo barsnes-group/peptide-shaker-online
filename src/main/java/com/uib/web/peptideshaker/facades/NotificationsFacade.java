@@ -1,8 +1,10 @@
 package com.uib.web.peptideshaker.facades;
 
+import com.uib.web.peptideshaker.ui.views.modal.ConfirmationDialog;
 import com.uib.web.peptideshaker.ui.views.modal.GalaxyConnectingModal;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.shared.ui.window.WindowMode;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
@@ -14,11 +16,12 @@ import java.io.Serializable;
  *
  * @author Yehia Mokhtar Farag
  */
-public class NotificationsFacade  implements Serializable{
+public class NotificationsFacade implements Serializable {
 
     private Label notification;
-    private Window landscapeModeNotificationWindow;
+    private final Window landscapeModeNotificationWindow;
     private GalaxyConnectingModal GalaxyConnectingModal;
+    private ConfirmationDialog confirmationDialog;
 
     public NotificationsFacade() {
         landscapeModeNotificationWindow = new Window();
@@ -32,6 +35,7 @@ public class NotificationsFacade  implements Serializable{
         landscapeModeNotificationWindow.setResizable(false);
         landscapeModeNotificationWindow.setVisible(false);
         landscapeModeNotificationWindow.setContent(notification);
+        this.confirmationDialog = new ConfirmationDialog();
 
     }
 
@@ -46,12 +50,20 @@ public class NotificationsFacade  implements Serializable{
         landscapeModeNotificationWindow.setVisible(false);
     }
 
+    public void showInfoNotification(String message) {
+        Notification.show("Information", message, Notification.Type.TRAY_NOTIFICATION);
+    }
+
     public void showErrorNotification(String message) {
         Notification.show("Error", message, Notification.Type.TRAY_NOTIFICATION);
     }
 
     public void showAlertNotification(String message) {
         com.vaadin.ui.JavaScript.getCurrent().execute("alert('" + message + "')");
+    }
+
+    public void confirmAlertNotification(String message, Button.ClickListener clickListener) {
+        confirmationDialog.showConfirmationMessage(message, clickListener);
     }
 
     public void showGalaxyConnectingProcess(String caption) {
@@ -64,7 +76,7 @@ public class NotificationsFacade  implements Serializable{
     }
 
     public void hideGalaxyConnectingProcess() {
-GalaxyConnectingModal.setVisible(false);
+        GalaxyConnectingModal.setVisible(false);
     }
 
     public void showBusyProcess() {

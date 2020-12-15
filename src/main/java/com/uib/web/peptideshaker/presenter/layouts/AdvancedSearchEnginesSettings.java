@@ -1,7 +1,7 @@
 package com.uib.web.peptideshaker.presenter.layouts;
 
 import com.compomics.util.parameters.identification.IdentificationParameters;
-import com.uib.web.peptideshaker.presenter.core.PopupWindow;
+import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
 import com.uib.web.peptideshaker.presenter.layouts.advancedsearchenginessettings.*;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;

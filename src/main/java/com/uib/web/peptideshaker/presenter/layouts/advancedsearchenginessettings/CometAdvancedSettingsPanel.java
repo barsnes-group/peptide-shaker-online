@@ -5,7 +5,7 @@ import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.tool_specific.CometParameters;
 import com.compomics.util.parameters.identification.tool_specific.CometParameters.CometOutputFormat;
 import com.uib.web.peptideshaker.presenter.core.Help;
-import com.uib.web.peptideshaker.presenter.core.PopupWindow;
+import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabel2TextField;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;

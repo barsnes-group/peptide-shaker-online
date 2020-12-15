@@ -4,6 +4,7 @@ import com.vaadin.server.Page;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
@@ -15,7 +16,7 @@ import javax.servlet.ServletContext;
  *
  * @author Yehia Mokhtar Farag
  */
-public class Config implements Serializable{
+public class Config implements Serializable {
 
     private boolean mobileDeviceStyle;
     private boolean smallDeviceStyle;
@@ -51,6 +52,18 @@ public class Config implements Serializable{
     public int getMaximumAllowedUsers() {
         return maximumAllowedUsers;
     }
+    private String userFolderUri;
+
+    public String getUserFolderUri() {
+        return userFolderUri;
+    }
+
+    public void setUserFolderUri(String userAPIKey) {
+        this.userFolderUri = localFileSystemFolderPath + "/" + userAPIKey;
+        File f = new File(userFolderUri);
+        f.mkdir();
+    }
+    private String localFileSystemFolderPath;
 
     public Config() {
         initConfig();
@@ -62,7 +75,6 @@ public class Config implements Serializable{
          */
 
         Path path;
-        String localFileSystemFolderPath;
         try {
             path = Files.createTempDirectory("userTempFolder");
             path.toFile().deleteOnExit();
@@ -73,11 +85,9 @@ public class Config implements Serializable{
         }
 
         ServletContext scx = VaadinServlet.getCurrent().getServletContext();
-        VaadinSession.getCurrent().setAttribute("userDataFolderUrl", localFileSystemFolderPath);
-        VaadinSession.getCurrent().getSession().setAttribute("userDataFolderUrl", localFileSystemFolderPath);
 
         VaadinSession.getCurrent().setAttribute("ctxPath", scx.getContextPath());
-        testUserAPIKey =(scx.getInitParameter("testUserAPIKey"));
+        testUserAPIKey = (scx.getInitParameter("testUserAPIKey"));
         VaadinSession.getCurrent().setAttribute("testUserAPIKey", testUserAPIKey);
         galaxyServerUrl = (scx.getInitParameter("galaxyServerUrl"));
         VaadinSession.getCurrent().setAttribute("galaxyServerUrl", galaxyServerUrl);

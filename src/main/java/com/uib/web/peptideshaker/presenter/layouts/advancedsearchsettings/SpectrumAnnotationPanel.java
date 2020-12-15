@@ -14,7 +14,7 @@ import com.compomics.util.experiment.identification.spectrum_annotation.Annotati
 import com.compomics.util.experiment.identification.spectrum_annotation.SpectrumAnnotator;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.presenter.core.MultiSelectOptionGroup;
-import com.uib.web.peptideshaker.presenter.core.PopupWindow;
+import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
 import com.vaadin.data.validator.DoubleRangeValidator;
 import com.vaadin.data.validator.IntegerRangeValidator;

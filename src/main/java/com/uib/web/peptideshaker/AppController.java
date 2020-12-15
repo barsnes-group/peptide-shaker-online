@@ -5,8 +5,8 @@ import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
 import com.uib.web.peptideshaker.model.CONSTANT;
+import com.uib.web.peptideshaker.ui.UIContainer;
 import com.vaadin.server.VaadinSession;
-import com.vaadin.ui.VerticalLayout;
 import pl.exsio.plupload.PluploadFile;
 
 import java.util.ArrayList;
@@ -32,24 +32,24 @@ public class AppController {
     private Future uiExecutorFuture;
 //    private Future modelFuture;
     private boolean availableGalaxyServer;
+    private final AppManagmentBean appManagmentBean;
 
     /**
      * Constructor to initialise the application.
      */
     public AppController() {
-        AppManagmentBean appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);        
+        appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
         /**
          * Check galaxy available online using public user API key or run system
          * in offline galaxy mode.
          */
         appManagmentBean.getNotificationFacade().showGalaxyConnectingProcess(CONSTANT.PUBLIC_USER_CAPTION);
-        String useId = appManagmentBean.getGalaxyFacad().authenticate(appManagmentBean.getAppConfig().getTestUserAPIKey());  
-        availableGalaxyServer=(useId!=null);
+        String userId = appManagmentBean.getGalaxyFacad().authenticate(appManagmentBean.getAppConfig().getTestUserAPIKey());
+        availableGalaxyServer = (userId != null);
         if (availableGalaxyServer) {
-            appManagmentBean.getUserLoginHandler().setUserLoggedIn(appManagmentBean.getAppConfig().getTestUserAPIKey(),useId);
+            appManagmentBean.getUserHandler().setUserLoggedIn(appManagmentBean.getAppConfig().getTestUserAPIKey(), userId);
         }
-        ExecutorService executorService = Executors.newFixedThreadPool(2);        
-
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
 //        modelFuture = executorService.submit(() -> {
 //            Model_Layer = new ModelLayer(authUserLogin) {
 //                @Override
@@ -157,7 +157,15 @@ public class AppController {
 
             };
         });
+        this.updateALLUI();
         appManagmentBean.getNotificationFacade().hideGalaxyConnectingProcess();
+    }
+
+    private void updateALLUI() {
+        while (!uiExecutorFuture.isDone()) {
+        }
+        appManagmentBean.getUI_Manager().updateAll();
+        
     }
 
     /**
@@ -165,20 +173,13 @@ public class AppController {
      *
      * @return main user interface container
      */
-    public VerticalLayout getApplicationUserInterface() {
+    public UIContainer getApplicationUserInterface() {
         while (!uiExecutorFuture.isDone()) {
         }
         return uiHandler.getUiContainer();
     }
 
-    public void loginAsGuest() {
-        while (!uiExecutorFuture.isDone()) {
-        }
-        if (availableGalaxyServer) {
-            uiHandler.loginAsGuest();
-        }
-
-    }
+   
 
     public void retriveToShareDataset() {
         while (!uiExecutorFuture.isDone()) {
