@@ -7,7 +7,6 @@ import com.uib.web.peptideshaker.model.VisualizationDatasetModel;
 import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
 import com.uib.web.peptideshaker.ui.components.items.ActionLabel;
 import com.uib.web.peptideshaker.ui.components.items.StatusLabel;
-import com.uib.web.peptideshaker.utils.URLUtils;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.Page;
 
@@ -30,8 +29,6 @@ import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This class represents the data view layout (equal to history in galaxy) the
@@ -46,7 +43,6 @@ public class FilesTablePanel extends Panel {
     private final VerticalLayout topDataTable;
     private final Panel bottomPanelLayout;
     private final VerticalLayout bottomDataTable;
-    private final URLUtils urlUtils;
     private final float[] expandingRatio = new float[]{5f, 31f, 8f, 8f, 8f, 8f, 8f, 8f, 8f, 8f};
     private final AbsoluteLayout panelsContainers;
     private final Map<String, ActionLabel> datasetLabelSet;
@@ -64,7 +60,6 @@ public class FilesTablePanel extends Panel {
         FilesTablePanel.this.setStyleName("integratedframe");
         datasetLabelSet = new LinkedHashMap<>();
 
-        this.urlUtils = new URLUtils();
         panelsContainers = new AbsoluteLayout();
         panelsContainers.setWidth(100, Unit.PERCENTAGE);
         panelsContainers.setHeight(100, Unit.PERCENTAGE);
@@ -257,33 +252,23 @@ public class FilesTablePanel extends Panel {
                 if (statusLabel.getStatus().equals(CONSTANT.ERROR)) {
                     statusLabel.setStatus("Some files are missings or corrupted please re-run SearchGUI-PeptideShaker-WorkFlow");
                 }//
-                String link = "";//((PeptideShakerVisualizationDataset) dataset).getLinkToShare();
-                int dsKey = -1;
-//                if (link != null) {
-//                    dsKey = insertDatsetLinkToShare(urlUtils.encrypt(link), urlUtils.encrypt(dataset.getName() + "-_-" + dataset.getPsZipFile().getId()));
-//                    String appName = VaadinSession.getCurrent().getAttribute("appName") + "";
-//                    String url = Page.getCurrent().getLocation().toString().split(appName)[0] + appName + "/";
-//                    String encryptedDsKey = urlUtils.encrypt(dsKey + "");
-//                    link = url + "toShare;" + encryptedDsKey;
-
-//                }
+                String link =  dataset.getSharingLink();
+              
                 ClipboardComponent shareLabel = new ClipboardComponent(link);
-                shareLabel.setReadOnly(dsKey != -1);
+                shareLabel.setEnabled(!dataset.isUploadedDataset());
                 infoLabel.addStyleName("centeredicon");
                 String quant = null;
-                String quantTooltip = "";
                 if (dataset.getDatasetType().equals(CONSTANT.QUANT_DATASET)) {
                     quant = "Quant";
                 }
                 Label type = new Label(quant);
                 type.setIcon(new ThemeResource("img/psiconHRNS.png"));
-                type.setDescription(dataset.getDatasetType());
+                type.setDescription(dataset.getDatasetTypeString());
                 type.setStyleName("smalliconlabel");
                 HorizontalLayout rowLayout = initializeRowData(new Component[]{new Label(i + ""), nameLabel, type, infoLabel, shareLabel, downloadLabel, deleteLabel, statusLabel}, false);
                 topDataTable.addComponent(rowLayout);
             }
             i++;
-//
         }
         i = 1;
         for (GalaxyFileModel file : filesMap) {

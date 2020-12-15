@@ -1,10 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.uib.web.peptideshaker.presenter.core;
 
+package com.uib.web.peptideshaker.ui.components.items;
+
+import com.uib.web.peptideshaker.presenter.core.CloseButton;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -15,14 +12,14 @@ import com.vaadin.ui.PopupView;
 /**
  * @author Yehia Farag
  */
-public class Help extends AbsoluteLayout {
+public class HelpPopupButton extends AbsoluteLayout {
 
     private final PopupView infoPopup;
 
-    public Help(String text, String noteText, int width, int height) {
-        Help.this.setHeight(40, Unit.PIXELS);
-        Help.this.setStyleName("infopopupcontainer");
-        Help.this.setDescription("Information");
+    public HelpPopupButton(String text, String noteText, int width, int height) {
+        HelpPopupButton.this.setHeight(40, Unit.PIXELS);
+        HelpPopupButton.this.setStyleName("infopopupcontainer");
+        HelpPopupButton.this.setDescription("Information");
 
         AbsoluteLayout closableLayout = new AbsoluteLayout();
         closableLayout.setStyleName("infolayout");
@@ -41,7 +38,7 @@ public class Help extends AbsoluteLayout {
         infoPopup.setCaptionAsHtml(true);
         infoPopup.setStyleName("infopopup");
         infoPopup.setHideOnMouseOut(false);
-        Help.this.addComponent(infoPopup, "left:10px;top:0px");
+        HelpPopupButton.this.addComponent(infoPopup, "left:10px;top:0px");
         CloseButton closeBtn = new CloseButton() {
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {
@@ -54,7 +51,7 @@ public class Help extends AbsoluteLayout {
         if (noteText != null) {
             Label note = new Label(noteText, ContentMode.HTML);
             note.setDescription(noteText);
-            Help.this.addComponent(note, "left:30px;top:0px");
+            HelpPopupButton.this.addComponent(note, "left:30px;top:0px");
         }
 
     }

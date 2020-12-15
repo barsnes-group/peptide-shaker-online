@@ -3,7 +3,7 @@ package com.uib.web.peptideshaker.presenter.layouts.advancedsearchenginessetting
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.tool_specific.NovorParameters;
-import com.uib.web.peptideshaker.presenter.core.Help;
+import com.uib.web.peptideshaker.ui.components.items.HelpPopupButton;
 import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.vaadin.icons.VaadinIcons;
@@ -67,7 +67,7 @@ public class NovorAdvancedSettingsPanel extends PopupWindow {
 
 
         String helpText = "<a href='https://www.rapidnovor.com' target='_blank'>";
-        Help help = new Help(helpText, "<font style='line-height: 20px;'>Click to open Rapid Novor  page.</font>", 100, 20);
+        HelpPopupButton help = new HelpPopupButton(helpText, "<font style='line-height: 20px;'>Click to open Rapid Novor  page.</font>", 100, 20);
         container.addComponent(help, "left:10px;bottom:10px;");
         Button okBtn = new Button("OK");
         okBtn.setWidth(76, Unit.PIXELS);

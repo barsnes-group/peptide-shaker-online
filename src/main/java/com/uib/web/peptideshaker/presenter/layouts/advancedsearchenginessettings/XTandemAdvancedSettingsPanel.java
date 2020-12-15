@@ -4,7 +4,7 @@ import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.tool_specific.XtandemParameters;
-import com.uib.web.peptideshaker.presenter.core.Help;
+import com.uib.web.peptideshaker.ui.components.items.HelpPopupButton;
 import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.form.ColorLabel;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
@@ -321,7 +321,7 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
 
         String helpText = "<h1>X!Tandem Advanced Settings</h1>"
                 + "X!Tandem comes with many options allowing you to fine tune the search settings. Note that these settings aim to be used by advanced users only. It is highly recommended to carefully test any change to the default settings, to document them and report them in any publication/report.  For more help, consult the X!Tandem API. If you are missing a parameter, please contact the developers.";
-        Help help = new Help(helpText, "The advanced settings are for expert use only. See help for details", 450, 155);
+        HelpPopupButton help = new HelpPopupButton(helpText, "The advanced settings are for expert use only. See help for details", 450, 155);
         container.addComponent(help, "left:10px;bottom:10px;");
         container.addComponent(cancelBtn, "bottom:10px;right:10px");
         container.addComponent(okBtn, "bottom:10px;right:96px");

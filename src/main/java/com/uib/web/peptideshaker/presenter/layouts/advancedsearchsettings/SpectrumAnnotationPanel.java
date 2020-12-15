@@ -13,7 +13,7 @@ import com.compomics.util.experiment.biology.ions.impl.TagFragmentIon;
 import com.compomics.util.experiment.identification.spectrum_annotation.AnnotationParameters;
 import com.compomics.util.experiment.identification.spectrum_annotation.SpectrumAnnotator;
 import com.compomics.util.parameters.identification.IdentificationParameters;
-import com.uib.web.peptideshaker.presenter.core.MultiSelectOptionGroup;
+import com.uib.web.peptideshaker.ui.components.items.MultiSelectOptionGroup;
 import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
 import com.vaadin.data.validator.DoubleRangeValidator;

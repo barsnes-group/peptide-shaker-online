@@ -3,7 +3,7 @@ package com.uib.web.peptideshaker.ui.views;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
 import com.uib.web.peptideshaker.ui.components.items.ButtonWithLabel;
-import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
+import com.uib.web.peptideshaker.ui.components.items.SubViewSideBtn;
 import com.uib.web.peptideshaker.ui.components.items.SmallSideBtn;
 import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.*;
 import com.vaadin.event.LayoutEvents;
@@ -63,8 +63,8 @@ public abstract class ResultsView extends VerticalLayout implements ViewableFram
      * The view is in maximised mode.
      */
     private boolean maximisedMode;
-    private PresenterSubViewSideBtn datasetsOverviewBtn;
-    private PresenterSubViewSideBtn uploadOwnDataBtn;
+    private SubViewSideBtn datasetsOverviewBtn;
+    private SubViewSideBtn uploadOwnDataBtn;
     private UserUploadFilesContainer userUploadDataLayoutContainer;
     private PeptideShakerVisualizationDataset peptideShakerVisualizationDataset;
     private boolean allJobsAreDone = false;
@@ -106,7 +106,7 @@ public abstract class ResultsView extends VerticalLayout implements ViewableFram
         viewControlButtonContainer.setHeightUndefined();
         viewControlButtonContainer.setSpacing(false);
         viewControlButtonContainer.setMargin(new MarginInfo(false, false, true, false));
-        uploadOwnDataBtn = new PresenterSubViewSideBtn("upload-project", 1);
+        uploadOwnDataBtn = new SubViewSideBtn("upload-project", 1);
         viewControlButtonContainer.addComponent(uploadOwnDataBtn);
         viewControlButtonContainer.setComponentAlignment(uploadOwnDataBtn, Alignment.MIDDLE_CENTER);
         if (!sharedDataset) {
@@ -147,7 +147,7 @@ public abstract class ResultsView extends VerticalLayout implements ViewableFram
         userUploadDataLayoutContainer.setSizeFull();
 
         Selection_Manager.addBtnLayout(uploadOwnDataBtn, userUploadDataLayoutContainer);
-        datasetsOverviewBtn = new PresenterSubViewSideBtn("Dataset overview", 2) {
+        datasetsOverviewBtn = new SubViewSideBtn("Dataset overview", 2) {
             @Override
             public void setId(String id) {
                 Iterator<Component> itr = this.iterator();
@@ -168,7 +168,7 @@ public abstract class ResultsView extends VerticalLayout implements ViewableFram
         datasetVisulizationLevelContainer.setSizeFull();
         Selection_Manager.addBtnLayout(datasetsOverviewBtn, datasetVisulizationLevelContainer);
 
-        PresenterSubViewSideBtn proteinoverviewBtn = new PresenterSubViewSideBtn("Protein Overview", 3);
+        SubViewSideBtn proteinoverviewBtn = new SubViewSideBtn("Protein Overview", 3);
         proteinoverviewBtn.setDescription("Protein Overview");
         proteinoverviewBtn.updateIconByResource(null);
         proteinoverviewBtn.setData("proteinoverview");
@@ -180,7 +180,7 @@ public abstract class ResultsView extends VerticalLayout implements ViewableFram
         proteinsVisulizationLevelContainer = new ProteinVisulizationLevelContainer(Selection_Manager, proteinoverviewBtn);
         Selection_Manager.addBtnLayout(proteinoverviewBtn, proteinsVisulizationLevelContainer);
 
-        PresenterSubViewSideBtn psmoverviewBtn = new PresenterSubViewSideBtn("PSM Overview", 4);
+        SubViewSideBtn psmoverviewBtn = new SubViewSideBtn("PSM Overview", 4);
         psmoverviewBtn.updateIconByResource(null);
         psmoverviewBtn.setDescription("Peptide Spectrum Matches");
         psmoverviewBtn.setData("psmoverview");
@@ -325,7 +325,7 @@ public abstract class ResultsView extends VerticalLayout implements ViewableFram
      */
     @Override
     public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-        PresenterSubViewSideBtn comp = (PresenterSubViewSideBtn) event.getComponent();
+        SubViewSideBtn comp = (SubViewSideBtn) event.getComponent();
         Selection_Manager.selectBtn(comp);
         if (proteinsVisulizationLevelContainer != null) {
             if (comp.getBtnId() == 3 && lastSelectedBtn != 3) {
@@ -341,7 +341,7 @@ public abstract class ResultsView extends VerticalLayout implements ViewableFram
      *
      * @param subPresenterBtn sub visualisation button (dataset, proteins, etc.
      */
-    public void selectSubviewButton(PresenterSubViewSideBtn subPresenterBtn) {
+    public void selectSubviewButton(SubViewSideBtn subPresenterBtn) {
         Selection_Manager.selectBtn(subPresenterBtn);
         if (proteinsVisulizationLevelContainer != null) {
             if (subPresenterBtn.getBtnId() == 3 && lastSelectedBtn != 3) {

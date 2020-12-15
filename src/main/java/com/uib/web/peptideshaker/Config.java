@@ -22,6 +22,12 @@ public class Config implements Serializable {
     private boolean smallDeviceStyle;
     private boolean portraitScreenMode;
     private String testUserAPIKey;
+    
+    private  String dbURL ;
+    private     String dbDriver ;
+    private     String dbUserName ;
+    private     String dbPassword ;
+    private     String dbName ;
 
     public String getTestUserAPIKey() {
         return testUserAPIKey;
@@ -85,25 +91,16 @@ public class Config implements Serializable {
         }
 
         ServletContext scx = VaadinServlet.getCurrent().getServletContext();
-
-        VaadinSession.getCurrent().setAttribute("ctxPath", scx.getContextPath());
         testUserAPIKey = (scx.getInitParameter("testUserAPIKey"));
-        VaadinSession.getCurrent().setAttribute("testUserAPIKey", testUserAPIKey);
         galaxyServerUrl = (scx.getInitParameter("galaxyServerUrl"));
-        VaadinSession.getCurrent().setAttribute("galaxyServerUrl", galaxyServerUrl);
         String csfprLink = (scx.getInitParameter("csfprservice"));
-        String dbURL = (scx.getInitParameter("url"));
-        String dbDriver = (scx.getInitParameter("driver"));
-        String dbUserName = (scx.getInitParameter("userName"));
-        String dbPassword = (scx.getInitParameter("password"));
-        String dbName = (scx.getInitParameter("dbName"));
+         dbURL = (scx.getInitParameter("url"));
+         dbDriver = (scx.getInitParameter("driver"));
+         dbUserName = (scx.getInitParameter("userName"));
+         dbPassword = (scx.getInitParameter("password"));
+         dbName = (scx.getInitParameter("dbName"));
         String appName = (scx.getInitParameter("appName"));
-        VaadinSession.getCurrent().setAttribute("dbName", dbName);
         VaadinSession.getCurrent().setAttribute("appName", appName);
-        VaadinSession.getCurrent().setAttribute("dbURL", dbURL);
-        VaadinSession.getCurrent().setAttribute("dbDriver", dbDriver);
-        VaadinSession.getCurrent().setAttribute("dbUserName", dbUserName);
-        VaadinSession.getCurrent().setAttribute("dbPassword", dbPassword);
         VaadinSession.getCurrent().setAttribute("csfprLink", csfprLink);
         String psVersion = (scx.getInitParameter("psvirsion"));
         String searchGUIversion = (scx.getInitParameter("searchguivirsion"));
@@ -134,6 +131,26 @@ public class Config implements Serializable {
             mobileDeviceStyle = true;
             UI.getCurrent().addStyleName("mobilestyle");
         }
+    }
+
+    public String getDbURL() {
+        return dbURL;
+    }
+
+    public String getDbDriver() {
+        return dbDriver;
+    }
+
+    public String getDbUserName() {
+        return dbUserName;
+    }
+
+    public String getDbPassword() {
+        return dbPassword;
+    }
+
+    public String getDbName() {
+        return dbName;
     }
 
 }

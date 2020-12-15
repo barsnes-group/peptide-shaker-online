@@ -98,7 +98,7 @@ public class UserHandler implements Serializable {
                                 dataset.setDownloadUrl(stepIIFile.getDownloadUrl());
                                 dataset.setName(stepIIFile.getName());
                                 //init search param identification object
-                                dataset.setIdentificationParametersObject(datasetUtils.initIdentificationParametersObject(dataset.getPsZipFile().getId(), dataset.getSearchGUIZipFile().getDownloadUrl()));
+                                dataset.setIdentificationParametersObject(datasetUtils.initIdentificationParametersObject(dataset.getId(), dataset.getSearchGUIZipFile().getDownloadUrl()));
                                 //add mgf files and indexes                                
                                 for (GalaxyCollectionModel collectionModel : collectionList) {
                                     if (collectionModel.getGalaxyJob() != null && collectionModel.getGalaxyJob().getInputFileIds().contains(searchGUIFile.getId())) {
@@ -109,17 +109,14 @@ public class UserHandler implements Serializable {
                                             });
                                         }
                                     } else if (collectionModel.getElementsExtension().equals(CONSTANT.TABULAR_FILE_EXTENSION)) {
-                                        collectionModel.getElements().get(0).getGalaxyJob().getInputFileIds().stream().filter((id) -> (dataset.getPsZipFile().getGalaxyJob().getOutputFileIds().contains(id))).map(new Function<String, String>() {
-                                            @Override
-                                            public String apply(String _item) {
-                                                if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().equals(CONSTANT.CONVERT_CHARACTERS_TOOL_ID)) {
-                                                    dataset.setMgfList(collectionModel);
-                                                } else if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().contains(CONSTANT.MOFF_TOOL_ID)) {
-                                                    dataset.setMoffList(collectionModel);
-                                                    
-                                                }
-                                                return _item;
+                                        collectionModel.getElements().get(0).getGalaxyJob().getInputFileIds().stream().filter((id) -> (dataset.getPsZipFile().getGalaxyJob().getOutputFileIds().contains(id))).map((String _item) -> {
+                                            if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().equals(CONSTANT.CONVERT_CHARACTERS_TOOL_ID)) {
+                                                dataset.setMgfList(collectionModel);
+                                            } else if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().contains(CONSTANT.MOFF_TOOL_ID)) {
+                                                dataset.setMoffList(collectionModel);
+
                                             }
+                                            return _item;
                                         }).forEachOrdered((_item) -> {
                                             collectionModel.getElements().forEach((element) -> {
                                                 filesToViewList.remove(element);
@@ -147,10 +144,11 @@ public class UserHandler implements Serializable {
 
                 return dataset;
             }
-        }).
-                forEachOrdered((dataset) -> {
-                    datasetsMap.put(dataset.getId(), dataset);
-                });
+        }).forEachOrdered((dataset) -> {
+            // init sharing link
+            dataset.setSharingLink(datasetUtils.createSharingLink(loggedinUserAPIKey, dataset));
+            datasetsMap.put(dataset.getId(), dataset);
+        });
         this.userInformationMap.put(CONSTANT.PS_DATASET_NUMBER, datasetsMap.size() + "");
         return datasetsMap;
     }

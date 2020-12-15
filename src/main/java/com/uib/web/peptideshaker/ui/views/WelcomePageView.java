@@ -109,6 +109,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         Label overviewLabel = initLeftSideInfoLabel("<b></b>", "");
         overviewLabel.addStyleName("hidetextonmobilemode");
         overviewLabel.addStyleName(ValoTheme.LABEL_H2);
+        overviewLabel.setHeight(10, Unit.PIXELS);
         userOverviewLayout.addComponent(overviewLabel);
 
         Label userLabel = initLeftSideInfoLabel(VaadinIcons.USER.getHtml() + " User ", "<i class='rightsidediv'>Offline</i>");
@@ -266,7 +267,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
          * The workflow view button.
          */
         ButtonWithLabel workflowViewButton = new ButtonWithLabel("Analyze Data</br><font>Search and process data</font>", 1);//spectra2.png
-        workflowViewButton.setData(WorkflowView.class.getName());
+        workflowViewButton.setData(WorkflowInvokingView.class.getName());
         workflowViewButton.updateIconResource(new ThemeResource("img/searchguiblue.png"));//img/workflow3.png
         workflowViewButton.addStyleName("searchguiicon");
         workflowViewButton.addLayoutClickListener(listener);
@@ -408,14 +409,4 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         this.updateUserOverviewPanel();
     }
 
-    /**
-     * Get the presenter button (large button with label) for the welcome page
-     * (not exist for welcome page presenter)
-     *
-     * @return null no large button for welcome page presenter
-     */
-//    @Override
-//    public ButtonWithLabel getMainPresenterButton() {
-//        return null;
-//    }
 }

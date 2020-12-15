@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.presenter.core;
+package com.uib.web.peptideshaker.ui.components.items;
 
 import com.vaadin.server.Resource;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -12,7 +12,7 @@ import com.vaadin.ui.Label;
  *
  * @author Yehia Farag
  */
-public class PresenterSubViewSideBtn extends HorizontalLayout {
+public class SubViewSideBtn extends HorizontalLayout {
 
     private final Label iconLabel;
     private final int btnId;
@@ -24,11 +24,11 @@ public class PresenterSubViewSideBtn extends HorizontalLayout {
      * @param text  buttons text
      * @param btnId buttons id
      */
-    public PresenterSubViewSideBtn(String text, int btnId) {
+    public SubViewSideBtn(String text, int btnId) {
         btnThumbIconImage = new Image() {
             @Override
             public void setSource(Resource source) {
-                PresenterSubViewSideBtn.this.setVisible((source != null));
+                SubViewSideBtn.this.setVisible((source != null));
                 if (source == null || btnThumbIconImage.getSource() == source) {
                     return;
                 }
@@ -44,16 +44,16 @@ public class PresenterSubViewSideBtn extends HorizontalLayout {
         this.iconLabel.setSizeFull();
         this.iconLabel.setContentMode(ContentMode.HTML);
         this.btnId = btnId;
-        PresenterSubViewSideBtn.this.setHeight(100, Unit.PIXELS);
-        PresenterSubViewSideBtn.this.setWidth(100, Unit.PIXELS);
-        PresenterSubViewSideBtn.this.addComponent(btnThumbIconImage);
-        PresenterSubViewSideBtn.this.setComponentAlignment(btnThumbIconImage, Alignment.MIDDLE_CENTER);
-        PresenterSubViewSideBtn.this.setExpandRatio(btnThumbIconImage, 1);
-        PresenterSubViewSideBtn.this.addComponent(iconLabel);
-        PresenterSubViewSideBtn.this.setComponentAlignment(iconLabel, Alignment.MIDDLE_CENTER);
-        PresenterSubViewSideBtn.this.setExpandRatio(iconLabel, 1);
-        PresenterSubViewSideBtn.this.setSizeFull();
-        PresenterSubViewSideBtn.this.setStyleName("bigmenubtn");
+        SubViewSideBtn.this.setHeight(100, Unit.PIXELS);
+        SubViewSideBtn.this.setWidth(100, Unit.PIXELS);
+        SubViewSideBtn.this.addComponent(btnThumbIconImage);
+        SubViewSideBtn.this.setComponentAlignment(btnThumbIconImage, Alignment.MIDDLE_CENTER);
+        SubViewSideBtn.this.setExpandRatio(btnThumbIconImage, 1);
+        SubViewSideBtn.this.addComponent(iconLabel);
+        SubViewSideBtn.this.setComponentAlignment(iconLabel, Alignment.MIDDLE_CENTER);
+        SubViewSideBtn.this.setExpandRatio(iconLabel, 1);
+        SubViewSideBtn.this.setSizeFull();
+        SubViewSideBtn.this.setStyleName("bigmenubtn");
 
     }
 
@@ -115,9 +115,9 @@ public class PresenterSubViewSideBtn extends HorizontalLayout {
      */
     public void setSelected(boolean selected) {
         if (selected) {
-            PresenterSubViewSideBtn.this.addStyleName("selectedbiglbtn");
+            SubViewSideBtn.this.addStyleName("selectedbiglbtn");
         } else {
-            PresenterSubViewSideBtn.this.removeStyleName("selectedbiglbtn");
+            SubViewSideBtn.this.removeStyleName("selectedbiglbtn");
         }
     }
 

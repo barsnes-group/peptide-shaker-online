@@ -5,7 +5,7 @@ import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.ui.components.items.SmallSideBtn;
 import com.uib.web.peptideshaker.ui.views.FileSystemView;
 import com.uib.web.peptideshaker.ui.views.ResultsView;
-import com.uib.web.peptideshaker.ui.views.WorkflowView;
+import com.uib.web.peptideshaker.ui.views.WorkflowInvokingView;
 import com.uib.web.peptideshaker.ui.views.WelcomePageView;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
@@ -31,7 +31,7 @@ public class ViewActionButtonsComponent extends AbsoluteLayout implements Layout
         ViewActionButtonsComponent.this.setHeight(100, Unit.PIXELS);
         ViewActionButtonsComponent.this.setStyleName("viewbuttonsactioncontainer");
         SmallSideBtn searchGUIPSWorkflowViewButton = new SmallSideBtn("img/searchguiblue.png");//spectra2.pngimg/searchgui-medium-shadow-2.png
-        searchGUIPSWorkflowViewButton.setData(WorkflowView.class.getName());
+        searchGUIPSWorkflowViewButton.setData(WorkflowInvokingView.class.getName());
         searchGUIPSWorkflowViewButton.setDescription("Search and process data (SearchGUI and PeptideShaker)");
         searchGUIPSWorkflowViewButton.addStyleName("smalltoolsbtn");
         searchGUIPSWorkflowViewButton.addStyleName("searchguiicon");
@@ -39,7 +39,7 @@ public class ViewActionButtonsComponent extends AbsoluteLayout implements Layout
         searchGUIPSWorkflowViewButton.setHeight(35, Unit.PIXELS);
         ViewActionButtonsComponent.this.addComponent(searchGUIPSWorkflowViewButton, "left:9px;");
         searchGUIPSWorkflowViewButton.addLayoutClickListener(ViewActionButtonsComponent.this);
-        buttonsMap.put(WorkflowView.class.getName(), searchGUIPSWorkflowViewButton);
+        buttonsMap.put(WorkflowInvokingView.class.getName(), searchGUIPSWorkflowViewButton);
 
         SmallSideBtn fileSystemViewButton = new SmallSideBtn("img/globeearthanimation.png");//VaadinIcons.GLOBE
         fileSystemViewButton.setData(FileSystemView.class.getName());

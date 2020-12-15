@@ -4,7 +4,9 @@ import com.uib.web.peptideshaker.facades.GalaxyFacade;
 import com.uib.web.peptideshaker.facades.NotificationsFacade;
 import com.uib.web.peptideshaker.handler.UserHandler;
 import com.uib.web.peptideshaker.uimanager.UIManager;
+import com.uib.web.peptideshaker.utils.DatabaseUtils;
 import com.uib.web.peptideshaker.utils.HttpClientUtils;
+import com.uib.web.peptideshaker.utils.URLUtils;
 import java.io.Serializable;
 
 /**
@@ -21,6 +23,15 @@ public class AppManagmentBean implements Serializable {
     private NotificationsFacade notificationFacade;
     private UserHandler userHandler;
     private HttpClientUtils httpClientUtil;
+    private DatabaseUtils databaseUtils;
+    private URLUtils URLUtils;
+
+    public DatabaseUtils getDatabaseUtils() {
+        if (databaseUtils == null) {
+            databaseUtils = new DatabaseUtils();
+        }
+        return databaseUtils;
+    }
 
     public NotificationsFacade getNotificationFacade() {
         if (notificationFacade == null) {
@@ -67,6 +78,13 @@ public class AppManagmentBean implements Serializable {
 
     public void setUI_Manager(UIManager UI_Manager) {
         this.UI_Manager = UI_Manager;
+    }
+
+    public URLUtils getURLUtils() {
+        if (URLUtils == null) {
+            URLUtils = new URLUtils();
+        }
+        return URLUtils;
     }
 
 }

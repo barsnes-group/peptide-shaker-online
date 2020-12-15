@@ -1,8 +1,8 @@
 package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview;
 
 import com.uib.web.peptideshaker.presenter.core.BasicUploader;
-import com.uib.web.peptideshaker.presenter.core.Help;
-import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
+import com.uib.web.peptideshaker.ui.components.items.HelpPopupButton;
+import com.uib.web.peptideshaker.ui.components.items.SubViewSideBtn;
 import com.uib.web.peptideshaker.presenter.core.StatusProgressLabel;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -42,7 +42,7 @@ public abstract class UserUploadFilesContainer extends HorizontalLayout {
      * @param Selection_Manager
      * @param uploadOwnDataBtn
      */
-    public UserUploadFilesContainer(SelectionManager Selection_Manager, PresenterSubViewSideBtn uploadOwnDataBtn) {
+    public UserUploadFilesContainer(SelectionManager Selection_Manager, SubViewSideBtn uploadOwnDataBtn) {
 
         UserUploadFilesContainer.this.setSizeFull();
         UserUploadFilesContainer.this.setStyleName("transitionallayout");
@@ -74,7 +74,7 @@ public abstract class UserUploadFilesContainer extends HorizontalLayout {
         titleLabel.setStyleName("frametitle");
         titleLabel.addStyleName("maintitleheader");
         container.addComponent(titleLabel, "left:40px;top:13px");
-        Help helpBtn = new Help("<h1>Upload / Visualize Projects</h1>Users can upload and visualise their own processed files ( FASTA, protein and  peptide files )the format of the protein and peptide files should follow the sample files format <a href='VAADIN/sample_files.zip' download>[download sample files]</a>.\n"
+        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Upload / Visualize Projects</h1>Users can upload and visualise their own processed files ( FASTA, protein and  peptide files )the format of the protein and peptide files should follow the sample files format <a href='VAADIN/sample_files.zip' download>[download sample files]</a>.\n"
                 + "please note that the files will be automatically deleted after the session expire.", "", 400, 150);
         container.addComponent(helpBtn, "left:265px;top:0px");
 

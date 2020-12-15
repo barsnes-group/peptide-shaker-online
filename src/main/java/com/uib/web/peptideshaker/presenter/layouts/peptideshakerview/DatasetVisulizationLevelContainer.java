@@ -3,10 +3,10 @@ package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.presenter.core.FilterButton;
-import com.uib.web.peptideshaker.presenter.core.Help;
+import com.uib.web.peptideshaker.ui.components.items.HelpPopupButton;
 import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
-import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
-import com.uib.web.peptideshaker.presenter.layouts.SearchParametersForm;
+import com.uib.web.peptideshaker.ui.components.items.SubViewSideBtn;
+import com.uib.web.peptideshaker.ui.components.SearchParametersForm;
 import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.DatasetVisulizationLevelComponent;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
@@ -35,7 +35,7 @@ public class DatasetVisulizationLevelContainer extends HorizontalLayout {
      * @param Selection_Manager
      * @param datasetsOverviewBtn
      */
-    public DatasetVisulizationLevelContainer(SelectionManager Selection_Manager, PresenterSubViewSideBtn datasetsOverviewBtn) {
+    public DatasetVisulizationLevelContainer(SelectionManager Selection_Manager, SubViewSideBtn datasetsOverviewBtn) {
         DatasetVisulizationLevelContainer.this.setSizeFull();
         DatasetVisulizationLevelContainer.this.setStyleName("transitionallayout");
         DatasetVisulizationLevelContainer.this.setSpacing(false);
@@ -68,7 +68,7 @@ public class DatasetVisulizationLevelContainer extends HorizontalLayout {
         topLeftLabelContainer.setSpacing(true);
         topLeftLabelContainer.addComponent(headerLabel);
 
-        Help helpBtn = new Help("<h1>Datset Visualization</h1>Users visualise the selected datasets and interact with it.<br/>The dataset visulization has three main levels<br/>  1.Dataset level: include proteins table and dataset filters.</br>  2.Protein level: visulaisation of protein details and related proteins including the peptide coverage and 3D visulisation.</br>  3.Peptide level: visulization of peptide details include available peptide-to-spectrum matches and spectrum visulizaion chart.", "", 400, 175);
+        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Datset Visualization</h1>Users visualise the selected datasets and interact with it.<br/>The dataset visulization has three main levels<br/>  1.Dataset level: include proteins table and dataset filters.</br>  2.Protein level: visulaisation of protein details and related proteins including the peptide coverage and 3D visulisation.</br>  3.Peptide level: visulization of peptide details include available peptide-to-spectrum matches and spectrum visulizaion chart.", "", 400, 175);
         topLeftLabelContainer.addComponent(helpBtn);
 
 

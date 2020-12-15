@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.presenter.layouts;
+package com.uib.web.peptideshaker.ui.components;
 
 import com.compomics.util.experiment.biology.enzymes.Enzyme;
 import com.compomics.util.experiment.biology.enzymes.EnzymeFactory;
@@ -7,9 +7,11 @@ import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.search.DigestionParameters;
 import com.compomics.util.parameters.identification.search.SearchParameters;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
-import com.uib.web.peptideshaker.presenter.core.MultiSelectOptionGroup;
+import com.uib.web.peptideshaker.ui.components.items.MultiSelectOptionGroup;
 import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.form.*;
+import com.uib.web.peptideshaker.presenter.layouts.AdvancedSearchEnginesSettings;
+import com.uib.web.peptideshaker.presenter.layouts.AdvancedSearchSettings;
 import com.vaadin.data.Property;
 import com.vaadin.data.validator.DoubleRangeValidator;
 import com.vaadin.data.validator.IntegerRangeValidator;

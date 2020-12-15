@@ -47,15 +47,18 @@ public class CONSTANT {
     public static final String CUI_FILE_EXTENSION = "cui";
     public static final String MGF_FILE_EXTENSION = "mgf";
     public static final String JSON_FILE_EXTENSION = "json";
-
-    public static final String OK_STATUS = "ok";
+    public static final String FASTA_FILE_EXTENSION = "fasta";
+public static final String THERMO_RAW_FILE_EXTENSION = "thermo.raw";
+ public static final String mzML_FILE_EXTENSION = "mzml"; 
+ public static final String OK_STATUS = "ok";
     public static final String RUNNING_STATUS = "running";
     public static final String ERROR_STATUS = "error";
 
     public static final String DESEDE_ENCRYPTION_SCHEME = "DESede";
     public static final String UNICODE_FORMAT = "UTF8";
-    
-     public static final String MOFF_TOOL_ID = "toolshed.g2.bx.psu.edu/repos/galaxyp/proteomics_moff/proteomics_moff/";
-      public static final String CONVERT_CHARACTERS_TOOL_ID = "Convert characters1";
-     
+
+    public static final String MOFF_TOOL_ID = "toolshed.g2.bx.psu.edu/repos/galaxyp/proteomics_moff/proteomics_moff/";
+    public static final String CONVERT_CHARACTERS_TOOL_ID = "Convert characters1";
+    public static final String SERVER_TIMEZONE = "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+
 }

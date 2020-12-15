@@ -39,7 +39,7 @@ public abstract class UIHandler {
      * @param availableGalaxyServer galaxy server available online
      */
     public UIHandler(boolean availableGalaxyServer) {
-      
+
         this.uiContainer = new UIContainer(availableGalaxyServer) {
             @Override
             public void viewLayout(String viewId) {
@@ -52,14 +52,13 @@ public abstract class UIHandler {
                     uiManager.registerView(view);
                 });
 
-            }          
+            }
 
             @Override
             public void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl) {
                 UIHandler.this.viewToShareDataset(galaxyServerUrl, userDataFolderUrl);
             }
 
-           
             @Override
             public void execute_SearchGUI_PeptideShaker_WorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> mgfIdsList, Set<String> searchEnginesList, IdentificationParameters searchParam, boolean quant) {
                 UIHandler.this.execute_SearchGUI_PeptideShaker_WorkFlow(projectName, fastaFileId, searchParameterFileId, mgfIdsList, searchEnginesList, searchParam, quant);
@@ -92,22 +91,19 @@ public abstract class UIHandler {
                 return UIHandler.this.insertDatsetLinkToShare(dsDetails, dsUniqueKey);
             }
 
-        };           
-        UI.getCurrent().setContent(uiContainer);         
+        };
+        UI.getCurrent().setContent(uiContainer);
         uiManager = new UIManager();
-        
-//        uiManager.registerView(uiContainer.getSearchGUIPeptideShakerToolPresenter());
+
+        uiManager.registerView(uiContainer.getWorkflowInvokingView());
         uiManager.registerView(uiContainer.getWelcomePageView());
 //        uiManager.viewLayout(WelcomePageView.class.getName());
-        
         uiManager.registerView(uiContainer.getFileSystemView());
-          uiManager.viewLayout(FileSystemView.class.getName());
+        uiManager.viewLayout(FileSystemView.class.getName());
 //        uiManager.registerView(uiContainer.getInteractivePSPRojectResultsPresenter());
 //        uiManager.setSideButtonsVisible(true);
 
     }
-
-  
 
     public void retriveToShareDataset() {
         uiContainer.retriveToShareDataset();
@@ -127,7 +123,7 @@ public abstract class UIHandler {
      * View selected dataset
      *
      * @param peptideShakerVisualizationDataset web PS visualisation dataset
-     *                                          object
+     * object
      */
     public void viewDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
         uiContainer.viewDataset(peptideShakerVisualizationDataset);
@@ -137,27 +133,27 @@ public abstract class UIHandler {
 //            }
         }
     }
-
-    /**
-     * Update system presenter with current data including currently running
-     * processes
-     *
-     * @param tempHistoryFilesMap list of all files including under processing
-     *                            files or datasets
-     * @param historyFilesMap     list of already processed files and datasets
-     * @param jobsInProgress      check if there is still jobs in progress
-     */
-    public void updatePresenter(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
-        uiContainer.updateProjectOverviewPresenter(tempHistoryFilesMap, historyFilesMap, jobsInProgress);
-
-//        presentationManager.viewLayout(uiContainer.getFileSystemPresenter().getViewId());
-    }
+//
+//    /**
+//     * Update system presenter with current data including currently running
+//     * processes
+//     *
+//     * @param tempHistoryFilesMap list of all files including under processing
+//     * files or datasets
+//     * @param historyFilesMap list of already processed files and datasets
+//     * @param jobsInProgress check if there is still jobs in progress
+//     */
+//    public void updatePresenter(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
+//        uiContainer.updateProjectOverviewPresenter(tempHistoryFilesMap, historyFilesMap, jobsInProgress);
+//
+////        presentationManager.viewLayout(uiContainer.getFileSystemPresenter().getViewId());
+//    }
 
     /**
      * Connect the system to Galaxy Server
      *
-     * @param galaxyServerUrl   the address of Galaxy Server
-     * @param userAPI           Galaxy user API key
+     * @param galaxyServerUrl the address of Galaxy Server
+     * @param userAPI Galaxy user API key
      * @param userDataFolderUrl main folder for storing users data
      * @return System connected to Galaxy server or not
      */
@@ -166,7 +162,7 @@ public abstract class UIHandler {
     /**
      * Connect the system to Galaxy Server
      *
-     * @param galaxyServerUrl   the address of Galaxy Server
+     * @param galaxyServerUrl the address of Galaxy Server
      * @param userDataFolderUrl main folder for storing users data
      */
     public abstract void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl);
@@ -181,14 +177,14 @@ public abstract class UIHandler {
     /**
      * Run Online Peptide-Shaker work-flow
      *
-     * @param projectName           The project name
-     * @param fastaFileId           FASTA file dataset id
+     * @param projectName The project name
+     * @param fastaFileId FASTA file dataset id
      * @param searchParameterFileId .par file id
-     * @param mgfIdsList            list of MGF file dataset ids
-     * @param searchEnginesList     List of selected search engine names
-     * @param searchParam           the identification search parameter file
-     * @param quant                 is the data is including quant information or only
-     *                              identification
+     * @param mgfIdsList list of MGF file dataset ids
+     * @param searchEnginesList List of selected search engine names
+     * @param searchParam the identification search parameter file
+     * @param quant is the data is including quant information or only
+     * identification
      */
     public abstract void execute_SearchGUI_PeptideShaker_WorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> mgfIdsList, Set<String> searchEnginesList, IdentificationParameters searchParam, boolean quant);
 
@@ -196,7 +192,7 @@ public abstract class UIHandler {
      * Save search settings file into galaxy
      *
      * @param searchParameters searchParameters .par file
-     * @param isNew            is new search parameter file
+     * @param isNew is new search parameter file
      * @return updated search parameters file list
      */
     public abstract Map<String, GalaxyTransferableFile> saveSearchGUIParameters(IdentificationParameters searchParameters, boolean isNew);
@@ -228,15 +224,13 @@ public abstract class UIHandler {
     /**
      * Store and retrieve dataset details index to share in link
      *
-     * @param dsDetails   encoded dataset details to store in database
+     * @param dsDetails encoded dataset details to store in database
      * @param dsUniqueKey
      * @return dataset public key
      */
     public abstract int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey);
-    
-    
-    
-    public void updateAllUI(){
+
+    public void updateAllUI() {
 //    uiManager.
     }
 

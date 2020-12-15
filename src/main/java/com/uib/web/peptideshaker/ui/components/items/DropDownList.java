@@ -1,5 +1,6 @@
-package com.uib.web.peptideshaker.presenter.core;
+package com.uib.web.peptideshaker.ui.components.items;
 
+import com.uib.web.peptideshaker.ui.components.Uploader;
 import com.vaadin.data.Property;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.*;

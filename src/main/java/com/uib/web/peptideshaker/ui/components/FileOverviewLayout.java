@@ -114,7 +114,7 @@ public abstract class FileOverviewLayout extends VerticalLayout {
         FileOverviewLayout.this.addComponent(upperPanel);
         Horizontal2Label createdLabel = new Horizontal2Label("Created :", ds.getPsZipFile().getCreatedDate());
         upperPanel.addComponent(createdLabel);
-        Horizontal2Label projectTypeLabel = new Horizontal2Label("Type  :", ds.getDatasetType());
+        Horizontal2Label projectTypeLabel = new Horizontal2Label("Type  :", ds.getDatasetTypeString());
         upperPanel.addComponent(projectTypeLabel);
         Horizontal2Label fastaFile = new Horizontal2Label("FASTA  :", ds.getFastaFileName());
         upperPanel.addComponent(fastaFile);

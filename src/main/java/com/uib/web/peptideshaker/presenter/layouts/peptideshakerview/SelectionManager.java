@@ -4,7 +4,7 @@ import com.google.common.collect.Sets;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideObject;
 import com.uib.web.peptideshaker.model.core.FilteredProteins;
 import com.uib.web.peptideshaker.model.core.ModificationMatrix;
-import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
+import com.uib.web.peptideshaker.ui.components.items.SubViewSideBtn;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.RegistrableFilter;
 import com.vaadin.ui.Component;
 
@@ -17,7 +17,7 @@ import java.util.*;
  */
 public class SelectionManager {
 
-    private final Map<PresenterSubViewSideBtn, Component> btnsLayoutMap;
+    private final Map<SubViewSideBtn, Component> btnsLayoutMap;
     private final Map<String, RegistrableFilter> registeredDatasetFiltersMap;
     private final Map<String, RegistrableFilter> registeredProteinComponentsMap;
     private final Set<Comparable> fullProteinSet;
@@ -185,11 +185,11 @@ public class SelectionManager {
         });
     }
 
-    public void addBtnLayout(PresenterSubViewSideBtn btn, Component layout) {
+    public void addBtnLayout(SubViewSideBtn btn, Component layout) {
         btnsLayoutMap.put(btn, layout);
     }
 
-    public void selectBtn(PresenterSubViewSideBtn btn) {
+    public void selectBtn(SubViewSideBtn btn) {
         btnsLayoutMap.keySet().forEach((bbt) -> {
             if (btn.getData().toString().equalsIgnoreCase(bbt.getData().toString())) {
                 bbt.setSelected(true);
@@ -203,7 +203,7 @@ public class SelectionManager {
     }
 
     public void selectBtn(int index) {
-        PresenterSubViewSideBtn btn = (PresenterSubViewSideBtn) btnsLayoutMap.keySet().toArray()[index];
+        SubViewSideBtn btn = (SubViewSideBtn) btnsLayoutMap.keySet().toArray()[index];
         selectBtn(btn);
 
     }

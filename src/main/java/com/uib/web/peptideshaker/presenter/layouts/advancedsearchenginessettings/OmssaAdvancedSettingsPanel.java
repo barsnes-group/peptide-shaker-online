@@ -3,7 +3,7 @@ package com.uib.web.peptideshaker.presenter.layouts.advancedsearchenginessetting
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.tool_specific.OmssaParameters;
-import com.uib.web.peptideshaker.presenter.core.Help;
+import com.uib.web.peptideshaker.ui.components.items.HelpPopupButton;
 import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabel2TextField;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
@@ -364,7 +364,7 @@ public class OmssaAdvancedSettingsPanel extends PopupWindow {
                 + "            <li>Maximum number of hits reported per spectrum (0 equals all, for accurate PTM scoring retain all, -hc command line option)</li>\n"
                 + "            <li>OMSSA output format (for compatibility with PeptideShaker use omx, -ox or -oc command line option)</li>\n"
                 + "        </ul></div>";
-        Help help = new Help(helpText, "Note: The advanced settings are for expert use only. See help for details", 100, 20);
+        HelpPopupButton help = new HelpPopupButton(helpText, "Note: The advanced settings are for expert use only. See help for details", 100, 20);
         container.addComponent(help, "left:20px;bottom:10px;");
         container.addComponent(cancelBtn, "bottom:10px;right:10px");
         container.addComponent(okBtn, "bottom:10px;right:96px");

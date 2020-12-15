@@ -7,7 +7,7 @@ import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideSha
 import com.uib.web.peptideshaker.model.UploadedProjectUtility;
 import com.uib.web.peptideshaker.ui.views.FileSystemView;
 import com.uib.web.peptideshaker.ui.views.ResultsView;
-import com.uib.web.peptideshaker.ui.views.WorkflowView;
+import com.uib.web.peptideshaker.ui.views.WorkflowInvokingView;
 import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
 import com.uib.web.peptideshaker.ui.components.ViewActionButtonsComponent;
 import com.uib.web.peptideshaker.ui.views.WelcomePageView;
@@ -64,7 +64,7 @@ public abstract class UIContainer extends AbsoluteLayout {
      * The SearchGUI & PeptideShaker tools view component (frame to start
      * analysis).
      */
-    private WorkflowView searchGUIPeptideShakerToolPresenter;
+    private WorkflowInvokingView workflowInvokingView;
     /**
      * Container to view the main available data-sets and files on galaxy server
      * or in other databases.
@@ -123,57 +123,13 @@ public abstract class UIContainer extends AbsoluteLayout {
          * landing page initialization.
          */
         welcomePageView = new WelcomePageView(availableGalaxyServer);
-        UIContainer.this.addComponent(welcomePageView, "left:100px");
+        UIContainer.this.addComponent(welcomePageView, "left:0px");
 
 //        
-//        
-//        
-//        
-//        
-//        
-//        
-//        searchGUIPeptideShakerToolPresenter = new WorkflowView() {
-//            @Override
-//            public void execute_SearchGUI_PeptideShaker_WorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> inputFilesIdsList, Set<String> searchEnginesList, IdentificationParameters searchParameters, boolean quant) {
-//                UIContainer.this.execute_SearchGUI_PeptideShaker_WorkFlow(projectName, fastaFileId, searchParameterFileId, inputFilesIdsList, searchEnginesList, searchParameters, quant);
-//                viewLayout(fileSystemView.getViewId());
-//            }
-//
-//            @Override
-//            public Map<String, GalaxyTransferableFile> saveSearchGUIParameters(IdentificationParameters searchParameters, boolean isNew) {
-//                return UIContainer.this.saveSearchGUIParameters(searchParameters, isNew);
-//            }
-//
-//            @Override
-//            public void maximizeView() {
-//                super.maximizeView();
-//            }
-//
-//            @Override
-//            public boolean uploadToGalaxy(PluploadFile[] toUploadFiles) {
-//                boolean check = UIContainer.this.uploadToGalaxy(toUploadFiles);
-//                /**
-//                 * Invoke busy history only : active globe
-//                 */
-//                fileSystemView.updateData(null, check,"");
-//                return check;
-//
-//            }
-//
-//        };
-//
-//        if (searchGUIPeptideShakerToolPresenter.getMainPresenterButton().isEnabled()) {
-//            searchGUIPeptideShakerToolPresenter.getMainPresenterButton().setEnabled(availableGalaxyServer);
-//            searchGUIPeptideShakerToolPresenter.getSmallPresenterControlButton().setEnabled(availableGalaxyServer);
-//        }
-//        if (!availableGalaxyServer) {
-//            Notification.show("Galaxy server is not available", Notification.Type.TRAY_NOTIFICATION);
-//            searchGUIPeptideShakerToolPresenter.getMainPresenterButton().setDescription("Galaxy server is not available");
-//            searchGUIPeptideShakerToolPresenter.getSmallPresenterControlButton().setDescription("Galaxy server is not available");
-//        }
-//
+        workflowInvokingView = new WorkflowInvokingView();
+        UIContainer.this.addComponent(workflowInvokingView, "left:0px");
         fileSystemView = new FileSystemView();
-        UIContainer.this.addComponent(fileSystemView, "left:100px");
+        UIContainer.this.addComponent(fileSystemView, "left:0px");
 //
 //        interactivePSPRojectResultsPresenter = new ResultsView(false) {
 //            @Override
@@ -235,8 +191,8 @@ public abstract class UIContainer extends AbsoluteLayout {
         return interactivePSPRojectResultsPresenter;
     }
 
-    public WorkflowView getSearchGUIPeptideShakerToolPresenter() {
-        return searchGUIPeptideShakerToolPresenter;
+    public WorkflowInvokingView getWorkflowInvokingView() {
+        return workflowInvokingView;
     }
 
     public FileSystemView getFileSystemView() {
@@ -248,13 +204,13 @@ public abstract class UIContainer extends AbsoluteLayout {
     }
 
     public void viewDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
-      
+
     }
 
-    public void updateProjectOverviewPresenter(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
-//        fileSystemView.updateData(tempHistoryFilesMap, jobsInProgress,"");
-        searchGUIPeptideShakerToolPresenter.updateData(historyFilesMap);
-    }
+//    public void updateProjectOverviewPresenter(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
+////        fileSystemView.updateData(tempHistoryFilesMap, jobsInProgress,"");
+//        workflowInvokingView.updateData(historyFilesMap);
+//    }
 
     public abstract void viewLayout(String viewId);
 

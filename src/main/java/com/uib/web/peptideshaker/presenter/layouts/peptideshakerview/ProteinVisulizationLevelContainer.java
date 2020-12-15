@@ -3,7 +3,7 @@ package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.ProteinGroupObject;
-import com.uib.web.peptideshaker.presenter.core.PresenterSubViewSideBtn;
+import com.uib.web.peptideshaker.ui.components.items.SubViewSideBtn;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.RegistrableFilter;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.components.RangeColorGenerator;
 import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.GraphsContainerComponent;
@@ -29,7 +29,7 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
     private final Label headerLabel;
     private final GraphsContainerComponent graphsContainerComponent;
     private final SelectionManager Selection_Manager;
-    private final PresenterSubViewSideBtn proteinoverviewBtn;
+    private final SubViewSideBtn proteinoverviewBtn;
     private final ProteinCoverageTable proteinCoverageContainer;
     private final Protein3DStructurePanel protein3DStructurePanel;
     private final Map<Integer, Component> filterComponentsMap;
@@ -45,7 +45,7 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
      * @param Selection_Manager
      * @param proteinoverviewBtn
      */
-    public ProteinVisulizationLevelContainer(SelectionManager Selection_Manager, PresenterSubViewSideBtn proteinoverviewBtn) {
+    public ProteinVisulizationLevelContainer(SelectionManager Selection_Manager, SubViewSideBtn proteinoverviewBtn) {
         ProteinVisulizationLevelContainer.this.setSizeFull();
         ProteinVisulizationLevelContainer.this.setSpacing(true);
         ProteinVisulizationLevelContainer.this.setMargin(false);

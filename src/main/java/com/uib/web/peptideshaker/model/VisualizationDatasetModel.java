@@ -19,6 +19,12 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
     private String datasetType;
     private String name;
     private String id;
+    private String datasetTypeAsString;
+    private String sharingLink;
+
+    public String getSharingLink() {
+        return sharingLink;
+    }
 
     public String getId() {
         return id;
@@ -35,6 +41,10 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
 
     public void setIdentificationParametersObject(IdentificationParameters identificationParametersObject) {
         this.identificationParametersObject = identificationParametersObject;
+    }
+
+    public void setSharingLink(String sharingLink) {
+        this.sharingLink = sharingLink;
     }
     //case of uploaded  dataset
     private String fastaFileName;
@@ -94,6 +104,10 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
         return datasetType;
     }
 
+    public String getDatasetTypeString() {
+        return datasetTypeAsString;
+    }
+
     public GalaxyFileModel getPsZipFile() {
         return psZipFile;
     }
@@ -125,6 +139,11 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
 
     public void setDatasetType(String datasetType) {
         this.datasetType = datasetType;
+        if (datasetType.equals(CONSTANT.QUANT_DATASET)) {
+            datasetTypeAsString = "Quant Dataset";
+        } else {
+            datasetTypeAsString = "Identification Dataset";
+        }
     }
 
     public void setPsZipFile(GalaxyFileModel psZipFile) {

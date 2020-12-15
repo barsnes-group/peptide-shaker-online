@@ -13764,7 +13764,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .selectedbiglbtn {
-	border: 1px solid #88bfff;
+	border: 1px solid orange;
 	border-right-color: white;
 	border-radius: 5px;
 	border-top-right-radius: 0px !important;
@@ -22313,4 +22313,8 @@ div.v-layout.v-horizontal.v-widget {
 	font-size: 30px;
 	margin-top: 5px;
 	position: absolute;
+}
+
+.v-slot-hidetextonmobilemode{
+	max-height:10px
 }

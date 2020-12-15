@@ -3,7 +3,7 @@ package com.uib.web.peptideshaker.presenter.layouts.advancedsearchenginessetting
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.tool_specific.MsAmandaParameters;
-import com.uib.web.peptideshaker.presenter.core.Help;
+import com.uib.web.peptideshaker.ui.components.items.HelpPopupButton;
 import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelDropDownList;
 import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
@@ -167,7 +167,7 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
         outputFormat.updateData(values);
 
         String helpText = "<a href='https://ms.imp.ac.at/?goto=msamanda' target='_blank'>";
-        Help help = new Help(helpText, "Click to open the MS Amanda help page.", 100, 20);
+        HelpPopupButton help = new HelpPopupButton(helpText, "Click to open the MS Amanda help page.", 100, 20);
         container.addComponent(help, "left:10px;bottom:10px;");
 
         Button okBtn = new Button("OK");
