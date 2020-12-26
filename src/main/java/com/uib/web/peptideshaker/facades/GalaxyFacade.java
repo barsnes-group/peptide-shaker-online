@@ -307,11 +307,8 @@ public class GalaxyFacade implements Serializable {
                 appManagmentBean.getNotificationFacade().showErrorNotification("Error connecting to galaxy server");
                 return false;
             }
-            JsonObject history = new JsonObject(response.readEntity(String.class));
-//            JsonObject stateDetails = history.getJsonObject("state_details");
-//            System.out.println("at state "+history.getString(CONSTANT.STATE)+"  - state details"+stateDetails );            
+            JsonObject history = new JsonObject(response.readEntity(String.class));        
             if (!history.getString(CONSTANT.STATE).equals(CONSTANT.OK_STATUS)&&!(history.getString(CONSTANT.STATE).equals(CONSTANT.NEW_STATUS)&&history.getLong(CONSTANT.SIZE)==0)) {
-                System.out.println("at history stat"+history.getString(CONSTANT.STATE));
                 return true;
             }
 

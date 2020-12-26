@@ -64,6 +64,7 @@ public class UIManager implements Serializable{
     }
 
     public void updateAll() {
+       
             visualizationMap.values().forEach((view) -> {
                 view.update();
             });

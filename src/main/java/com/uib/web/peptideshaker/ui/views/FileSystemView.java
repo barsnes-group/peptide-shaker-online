@@ -142,14 +142,11 @@ public class FileSystemView extends AbsoluteLayout implements ViewableFrame {
 
     @Override
     public void update() {
-        UI.getCurrent().accessSynchronously(new Runnable() {
-            @Override
-            public void run() {              
-                filesTablePanel.updateDatasetsTable(); 
-                filesTablePanel.markAsDirty();
-                filesTablePanel.updateViewDataset();
-                UI.getCurrent().push();
-            }
+        UI.getCurrent().access(() -> {
+            UI.getCurrent().markAsDirtyRecursive();
+            filesTablePanel.updateDatasetsTable();
+            filesTablePanel.updateViewDataset();
+            UI.getCurrent().push();
         });
 
     }

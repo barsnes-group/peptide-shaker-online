@@ -33,12 +33,12 @@ public class VaadinSessionControlListener {
 
         @Override
         public void sessionDestroy(SessionDestroyEvent event) {
-            AppManagmentBean appManagmentBean = (AppManagmentBean) event.getSession().getAttribute(CONSTANT.APP_MANAGMENT_BEAN); 
-            
-            appManagmentBean.getUserHandler().clearHistory();
-            System.out.println("at session control to distroy " + appManagmentBean);
-          
-            appManagmentBean.reset();
+            AppManagmentBean appManagmentBean = (AppManagmentBean) event.getSession().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
+            if (appManagmentBean != null) {
+                appManagmentBean.getUserHandler().clearHistory();
+                appManagmentBean.reset();
+            }
+
             decSessionCounter();
         }
     }
