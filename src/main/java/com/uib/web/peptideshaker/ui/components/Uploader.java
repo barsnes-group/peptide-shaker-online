@@ -4,9 +4,9 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
 import pl.exsio.plupload.Plupload;
 import pl.exsio.plupload.PluploadError;
@@ -30,12 +30,16 @@ public abstract class Uploader extends AbsoluteLayout {
     private File userUploadFolder;
     private Plupload uploaderComponent;
     private String uploadedFileName;
+    private final String tempUploaderFolderPath;
 
     /**
      * Initialise upload component
+     *
+     * @param tempUploaderFolderPath
      */
-    public Uploader() {
+    public Uploader(String tempUploaderFolderPath) {
 
+        this.tempUploaderFolderPath = tempUploaderFolderPath;
         Uploader.this.setHeight(25, Unit.PIXELS);
         Uploader.this.setWidth(25, Unit.PIXELS);
         Uploader.this.setStyleName("uploaderlayout");
@@ -75,6 +79,13 @@ public abstract class Uploader extends AbsoluteLayout {
             }
 
         };
+        File user_folder = new File(tempUploaderFolderPath);
+        if (!user_folder.exists()) {
+            user_folder.mkdir();
+        }
+        userUploadFolder = new File(user_folder, "uploadedFiles");
+        userUploadFolder.mkdir();
+        uploaderComponent.setUploadPath(userUploadFolder.getAbsolutePath());
         uploaderComponent.setMaxFileSize("1gb");
         uploaderComponent.addStyleName(ValoTheme.BUTTON_TINY);
         uploaderComponent.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
@@ -95,19 +106,8 @@ public abstract class Uploader extends AbsoluteLayout {
          * auto start the upload after add files
          */
         uploaderComponent.addFilesAddedListener((PluploadFile[] files) -> {
-            if (userUploadFolder == null) {
-                String userDataFolderUrl = VaadinSession.getCurrent().getAttribute("userDataFolderUrl") + "";
-                String APIKey = VaadinSession.getCurrent().getAttribute("ApiKey").toString();
-                File user_folder = new File(userDataFolderUrl, APIKey);
-                if (!user_folder.exists()) {
-                    user_folder.mkdir();
-                }
-                userUploadFolder = new File(user_folder, "uploadedFiles");
-                userUploadFolder.mkdir();
 
-                uploaderComponent.setUploadPath(userUploadFolder.getAbsolutePath());
-            }
-
+            
             uploaderComponent.start();
             setBusy(true);
         });
@@ -130,8 +130,6 @@ public abstract class Uploader extends AbsoluteLayout {
         uploaderComponent.addErrorListener((PluploadError error) -> {
             Notification.show("Error", "Only " + filterSet + " file format allowed", Notification.Type.TRAY_NOTIFICATION);
         });
-        
-      
 
     }
 
@@ -142,15 +140,19 @@ public abstract class Uploader extends AbsoluteLayout {
     /**
      * Set upload is temporary disable
      *
-     * @param busy   upload in progress
+     * @param busy upload in progress
      * @param notifi show notification
      */
     public void setBusy(boolean busy) {
-        uploaderComponent.setVisible(!busy);
-        if (!busy && uploadedFileName != null) {
-            Notification.show("File uploaded : " + uploadedFileName, Notification.Type.TRAY_NOTIFICATION);
-            uploadedFileName = null;
-        }
+        UI.getCurrent().access(() -> {
+            uploaderComponent.setVisible(!busy);
+            if (!busy && uploadedFileName != null) {
+                Notification.show("File uploaded : " + uploadedFileName, Notification.Type.TRAY_NOTIFICATION);
+                uploadedFileName = null;
+            }
+            UI.getCurrent().push();
+        });
+
     }
 
     /**

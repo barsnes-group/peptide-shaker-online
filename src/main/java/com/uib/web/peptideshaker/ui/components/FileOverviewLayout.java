@@ -7,7 +7,7 @@ package com.uib.web.peptideshaker.ui.components;
 
 import com.uib.web.peptideshaker.model.GalaxyFileModel;
 import com.uib.web.peptideshaker.model.VisualizationDatasetModel;
-import com.uib.web.peptideshaker.presenter.core.form.Horizontal2Label;
+import com.uib.web.peptideshaker.ui.components.items.Horizontal2Label;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;

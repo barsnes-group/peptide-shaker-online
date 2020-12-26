@@ -5,27 +5,28 @@ import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
 import com.uib.web.peptideshaker.ui.components.items.StatusLabel;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.AppManagmentBean;
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.GalaxyFileModel;
+import com.uib.web.peptideshaker.model.VisualizationDatasetModel;
 import com.uib.web.peptideshaker.ui.components.items.DropDownList;
 import com.uib.web.peptideshaker.ui.components.items.MultiSelectOptionGroup;
 import com.uib.web.peptideshaker.ui.components.items.RadioButton;
+import com.uib.web.peptideshaker.ui.views.FileSystemView;
 import com.vaadin.data.Property;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import java.io.File;
 import pl.exsio.plupload.PluploadFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import javassist.bytecode.stackmap.BasicBlock;
 
 /**
  * This class represents SearchGUI-Peptide-Shaker work-flow which include input
@@ -38,48 +39,48 @@ public class WorkFlowDataInputLayout extends Panel {
     /**
      * MGF file list available for user to select from.
      */
-    private final Set<String> _mgfFileList;
+    private final Set<GalaxyFileModel> _mgfFileList;
     /**
      * mzML file list available for user to select from.
      */
-    private final Set<String> _mzMLFileList;
+    private final Set<GalaxyFileModel> _mzMLFileList;
     /**
      * Raw file list available for user to select from.
      */
-    private final Set<String> _rawFileList;
+    private final Set<GalaxyFileModel> _rawFileList;
     private final float[] expandingRatio = new float[]{5f, 5f, 58f, 25f, 8f};
     /**
      * Search settings .par file drop-down list .
      */
-    protected DropDownList _searchSettingsFileList;
+    private DropDownList searchSettingsFileList;
     /**
      * FASTA file drop-down list .
      */
-    protected DropDownList _fastaFileInputLayout;
+    private DropDownList _fastaFileInputLayout;
     /**
      * layout contain project name field and execute button.
      */
-    protected TextField _projectNameField;
+    private TextField _projectNameField;
     /**
      * Pop-up layout content that has search input available options.
      */
-    protected SearchParametersForm _searchParameterForm;
+    private SearchParametersForm _searchParameterForm;
     /**
      * Pop-up layout container for edit user search input.
      */
-    protected PopupWindow _searchParameterFormContainer;
+    private PopupWindow _searchParameterFormContainer;
     /**
      * Available pre-saved search parameters files .par from previous searching.
      */
-    protected Map<String, GalaxyTransferableFile> _searchSettingsMap;
+    private Map<String, GalaxyFileModel> serachParamFilesMap;
     /**
      * updated search parameters to perform the search at galaxy server.
      */
-//    protected SearchParameters _updatedSearchParameters;  
+//    private SearchParameters _updatedSearchParameters;  
     /**
      * selected search parameters to perform the search at galaxy server.
      */
-    protected IdentificationParameters _searchParameters;
+    private IdentificationParameters _searchParameters;
     /**
      * Map Galaxy if for FASTA file to FAST files name.
      */
@@ -95,7 +96,6 @@ public class WorkFlowDataInputLayout extends Panel {
     /**
      * Execution button for the work-flow
      */
-    private Button _executeWorkFlowBtn;
     private AbsoluteLayout inputDataFilesContainer;
     private Uploader mgf_raw_dataUploader;
     private VerticalLayout rawDataListLayout;
@@ -109,8 +109,8 @@ public class WorkFlowDataInputLayout extends Panel {
     private boolean spectrumFileUploaderBusy = Boolean.FALSE;
     private boolean fastaFileUploaderBusy = Boolean.FALSE;
     private boolean numberChanged;
-    private Set<String> datasetNames;
     private final AppManagmentBean appManagmentBean;
+    private Map<String, GalaxyFileModel> fastaFilesMap;
 
     /**
      * Constructor to initialise the main attributes.
@@ -167,24 +167,13 @@ public class WorkFlowDataInputLayout extends Panel {
         /**
          * Search settings layout.
          */
-        AbsoluteLayout searchParameterContainer = new AbsoluteLayout();
-        searchParameterContainer.setCaption("Search Settings");
-        searchParameterContainer.setWidth(100, Unit.PERCENTAGE);
-        searchParameterContainer.setHeight(37, Unit.PERCENTAGE);
-        searchParameterContainer.setStyleName("titleinborder");
-        searchParameterContainer.addStyleName("searchparametercontainer");
+        AbsoluteLayout searchParameterContainer = initialiseSearchSettingsLayout();
         newProjectContainer.addComponent(searchParameterContainer, "left:25px;top:25px;right:50%");
-        _searchSettingsFileList = initialiseSearchSettingsFileDropdownList();
-        searchParameterContainer.addComponent(_searchSettingsFileList, "left:15px;top:15px;right:15px");
 
-        // Search settings info
-        Label searchSettingInfo = initialiseSearchParameterFormOverviewLayout();
-        searchParameterContainer.addComponent(searchSettingInfo, "left:15px;top:50px;right:15px;bottom:10px;");
         /**
          * Search parameter form*
          */
         _searchParameterForm = initialiseSearchParametersForm();
-        // Edit search option
         _searchParameterFormContainer = initialiseSearchParameterFormContainer(_searchParameterForm);
         /**
          * FASTA file drop-down list (open select pop-up option).
@@ -254,10 +243,43 @@ public class WorkFlowDataInputLayout extends Panel {
         inputDataFilesContainer.setWidth(100, Unit.PERCENTAGE);
         inputDataFilesContainer.setStyleName("inputdatafilecontainer");
         spectrumFileContainer.addComponent(inputDataFilesContainer, "left:15px;top:52px;right:15px;bottom:10px");
-        mgf_raw_dataUploader = new Uploader() {
+        mgf_raw_dataUploader = new Uploader(appManagmentBean.getAppConfig().getUserFolderUri()) {
             @Override
             public void filesUploaded(PluploadFile[] uploadedFiles) {
-//                uploadToGalaxy(uploadedFiles);
+
+                File file = (File) uploadedFiles[0].getUploadedFile();
+                String fileExtension;
+                String fileName = uploadedFiles[0].getName();
+
+                if (fileName.toLowerCase().endsWith(".mgf")) {
+                    fileExtension = CONSTANT.MGF_FILE_EXTENSION;
+                } else if (fileName.toLowerCase().endsWith(".mzml")) {
+                    fileExtension = CONSTANT.mzML_FILE_EXTENSION;
+                } else if (fileName.toLowerCase().endsWith(".thermo.raw")) {
+                    fileExtension = CONSTANT.THERMO_RAW_FILE_EXTENSION;
+                } else {
+                    return;
+                }
+                GalaxyFileModel spectrumFile = new GalaxyFileModel();
+                spectrumFile.setName(fileName);
+                spectrumFile.setExtension(fileExtension);
+                spectrumFile.setStatus(CONSTANT.RUNNING_STATUS);
+                spectrumFile.setId(file.getAbsolutePath());
+                spectrumFile.setDeleted(Boolean.FALSE);
+                spectrumFile.setCreatedDate(java.util.Calendar.getInstance().getTime());
+                spectrumFile.setDownloadUrl(file.getAbsolutePath());
+
+                appManagmentBean.getUserHandler().addToFilesMap(spectrumFile);
+                appManagmentBean.getUI_Manager().updateAll();
+                ExecutorService executorService = Executors.newSingleThreadExecutor();
+                executorService.submit(() -> {
+                    appManagmentBean.getWorkFlowHandler().uploadFile(file, fileName, fileExtension);
+                    file.delete();
+                    appManagmentBean.getUserHandler().syncAndUpdateUserData();
+                    appManagmentBean.getUI_Manager().updateAll();
+                    this.setBusy(false);
+                });
+
             }
         };
         mgf_raw_dataUploader.addUploaderFilter("mgf");
@@ -279,9 +301,7 @@ public class WorkFlowDataInputLayout extends Panel {
         mzMLDataListLayout.setSizeFull();
         mgfDataListLayout.setStyleName("astablelayout");
         inputDataFilesContainer.addComponent(mzMLDataListLayout, "top:0px;");
-
         rawMgfController.select("rawFiles");
-
         /**
          * Initialise Search Engines container.
          */
@@ -325,37 +345,36 @@ public class WorkFlowDataInputLayout extends Panel {
         bottomLayout.setSpacing(true);
         _executeWorkFlowButtonLayoutContainer.addComponent(bottomLayout, "top:7.5px;bottom:7.5px");
         newProjectContainer.addComponent(_executeWorkFlowButtonLayoutContainer, "left:50%;top:84%;right:50px;bottom:10px");
-        _executeWorkFlowBtn = initialiseExecuteWorkFlowBtn(bottomLayout, _searchEngines, searchEnginesList);
-        _executeWorkFlowBtn.setEnabled(true);
-        initialiseInputComponentsListener(_searchSettingsFileList, searchSettingInfo, _searchEngines, _executeWorkFlowBtn);
+        initialiseExecuteWorkFlowBtn(bottomLayout, _searchEngines, searchEnginesList);
+        executeWorkFlowBtn.setEnabled(true);
         _projectNameField.addStyleName("focos");
         rawClickListener = (LayoutEvents.LayoutClickEvent event) -> {
-            String id = event.getComponent().getId();
+            GalaxyFileModel galaxyFile = (GalaxyFileModel) ((HorizontalLayout) event.getComponent()).getData();
 
-            if (_rawFileList.contains(id)) {
-                _rawFileList.remove(id);
+            if (_rawFileList.contains(galaxyFile)) {
+                _rawFileList.remove(galaxyFile);
             } else {
-                _rawFileList.add(id);
+                _rawFileList.add(galaxyFile);
             }
             updateRawFilesTable();
         };
         mgfClickListener = (LayoutEvents.LayoutClickEvent event) -> {
-            String id = event.getComponent().getId();
-            if (_mgfFileList.contains(id)) {
-                _mgfFileList.remove(id);
+            GalaxyFileModel galaxyFile = (GalaxyFileModel) ((HorizontalLayout) event.getComponent()).getData();
+            if (_mgfFileList.contains(galaxyFile)) {
+                _mgfFileList.remove(galaxyFile);
             } else {
-                _mgfFileList.add(id);
+                _mgfFileList.add(galaxyFile);
             }
 
             updateMgfFilesTable();
         };
 
         mzMLClickListener = (LayoutEvents.LayoutClickEvent event) -> {
-            String id = event.getComponent().getId();
-            if (_mzMLFileList.contains(id)) {
-                _mzMLFileList.remove(id);
+            GalaxyFileModel galaxyFile = (GalaxyFileModel) ((HorizontalLayout) event.getComponent()).getData();
+            if (_mzMLFileList.contains(galaxyFile)) {
+                _mzMLFileList.remove(galaxyFile);
             } else {
-                _mzMLFileList.add(id);
+                _mzMLFileList.add(galaxyFile);
             }
 
             updateMzMLFilesTable();
@@ -367,7 +386,7 @@ public class WorkFlowDataInputLayout extends Panel {
      *
      * @return text field
      */
-    protected TextField initialiseProjectNameInputField() {
+    private TextField initialiseProjectNameInputField() {
         TextField projectNameField = new TextField();
         projectNameField.setInputPrompt("New Project Name");
         projectNameField.setCaptionAsHtml(true);
@@ -382,8 +401,18 @@ public class WorkFlowDataInputLayout extends Panel {
      *
      * @return drop down list
      */
-    protected DropDownList initialiseSearchSettingsFileDropdownList() {
-        DropDownList searchSettingsFileList = new DropDownList(null) {
+    private AbsoluteLayout initialiseSearchSettingsLayout() {
+        AbsoluteLayout searchParameterContainer = new AbsoluteLayout();
+        searchParameterContainer.setCaption("Search Settings");
+        searchParameterContainer.setWidth(100, Unit.PERCENTAGE);
+        searchParameterContainer.setHeight(37, Unit.PERCENTAGE);
+        searchParameterContainer.setStyleName("titleinborder");
+        searchParameterContainer.addStyleName("searchparametercontainer");
+
+        // Search settings info
+        final Label searchSettingInfo = initialiseSearchParameterFormOverviewLayout();
+        searchParameterContainer.addComponent(searchSettingInfo, "left:15px;top:50px;right:15px;bottom:10px;");
+        searchSettingsFileList = new DropDownList(null) {
             @Override
             public void setEnabled(boolean enable) {
                 if (!enable) {
@@ -395,7 +424,30 @@ public class WorkFlowDataInputLayout extends Panel {
         searchSettingsFileList.setWidth(100, Unit.PERCENTAGE);
         searchSettingsFileList.addStyleName("nomargintop");
         searchSettingsFileList.setReadOnly(true);
-        return searchSettingsFileList;
+        searchParameterContainer.addComponent(searchSettingsFileList, "left:15px;top:15px;right:15px");
+
+        searchSettingsFileList.addValueChangeListener((Property.ValueChangeEvent event) -> {
+            if (searchSettingsFileList.getSelectedValue() != null) {
+                if (searchSettingsFileList.getSelectedValue().equalsIgnoreCase("Add new")) {
+                    _searchParameterForm.updateForms(appManagmentBean.getWorkFlowHandler().getDefaultIdentificationParameters());
+                    _searchParameterFormContainer.setPopupVisible(true);
+                    return;
+                }
+                _searchParameters = appManagmentBean.getWorkFlowHandler().retriveIdentificationParametersFileFromGalaxy(serachParamFilesMap.get(searchSettingsFileList.getSelectedValue()));
+                String descrip = "Fixed:" + _searchParameters.getSearchParameters().getModificationParameters().getFixedModifications() + "</br>Variable:" + _searchParameters.getSearchParameters().getModificationParameters().getVariableModifications() + "<br/>Fragment Tolerance:" + _searchParameters.getSearchParameters().getFragmentIonAccuracyInDaltons();
+                descrip = descrip.replace("[", "").replace("]", "").replace("null", "No modifications");
+                for (String mod : _searchParameterForm.getUpdatedModiList().keySet()) {
+                    if (descrip.contains(mod)) {
+                        descrip = descrip.replace(mod, _searchParameterForm.getUpdatedModiList().get(mod));
+                    }
+                }
+                searchSettingInfo.setValue(descrip);
+
+            }
+        }
+        );
+
+        return searchParameterContainer;
     }
 
     /**
@@ -403,10 +455,12 @@ public class WorkFlowDataInputLayout extends Panel {
      *
      * @return drop-down list with uploader support
      */
-    protected DropDownList initialiseFastaFileDropdownList() {
-        fastaFileUploader = new Uploader() {
+    private DropDownList initialiseFastaFileDropdownList() {
+        fastaFileUploader = new Uploader(appManagmentBean.getAppConfig().getUserFolderUri()) {
             @Override
             public void filesUploaded(PluploadFile[] uploadedFiles) {
+                File file = (File) uploadedFiles[0].getUploadedFile();
+                appManagmentBean.getWorkFlowHandler().uploadFile(file, uploadedFiles[0].getName(), CONSTANT.FASTA_FILE_EXTENSION);
 //                uploadToGalaxy(uploadedFiles);
             }
 
@@ -444,19 +498,19 @@ public class WorkFlowDataInputLayout extends Panel {
      *
      * @return searchSettings utility
      */
-    protected SearchParametersForm initialiseSearchParametersForm() {
+    private SearchParametersForm initialiseSearchParametersForm() {
         SearchParametersForm searchSettingsLayout = new SearchParametersForm(false) {
             @Override
             public void saveSearchingFile(IdentificationParameters searchParameters, boolean isNew) {
-                checkAndSaveSearchSettingsFile(searchParameters, isNew);
+                checkAndSaveSearchSettingsFile(searchParameters);
                 _searchParameterFormContainer.setPopupVisible(false);
-                _searchSettingsFileList.removeStyleName("focos");
+                searchSettingsFileList.removeStyleName("focos");
             }
 
             @Override
             public void cancel() {
                 _searchParameterFormContainer.setPopupVisible(false);
-                _searchSettingsFileList.defultSelect();
+                searchSettingsFileList.defultSelect();
             }
 
             @Override
@@ -478,7 +532,7 @@ public class WorkFlowDataInputLayout extends Panel {
      * @param searchParametersForm
      * @return pup-up window
      */
-    protected PopupWindow initialiseSearchParameterFormContainer(SearchParametersForm searchParametersForm) {
+    private PopupWindow initialiseSearchParameterFormContainer(SearchParametersForm searchParametersForm) {
         PopupWindow editSearchOption = new PopupWindow("Edit") {
             @Override
             public void onClosePopup() {
@@ -496,7 +550,7 @@ public class WorkFlowDataInputLayout extends Panel {
      *
      * @return label container
      */
-    protected Label initialiseSearchParameterFormOverviewLayout() {
+    private Label initialiseSearchParameterFormOverviewLayout() {
         Label searchSettingInfo = new Label();
         searchSettingInfo.setWidth(100, Unit.PERCENTAGE);
         searchSettingInfo.setHeight(90, Unit.PIXELS);
@@ -513,7 +567,7 @@ public class WorkFlowDataInputLayout extends Panel {
      * @param searchEnginesList list of available search engines
      * @return layout
      */
-    protected MultiSelectOptionGroup initialiseSearchEnginesSelectionContainer(Map<String, String> searchEnginesList) {
+    private MultiSelectOptionGroup initialiseSearchEnginesSelectionContainer(Map<String, String> searchEnginesList) {
         MultiSelectOptionGroup searchEngines = new MultiSelectOptionGroup(null, false) {
             @Override
             public void setEnabled(boolean enable) {
@@ -563,7 +617,7 @@ public class WorkFlowDataInputLayout extends Panel {
      * @param searchEnginesList available search engine list
      * @return button
      */
-    protected Button initialiseExecuteWorkFlowBtn(AbstractOrderedLayout layout, MultiSelectOptionGroup searchEngines, Map<String, String> searchEnginesList) {
+    private void initialiseExecuteWorkFlowBtn(AbstractOrderedLayout layout, MultiSelectOptionGroup searchEngines, Map<String, String> searchEnginesList) {
 
         executeWorkFlowBtn = new Button("Execute");
         executeWorkFlowBtn.setStyleName(ValoTheme.BUTTON_SMALL);
@@ -574,11 +628,11 @@ public class WorkFlowDataInputLayout extends Panel {
         layout.setComponentAlignment(executeWorkFlowBtn, Alignment.TOP_CENTER);
 
         executeWorkFlowBtn.addClickListener((Button.ClickEvent event) -> {
-            if (_searchSettingsFileList.getSelectedValue() == null || _searchSettingsFileList.getSelectedValue().equalsIgnoreCase("null")) {
-                _searchSettingsFileList.addStyleName("errorstyle");
+            if (searchSettingsFileList.getSelectedValue() == null || searchSettingsFileList.getSelectedValue().equalsIgnoreCase("null")) {
+                searchSettingsFileList.addStyleName("errorstyle");
                 return;
             } else {
-                _searchSettingsFileList.removeStyleName("errorstyle");
+                searchSettingsFileList.removeStyleName("errorstyle");
             }
             if (_fastaFileInputLayout.getSelectedValue() == null || _fastaFileInputLayout.getSelectedValue().equalsIgnoreCase("null")) {
                 _fastaFileInputLayout.addStyleName("errorstyle");
@@ -604,74 +658,31 @@ public class WorkFlowDataInputLayout extends Panel {
             }
 
             String fastFileId = this.getFastaFileId();
-            Set<String> spectrumIds = _mgfFileList;
-            Set<String> rawIds = _rawFileList;
-            Set<String> mzmlIds = _mzMLFileList;
-            Set<String> searchEnginesIds = searchEngines.getSelectedValue();
-            String projectName = _projectNameField.getValue().trim();//.replace(" ", "_").replace("-", "_") + "___" + (new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss").format(new Timestamp(System.currentTimeMillis()))).replace(":", "_-_").replace("-original-input", "-input");
 
+            String projectName = _projectNameField.getValue().trim();
             searchEngines.setRequired(false, "Select at least 1 search engine");
             Map<String, Boolean> selectedSearchEngines = new HashMap<>();
             searchEnginesList.keySet().forEach((paramId) -> {
-                selectedSearchEngines.put(paramId, searchEngines.getSelectedValue().contains(paramId));
+                selectedSearchEngines.put(paramId.replace("-", "").replace("+", "").trim(), searchEngines.getSelectedValue().contains(paramId));
             });
-            String searchParamerterId = _searchSettingsMap.get(_searchSettingsFileList.getSelectedValue()).getGalaxyId();
+             Set<GalaxyFileModel> usedList;
             if (!_rawFileList.isEmpty()) {
-//                executeWorkFlow(projectName, fastFileId, searchParamerterId, rawIds, searchEnginesIds, _searchParameterForm.getSearchParameters(), true);
+                usedList = _rawFileList;
             } else if (!_mgfFileList.isEmpty()) {
-//                executeWorkFlow(projectName, fastFileId, searchParamerterId, spectrumIds, searchEnginesIds, _searchParameterForm.getSearchParameters(), false);
+                usedList=_mgfFileList;
             } else {
-//                executeWorkFlow(projectName, fastFileId, searchParamerterId, mzmlIds, searchEnginesIds, _searchParameterForm.getSearchParameters(), false);
+                usedList=_mzMLFileList;
+            } 
+            VisualizationDatasetModel  dataset = appManagmentBean.getWorkFlowHandler().executeWorkFlow(projectName, fastaFilesMap.get(fastFileId), serachParamFilesMap.get(searchSettingsFileList.getSelectedValue()), usedList, selectedSearchEngines);
+
+            if (dataset != null) {
+                appManagmentBean.getUserHandler().addToDatasetMap(dataset);
+                appManagmentBean.getUI_Manager().updateAll();
+                appManagmentBean.getUI_Manager().viewLayout(FileSystemView.class.getName());
+                appManagmentBean.getUserHandler().forceBusyHistory();
+                reset();
             }
         });
-        return executeWorkFlowBtn;
-    }
-
-    /**
-     * Initialise listeners to validate input fields
-     *
-     * @param searchSettingsFileList parameter files drop-down list .par files
-     * @param searchSettingInfo search parameter overview label
-     * @param searchEngines search engines selection container
-     * @param executeWorkFlowBtn work flow invoking button
-     */
-    protected void initialiseInputComponentsListener(DropDownList searchSettingsFileList, Label searchSettingInfo, MultiSelectOptionGroup searchEngines, Button executeWorkFlowBtn) {
-
-        _searchSettingsFileList.addValueChangeListener((Property.ValueChangeEvent event) -> {
-            if (_searchSettingsFileList.getSelectedValue() != null) {
-                if (_searchSettingsFileList.getSelectedValue().equalsIgnoreCase("Add new")) {
-                    String basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
-                    try {
-                        File file = new File(basepath + "/VAADIN/SEARCHGUI_IdentificationParameters.json");
-                        IdentificationParameters searchParamUtil = IdentificationParameters.getIdentificationParameters(file);
-                        _searchParameterForm.updateForms(searchParamUtil);
-                        _searchParameterFormContainer.setPopupVisible(true);
-                    } catch (IOException ex) {
-                        System.err.println("Error: IOException at line : 655 " + ex);
-                    }
-                    return;
-                }
-
-                try {
-                    File file = _searchSettingsMap.get(_searchSettingsFileList.getSelectedValue()).getFile();
-                    if (IdentificationParameters.supportedVersion(file)) {
-                        _searchParameters = IdentificationParameters.getIdentificationParameters(file);
-                    }
-                    String descrip = "Fixed:" + _searchParameters.getSearchParameters().getModificationParameters().getFixedModifications() + "</br>Variable:" + _searchParameters.getSearchParameters().getModificationParameters().getVariableModifications() + "<br/>Fragment Tolerance:" + _searchParameters.getSearchParameters().getFragmentIonAccuracyInDaltons();
-                    descrip = descrip.replace("[", "").replace("]", "").replace("null", "No modifications");
-                    for (String mod : _searchParameterForm.getUpdatedModiList().keySet()) {
-                        if (descrip.contains(mod)) {
-                            descrip = descrip.replace(mod, _searchParameterForm.getUpdatedModiList().get(mod));
-                        }
-
-                    }
-                    searchSettingInfo.setValue(descrip);
-                } catch (IOException ex) {
-                    System.err.println("Error: IOException at line : 666 " + ex);
-                }
-            }
-        }
-        );
     }
 
     /**
@@ -679,7 +690,7 @@ public class WorkFlowDataInputLayout extends Panel {
      *
      * @return list of available search engines
      */
-    protected Map<String, String> getSearchEnginesList() {
+    private Map<String, String> getSearchEnginesList() {
         Map<String, String> searchEnginesList = new LinkedHashMap<>();
         searchEnginesList.put("X!Tandem", "X! Tandem");
         searchEnginesList.put("MS-GF+", "MS-GF+");
@@ -696,10 +707,8 @@ public class WorkFlowDataInputLayout extends Panel {
     /**
      * Update the tools input forms.
      */
-    public void updateForms() {//(Map<String, GalaxyTransferableFile> searchSettingsMap, Map<String, GalaxyFileObject> mgfFilesMap, Map<String, GalaxyFileObject> rawFilesMap, Map<String, GalaxyFileObject> mzMLFilesMap, Set<String> datasetNames) {
-
-//        this.datasetNames = datasetNames;
-//        this._searchSettingsMap = searchSettingsMap;
+    public void updateForms() {
+        this._projectNameField.clear();
         this.updateFastaFileList();
         this.updateSearchParamFileList();
         this.updateSpectrumPanel();
@@ -707,38 +716,16 @@ public class WorkFlowDataInputLayout extends Panel {
     }
 
     /**
-     * Run Online Peptide-Shaker work-flow
-     *
-     * @param projectName name of the project to store
-     * @param fastaFileId FASTA file dataset id
-     * @param searchParameterFileId .par file id
-     * @param inputIdsList list of MGF file dataset ids
-     * @param searchEnginesList List of selected search engine names
-     * @param searchParameters searching parameters // * @param searchEngines
-     * search engines
-     * @param quant the dataset is quantification dataset
-     */
-//    public abstract void executeWorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> inputIdsList, Set<String> searchEnginesList, IdentificationParameters searchParameters, boolean quant);
-    /**
      * Validate and save search setting .par file on galaxy server for future
      * use.
      *
      * @param searchParameters selected search parameters
-     * @param isNew create new file or edit exist file
      */
-    private void checkAndSaveSearchSettingsFile(IdentificationParameters searchParameters, boolean isNew) {
+    private void checkAndSaveSearchSettingsFile(IdentificationParameters searchParameters) {
         this._searchParameters = searchParameters;
-//        _searchSettingsMap = saveSearchGUIParameters(searchParameters, isNew);
-        Map<String, String> searchSettingsFileIdToNameMap = new LinkedHashMap<>();
-        String objectId = "";
-        for (String id : _searchSettingsMap.keySet()) {
-            searchSettingsFileIdToNameMap.put(id, _searchSettingsMap.get(id).getGalaxyFileObject().getName().replace(".json", ""));
-            objectId = id;
-        }
-        searchSettingsFileIdToNameMap.put("Add new", "Add new");
-        _searchSettingsFileList.setItemIcon("Add new", VaadinIcons.FILE_ADD);
-        _searchSettingsFileList.updateList(searchSettingsFileIdToNameMap);
-        _searchSettingsFileList.setSelected(objectId);
+        GalaxyFileModel paramFile = appManagmentBean.getWorkFlowHandler().saveSearchParametersFile(searchParameters);//saveSearchGUIParameters(searchParameters, isNew);
+        appManagmentBean.getUserHandler().addToFilesMap(paramFile);
+        appManagmentBean.getUI_Manager().updateAll();
 
     }
 
@@ -755,9 +742,9 @@ public class WorkFlowDataInputLayout extends Panel {
      * update search parameters file drop down list*
      */
     public void updateSpectrumPanel() {
-        Set<GalaxyFileModel> mgfFileSet = new TreeSet<>();
-        Set<GalaxyFileModel> mzMLFileSet = new TreeSet<>();
-        Set<GalaxyFileModel> rawFileSet = new TreeSet<>();
+        Set<GalaxyFileModel> mgfFileSet = new LinkedHashSet<>();
+        Set<GalaxyFileModel> mzMLFileSet = new LinkedHashSet<>();
+        Set<GalaxyFileModel> rawFileSet = new LinkedHashSet<>();
         for (GalaxyFileModel galaxyFile : appManagmentBean.getUserHandler().getFilesToViewList()) {
             switch (galaxyFile.getExtension()) {
                 case CONSTANT.MGF_FILE_EXTENSION:
@@ -784,7 +771,7 @@ public class WorkFlowDataInputLayout extends Panel {
         mzMLFileSet.forEach((galaxyFile) -> {
             mgfFileIdToNameMap.put(galaxyFile.getId(), galaxyFile.getName());
             StatusLabel statusLabel = new StatusLabel();
-            statusLabel.setStatus(CONSTANT.OK_STATUS);
+            statusLabel.setStatus(galaxyFile.getStatus());
             Label nameLabel = new Label(galaxyFile.getName());
             Label type = new Label();
             type.setValue("<b>" + galaxyFile.getExtension() + "</b>");
@@ -799,6 +786,8 @@ public class WorkFlowDataInputLayout extends Panel {
 
             HorizontalLayout rowLayout = initializeRowData(new Component[]{new Label(indexer + ""), selectionRadioBtn, nameLabel, type, statusLabel}, false);
             rowLayout.setId(galaxyFile.getId());
+            rowLayout.setEnabled(galaxyFile.getStatus().equals(CONSTANT.OK_STATUS));
+            rowLayout.setData(galaxyFile);
             rowLayout.addLayoutClickListener(mzMLClickListener);
             mzMLDataListLayout.addComponent(rowLayout);
             indexer++;
@@ -809,10 +798,10 @@ public class WorkFlowDataInputLayout extends Panel {
         mgfFileSet.forEach((galaxyFile) -> {
             mgfFileIdToNameMap.put(galaxyFile.getId(), galaxyFile.getName());
             StatusLabel statusLabel = new StatusLabel();
-            statusLabel.setStatus(CONSTANT.OK_STATUS);
+            statusLabel.setStatus(galaxyFile.getStatus());
             Label nameLabel = new Label(galaxyFile.getName());
             Label type = new Label();
-            type.setValue("<b>" + galaxyFile.getExtension()+ "</b>");
+            type.setValue("<b>" + galaxyFile.getExtension() + "</b>");
             type.setContentMode(ContentMode.HTML);
             type.setDescription(galaxyFile.getExtension());
             RadioButton selectionRadioBtn = new RadioButton(galaxyFile) {
@@ -825,6 +814,8 @@ public class WorkFlowDataInputLayout extends Panel {
             HorizontalLayout rowLayout = initializeRowData(new Component[]{new Label(indexer + ""), selectionRadioBtn, nameLabel, type, statusLabel}, false);
             rowLayout.setId(galaxyFile.getId());
             rowLayout.addLayoutClickListener(mgfClickListener);
+            rowLayout.setEnabled(galaxyFile.getStatus().equals(CONSTANT.OK_STATUS));
+            rowLayout.setData(galaxyFile);
             mgfDataListLayout.addComponent(rowLayout);
             indexer++;
 
@@ -838,7 +829,7 @@ public class WorkFlowDataInputLayout extends Panel {
             }
             Label nameLabel = new Label(galaxyFile.getName());
             Label type = new Label();
-            type.setValue("<b>" + galaxyFile.getExtension()+ "</b>");
+            type.setValue("<b>" + galaxyFile.getExtension() + "</b>");
             type.setContentMode(ContentMode.HTML);
             type.setDescription(galaxyFile.getExtension());
             RadioButton selectionRadioBtn = new RadioButton(galaxyFile) {
@@ -851,12 +842,14 @@ public class WorkFlowDataInputLayout extends Panel {
             HorizontalLayout rowLayout = initializeRowData(new Component[]{new Label(indexer + ""), selectionRadioBtn, nameLabel, type, statusLabel}, false);
             rowLayout.setId(galaxyFile.getId());
             rowLayout.addLayoutClickListener(rawClickListener);
+            rowLayout.setEnabled(galaxyFile.getStatus().equals(CONSTANT.OK_STATUS));
+            rowLayout.setData(galaxyFile);
             rawDataListLayout.addComponent(rowLayout);
             indexer++;
         }
         );
 
-        UI.getCurrent().accessSynchronously(() -> {
+        UI.getCurrent().access(() -> {
 
             updateMgfFilesTable();
             updateRawFilesTable();
@@ -875,22 +868,19 @@ public class WorkFlowDataInputLayout extends Panel {
      * update search parameters file drop down list*
      */
     public void updateSearchParamFileList() {
-        Set<GalaxyFileModel> searchSettingsSet = new TreeSet<>();
-        for (GalaxyFileModel galaxyFile : appManagmentBean.getUserHandler().getFilesToViewList()) {
-            if (galaxyFile.getExtension().equals(CONSTANT.JSON_FILE_EXTENSION) && galaxyFile.getName().contains(" PAR ")) {
-                searchSettingsSet.add(galaxyFile);
-            }
-        }
+        this.serachParamFilesMap = new LinkedHashMap<>();
         Map<String, String> searchSettingsFileIdToNameMap = new LinkedHashMap<>();
-        Object selectedId = "";
-        for (GalaxyFileModel galaxyFile : searchSettingsSet) {
+        appManagmentBean.getUserHandler().getFilesToViewList().stream().filter((galaxyFile) -> (galaxyFile.getExtension().equals(CONSTANT.JSON_FILE_EXTENSION) && galaxyFile.getName().contains(" PAR "))).forEachOrdered((galaxyFile) -> {
+            serachParamFilesMap.put(galaxyFile.getId(), galaxyFile);
             searchSettingsFileIdToNameMap.put(galaxyFile.getId(), galaxyFile.getName());
-            selectedId = galaxyFile.getId();
-        }
+
+        });
         searchSettingsFileIdToNameMap.put("Add new", "Add new");
-        _searchSettingsFileList.updateList(searchSettingsFileIdToNameMap);
-        _searchSettingsFileList.setSelected(selectedId);
-        _searchSettingsFileList.setItemIcon("Add new", VaadinIcons.FILE_ADD);
+        searchSettingsFileList.updateList(searchSettingsFileIdToNameMap);
+        if (!searchSettingsFileIdToNameMap.isEmpty()) {
+            searchSettingsFileList.setSelected(searchSettingsFileIdToNameMap.keySet().iterator().next());
+        }
+        searchSettingsFileList.setItemIcon("Add new", VaadinIcons.FILE_ADD);
 
     }
 
@@ -898,23 +888,19 @@ public class WorkFlowDataInputLayout extends Panel {
      * Update selection list for FASTA files
      */
     public void updateFastaFileList() {
-        Set<GalaxyFileModel> fastaFilesMap = new TreeSet<>();
-        for (GalaxyFileModel galaxyFile : appManagmentBean.getUserHandler().getFilesToViewList()) {
-            if (galaxyFile.getExtension().equals(CONSTANT.FASTA_FILE_EXTENSION)) {
-                fastaFilesMap.add(galaxyFile);
-            }
-        }
+        fastaFilesMap = new LinkedHashMap<>();
         fastaFileUploaderBusy = false;
         fastaFileIdToNameMap = new LinkedHashMap<>();
-        String selectedId = "";
-        for (GalaxyFileModel galaxyFileModel : fastaFilesMap) {
-            fastaFileIdToNameMap.put(galaxyFileModel.getId(), galaxyFileModel.getName());
-            if (selectedId.equals("")) {
-                selectedId = galaxyFileModel.getId();
-            }
-        }
+        appManagmentBean.getUserHandler().getFilesToViewList().stream().filter((galaxyFile) -> (galaxyFile.getExtension().equals(CONSTANT.FASTA_FILE_EXTENSION))).forEachOrdered((galaxyFile) -> {
+            fastaFilesMap.put(galaxyFile.getId(), galaxyFile);
+            fastaFileIdToNameMap.put(galaxyFile.getId(), galaxyFile.getName());
+
+        });
+
         this._fastaFileInputLayout.updateList(fastaFileIdToNameMap);
-        this._fastaFileInputLayout.setSelected(selectedId);
+        if (!fastaFileIdToNameMap.isEmpty()) {
+            this._fastaFileInputLayout.setSelected(fastaFileIdToNameMap.keySet().iterator().next());
+        }
         fastaFileUploader.setBusy(fastaFileUploaderBusy);
 
     }
@@ -934,20 +920,10 @@ public class WorkFlowDataInputLayout extends Panel {
     }
 
     /**
-     * Save search settings file into galaxy
-     *
-     * @param searchParameters searchParameters .par file
-     * @param isNew create new file or edit exist file
-     * @return updated search parameters files map
-     */
-//    public abstract Map<String, GalaxyTransferableFile> saveSearchGUIParameters(IdentificationParameters searchParameters, boolean isNew);
-    /**
      * upload file into galaxy
      *
-     * @param toUploadFiles files to be uploaded to galaxy
      * @return updated files map
      */
-//    public abstract boolean uploadToGalaxy(PluploadFile[] toUploadFiles);
     private HorizontalLayout initializeRowData(Component[] data, boolean header) {
         HorizontalLayout row = new HorizontalLayout();
         row.setSpacing(true);
@@ -973,7 +949,7 @@ public class WorkFlowDataInputLayout extends Panel {
         Iterator<Component> itr = mgfDataListLayout.iterator();
         while (itr.hasNext()) {
             HorizontalLayout raw = (HorizontalLayout) itr.next();
-            if (_mgfFileList.contains(raw.getId() + "")) {
+            if (_mgfFileList.contains((GalaxyFileModel) raw.getData())) {
                 raw.addStyleName("selectedraw");
             } else {
                 raw.removeStyleName("selectedraw");
@@ -986,7 +962,7 @@ public class WorkFlowDataInputLayout extends Panel {
         Iterator<Component> itr = mzMLDataListLayout.iterator();
         while (itr.hasNext()) {
             HorizontalLayout raw = (HorizontalLayout) itr.next();
-            if (_mzMLFileList.contains(raw.getId() + "")) {
+            if (_mzMLFileList.contains((GalaxyFileModel) raw.getData())) {
                 raw.addStyleName("selectedraw");
             } else {
                 raw.removeStyleName("selectedraw");
@@ -999,7 +975,7 @@ public class WorkFlowDataInputLayout extends Panel {
         Iterator<Component> itr = rawDataListLayout.iterator();
         while (itr.hasNext()) {
             HorizontalLayout raw = (HorizontalLayout) itr.next();
-            if (_rawFileList.contains(raw.getId() + "")) {
+            if (_rawFileList.contains((GalaxyFileModel) raw.getData())) {
                 raw.addStyleName("selectedraw");
             } else {
                 raw.removeStyleName("selectedraw");
@@ -1029,7 +1005,7 @@ public class WorkFlowDataInputLayout extends Panel {
             _projectNameField.addStyleName("errorstyle");
             Notification.show("Please use alphabets, numbers, '-' and '_' only ", Notification.Type.TRAY_NOTIFICATION);
         }
-        if (valid && datasetNames.contains(_projectNameField.getValue().trim().toLowerCase())) {
+        if (appManagmentBean.getUserHandler().getDatasetNames().contains(_projectNameField.getValue().trim().toLowerCase()) && valid) {
             valid = false;
             _projectNameField.addStyleName("errorstyle");
             Notification.show("Dataset name exist, please use different name", Notification.Type.TRAY_NOTIFICATION);

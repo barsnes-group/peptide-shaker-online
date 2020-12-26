@@ -5,6 +5,8 @@
  */
 package com.uib.web.peptideshaker.listeners;
 
+import com.uib.web.peptideshaker.AppManagmentBean;
+import com.uib.web.peptideshaker.model.CONSTANT;
 import com.vaadin.server.ServiceException;
 import com.vaadin.server.SessionDestroyEvent;
 import com.vaadin.server.SessionDestroyListener;
@@ -23,7 +25,7 @@ public class VaadinSessionControlListener {
 
         @Override
         public void sessionInit(SessionInitEvent event) throws ServiceException {
-                incSessionCounter();
+            incSessionCounter();
         }
     }
 
@@ -31,8 +33,13 @@ public class VaadinSessionControlListener {
 
         @Override
         public void sessionDestroy(SessionDestroyEvent event) {
-            System.out.println("at seesion control to distroy");
-                decSessionCounter();
+            AppManagmentBean appManagmentBean = (AppManagmentBean) event.getSession().getAttribute(CONSTANT.APP_MANAGMENT_BEAN); 
+            
+            appManagmentBean.getUserHandler().clearHistory();
+            System.out.println("at session control to distroy " + appManagmentBean);
+          
+            appManagmentBean.reset();
+            decSessionCounter();
         }
     }
 

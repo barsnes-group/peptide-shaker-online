@@ -27,8 +27,10 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.UI;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class represents the data view layout (equal to history in galaxy) the
@@ -140,12 +142,11 @@ public class FilesTablePanel extends Panel {
         datasetLabelSet.clear();
         topDataTable.removeAllComponents();
         bottomDataTable.removeAllComponents();
-        Map<String, VisualizationDatasetModel> datasetMap = appManagmentBean.getUserHandler().getDatasetMap();
-        List<GalaxyFileModel> filesMap = appManagmentBean.getUserHandler().getFilesToViewList();
-        System.out.println("at file to view " + filesMap.size());
+        Set<VisualizationDatasetModel> datasetSet = appManagmentBean.getUserHandler().getDatasetSet();
+        Set<GalaxyFileModel> filesMap = appManagmentBean.getUserHandler().getFilesToViewList();
         int i = 1;
         int ii = 1;
-        for (VisualizationDatasetModel dataset : datasetMap.values()) {
+        for (VisualizationDatasetModel dataset : datasetSet) {
 
             StatusLabel statusLabel = new StatusLabel();
             statusLabel.setStatus(dataset.getStatus());
@@ -162,7 +163,7 @@ public class FilesTablePanel extends Panel {
             ActionLabel deleteLabel = new ActionLabel(VaadinIcons.TRASH, "Delete Dataset") {
                 @Override
                 public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                    appManagmentBean.getNotificationFacade().confirmAlertNotification(VaadinIcons.TRASH.getHtml()+" Are you sure you want to delete the dataset?", (Button.ClickEvent event1) -> {
+                    appManagmentBean.getNotificationFacade().confirmAlertNotification(VaadinIcons.TRASH.getHtml() + " Are you sure you want to delete the dataset?", (Button.ClickEvent event1) -> {
                         appManagmentBean.getUserHandler().deleteDataset(dataset);
                     });
                 }
@@ -180,7 +181,6 @@ public class FilesTablePanel extends Panel {
                 nameLabel.addStyleName("bluecolor");
                 nameLabel.addStyleName("orangecolor");
                 datasetLabelSet.put(dataset.getId(), (ActionLabel) nameLabel);
-//
                 PopupWindow infoLabel = new PopupWindow("   ") {
                     @Override
                     public void onClosePopup() {
@@ -191,10 +191,10 @@ public class FilesTablePanel extends Panel {
                 labelContainer.addStyleName("maxwidth90per");
                 labelContainer.setWidthUndefined();
                 labelContainer.setHeight(260, Unit.PIXELS);
-                Label l = new Label("<h1>Uploaded Project</h1><p>Project:      " + dataset.getName() + "</p><p>Upload time: " + dataset.getCreatedTime() + "</p><p>FASTA:       " + dataset.getFastaFileName() + "</p><p>Proteins:    " + dataset.getProteinFileName() + "</p><p>Peptides:    " + dataset.getPeptideFileName() + "</p>", ContentMode.HTML);
-                l.setSizeFull();
-                l.setStyleName("uploadeddsinfo");
-                labelContainer.addComponent(l);
+                Label datasetoverviewLabel = new Label("<h1>Uploaded Project</h1><p>Project:      " + dataset.getName() + "</p><p>Upload time: " + dataset.getCreatedTime() + "</p><p>FASTA:       " + dataset.getFastaFileName() + "</p><p>Proteins:    " + dataset.getProteinFileName() + "</p><p>Peptides:    " + dataset.getPeptideFileName() + "</p>", ContentMode.HTML);
+                datasetoverviewLabel.setSizeFull();
+                datasetoverviewLabel.setStyleName("uploadeddsinfo");
+                labelContainer.addComponent(datasetoverviewLabel);
                 infoLabel.addStyleName("centeredicon");
                 infoLabel.setContent(labelContainer);
                 infoLabel.setDescription("View search settings ");
@@ -252,8 +252,8 @@ public class FilesTablePanel extends Panel {
                 if (statusLabel.getStatus().equals(CONSTANT.ERROR)) {
                     statusLabel.setStatus("Some files are missings or corrupted please re-run SearchGUI-PeptideShaker-WorkFlow");
                 }//
-                String link =  dataset.getSharingLink();
-              
+                String link = dataset.getSharingLink();
+
                 ClipboardComponent shareLabel = new ClipboardComponent(link);
                 shareLabel.setEnabled(!dataset.isUploadedDataset());
                 infoLabel.addStyleName("centeredicon");
@@ -267,6 +267,18 @@ public class FilesTablePanel extends Panel {
                 type.setStyleName("smalliconlabel");
                 HorizontalLayout rowLayout = initializeRowData(new Component[]{new Label(i + ""), nameLabel, type, infoLabel, shareLabel, downloadLabel, deleteLabel, statusLabel}, false);
                 topDataTable.addComponent(rowLayout);
+                if (statusLabel.getStatus().equals(CONSTANT.ERROR_STATUS)) {
+                    rowLayout.setEnabled(false);
+                } else if (statusLabel.getStatus().equals(CONSTANT.RUNNING_STATUS)) {
+                    rowLayout.getComponent(0).setReadOnly(true);
+                    rowLayout.getComponent(1).setReadOnly(true);
+                    rowLayout.getComponent(2).setReadOnly(true);
+                    rowLayout.getComponent(3).setEnabled(false);
+                    rowLayout.getComponent(4).setEnabled(false);
+                    rowLayout.getComponent(5).setEnabled(false);
+                    rowLayout.getComponent(6).setEnabled(false);
+                    rowLayout.getComponent(7).setEnabled(true);
+                }
             }
             i++;
         }
@@ -283,7 +295,7 @@ public class FilesTablePanel extends Panel {
             ActionLabel deleteLabel = new ActionLabel(VaadinIcons.TRASH, "Delete File") {
                 @Override
                 public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                    appManagmentBean.getNotificationFacade().confirmAlertNotification(VaadinIcons.TRASH.getHtml()+" Are you sure you want to delete the file?", (Button.ClickEvent event1) -> {
+                    appManagmentBean.getNotificationFacade().confirmAlertNotification(VaadinIcons.TRASH.getHtml() + " Are you sure you want to delete the file?", (Button.ClickEvent event1) -> {
                         appManagmentBean.getUserHandler().deleteFile(file);
                     });
                 }

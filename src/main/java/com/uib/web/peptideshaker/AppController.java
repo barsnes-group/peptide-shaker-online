@@ -20,7 +20,7 @@ import java.util.concurrent.Future;
 /**
  * This class represents the main landing Online PeptideShaker application
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class AppController {
 

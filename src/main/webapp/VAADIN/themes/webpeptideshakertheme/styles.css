@@ -13764,7 +13764,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .selectedbiglbtn {
-	border: 1px solid orange;
+	border: 1px solid #88bfff;
 	border-right-color: white;
 	border-radius: 5px;
 	border-top-right-radius: 0px !important;
@@ -22315,6 +22315,37 @@ div.v-layout.v-horizontal.v-widget {
 	position: absolute;
 }
 
-.v-slot-hidetextonmobilemode{
-	max-height:10px
+.webpeptideshakertheme .v-slot-hidetextonmobilemode {
+	max-height: 10px;
+}
+
+.webpeptideshakertheme .ongoingjob .glubimg.bigmenubtn .v-slot, .webpeptideshakertheme .ongoingjob .glubimg.dataoverviewsmallbtn .v-absolutelayout-wrapper {
+	background-image: url(img/globeearthanimation.gif) !important;
+	background-size: 70%;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.webpeptideshakertheme .ongoingjob .glubimg img {
+	opacity: 0;
+}
+
+.webpeptideshakertheme .ongoingjob .btnwithtext.glubimg .v-align-center {
+	background-image: url(img/globeearthanimation.gif) !important;
+	background-size: 70%;
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 70px !important;
+	height: 70px !important;
+	border: 1px solid;
+	border-radius: 5px;
+	background-color: whitesmoke;
+}
+
+.webpeptideshakertheme .v-readonly div {
+	cursor: default !important;
+}
+
+.webpeptideshakertheme .workflowstyle .v-absolutelayout-searchguiicon, .webpeptideshakertheme .filesystemstyle .v-absolutelayout-dataoverviewsmallbtn, .webpeptideshakertheme .resultsviewstyle .v-absolutelayout-resultsmallbtn {
+	border-color: orange !important;
 }

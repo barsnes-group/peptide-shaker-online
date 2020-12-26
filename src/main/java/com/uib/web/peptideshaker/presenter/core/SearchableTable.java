@@ -1,6 +1,6 @@
 package com.uib.web.peptideshaker.presenter.core;
 
-import com.uib.web.peptideshaker.presenter.core.form.HorizontalLabelTextField;
+import com.uib.web.peptideshaker.ui.components.items.HorizontalLabelTextField;
 import com.vaadin.addon.tableexport.ExcelExport;
 import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;

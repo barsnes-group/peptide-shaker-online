@@ -6,7 +6,7 @@ import com.google.common.collect.Sets;
 import com.uib.web.peptideshaker.model.core.ModificationMatrix;
 import com.uib.web.peptideshaker.presenter.core.HBarWithLabel;
 import com.uib.web.peptideshaker.presenter.core.filtercharts.components.SelectableNode;
-import com.uib.web.peptideshaker.presenter.core.form.SparkLine;
+import com.uib.web.peptideshaker.ui.components.items.SparkLine;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.AbsoluteLayout;

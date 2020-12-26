@@ -1,26 +1,15 @@
 package com.uib.web.peptideshaker.facades;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uib.web.peptideshaker.AppManagmentBean;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.GalaxyCollectionModel;
 import com.uib.web.peptideshaker.model.GalaxyFileModel;
 import com.uib.web.peptideshaker.model.GalaxyJobModel;
-import com.uib.web.peptideshaker.model.VisualizationDatasetModel;
 import com.vaadin.server.VaadinSession;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,9 +17,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.HttpStatus;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 
 /**
  * This class responsible for interaction with Galaxy server
@@ -40,7 +29,7 @@ import org.apache.commons.httpclient.HttpStatus;
 public class GalaxyFacade implements Serializable {
 
     private final AppManagmentBean appManagmentBean;
-    private final DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.ss");
+
     private final Map<String, GalaxyJobModel> galaxyJobs;
 
     public GalaxyFacade() {
@@ -63,10 +52,15 @@ public class GalaxyFacade implements Serializable {
 
         Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/histories/?key=" + userAPIKey);
         Set<String> historyNames = new HashSet<>();
+        String mainHistoryId = "";
         if (response.getStatus() == HttpStatus.SC_OK) {
             JsonArray jsonArray = new JsonArray(response.readEntity(String.class));
             for (int i = 0; i < jsonArray.size(); i++) {
                 historyNames.add(jsonArray.getJsonObject(i).getString(CONSTANT.NAME));
+                if (jsonArray.getJsonObject(i).getString(CONSTANT.NAME).equals(CONSTANT.WEB_PEPTEDSHAKER_FUNCTIONAL_HISTORY)) {
+                    mainHistoryId = jsonArray.getJsonObject(i).getString(CONSTANT.ID);
+                }
+
             }
             if (!historyNames.contains(CONSTANT.WEB_PEPTEDSHAKER_FUNCTIONAL_HISTORY)) {
                 JsonObject body = new JsonObject();
@@ -75,8 +69,10 @@ public class GalaxyFacade implements Serializable {
                 if (response.getStatus() != HttpStatus.SC_OK) {
                     System.out.println("Error: history is not created");
                 }
+                mainHistoryId = new JsonObject(response.readEntity(String.class)).getString(CONSTANT.ID);
 
             }
+            appManagmentBean.getAppConfig().setMainGalaxyHistoryId(mainHistoryId);
         }
     }
 
@@ -93,47 +89,61 @@ public class GalaxyFacade implements Serializable {
 
     public Object[] getUserData(String userAPIKey) {
         List<GalaxyCollectionModel> collectionList = new ArrayList<>();
-        Map<String, GalaxyFileModel> filesMap = new TreeMap<>();
-        Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/datasets/?key=" + userAPIKey);
-        if (response.getStatus() == HttpStatus.SC_OK) {
-            JsonArray jsonArray = new JsonArray(response.readEntity(String.class));
-            for (int i = 0; i < jsonArray.size(); i++) {
-                JsonObject dataset = jsonArray.getJsonObject(i);
-                if (dataset.getString(CONSTANT.TYPE).equals(CONSTANT.GALAXY_COLLECTION)) {
-                    if (dataset.getBoolean(CONSTANT.DELETED)) {
-                        continue;
-                    }
-                    GalaxyCollectionModel collection = new GalaxyCollectionModel();
-                    collection.setName(dataset.getString(CONSTANT.NAME));
-                    collection.setId(dataset.getString(CONSTANT.ID));
-                    collection.setHistoryId(dataset.getString(CONSTANT.HISTORY_ID));
-                    collection.setGalaxyJobId(dataset.getString(CONSTANT.JOB_SOURCE_ID));
-                    collection.setUrl(appManagmentBean.getAppConfig().getGalaxyServerUrl() + dataset.getString(CONSTANT.URL));
-                    try {
-                        collection.setCreatedDate(format.parse(dataset.getString(CONSTANT.CREATE_TIME)));
-                    } catch (ParseException ex) {
-                        System.out.println("Error : GalaxyFacad - " + ex);
-                    }
-                    collectionList.add(collection);
-                } else {
-                    if (dataset.getBoolean(CONSTANT.DELETED) || dataset.getBoolean(CONSTANT.PURGED) || dataset.getString(CONSTANT.STATE).equals(CONSTANT.ERROR)) {      
+        Map<String, GalaxyFileModel> filesMap = new LinkedHashMap<>();
+        Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/histories?key=" + userAPIKey + "&q=deleted&q=purged&qv=False&qv=False");
+        if (response.getStatus() != HttpStatus.SC_OK) {
+            appManagmentBean.getNotificationFacade().showErrorNotification("Error connecting to galaxy server");
+            return null;
+        }
+        JsonArray histories = new JsonArray(response.readEntity(String.class));
+        for (int i = 0; i < histories.size(); i++) {
+            response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/histories/" + histories.getJsonObject(i).getString(CONSTANT.ID) + "/contents?key=" + userAPIKey + "&order=hid&v=dev&q=deleted&q=purged&&qv=False&qv=False");
+            if (response.getStatus() == HttpStatus.SC_OK) {
+                JsonArray jsonArray = new JsonArray(response.readEntity(String.class));
+                for (int x = 0; x < jsonArray.size(); x++) {
+                    JsonObject dataset = jsonArray.getJsonObject(x);
+                    if (dataset.getString(CONSTANT.TYPE).equals(CONSTANT.GALAXY_COLLECTION)) {
+                        if (dataset.getBoolean(CONSTANT.DELETED)) {
+                            continue;
+                        }
+                        GalaxyCollectionModel collection = new GalaxyCollectionModel();
+                        collection.setName(dataset.getString(CONSTANT.NAME));
+                        collection.setId(dataset.getString(CONSTANT.ID));
+                        collection.setHistoryId(dataset.getString(CONSTANT.HISTORY_ID));
+                        collection.setGalaxyJobId(dataset.getString(CONSTANT.JOB_SOURCE_ID));
+                        collection.setUrl(appManagmentBean.getAppConfig().getGalaxyServerUrl() + dataset.getString(CONSTANT.URL));
+                        try {
+                            collection.setCreatedDate(appManagmentBean.getCoreUtils().getDateFormater().parse(dataset.getString(CONSTANT.CREATE_TIME)));
+                        } catch (ParseException ex) {
+                            System.out.println("Error : GalaxyFacad - " + ex);
+                        }
+                        collectionList.add(collection);
+                    } else {
+                        if (dataset.getBoolean(CONSTANT.DELETED) || dataset.getBoolean(CONSTANT.PURGED) || dataset.getString(CONSTANT.STATE).equals(CONSTANT.ERROR)) {
                             continue;
                         }
                         GalaxyFileModel file = new GalaxyFileModel();
                         file.setDeleted(dataset.getBoolean(CONSTANT.DELETED));
                         file.setName(dataset.getString(CONSTANT.NAME));
                         file.setId(dataset.getString(CONSTANT.ID));
+                        file.setVisible(dataset.getBoolean(CONSTANT.VISIBLE));
                         file.setHistoryId(dataset.getString(CONSTANT.HISTORY_ID));
                         String stat = dataset.getString(CONSTANT.STATE);
-                        if (stat.equals(CONSTANT.OK_STATUS)) {
-                            file.setStatus(CONSTANT.OK_STATUS);
-                        } else if (stat.equals("new") || stat.equals("running") || stat.equals("queued")) {
-                            file.setStatus(CONSTANT.RUNNING_STATUS);
-                        } else {
-                            file.setStatus(CONSTANT.ERROR_STATUS);
+                        switch (stat) {
+                            case CONSTANT.OK_STATUS:
+                                file.setStatus(CONSTANT.OK_STATUS);
+                                break;
+                            case "new":
+                            case "running":
+                            case "queued":
+                                file.setStatus(CONSTANT.RUNNING_STATUS);
+                                break;
+                            default:
+                                file.setStatus(CONSTANT.ERROR_STATUS);
+                                break;
                         }
                         try {
-                            file.setCreatedDate(format.parse(dataset.getString(CONSTANT.CREATE_TIME)));
+                            file.setCreatedDate(appManagmentBean.getCoreUtils().getDateFormater().parse(dataset.getString(CONSTANT.CREATE_TIME)));
                         } catch (ParseException ex) {
                             System.out.println("Error : GalaxyFacad - " + ex);
                         }
@@ -144,29 +154,28 @@ public class GalaxyFacade implements Serializable {
 
                 }
             }
-            filesMap.values().forEach((file) -> {
-                fillFileDetails(file, userAPIKey);
-                if (galaxyJobs.containsKey(file.getGalaxyJobId()) && galaxyJobs.get(file.getGalaxyJobId()) == null) {
-                    GalaxyJobModel jobModel = fillJobDetails(file.getGalaxyJobId(), userAPIKey);
-                    galaxyJobs.replace(file.getGalaxyJobId(), jobModel);
-                }
-                file.setGalaxyJob(galaxyJobs.get(file.getGalaxyJobId()));
-            });
-            collectionList.forEach((collection) -> {
-                populateCollections(collection, userAPIKey, filesMap);
-                if (galaxyJobs.containsKey(collection.getGalaxyJobId()) && galaxyJobs.get(collection.getGalaxyJobId()) == null) {
-                    GalaxyJobModel jobModel = fillJobDetails(collection.getGalaxyJobId(), userAPIKey);
-                    galaxyJobs.replace(collection.getGalaxyJobId(), jobModel);
-                } else if (!galaxyJobs.containsKey(collection.getGalaxyJobId())) {
-                    GalaxyJobModel jobModel = fillJobDetails(collection.getGalaxyJobId(), userAPIKey);
-                    galaxyJobs.put(collection.getGalaxyJobId(), jobModel);
-                }
-                collection.setGalaxyJob(galaxyJobs.get(collection.getGalaxyJobId()));
-            });
-            return new Object[]{collectionList, filesMap};
         }
-
-    
+        filesMap.values().forEach((file) -> {
+            fillFileDetails(file, userAPIKey);
+            if (galaxyJobs.containsKey(file.getGalaxyJobId()) && galaxyJobs.get(file.getGalaxyJobId()) == null) {
+                GalaxyJobModel jobModel = fillJobDetails(file.getGalaxyJobId(), userAPIKey);
+                galaxyJobs.replace(file.getGalaxyJobId(), jobModel);
+            }
+            file.setGalaxyJob(galaxyJobs.get(file.getGalaxyJobId()));
+        });
+        collectionList.forEach((collection) -> {
+            populateCollections(collection, userAPIKey, filesMap);
+            if (galaxyJobs.containsKey(collection.getGalaxyJobId()) && galaxyJobs.get(collection.getGalaxyJobId()) == null) {
+                GalaxyJobModel jobModel = fillJobDetails(collection.getGalaxyJobId(), userAPIKey);
+                galaxyJobs.replace(collection.getGalaxyJobId(), jobModel);
+            } else if (!galaxyJobs.containsKey(collection.getGalaxyJobId())) {
+                GalaxyJobModel jobModel = fillJobDetails(collection.getGalaxyJobId(), userAPIKey);
+                galaxyJobs.put(collection.getGalaxyJobId(), jobModel);
+            }
+            collection.setGalaxyJob(galaxyJobs.get(collection.getGalaxyJobId()));
+        });
+        return new Object[]{collectionList, filesMap};
+    }
 
     private void fillFileDetails(GalaxyFileModel file, String userAPIKey) {
         Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/datasets/" + file.getId() + "?key=" + userAPIKey);
@@ -246,7 +255,7 @@ public class GalaxyFacade implements Serializable {
         Response response = appManagmentBean.getHttpClientUtil().doPut(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/histories/" + collection.getHistoryId() + "/contents/dataset_collections/" + collection.getId() + "?key=" + userAPIKey, body);
         if (response.getStatus() != HttpStatus.SC_OK) {
             success = false;
-        };
+        }
         return success;
     }
 
@@ -258,5 +267,55 @@ public class GalaxyFacade implements Serializable {
         Response response = appManagmentBean.getHttpClientUtil().doPut(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/histories/" + file.getHistoryId() + "/contents/datasets/" + file.getId() + "?key=" + userAPIKey, body);
         return (response.getStatus() == HttpStatus.SC_OK);
 
+    }
+
+    public Response uploadFile(FormDataMultiPart multipart) {
+        return appManagmentBean.getHttpClientUtil().doUploadPost(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/tools/?key=" + appManagmentBean.getUserHandler().getLoggedinUserAPIKey(), multipart);
+
+    }
+
+    public Response uploadWorkFlow(JsonObject body) {
+        return appManagmentBean.getHttpClientUtil().doPost(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/workflows/?key=" + appManagmentBean.getUserHandler().getLoggedinUserAPIKey(), body);
+
+    }
+
+    public Response deleteWorkFlow(String workflowid) {
+        return appManagmentBean.getHttpClientUtil().doDelete(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/workflows/" + workflowid + "?key=" + appManagmentBean.getUserHandler().getLoggedinUserAPIKey());
+
+    }
+
+    public Response buildList(JsonObject body) {
+        return appManagmentBean.getHttpClientUtil().doPost(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/tools/?key=" + appManagmentBean.getUserHandler().getLoggedinUserAPIKey(), body);
+
+    }
+
+    public Response invokeWorkFlow(String workflowId, JsonObject body) {
+        return appManagmentBean.getHttpClientUtil().doPost(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/workflows/" + workflowId + "/invocations?key=" + appManagmentBean.getUserHandler().getLoggedinUserAPIKey(), body);
+
+    }
+
+    public boolean isHistoryBusy(String userAPIKey) {
+        Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/histories?key=" + userAPIKey);
+        if (response.getStatus() != HttpStatus.SC_OK) {
+            appManagmentBean.getNotificationFacade().showErrorNotification("Error connecting to galaxy server");
+            return false;
+        }
+        JsonArray histories = new JsonArray(response.readEntity(String.class));
+        for (int i = 0; i < histories.size(); i++) {
+            response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/histories/" + histories.getJsonObject(i).getString(CONSTANT.ID) + "?key=" + userAPIKey);
+            if (response.getStatus() != HttpStatus.SC_OK) {
+                appManagmentBean.getNotificationFacade().showErrorNotification("Error connecting to galaxy server");
+                return false;
+            }
+            JsonObject history = new JsonObject(response.readEntity(String.class));
+//            JsonObject stateDetails = history.getJsonObject("state_details");
+//            System.out.println("at state "+history.getString(CONSTANT.STATE)+"  - state details"+stateDetails );            
+            if (!history.getString(CONSTANT.STATE).equals(CONSTANT.OK_STATUS)&&!(history.getString(CONSTANT.STATE).equals(CONSTANT.NEW_STATUS)&&history.getLong(CONSTANT.SIZE)==0)) {
+                System.out.println("at history stat"+history.getString(CONSTANT.STATE));
+                return true;
+            }
+
+        }
+        return false;
     }
 }

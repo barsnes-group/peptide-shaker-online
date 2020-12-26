@@ -1,6 +1,7 @@
 package com.uib.web.peptideshaker.model;
 
 import com.compomics.util.parameters.identification.IdentificationParameters;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  *
  * @author Yehia Mokhtar Farag
  */
-public class VisualizationDatasetModel implements Comparable<VisualizationDatasetModel> {
+public class VisualizationDatasetModel implements Comparable<VisualizationDatasetModel>,Serializable {
 
     @Override
     public int compareTo(VisualizationDatasetModel o) {
@@ -51,6 +52,11 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
     private String proteinFileName;
     private String peptideFileName;
     private boolean uploadedDataset;
+    private String status;
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public boolean isUploadedDataset() {
         return uploadedDataset;
@@ -148,7 +154,11 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
 
     public void setPsZipFile(GalaxyFileModel psZipFile) {
         this.psZipFile = psZipFile;
-        this.id = psZipFile.getId();
+        this.setId(psZipFile.getId());
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setSearchGUIZipFile(GalaxyFileModel searchGUIZipFile) {
@@ -185,6 +195,9 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
     }
 
     public String getStatus() {
+        if (status != null) {
+            return status;
+        }
         if (searchGUIZipFile == null) {
             return CONSTANT.ERROR_STATUS;
         }

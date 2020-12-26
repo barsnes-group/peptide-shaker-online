@@ -7,7 +7,6 @@ import com.uib.web.peptideshaker.ui.components.FilesTablePanel;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.*;
 
-
 /**
  * This class represent PeptideShaker view presenter which is responsible for
  * viewing the PeptideShaker results on web
@@ -15,7 +14,7 @@ import com.vaadin.ui.*;
  * @author Yehia Mokhtar Farag
  */
 public class FileSystemView extends AbsoluteLayout implements ViewableFrame {
- 
+
     private VerticalLayout leftSideButtonsContainer;
     /**
      * Main layout that contains the files and datasets table.
@@ -47,8 +46,8 @@ public class FileSystemView extends AbsoluteLayout implements ViewableFrame {
         leftSideButtonsContainer.setHeightUndefined();
         leftSideButtonsContainer.setSpacing(true);
         leftSideButtonsContainer.addStyleName("singlebtn");
-        this.addComponent(leftSideButtonsContainer,"top:120px;left:3px");
-        
+        this.addComponent(leftSideButtonsContainer, "top:120px;left:3px");
+
         viewDataBtn = new SubViewSideBtn("Data Overview", 1);
         viewDataBtn.setDescription("Available datasets and files");
         viewDataBtn.updateIconByResource(new ThemeResource("img/globeearthanimation.png"));
@@ -57,19 +56,18 @@ public class FileSystemView extends AbsoluteLayout implements ViewableFrame {
         viewDataBtn.setData("datasetoverview");
         leftSideButtonsContainer.addComponent(viewDataBtn);
         leftSideButtonsContainer.setComponentAlignment(viewDataBtn, Alignment.TOP_CENTER);
-        
 
         VerticalLayout dataContainerLayout = initDataViewTableLayout();
         AbsoluteLayout dataViewFrame = new AbsoluteLayout();
         dataViewFrame.setSizeFull();
         dataViewFrame.setStyleName("integratedframe");
 
-        this.addComponent(dataViewFrame,"left:100px");
+        this.addComponent(dataViewFrame, "left:100px");
         AbsoluteLayout dataViewFrameContent = new AbsoluteLayout();
         dataViewFrameContent.addStyleName("viewframecontent");
         dataViewFrameContent.setSizeFull();
 
-        dataViewFrame.addComponent(dataViewFrameContent,"left:10px;right:10px;top:10px;bottom:10px;");
+        dataViewFrame.addComponent(dataViewFrameContent, "left:10px;right:10px;top:10px;bottom:10px;");
 
         Label titleLabel = new Label("Projects Overview");
         titleLabel.setStyleName("frametitle");
@@ -110,6 +108,7 @@ public class FileSystemView extends AbsoluteLayout implements ViewableFrame {
     public boolean isJobInProgress() {
         return jobInProgress;
     }
+
     /**
      * Get the current view ID
      *
@@ -143,7 +142,15 @@ public class FileSystemView extends AbsoluteLayout implements ViewableFrame {
 
     @Override
     public void update() {
-        filesTablePanel.updateDatasetsTable();
-        filesTablePanel.updateViewDataset();
+        UI.getCurrent().accessSynchronously(new Runnable() {
+            @Override
+            public void run() {              
+                filesTablePanel.updateDatasetsTable(); 
+                filesTablePanel.markAsDirty();
+                filesTablePanel.updateViewDataset();
+                UI.getCurrent().push();
+            }
+        });
+
     }
 }

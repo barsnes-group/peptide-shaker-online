@@ -22,6 +22,15 @@ public class GalaxyFileModel implements Serializable, Comparable<GalaxyFileModel
     private String status;
     private String fileOverview;
     private boolean deleted;
+    private boolean visible;
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
 
     public boolean isDeleted() {
         return deleted;

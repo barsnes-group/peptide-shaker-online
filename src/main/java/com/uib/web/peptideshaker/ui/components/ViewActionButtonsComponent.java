@@ -77,27 +77,9 @@ public class ViewActionButtonsComponent extends AbsoluteLayout implements Layout
     @Override
     public void layoutClick(LayoutEvents.LayoutClickEvent event) {
         String buttonId = ((SmallSideBtn) event.getComponent()).getData() + "";
-        if (appManagmentBean == null) {
+         if (appManagmentBean == null) {
             this.appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
-            appManagmentBean.getUI_Manager().setViewActionButtonComponent(ViewActionButtonsComponent.this);
         }
-
         appManagmentBean.getUI_Manager().viewLayout(buttonId);
     }
-
-    public void viewLayout(String viewId) {
-        if (appManagmentBean == null) {
-            this.appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
-            appManagmentBean.getUI_Manager().setViewActionButtonComponent(ViewActionButtonsComponent.this);
-        }
-        if (buttonsMap.containsKey(viewId)) {
-            for (SmallSideBtn btn : buttonsMap.values()) {
-                btn.setSelected(false);
-            }
-        }
-        buttonsMap.get(viewId).setSelected(true);
-        this.setVisible(!viewId.equals(WelcomePageView.class.getName()));
-
-    }
-
 }

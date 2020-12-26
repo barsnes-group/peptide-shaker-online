@@ -4,6 +4,7 @@ import io.vertx.core.json.JsonObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,6 +21,8 @@ import org.glassfish.jersey.client.ClientProperties;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 /**
  * This class responsible for handling http-client calls
@@ -40,7 +43,7 @@ public class HttpClientUtils implements Serializable {
             ClientConfig config = new ClientConfig();
             config.property(ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT);
             config.property(ClientProperties.READ_TIMEOUT, READ_TIMEOUT);
-            client = ClientBuilder.newClient(config);
+            client = ClientBuilder.newClient(config).register(MultiPartFeature.class);
         }
         return client;
 
@@ -58,10 +61,21 @@ public class HttpClientUtils implements Serializable {
 
     }
 
+    public Response doDelete(String uri) {
+        return getClient().target(uri)
+                .request(MediaType.APPLICATION_JSON).delete();
+
+    }
+
     public Response doPost(String uri, JsonObject body) {
         return getClient().target(uri)
                 .request(MediaType.APPLICATION_JSON).post(Entity.json(body.encode()));
 
+    }
+
+    public Response doUploadPost(String uri, FormDataMultiPart multipart) {
+
+        return getClient().target(uri).request().post(Entity.entity(multipart, MediaType.MULTIPART_FORM_DATA));
     }
 
 //    public File downloadFile(String uri){}
@@ -92,14 +106,62 @@ public class HttpClientUtils implements Serializable {
                 counter++;
             }
         } catch (MalformedURLException ex) {
-            System.err.println("Error : HttpClientUti - " + ex);
+            System.err.println("at Error: " + this.getClass().getName() + " : " + ex);
         } catch (IOException ex) {
-            System.err.println("Error : HttpClientUti - " + ex);
+            System.err.println("at Error: " + this.getClass().getName() + " : " + ex);
         } finally {
             if (fos != null) {
                 try {
                     fos.close();
                 } catch (IOException ex) {
+                    System.err.println("at Error: " + this.getClass().getName() + " : " + ex);
+                }
+            }
+
+        }
+        return file;
+
+    }
+
+    public File downloadFile(String uri, File file) {
+        FileOutputStream fos = null;
+        try {
+
+            URL downloadableFile = new URL(uri);
+            URLConnection conn = downloadableFile.openConnection();
+            conn.addRequestProperty("Accept", "*/*");
+            conn.setDoInput(true);
+            InputStream in = conn.getInputStream();
+            try (ReadableByteChannel rbc = Channels.newChannel(in)) {
+                fos = new FileOutputStream(file);
+                fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+                fos.close();
+                rbc.close();
+                in.close();
+
+            } catch (MalformedURLException ex) {
+                System.err.println("at Error: " + this.getClass().getName() + " : " + ex);
+            } finally {
+                if (fos != null) {
+                    try {
+                        fos.close();
+                    } catch (IOException ex) {
+                        System.err.println("at Error: " + this.getClass().getName() + " : " + ex);
+                    }
+                }
+
+            }
+
+        } catch (MalformedURLException ex) {
+            System.err.println("at Error: " + this.getClass().getName() + " : " + ex);
+        } catch (IOException ex) {
+            System.err.println("at Error: " + this.getClass().getName() + " : " + ex);
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException ex) {
+                    System.err.println("at Error: " + this.getClass().getName() + " : " + ex);
                 }
             }
 

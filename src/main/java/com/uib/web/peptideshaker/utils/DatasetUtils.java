@@ -10,10 +10,9 @@ import com.vaadin.server.VaadinSession;
 import io.vertx.core.json.JsonObject;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 
 /**
@@ -21,7 +20,7 @@ import javax.servlet.ServletContext;
  *
  * @author Yehia Mokhtar Farag
  */
-public class DatasetUtils {
+public class DatasetUtils implements Serializable{
 
     private final AppManagmentBean appManagmentBean;
 
@@ -79,7 +78,7 @@ public class DatasetUtils {
         ServletContext scx = VaadinServlet.getCurrent().getServletContext();
         String appName = scx.getContextPath();
         String encryptedDsIndex = appManagmentBean.getURLUtils().encrypt(dsIndex + "");
-        
+
         try {
             encryptedDsIndex = URLEncoder.encode("datasetid=" + encryptedDsIndex, "UTF-8");
         } catch (UnsupportedEncodingException ex) {
@@ -87,6 +86,15 @@ public class DatasetUtils {
         }
         String encodedLink = Page.getCurrent().getLocation().toString().split(appName)[0] + "/" + appName + "?" + encryptedDsIndex;
         return encodedLink;
+    }
+
+    public VisualizationDatasetModel getOnProgressDataset(String datasetType) {
+        VisualizationDatasetModel dataset = new VisualizationDatasetModel();
+        dataset.setUploadedDataset(false);
+        dataset.setDatasetType(datasetType);
+        dataset.setStatus(CONSTANT.RUNNING_STATUS);
+        dataset.setSharingLink(CONSTANT.RUNNING_STATUS);
+        return dataset;
     }
 
 }

@@ -3,7 +3,7 @@ package com.uib.web.peptideshaker.presenter.core;
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
-import com.uib.web.peptideshaker.presenter.core.form.Horizontal2Label;
+import com.uib.web.peptideshaker.ui.components.items.Horizontal2Label;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;

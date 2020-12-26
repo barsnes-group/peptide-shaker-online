@@ -11,8 +11,6 @@ import com.vaadin.shared.communication.PushMode;
 import com.vaadin.ui.UI;
 import java.io.IOException;
 import java.util.ConcurrentModificationException;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.ServletConfig;
@@ -29,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
  * intended to be overridden to add component to the user interface and
  * initialise non-component functionality.
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 @Push(PushMode.MANUAL)
 @Theme("webpeptideshakertheme")
@@ -37,8 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 public class PeptidShakerEntryPoint extends UI {
 
     private AppController webPeptideShakerApp;
-    private  AppManagmentBean appManagmentBean;
-    
+    private AppManagmentBean appManagmentBean;
 
     /**
      * The entry point for the application .
@@ -47,26 +44,25 @@ public class PeptidShakerEntryPoint extends UI {
      */
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-        ScheduledFuture schedulerFuture = (ScheduledFuture) VaadinSession.getCurrent().getAttribute("schedulerfuture");
-        if (schedulerFuture != null) {
-            schedulerFuture.cancel(true);
-        }
-        ScheduledExecutorService scheduler = (ScheduledExecutorService) VaadinSession.getCurrent().getAttribute("scheduler");
-        if (scheduler != null) {
-            scheduler.shutdown();
+        AppManagmentBean oldManager = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
+        if (oldManager != null) {
+            oldManager.getUserHandler().clearHistory();
+            VaadinSession.getCurrent().close();
+            Page.getCurrent().reload();
+            return;
         }
         appManagmentBean = new AppManagmentBean();
         VaadinSession.getCurrent().setAttribute(CONSTANT.APP_MANAGMENT_BEAN, appManagmentBean);
-        
+
         try {
             UI.getCurrent().getConnectorTracker().cleanConnectorMap();
 
             PeptidShakerEntryPoint.this.addStyleName("uicontainer");
             PeptidShakerEntryPoint.this.setSizeFull();
-            
+
             if (VaadinSessionControlListener.getActiveSessions() < appManagmentBean.getAppConfig().getMaximumAllowedUsers()) {
                 VaadinSession.getCurrent().getSession().setMaxInactiveInterval(60 * 15);
-                
+
                 webPeptideShakerApp = new AppController();
 
                 /**

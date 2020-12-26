@@ -26,7 +26,6 @@ public abstract class PopupWindow extends VerticalLayout implements LayoutEvents
         titleLabel.setStyleName("windowtitle");
         PopupWindow.this.addComponent(titleLabel);
         PopupWindow.this.addLayoutClickListener(PopupWindow.this);
-
         window = new Window() {
             @Override
             public void close() {

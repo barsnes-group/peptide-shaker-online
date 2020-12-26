@@ -1,5 +1,7 @@
 package com.uib.web.peptideshaker.listeners;
 
+import com.uib.web.peptideshaker.AppManagmentBean;
+import com.uib.web.peptideshaker.model.CONSTANT;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
@@ -26,29 +28,13 @@ public class VaadinSessionListener implements HttpSessionListener {
 
     @Override
     public void sessionDestroyed(HttpSessionEvent hse) {
-        try {
-            String userDataFolderUrl = hse.getSession().getAttribute("userDataFolderUrl") + "";
-            File user_folder = new File(userDataFolderUrl);
-            if (user_folder.exists()) {
-                for (File tFile : user_folder.listFiles()) {
-                    deletFile(tFile);
-                }
-            }
-            Files.deleteIfExists(user_folder.toPath());
-            System.out.println("at session is ready to distroy ..Good bye...folder (" + user_folder.getName() + " are cleaned (" + ") and folder exist (" + user_folder.exists() + ")");
-        } catch (IOException ex) {
-            ex.printStackTrace();
+
+        if (VaadinSession.getCurrent() != null) {
+            AppManagmentBean appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
+            appManagmentBean.getUserHandler().clearHistory();
+            appManagmentBean.reset();
+            VaadinSession.getCurrent().close();
         }
-        ScheduledFuture schedulerFuture = (ScheduledFuture) hse.getSession().getAttribute("schedulerfuture");
-        if (schedulerFuture != null) {
-            schedulerFuture.cancel(true);
-        }
-        ScheduledExecutorService scheduler = (ScheduledExecutorService) hse.getSession().getAttribute("scheduler");
-        if (scheduler != null) {
-            scheduler.shutdown();
-            System.out.println("at scheduler shoutdown ");
-        }
-//        VaadinSession.getCurrent().close();
     }
 
     private void deletFile(File file) throws IOException {

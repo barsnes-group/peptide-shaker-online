@@ -18,7 +18,7 @@ import java.util.Set;
  * This class responsible for handling the data on galaxy or on any other
  * resources including the database
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class ModelLayer {
 

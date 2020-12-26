@@ -1,6 +1,7 @@
 package com.uib.web.peptideshaker;
 
 import com.vaadin.server.Page;
+import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
@@ -22,12 +23,36 @@ public class Config implements Serializable {
     private boolean smallDeviceStyle;
     private boolean portraitScreenMode;
     private String testUserAPIKey;
+
+    private String dbURL;
+    private String dbDriver;
+    private String dbUserName;
+    private String dbPassword;
+    private String dbName;
+    private String basePath;
+    private String defaultSearchParamPath;
+    private String mainGalaxyHistoryId;
+    private String quant_workflow_file_path;
+    private String id_workflow_file_path;
     
-    private  String dbURL ;
-    private     String dbDriver ;
-    private     String dbUserName ;
-    private     String dbPassword ;
-    private     String dbName ;
+    private String quant_workflow_invoking_file_path;
+    private String id_workflow_invoking_file_path;
+
+    public String getMainGalaxyHistoryId() {
+        return mainGalaxyHistoryId;
+    }
+
+    public void setMainGalaxyHistoryId(String mainGalaxyHistoryId) {
+        this.mainGalaxyHistoryId = mainGalaxyHistoryId;
+    }
+
+    public String getDefaultSearchParamPath() {
+        return defaultSearchParamPath;
+    }
+
+    public String getBasePath() {
+        return basePath;
+    }
 
     public String getTestUserAPIKey() {
         return testUserAPIKey;
@@ -94,11 +119,17 @@ public class Config implements Serializable {
         testUserAPIKey = (scx.getInitParameter("testUserAPIKey"));
         galaxyServerUrl = (scx.getInitParameter("galaxyServerUrl"));
         String csfprLink = (scx.getInitParameter("csfprservice"));
-         dbURL = (scx.getInitParameter("url"));
-         dbDriver = (scx.getInitParameter("driver"));
-         dbUserName = (scx.getInitParameter("userName"));
-         dbPassword = (scx.getInitParameter("password"));
-         dbName = (scx.getInitParameter("dbName"));
+        dbURL = (scx.getInitParameter("url"));
+        dbDriver = (scx.getInitParameter("driver"));
+        dbUserName = (scx.getInitParameter("userName"));
+        dbPassword = (scx.getInitParameter("password"));
+        dbName = (scx.getInitParameter("dbName"));
+        basePath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
+        defaultSearchParamPath = basePath + "/VAADIN/SEARCHGUI_IdentificationParameters.json";
+        quant_workflow_file_path=basePath +"/VAADIN/Galaxy-Workflow-Full-Pipeline-Workflow-Quant-Multiple-Input.ga";
+        id_workflow_file_path=basePath +"/VAADIN/Galaxy-Workflow-Full-Pipeline-Workflow-Id-Multiple-Input.ga";
+        quant_workflow_invoking_file_path= basePath +"/VAADIN/Multi-Quant-Invoking.json";
+        id_workflow_invoking_file_path= basePath +"/VAADIN/Multi-Id-Invoking.json";
         String appName = (scx.getInitParameter("appName"));
         VaadinSession.getCurrent().setAttribute("appName", appName);
         VaadinSession.getCurrent().setAttribute("csfprLink", csfprLink);
@@ -151,6 +182,22 @@ public class Config implements Serializable {
 
     public String getDbName() {
         return dbName;
+    }
+
+    public String getQuant_workflow_file_path() {
+        return quant_workflow_file_path;
+    }
+
+    public String getId_workflow_file_path() {
+        return id_workflow_file_path;
+    }
+
+    public String getQuant_workflow_invoking_file_path() {
+        return quant_workflow_invoking_file_path;
+    }
+
+    public String getId_workflow_invoking_file_path() {
+        return id_workflow_invoking_file_path;
     }
 
 }

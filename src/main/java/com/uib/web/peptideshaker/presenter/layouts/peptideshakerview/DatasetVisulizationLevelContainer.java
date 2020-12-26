@@ -131,7 +131,8 @@ public class DatasetVisulizationLevelContainer extends HorizontalLayout {
 
         headerLabel.setLabelValue("Dataset: " + peptideShakerVisualizationDataset.getProjectName());
         if (!peptideShakerVisualizationDataset.isUploadedProject() && !peptideShakerVisualizationDataset.isToShareDataset()) {
-            SearchParametersForm dsOverview = new SearchParametersForm((PeptideShakerVisualizationDataset) peptideShakerVisualizationDataset, true) {
+            SearchParametersForm dsOverview = new SearchParametersForm(false) {
+            //((PeptideShakerVisualizationDataset) peptideShakerVisualizationDataset, true) {
                 @Override
                 public void saveSearchingFile(IdentificationParameters searchParameters, boolean isNew) {
 //                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

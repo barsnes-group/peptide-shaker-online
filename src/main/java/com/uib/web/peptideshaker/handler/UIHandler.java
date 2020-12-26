@@ -1,15 +1,15 @@
 package com.uib.web.peptideshaker.handler;
 
 import com.compomics.util.parameters.identification.IdentificationParameters;
+import com.uib.web.peptideshaker.AppManagmentBean;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
+import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.ui.UIContainer;
-import com.uib.web.peptideshaker.uimanager.UIManager;
 import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
-import com.uib.web.peptideshaker.ui.views.FileSystemView;
-import com.uib.web.peptideshaker.ui.views.WelcomePageView;
-import com.vaadin.ui.Label;
+import com.uib.web.peptideshaker.ui.views.WorkflowInvokingView;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 import pl.exsio.plupload.PluploadFile;
 
@@ -30,8 +30,8 @@ public abstract class UIHandler {
      * PeptideShaker visualisation layer - Coordinator to organise the different
      * views (home, analysis, data, or results visualisation).
      */
-    private final UIManager uiManager;
     private final UIContainer uiContainer;
+    private final AppManagmentBean appManagmentBean;
 
     /**
      * Initialise the main presenter components.
@@ -39,17 +39,18 @@ public abstract class UIHandler {
      * @param availableGalaxyServer galaxy server available online
      */
     public UIHandler(boolean availableGalaxyServer) {
+        appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
 
         this.uiContainer = new UIContainer(availableGalaxyServer) {
             @Override
             public void viewLayout(String viewId) {
-                uiManager.viewLayout(viewId);
+//                uiManager.viewLayout(viewId);
             }
 
             @Override
             public void registerView(ViewableFrame view) {
                 UI.getCurrent().access(() -> {
-                    uiManager.registerView(view);
+//                    uiManager.registerView(view);
                 });
 
             }
@@ -93,13 +94,12 @@ public abstract class UIHandler {
 
         };
         UI.getCurrent().setContent(uiContainer);
-        uiManager = new UIManager();
 
-        uiManager.registerView(uiContainer.getWorkflowInvokingView());
-        uiManager.registerView(uiContainer.getWelcomePageView());
+        appManagmentBean.getUI_Manager().registerView(uiContainer.getWorkflowInvokingView());
+        appManagmentBean.getUI_Manager().registerView(uiContainer.getWelcomePageView());
 //        uiManager.viewLayout(WelcomePageView.class.getName());
-        uiManager.registerView(uiContainer.getFileSystemView());
-        uiManager.viewLayout(FileSystemView.class.getName());
+        appManagmentBean.getUI_Manager().registerView(uiContainer.getFileSystemView());
+        appManagmentBean.getUI_Manager().viewLayout(WorkflowInvokingView.class.getName());
 //        uiManager.registerView(uiContainer.getInteractivePSPRojectResultsPresenter());
 //        uiManager.setSideButtonsVisible(true);
 
@@ -230,8 +230,6 @@ public abstract class UIHandler {
      */
     public abstract int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey);
 
-    public void updateAllUI() {
-//    uiManager.
-    }
+
 
 }
