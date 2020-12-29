@@ -22349,3 +22349,6 @@ div.v-layout.v-horizontal.v-widget {
 .webpeptideshakertheme .workflowstyle .v-absolutelayout-searchguiicon, .webpeptideshakertheme .filesystemstyle .v-absolutelayout-dataoverviewsmallbtn, .webpeptideshakertheme .resultsviewstyle .v-absolutelayout-resultsmallbtn {
 	border-color: orange !important;
 }
+.v-readonly .v-icon{
+	color:gray !important;
+}

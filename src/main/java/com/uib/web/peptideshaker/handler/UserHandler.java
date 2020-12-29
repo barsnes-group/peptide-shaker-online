@@ -121,7 +121,7 @@ public class UserHandler implements Serializable {
                                         tempdataset.setDownloadUrl(stepIIFile.getDownloadUrl());
                                         //init search param identification object
                                         tempdataset.setIdentificationParametersObject(appManagmentBean.getDatasetUtils().initIdentificationParametersObject(tempdataset.getId(), tempdataset.getSearchGUIZipFile().getDownloadUrl()));
-                                        //add mgf files and indexes                                
+                                        //add mgf files and indexes 
                                         for (GalaxyCollectionModel collectionModel : collectionList) {
                                             if (collectionModel.getGalaxyJob() != null && collectionModel.getGalaxyJob().getInputFileIds().contains(searchGUIFile.getId())) {
                                                 if (collectionModel.getElementsExtension().equals(CONSTANT.CUI_FILE_EXTENSION)) {
@@ -131,7 +131,7 @@ public class UserHandler implements Serializable {
                                                     });
                                                 }
                                             } else if (collectionModel.getElementsExtension().equals(CONSTANT.TABULAR_FILE_EXTENSION)) {
-                                                collectionModel.getElements().get(0).getGalaxyJob().getInputFileIds().stream().filter((id) -> (tempdataset.getPsZipFile().getGalaxyJob().getOutputFileIds().contains(id))).map((String _item) -> {
+                                                collectionModel.getElements().get(0).getGalaxyJob().getInputFileIds().stream().filter((id) -> (tempdataset.getPsZipFile().getGalaxyJob().getOutputFileIds().contains(id))).map((String _item) -> {              
                                                     if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().equals(CONSTANT.CONVERT_CHARACTERS_TOOL_ID)) {
                                                         tempdataset.setMgfList(collectionModel);
                                                     } else if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().contains(CONSTANT.MOFF_TOOL_ID)) {
@@ -231,7 +231,7 @@ public class UserHandler implements Serializable {
         }
         if (success) {
             appManagmentBean.getNotificationFacade().showInfoNotification("Dataset successfully deleted");
-            this.datasetSet.remove(dataset.getId());
+            this.datasetSet.remove(dataset);
             this.userInformationMap.put(CONSTANT.PS_DATASET_NUMBER, datasetSet.size() + "");
             appManagmentBean.getUI_Manager().updateAll();
         } else {
@@ -307,7 +307,6 @@ public class UserHandler implements Serializable {
 
     private boolean toFollowUpBusyHistory;
     private ScheduledFuture toFollowUpBusyHistoryFuture;
-
     public void forceBusyHistory() {
         toFollowUpBusyHistory = true;
         appManagmentBean.getUI_Manager().setOngoingJob(true);
@@ -317,9 +316,9 @@ public class UserHandler implements Serializable {
                 toFollowUpBusyHistory = false;
             }
             if (!busyHistory && !toFollowUpBusyHistory) {
-                syncAndUpdateUserData();
+                syncAndUpdateUserData();               
+                appManagmentBean.getUI_Manager().updateAll(); 
                 appManagmentBean.getUI_Manager().setOngoingJob(false);
-                appManagmentBean.getUI_Manager().updateAll();
                 toFollowUpBusyHistoryFuture.cancel(true);
                 appManagmentBean.getNotificationFacade().showInfoNotification("Data are ready to visualize!");
             }

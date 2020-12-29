@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author Yehia Mokhtar Farag
  */
-public class VisualizationDatasetModel implements Comparable<VisualizationDatasetModel>,Serializable {
+public class VisualizationDatasetModel implements Comparable<VisualizationDatasetModel>, Serializable {
 
     @Override
     public int compareTo(VisualizationDatasetModel o) {
@@ -175,61 +175,56 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
 
     public void setMoffList(GalaxyCollectionModel moffList) {
         this.moffList = moffList;
-    }
-
-    public void validateDataset() {
-        /**
-         * validate type
-         */
-        if (name.endsWith("(Q)")) {
-            this.setDatasetType("quant");
-        }
-        /**
-         * validate files
-         */
-        if (this.datasetType.equals("quant")) {
-
-        } else {
-
-        }
-    }
+    }  
 
     public String getStatus() {
         if (status != null) {
+            System.out.println("error 0");
             return status;
         }
         if (searchGUIZipFile == null) {
+             System.out.println("error i");
             return CONSTANT.ERROR_STATUS;
         }
         if (psZipFile == null) {
+             System.out.println("error i2");
             return CONSTANT.ERROR_STATUS;
         }
         if (mgfIndexList == null) {
+             System.out.println("error i3");
             return CONSTANT.ERROR_STATUS;
         }
         if (mgfList == null) {
+             System.out.println("error i4");
             return CONSTANT.ERROR_STATUS;
         }
         if (datasetType.equals(CONSTANT.QUANT_DATASET) && moffList == null) {
+             System.out.println("error i6");
             return CONSTANT.ERROR_STATUS;
         }
 
         if (!searchGUIZipFile.getStatus().equals(CONSTANT.OK_STATUS)) {
+             System.out.println("error 7");
             return searchGUIZipFile.getStatus();
         }
         if (!psZipFile.getStatus().equals(CONSTANT.OK_STATUS)) {
+             System.out.println("error 8");
             return psZipFile.getStatus();
         }
         if (mgfIndexList.getElements().isEmpty()) {
+             System.out.println("error 9");
             return CONSTANT.ERROR_STATUS;
         }
         if (mgfList.getElements().isEmpty()) {
+             System.out.println("error i0");
             return CONSTANT.ERROR_STATUS;
         }
         if (datasetType.equals(CONSTANT.QUANT_DATASET) && moffList.getElements().isEmpty()) {
+             System.out.println("error i1");
             return CONSTANT.ERROR_STATUS;
         }
         if (datasetType.equals(CONSTANT.QUANT_DATASET) && !moffList.getElements().get(0).getStatus().equals(CONSTANT.OK_STATUS)) {
+             System.out.println("error i2");
             return moffList.getElements().get(0).getStatus();
         }
         return CONSTANT.OK_STATUS;//statues;

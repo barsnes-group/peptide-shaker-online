@@ -90,6 +90,7 @@ public class GalaxyFacade implements Serializable {
     public Object[] getUserData(String userAPIKey) {
         List<GalaxyCollectionModel> collectionList = new ArrayList<>();
         Map<String, GalaxyFileModel> filesMap = new LinkedHashMap<>();
+        galaxyJobs.clear();
         Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/histories?key=" + userAPIKey + "&q=deleted&q=purged&qv=False&qv=False");
         if (response.getStatus() != HttpStatus.SC_OK) {
             appManagmentBean.getNotificationFacade().showErrorNotification("Error connecting to galaxy server");
@@ -211,6 +212,7 @@ public class GalaxyFacade implements Serializable {
         Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/jobs/" + jobId + "?key=" + userAPIKey);
         GalaxyJobModel jobModel = new GalaxyJobModel();
         if (response.getStatus() == HttpStatus.SC_OK) {
+            
             JsonObject jsonObject = new JsonObject(response.readEntity(String.class));
             jobModel.setId(jobId);
             jobModel.setToolId(jsonObject.getString(CONSTANT.TOOL_ID));
@@ -307,7 +309,7 @@ public class GalaxyFacade implements Serializable {
                 appManagmentBean.getNotificationFacade().showErrorNotification("Error connecting to galaxy server");
                 return false;
             }
-            JsonObject history = new JsonObject(response.readEntity(String.class));        
+            JsonObject history = new JsonObject(response.readEntity(String.class)); 
             if (!history.getString(CONSTANT.STATE).equals(CONSTANT.OK_STATUS)&&!(history.getString(CONSTANT.STATE).equals(CONSTANT.NEW_STATUS)&&history.getLong(CONSTANT.SIZE)==0)) {
                 return true;
             }
