@@ -11,6 +11,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.ws.rs.client.Client;
@@ -21,6 +24,7 @@ import org.glassfish.jersey.client.ClientProperties;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import static org.apache.poi.hssf.usermodel.HeaderFooter.file;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
@@ -78,7 +82,56 @@ public class HttpClientUtils implements Serializable {
         return getClient().target(uri).request().post(Entity.entity(multipart, MediaType.MULTIPART_FORM_DATA));
     }
 
-//    public File downloadFile(String uri){}
+    public void downloadMultipleFilesFromZipFolder(String uri, TreeMap<Integer, File> entryToFilesMap) {
+        FileOutputStream fos = null;
+        try {
+
+            URL downloadableFile = new URL(uri);
+            URLConnection conn = downloadableFile.openConnection();
+            conn.addRequestProperty("Accept", "*/*");
+            conn.setDoInput(true);
+            ZipInputStream Zis = new ZipInputStream(conn.getInputStream());
+            int counter = 0;
+            ZipEntry entry = Zis.getNextEntry();
+            while (entry != null && counter < 10) {                
+             if (entryToFilesMap.containsKey(counter)) {
+                    try (ReadableByteChannel rbc = Channels.newChannel(Zis)) {
+                        fos = new FileOutputStream(entryToFilesMap.get(counter));
+                        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+//                        fos.close();
+//                        rbc.close();
+//                     
+                    } 
+                    System.out.println("at ---> entry --> " + entry.getName() + "  " + counter);
+                    counter++;
+                    
+                }               
+                if (counter > entryToFilesMap.size()) {
+//                    Zis.close();
+//                    fos.close();
+////                    rbc.close();
+//                    break;
+                }
+                entry = Zis.getNextEntry();
+
+            }
+        } catch (MalformedURLException ex) {
+            System.err.println("at Error: " + this.getClass().getName() + " : " + ex);
+        } catch (IOException ex) {
+            System.err.println("at Error: " + this.getClass().getName() + " : " + ex);
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException ex) {
+                    System.err.println("at Error: " + this.getClass().getName() + " : " + ex);
+                }
+            }
+
+        }
+
+    }
+
     public File downloadFileFromZipFolder(String uri, int entryIndex, File file) {
         FileOutputStream fos = null;
         try {
@@ -90,6 +143,7 @@ public class HttpClientUtils implements Serializable {
             ZipInputStream Zis = new ZipInputStream(conn.getInputStream());
             int counter = 0;
             ZipEntry entry = Zis.getNextEntry();
+            
             while (entry != null && counter < 10) {
                 if (entryIndex == counter) {
                     try (ReadableByteChannel rbc = Channels.newChannel(Zis)) {

@@ -1,26 +1,29 @@
-package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components;
+package com.uib.web.peptideshaker.ui.views.subviews.datasetview.components;
 
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.ComponentResizeListener;
 import com.ejt.vaadin.sizereporter.SizeReporter;
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.ProteinGroupObject;
+import com.uib.web.peptideshaker.AppManagmentBean;
+import com.uib.web.peptideshaker.model.ProteinGroupObject;
+import com.uib.web.peptideshaker.model.CONSTANT;
+import com.uib.web.peptideshaker.model.VisualizationDatasetModel;
 import com.uib.web.peptideshaker.model.core.AlphanumComparator;
-import com.uib.web.peptideshaker.model.core.ModificationMatrix;
-import com.uib.web.peptideshaker.presenter.core.*;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.FiltersContainer;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.RegistrableFilter;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.SelectionManager;
+import com.uib.web.peptideshaker.presenter.core.CSFPRLabel;
+import com.uib.web.peptideshaker.ui.components.items.ProteinInferenceColorLabel;
+import com.uib.web.peptideshaker.presenter.core.ColorLabelWithPopupTooltip;
+import com.uib.web.peptideshaker.presenter.core.SearchableTable;
+import com.uib.web.peptideshaker.presenter.core.SparkLineLabel;
+import com.uib.web.peptideshaker.presenter.core.TableColumnHeader;
+import com.uib.web.peptideshaker.presenter.core.ValidationLabel;
+import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
+import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager;
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.event.LayoutEvents;
-import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.*;
-import com.vaadin.ui.themes.ValoTheme;
 
 import java.awt.*;
 import java.text.DecimalFormat;
@@ -31,10 +34,12 @@ import java.util.*;
  *
  * @author Yehia Farag
  */
-public class DatasetVisulizationLevelComponent extends AbsoluteLayout implements RegistrableFilter {
+public class DatasetProteinsSubViewComponent extends AbsoluteLayout implements RegistrableFilter {
+
+    private final AppManagmentBean appManagmentBean;
 
     private final SearchableTable proteinTableContainer;
-    private final FiltersContainer datasetFiltersContainer;
+    private final DatasetFiltersComponent datasetFiltersContainer;
     private final Map<String, Integer> inferenceMap;
     private final LayoutEvents.LayoutClickListener selectionListener;
     private final Map<Integer, Component> filterComponentsMap;
@@ -43,18 +48,19 @@ public class DatasetVisulizationLevelComponent extends AbsoluteLayout implements
     /**
      * The post translational modifications factory.
      */
-    private final ModificationFactory PTM = ModificationFactory.getInstance();
-    private PeptideShakerVisualizationDataset peptideShakerVisualizationDataset;
-    private Map<String, ProteinGroupObject> proteinTableMap;
+//    private final ModificationFactory PTM = ModificationFactory.getInstance();
+    private VisualizationDatasetModel dataset;
+    private Map<Integer, ProteinGroupObject> proteinsMap;
     private double intensityColumnWidth = 120.0;
     private int currentFilterView = 0;
 
-    public DatasetVisulizationLevelComponent(SelectionManager Selection_Manager) {
-        DatasetVisulizationLevelComponent.this.setSizeFull();
-        DatasetVisulizationLevelComponent.this.addStyleName("scrollinsideframe");
+    public DatasetProteinsSubViewComponent(ResultsViewSelectionManager Selection_Manager) {
+        this.appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
+        DatasetProteinsSubViewComponent.this.setSizeFull();
+        DatasetProteinsSubViewComponent.this.addStyleName("scrollinsideframe");
 
-        this.datasetFiltersContainer = new FiltersContainer(Selection_Manager);
-        DatasetVisulizationLevelComponent.this.addComponent(datasetFiltersContainer);
+        this.datasetFiltersContainer = new DatasetFiltersComponent(Selection_Manager);
+        DatasetProteinsSubViewComponent.this.addComponent(datasetFiltersContainer);
 
         this.inferenceMap = new HashMap<>();
         this.inferenceMap.put("Single", 1);
@@ -62,7 +68,7 @@ public class DatasetVisulizationLevelComponent extends AbsoluteLayout implements
         this.inferenceMap.put("Related & Unrelated", 3);
         this.inferenceMap.put("Unrelated", 4);
         TableColumnHeader header1 = new TableColumnHeader("index", Integer.class, null, "", null, Table.Align.RIGHT);
-        TableColumnHeader header2 = new TableColumnHeader("proteinInference", ColorLabel.class, null, generateCaptionWithTooltio("PI", "Protein inference"), null, Table.Align.CENTER);
+        TableColumnHeader header2 = new TableColumnHeader("proteinInference", ProteinInferenceColorLabel.class, null, generateCaptionWithTooltio("PI", "Protein inference"), null, Table.Align.CENTER);
         TableColumnHeader header4 = new TableColumnHeader("Accession", Link.class, null, generateCaptionWithTooltio("Accession", "Protein accession"), null, Table.Align.CENTER);
         TableColumnHeader header5 = new TableColumnHeader("csf", CSFPRLabel.class, null, generateCaptionWithTooltio("CSF", "View in CSF-PR"), null, Table.Align.CENTER);
         TableColumnHeader header6 = new TableColumnHeader("Name", String.class, null, generateCaptionWithTooltio("Name", "Protein name"), null, Table.Align.LEFT);
@@ -85,17 +91,17 @@ public class DatasetVisulizationLevelComponent extends AbsoluteLayout implements
 
             @Override
             public void itemSelected(Object itemId) {
-                selectedIds.clear();
-                selectedIds.add(itemId + "");
-                peptideShakerVisualizationDataset.selectUpdateProteins(selectedIds);
-                Selection_Manager.setSelection("protein_selection", selectedIds, null, getFilterId());
+//                selectedIds.clear();
+//                selectedIds.add(itemId + "");
+//                dataset.selectUpdateProteins(selectedIds);
+//                Selection_Manager.setSelection("protein_selection", selectedIds, null, getFilterId());
 
             }
 
         };
         this.proteinTableContainer.setStyleName("datasetproteinstablestyle");
-        DatasetVisulizationLevelComponent.this.addComponent(proteinTableContainer);
-        Selection_Manager.RegistrDatasetsFilter(DatasetVisulizationLevelComponent.this);
+        DatasetProteinsSubViewComponent.this.addComponent(proteinTableContainer);
+        Selection_Manager.RegistrDatasetsFilter(DatasetProteinsSubViewComponent.this);
         selectionListener = (event) -> {
             proteinTableContainer.getMainTable().setValue(((AbstractOrderedLayout) event.getComponent()).getData());
         };
@@ -147,16 +153,17 @@ public class DatasetVisulizationLevelComponent extends AbsoluteLayout implements
         this.filterComponentsMap.put(5, this.datasetFiltersContainer.getFilterRightPanelContainer());
         this.filterComponentsMap.put(6, this.proteinTableContainer);
 
-        DatasetVisulizationLevelComponent.this.showNext();
+        DatasetProteinsSubViewComponent.this.showNext();
 
     }
 
-    public void updateData(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
-        this.peptideShakerVisualizationDataset = peptideShakerVisualizationDataset;
-        if (!peptideShakerVisualizationDataset.isUploadedProject()) {
-            peptideShakerVisualizationDataset.processDataFiles();
+    public void updateData(VisualizationDatasetModel dataset) {
+        this.dataset = dataset;
+        if (dataset.getProteinsMap() == null) {
+            appManagmentBean.getDatasetUtils().processDatasetProteins(dataset);
+
         }
-        proteinTableMap = peptideShakerVisualizationDataset.getProteinsMap();
+        proteinsMap = dataset.getProteinsMap();
         final Table mainTable = proteinTableContainer.getMainTable();
         mainTable.sort(new Object[]{"peptides_number", "psm_number"}, new boolean[]{false, false});
         mainTable.setColumnCollapsible("protein_group", true);
@@ -170,45 +177,45 @@ public class DatasetVisulizationLevelComponent extends AbsoluteLayout implements
         mainTable.setColumnCollapsed("mwkDa", true);
         mainTable.setColumnCollapsed("ms2Quant", true);
         mainTable.setColumnCollapsed("chromosom", smallScreen);
-        if (!peptideShakerVisualizationDataset.isQuantDataset()) {
+//        if (!dataset.isQuantDataset()) {
             mainTable.setColumnCollapsible("proteinIntensity", true);
             mainTable.setColumnCollapsed("proteinIntensity", true);
             intensityColumnWidth = 0;
-        }
-
-        if (smallScreen) {
-//            mainTable.setColumnWidth("index", 30);
-//            mainTable.setColumnWidth("proteinInference", 20);
-//            mainTable.setColumnWidth("Accession", 50);
-//            mainTable.setColumnWidth("coverage", 70);
-//            mainTable.setColumnWidth("peptides_number", 50);
-//            mainTable.setColumnWidth("psm_number", 50);
-//            mainTable.setColumnWidth("validation", 30);
-//            mainTable.setColumnWidth("confidence", 50);
-
-        } else {
-
-//            mainTable.setColumnWidth("index", 50);
-//            mainTable.setColumnWidth("proteinInference", 37);
-//            mainTable.setColumnWidth("proteinIntensity", (int) intensityColumnWidth);
-//            mainTable.setColumnWidth("Accession", 60);
-//            mainTable.setColumnWidth("csf", 50);
-//            mainTable.setColumnWidth("coverage", 100);
-//            mainTable.setColumnWidth("peptides_number", 100);
-//            mainTable.setColumnWidth("psm_number", 100);
-//            mainTable.setColumnWidth("ms2Quant", 120);
-//            mainTable.setColumnWidth("mwkDa", 120);
-//            mainTable.setColumnWidth("chromosom", 50);
-//            mainTable.setColumnWidth("validation", 32);
-//            mainTable.setColumnWidth("confidence", 120);
-//            mainTable.setColumnWidth("chromosom", 37);
-        }
-
+//        }
+//
+//        if (smallScreen) {
+////            mainTable.setColumnWidth("index", 30);
+////            mainTable.setColumnWidth("proteinInference", 20);
+////            mainTable.setColumnWidth("Accession", 50);
+////            mainTable.setColumnWidth("coverage", 70);
+////            mainTable.setColumnWidth("peptides_number", 50);
+////            mainTable.setColumnWidth("psm_number", 50);
+////            mainTable.setColumnWidth("validation", 30);
+////            mainTable.setColumnWidth("confidence", 50);
+//
+//        } else {
+//
+////            mainTable.setColumnWidth("index", 50);
+////            mainTable.setColumnWidth("proteinInference", 37);
+////            mainTable.setColumnWidth("proteinIntensity", (int) intensityColumnWidth);
+////            mainTable.setColumnWidth("Accession", 60);
+////            mainTable.setColumnWidth("csf", 50);
+////            mainTable.setColumnWidth("coverage", 100);
+////            mainTable.setColumnWidth("peptides_number", 100);
+////            mainTable.setColumnWidth("psm_number", 100);
+////            mainTable.setColumnWidth("ms2Quant", 120);
+////            mainTable.setColumnWidth("mwkDa", 120);
+////            mainTable.setColumnWidth("chromosom", 50);
+////            mainTable.setColumnWidth("validation", 32);
+////            mainTable.setColumnWidth("confidence", 120);
+////            mainTable.setColumnWidth("chromosom", 37);
+//        }
+//
         proteinTableContainer.resetTable();
-        Map<String, Object[]> tempTableDataMap = new LinkedHashMap<>();
-        proteinTableMap.values().forEach((protein) -> {
+//        Map<String, Object[]> tempTableDataMap = new LinkedHashMap<>();
+        proteinsMap.values().forEach((protein) -> {
             try {
-                ColorLabel piLabel = new ColorLabel(inferenceMap.get(protein.getProteinInference().trim()), protein.getProteinInference(), protein.getProteinGroupKey(), selectionListener);
+                ProteinInferenceColorLabel piLabel = new ProteinInferenceColorLabel(inferenceMap.get(protein.getProteinInference().trim()), protein.getProteinInference(), protein.getProteinGroupKey(), selectionListener);
                 Link proteinAccLink = new Link(protein.getAccession(), new ExternalResource("http://www.uniprot.org/uniprot/" + protein.getAccession().toUpperCase())) {
                     @Override
                     public String toString() {
@@ -229,7 +236,7 @@ public class DatasetVisulizationLevelComponent extends AbsoluteLayout implements
                 };
 
                 Map<String, Number> peptidesNumValues = new LinkedHashMap<>();
-                peptidesNumValues.put("greenlayout", (float) protein.getValidatedPeptidesNumber() / (float) peptideShakerVisualizationDataset.getMaxPeptideNumber());
+                peptidesNumValues.put("greenlayout", (float) protein.getValidatedPeptidesNumber() / (float) dataset.getValidatedPetideMap().lastKey());
                 SparkLineLabel peptidesNumberLabelLabel = new SparkLineLabel(df.format(protein.getValidatedPeptidesNumber()), peptidesNumValues, protein.getProteinGroupKey()) {
                     @Override
                     public void selected(Object itemId) {
@@ -238,7 +245,7 @@ public class DatasetVisulizationLevelComponent extends AbsoluteLayout implements
                 };
 
                 Map<String, Number> psmNumValues = new LinkedHashMap<>();
-                psmNumValues.put("greenlayout", (float) protein.getValidatedPSMsNumber() / (float) peptideShakerVisualizationDataset.getMaxPsmNumber());
+                psmNumValues.put("greenlayout", (float) protein.getValidatedPSMsNumber() / (float) dataset.getValidatedPsmsMap().lastKey());
                 SparkLineLabel psmNumberLabelLabel = new SparkLineLabel(df.format(protein.getValidatedPSMsNumber()), psmNumValues, protein.getProteinGroupKey()) {
                     @Override
                     public void selected(Object itemId) {
@@ -246,7 +253,7 @@ public class DatasetVisulizationLevelComponent extends AbsoluteLayout implements
                     }
                 };
                 Map<String, Number> ms2QuantValues = new LinkedHashMap<>();
-                ms2QuantValues.put("greenlayout", (float) protein.getSpectrumCounting() / (float) peptideShakerVisualizationDataset.getMaxMS2Quant());
+                ms2QuantValues.put("greenlayout", (float) protein.getSpectrumCounting() / (float) dataset.getMaxMS2Quant());
                 SparkLineLabel ms2QuantLabelLabel = new SparkLineLabel(df1.format(protein.getSpectrumCounting()), ms2QuantValues, protein.getProteinGroupKey()) {
                     @Override
                     public void selected(Object itemId) {
@@ -254,7 +261,7 @@ public class DatasetVisulizationLevelComponent extends AbsoluteLayout implements
                     }
                 };
                 Map<String, Number> mwValues = new LinkedHashMap<>();
-                mwValues.put("greenlayout", (float) protein.getMW() / (float) peptideShakerVisualizationDataset.getMaxMW());
+                mwValues.put("greenlayout", (float) protein.getMW() / (float) dataset.getMaxMW());
                 SparkLineLabel mwLabel = new SparkLineLabel(df1.format(protein.getMW()), mwValues, protein.getProteinGroupKey()) {
                     @Override
                     public void selected(Object itemId) {
@@ -275,66 +282,67 @@ public class DatasetVisulizationLevelComponent extends AbsoluteLayout implements
                 validation.addLayoutClickListener(selectionListener);
 
                 CSFPRLabel csfprLink = new CSFPRLabel(protein.getAccession(), protein.isAvailableOn_CSF_PR());
-                String searchKey = protein.getAccession() + "_" + protein.getDescription() + "_" + protein.getProteinGroup().replace(",", "_");
+                String searchKey = protein.getAccession() + "_" + protein.getDescription() + "_" + protein.getProteinGroup();//.replace(",", "_");
 
                 ColorLabelWithPopupTooltip intinsity = new ColorLabelWithPopupTooltip(protein.getAllPeptidesIntensity(), protein.getAllPeptideIintensityColor(), protein.getPercentageAllPeptidesIntensity());
-                tempTableDataMap.put(protein.getProteinGroupKey() + "--_--_--" + searchKey, new Object[]{protein.getIndex(), piLabel, proteinAccLink, csfprLink, protein.getDescription(), intinsity, protein.getProteinGroup(), protein.getGeneName(), new AlphanumComparator(protein.getChromosome()), coverageLabel, peptidesNumberLabelLabel, psmNumberLabelLabel, ms2QuantLabelLabel, mwLabel, confidentLabel, validation});
-//                proteinTableContainer.addTableItem(protein.getProteinGroupKey(), new Object[]{protein.getIndex(), piLabel, proteinAccLink, csfprLink, protein.getDescription(), intinsity, protein.getProteinGroup(), protein.getGeneName(), new AlphanumComparator(protein.getChromosome()), coverageLabel, peptidesNumberLabelLabel, psmNumberLabelLabel, ms2QuantLabelLabel, mwLabel, confidentLabel, validation}, searchKey);
+//                tempTableDataMap.put(protein.getProteinGroupKey() + "--_--_--" + searchKey, new Object[]{protein.getIndex(), piLabel, proteinAccLink, csfprLink, protein.getDescription(), intinsity, protein.getProteinGroup(), protein.getGeneName(), new AlphanumComparator(protein.getChromosome()), coverageLabel, peptidesNumberLabelLabel, psmNumberLabelLabel, ms2QuantLabelLabel, mwLabel, confidentLabel, validation});
+                proteinTableContainer.addTableItem(protein.getIndex(), new Object[]{protein.getIndex(), piLabel, proteinAccLink, csfprLink, protein.getDescription(), intinsity, protein.getProteinGroup(), protein.getGeneName(), new AlphanumComparator(protein.getChromosome()), coverageLabel, peptidesNumberLabelLabel, psmNumberLabelLabel, ms2QuantLabelLabel, mwLabel, confidentLabel, validation}, searchKey);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("at prot acc error " + protein.getAccession() + "  " + protein.getProteinInference() + "--" + protein.getProteinGroupKey() + " -- " + inferenceMap.containsKey(protein.getProteinInference()));
 
             }
         });
-        for (String str : tempTableDataMap.keySet()) {
-            proteinTableContainer.addTableItem(str.split("--_--_--")[0], tempTableDataMap.get(str), str.split("--_--_--")[1]);
-        }
+//        for (String str : tempTableDataMap.keySet()) {
+//            proteinTableContainer.addTableItem(str.split("--_--_--")[0], tempTableDataMap.get(str), str.split("--_--_--")[1]);
+//        }
         this.proteinTableContainer.activateValueChangeListener();
         this.proteinTableContainer.updateLabel();
-        Map<String, Color> ModificationColorMap = new LinkedHashMap<>();
         mainTable.sort();
+      
         int index = 1;
         for (Object key : mainTable.getItemIds()) {
             mainTable.getItem(key).getItemProperty("index").setValue(index++);
         }
         mainTable.setSortEnabled(false);
-        ModificationMatrix modificationMatrix = peptideShakerVisualizationDataset.getModificationMatrix();
-        if (modificationMatrix == null || modificationMatrix.getRows() == null) {
-            return;
-        }
-        modificationMatrix.getRows().keySet().forEach((mod) -> {
-            if (PTM.containsModification(mod)) {
-                ModificationColorMap.put(mod, new Color(ModificationFactory.getDefaultColor(mod)));
-            } else {
-                ModificationColorMap.put(mod, Color.LIGHT_GRAY);
-            }
-        });
-        datasetFiltersContainer.updateFiltersData(peptideShakerVisualizationDataset.isToShareDataset() || peptideShakerVisualizationDataset.isUploadedProject(), modificationMatrix, ModificationColorMap, peptideShakerVisualizationDataset.getChromosomeMap(), peptideShakerVisualizationDataset.getProteinInferenceMap(), peptideShakerVisualizationDataset.getProteinValidationMap(), peptideShakerVisualizationDataset.getProteinPeptidesNumberMap(), peptideShakerVisualizationDataset.getProteinPSMNumberMap(), peptideShakerVisualizationDataset.getProteinCoverageMap(), peptideShakerVisualizationDataset.getProteinIntensityAllPeptideMap(), peptideShakerVisualizationDataset.getProteinIntensityUniquePeptideMap());
+//        Map<String, Color> ModificationColorMap = new LinkedHashMap<>();  
+//        ModificationMatrix modificationMatrix = dataset.getModificationMatrix();
+//        if (modificationMatrix == null || modificationMatrix.getRows() == null) {
+//            return;
+//        }
+//        modificationMatrix.getRows().keySet().forEach((mod) -> {
+//            if (PTM.containsModification(mod)) {
+//                ModificationColorMap.put(mod, new Color(ModificationFactory.getDefaultColor(mod)));
+//            } else {
+//                ModificationColorMap.put(mod, Color.LIGHT_GRAY);
+//            }
+//        });
+        datasetFiltersContainer.updateFiltersData(dataset);//false,null,null,dataset.getChromosomeMap(),dataset.getProteinInferenceMap(),dataset.getProteinValidationMap(),dataset.getValidatedPetideMap(),dataset.getValidatedPsmsMap(),dataset.getValidatedCoverageMap(),null,null);//dataset.isToShareDataset() || dataset.isUploadedProject(), modificationMatrix, ModificationColorMap, dataset.getChromosomeMap(), dataset.getProteinInferenceMap(), dataset.getProteinValidationMap(), dataset.getProteinPeptidesNumberMap(), dataset.getProteinPSMNumberMap(), dataset.getProteinCoverageMap(), dataset.getProteinIntensityAllPeptideMap(), dataset.getProteinIntensityUniquePeptideMap());
 
-        if (peptideShakerVisualizationDataset.isQuantDataset()) {
-            OptionGroup quantOptions = new OptionGroup();
-            ClosablePopup service = new ClosablePopup("Protein Quantification", quantOptions, VaadinIcons.COG_O.getHtml() + " Quant settings");
-            quantOptions.setHeight(60, Unit.PIXELS);
-            quantOptions.setWidth(100, Unit.PERCENTAGE);
-            quantOptions.setMultiSelect(false);
-            quantOptions.setStyleName(ValoTheme.OPTIONGROUP_SMALL);
-            quantOptions.addItem("All Peptides");
-            quantOptions.addItem("Unique Peptides");
-            quantOptions.setValue("All Peptides");
-
-            quantOptions.addValueChangeListener((Property.ValueChangeEvent event) -> {
-                updateQuantValues((quantOptions.getValue().toString().equals("All Peptides")));
-            });
-
-            proteinTableContainer.addServiceButton(service);
-            service.setDescription("Select protein quantification based on unique/all peptides");
-        }
+//        if (dataset.isQuantDataset()) {
+//            OptionGroup quantOptions = new OptionGroup();
+//            ClosablePopup service = new ClosablePopup("Protein Quantification", quantOptions, VaadinIcons.COG_O.getHtml() + " Quant settings");
+//            quantOptions.setHeight(60, Unit.PIXELS);
+//            quantOptions.setWidth(100, Unit.PERCENTAGE);
+//            quantOptions.setMultiSelect(false);
+//            quantOptions.setStyleName(ValoTheme.OPTIONGROUP_SMALL);
+//            quantOptions.addItem("All Peptides");
+//            quantOptions.addItem("Unique Peptides");
+//            quantOptions.setValue("All Peptides");
+//
+//            quantOptions.addValueChangeListener((Property.ValueChangeEvent event) -> {
+//                updateQuantValues((quantOptions.getValue().toString().equals("All Peptides")));
+//            });
+//
+//            proteinTableContainer.addServiceButton(service);
+//            service.setDescription("Select protein quantification based on unique/all peptides");
+//        }
 
     }
 
     private void updateQuantValues(boolean useAllPeptideAvg) {
         for (Object id : proteinTableContainer.getMainTable().getItemIds()) {
-            ProteinGroupObject protein = proteinTableMap.get(id.toString());
+            ProteinGroupObject protein = proteinsMap.get(id.toString());
             double updatedValue;
             String color;
             double per;

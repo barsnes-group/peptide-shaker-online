@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects;
+package com.uib.web.peptideshaker.model;
 
 import com.compomics.util.experiment.biology.proteins.Protein;
 import graphmatcher.NetworkGraphEdge;
@@ -182,6 +182,7 @@ public class ProteinGroupObject extends Protein {
      */
     private String sequence;
     private NetworkGraphNode parentNode;
+
     /**
      * Constructor to initialise the main data structure.
      */
@@ -224,7 +225,7 @@ public class ProteinGroupObject extends Protein {
      * *Set the value for intensity for all peptides in protein
      *
      * @param allPeptidesIntensity calculated intensity from all quantified
-     *                             peptides
+     * peptides
      */
     public void setAllPeptidesIntensity(double allPeptidesIntensity) {
         this.allPeptidesIntensity = allPeptidesIntensity;
@@ -343,7 +344,7 @@ public class ProteinGroupObject extends Protein {
      * Update peptide type
      *
      * @param peptideKey peptides keys (modified sequence)
-     * @param enzymatic  enzymatic peptide
+     * @param enzymatic enzymatic peptide
      */
     public void updatePeptideType(String peptideKey, boolean enzymatic) {
         relatedPeptidesList.put(peptideKey, enzymatic);
@@ -532,7 +533,7 @@ public class ProteinGroupObject extends Protein {
      * Set confidently localised modification sites
      *
      * @param confidentlyLocalizedModificationSites confidently localised
-     *                                              modification sites
+     * modification sites
      */
     public void setConfidentlyLocalizedModificationSites(String confidentlyLocalizedModificationSites) {
         this.confidentlyLocalizedModificationSites = confidentlyLocalizedModificationSites;
@@ -551,7 +552,7 @@ public class ProteinGroupObject extends Protein {
      * Set number of confidently localised modification sites.
      *
      * @param ConfidentlyLocalizedModificationSitesNumber number of confidently
-     *                                                    localised modification sites.
+     * localised modification sites.
      */
     public void setConfidentlyLocalizedModificationSitesNumber(String ConfidentlyLocalizedModificationSitesNumber) {
         this.ConfidentlyLocalizedModificationSitesNumber = ConfidentlyLocalizedModificationSitesNumber;
@@ -570,7 +571,7 @@ public class ProteinGroupObject extends Protein {
      * Set ambiguous localised modification sites
      *
      * @param ambiguouslyLocalizedModificationSites Ambiguous localised
-     *                                              modification sites
+     * modification sites
      */
     public void setAmbiguouslyLocalizedModificationSites(String ambiguouslyLocalizedModificationSites) {
         this.ambiguouslyLocalizedModificationSites = ambiguouslyLocalizedModificationSites;
@@ -589,7 +590,7 @@ public class ProteinGroupObject extends Protein {
      * Set number of ambiguous localised modification sites.
      *
      * @param ambiguouslyLocalizedModificationSitesNumber Number of ambiguous
-     *                                                    localised modification sites.
+     * localised modification sites.
      */
     public void setAmbiguouslyLocalizedModificationSitesNumber(String ambiguouslyLocalizedModificationSitesNumber) {
         this.ambiguouslyLocalizedModificationSitesNumber = ambiguouslyLocalizedModificationSitesNumber;
@@ -626,7 +627,7 @@ public class ProteinGroupObject extends Protein {
      * Set secondary accessions related to the main accession protein
      *
      * @param secondaryAccessions Secondary accessions related to the main
-     *                            accession protein
+     * accession protein
      */
     public void setSecondaryAccessions(String secondaryAccessions) {
         this.secondaryAccessions = secondaryAccessions;
@@ -649,9 +650,9 @@ public class ProteinGroupObject extends Protein {
      */
     public void setProteinGroup(String proteinGroup) {
         this.proteinGroup = proteinGroup;
-        for (String acc : proteinGroup.split(",")) {
-            proteinGroupSet.add(acc.trim());
-        }
+//        for (String acc : proteinGroup.split(",")) {
+//            proteinGroupSet.add(acc.trim());
+//        }
     }
 
     /**
@@ -705,6 +706,9 @@ public class ProteinGroupObject extends Protein {
      * @return set of protein accessions.
      */
     public Set<String> getProteinGroupSet() {
+        if (proteinGroupSet.isEmpty()) {
+            proteinGroupSet.addAll(Arrays.asList(proteinGroup.replace(" ", "").split(",")));
+        }
         return proteinGroupSet;
     }
 
@@ -739,7 +743,7 @@ public class ProteinGroupObject extends Protein {
      * Set unique number of validated peptides to the protein.
      *
      * @param validatedUniqueNumber Unique number of validated peptides to the
-     *                              protein.
+     * protein.
      */
     public void setValidatedUniqueNumber(int validatedUniqueNumber) {
         this.validatedUniqueNumber = validatedUniqueNumber;
@@ -758,7 +762,7 @@ public class ProteinGroupObject extends Protein {
      * Set unique number of peptides to the protein group.
      *
      * @param uniqueToGroupNumber Unique number of peptides to the protein
-     *                            group.
+     * group.
      */
     public void setUniqueToGroupNumber(int uniqueToGroupNumber) {
         this.uniqueToGroupNumber = uniqueToGroupNumber;
@@ -777,7 +781,7 @@ public class ProteinGroupObject extends Protein {
      * Set unique number of validated peptides to the protein group.
      *
      * @param validatedUniqueToGroupNumber Unique number of validated peptides
-     *                                     to the protein group.
+     * to the protein group.
      */
     public void setValidatedUniqueToGroupNumber(int validatedUniqueToGroupNumber) {
         this.validatedUniqueToGroupNumber = validatedUniqueToGroupNumber;

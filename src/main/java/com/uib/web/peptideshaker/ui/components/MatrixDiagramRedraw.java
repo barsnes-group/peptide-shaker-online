@@ -1,11 +1,12 @@
-package com.uib.web.peptideshaker.presenter.core.filtercharts.filters;
+package com.uib.web.peptideshaker.ui.components;
 
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.SizeReporter;
 import com.google.common.collect.Sets;
-import com.uib.web.peptideshaker.model.core.ModificationMatrix;
+import com.uib.web.peptideshaker.model.ModificationMatrixModel;
+import com.uib.web.peptideshaker.model.core.ModificationMatrixUtilis;
 import com.uib.web.peptideshaker.presenter.core.HBarWithLabel;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.components.SelectableNode;
+import com.uib.web.peptideshaker.ui.components.items.SelectableNode;
 import com.uib.web.peptideshaker.ui.components.items.SparkLine;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
@@ -45,7 +46,7 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
     /**
      * The title text of the filter.
      */
-    private Map<String, Set<Comparable>> columns;
+    private Map<String, Set<Integer>> columns;
     private Map<String, Color> dataColors;
     private int rowLabelsWidth;
     private int minimumWidth;
@@ -110,13 +111,12 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
         });
     }
 
-    public void initializeFilterData(ModificationMatrix modificationMatrix, Map<String, Color> dataColors, Set<Object> selectedCategories, int totalNumber) {
-
+    public void initializeFilterData(ModificationMatrixModel modificationMatrix, Map<String, Color> dataColors, Set<Object> selectedCategories, int totalNumber) {
         rows.clear();
         rowLabelsMap.clear();
         this.dataColors = dataColors;
         rows.putAll(modificationMatrix.getRows());
-        columns = modificationMatrix.getCalculatedColumns();
+        columns = modificationMatrix.getColumns();
         barChartValues.clear();
         fullItemsSet.clear();
         int coulmnIndx = 0;
@@ -125,6 +125,7 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
             barChartValues.put(coulmnIndx++, (double) columns.get(key).size());
         }
         drawLayout();
+        reDrawLayout(false);
     }
 
     private void reDrawLayout(boolean local) {

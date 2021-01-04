@@ -2,7 +2,7 @@ package com.uib.web.peptideshaker.ui.views;
 
 import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
 import com.uib.web.peptideshaker.ui.components.items.HelpPopupButton;
-import com.uib.web.peptideshaker.ui.components.items.SubViewSideBtn;
+import com.uib.web.peptideshaker.ui.components.items.SubViewSideButton;
 import com.uib.web.peptideshaker.ui.components.FilesTablePanel;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.*;
@@ -23,7 +23,7 @@ public class FileSystemView extends AbsoluteLayout implements ViewableFrame {
     /**
      * The main left side button (only support in a big screen).
      */
-    private SubViewSideBtn viewDataBtn;
+    private SubViewSideButton viewDataBtn;
     private boolean jobInProgress;
 
     /**
@@ -48,7 +48,7 @@ public class FileSystemView extends AbsoluteLayout implements ViewableFrame {
         leftSideButtonsContainer.addStyleName("singlebtn");
         this.addComponent(leftSideButtonsContainer, "top:120px;left:3px");
 
-        viewDataBtn = new SubViewSideBtn("Data Overview", 1);
+        viewDataBtn = new SubViewSideButton("Data Overview", 1);
         viewDataBtn.setDescription("Available datasets and files");
         viewDataBtn.updateIconByResource(new ThemeResource("img/globeearthanimation.png"));
         viewDataBtn.addStyleName("glubimg");
@@ -57,12 +57,12 @@ public class FileSystemView extends AbsoluteLayout implements ViewableFrame {
         leftSideButtonsContainer.addComponent(viewDataBtn);
         leftSideButtonsContainer.setComponentAlignment(viewDataBtn, Alignment.TOP_CENTER);
 
-        VerticalLayout dataContainerLayout = initDataViewTableLayout();
+        
         AbsoluteLayout dataViewFrame = new AbsoluteLayout();
         dataViewFrame.setSizeFull();
         dataViewFrame.setStyleName("integratedframe");
-
         this.addComponent(dataViewFrame, "left:100px");
+        
         AbsoluteLayout dataViewFrameContent = new AbsoluteLayout();
         dataViewFrameContent.addStyleName("viewframecontent");
         dataViewFrameContent.setSizeFull();
@@ -75,6 +75,9 @@ public class FileSystemView extends AbsoluteLayout implements ViewableFrame {
         dataViewFrameContent.addComponent(titleLabel, "left:40px;top:13px");
         HelpPopupButton helpBtn = new HelpPopupButton("<h1>Projects Overview</h1>Users can check the available ready to visualise datasets, get an overview for the processed data, check the dataset processing statues and have access for the dataset sharing links where users can visulize the dataset using dataset link.<br/>Also users can delete datasets and input files.", "", 400, 150);
         dataViewFrameContent.addComponent(helpBtn, "left:178;top:0px");
+        
+        
+        VerticalLayout dataContainerLayout = initDataViewTableLayout();
         dataViewFrameContent.addComponent(dataContainerLayout);
         viewDataBtn.setSelected(true);
 

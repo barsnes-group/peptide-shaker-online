@@ -1,10 +1,9 @@
-package com.uib.web.peptideshaker.presenter.core;
+package com.uib.web.peptideshaker.ui.components;
 
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.themes.ValoTheme;
+import java.io.File;
 import pl.exsio.plupload.Plupload;
 import pl.exsio.plupload.PluploadError;
 import pl.exsio.plupload.PluploadFile;
@@ -22,13 +21,15 @@ public abstract class BasicUploader extends AbsoluteLayout {
 
     private final Set<String> filterSet;
     private Plupload uploaderComponent;
+    private final String tempUploaderFolderPath;
 
     /**
      * Initialise the upload unit
      */
-    public BasicUploader() {
+    public BasicUploader(String tempUploaderFolderPath) {
         BasicUploader.this.setHeight(23, Unit.PIXELS);
         BasicUploader.this.setWidth(50, Unit.PIXELS);
+        this.tempUploaderFolderPath = tempUploaderFolderPath;
         BasicUploader.this.setStyleName("uploaderlayout");
         this.filterSet = new LinkedHashSet<>();
         initUploaderComponent();
@@ -53,7 +54,7 @@ public abstract class BasicUploader extends AbsoluteLayout {
          * show notification after file is uploaded*
          */
         uploaderComponent.addFileUploadedListener((PluploadFile file) -> {
-            Notification.show("File Uploaded: " + file.getName(),Notification.Type.TRAY_NOTIFICATION);
+          notification("File Uploaded: " + file.getName(),false);
         });
 
         /**
@@ -87,11 +88,16 @@ public abstract class BasicUploader extends AbsoluteLayout {
          * handle errors*
          */
         uploaderComponent.addErrorListener((PluploadError error) -> {
-            uploadError(error.getMessage());
-            Notification.show("Error in uploading file, only " + filterSet + " file format allowed", Notification.Type.ERROR_MESSAGE);
+            notification("Error in uploading file, only " + filterSet + " file format allowed",true);
         });
-        String uploadPath = VaadinSession.getCurrent().getAttribute("userDataFolderUrl") + "";
-        uploaderComponent.setUploadPath(uploadPath);
+
+        File user_folder = new File(tempUploaderFolderPath);
+        if (!user_folder.exists()) {
+            user_folder.mkdir();
+        }
+        File userUploadFolder = new File(user_folder, "uploadedFiles");
+        userUploadFolder.mkdir();
+        uploaderComponent.setUploadPath(userUploadFolder.getAbsolutePath());
 
     }
 
@@ -131,6 +137,6 @@ public abstract class BasicUploader extends AbsoluteLayout {
      *
      * @param error error message
      */
-    public abstract void uploadError(String error);
+    public abstract void notification(String message, boolean error);
 
 }

@@ -26,7 +26,6 @@ import pl.exsio.plupload.PluploadFile;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javassist.bytecode.stackmap.BasicBlock;
 
 /**
  * This class represents SearchGUI-Peptide-Shaker work-flow which include input
@@ -34,7 +33,7 @@ import javassist.bytecode.stackmap.BasicBlock;
  *
  * @author Yehia Mokhtar Farag
  */
-public class WorkFlowDataInputLayout extends Panel {
+public class WorkFlowDataInputComponent extends Panel {
 
     /**
      * MGF file list available for user to select from.
@@ -116,7 +115,7 @@ public class WorkFlowDataInputLayout extends Panel {
      * Constructor to initialise the main attributes.
      */
     @SuppressWarnings("Convert2Lambda")
-    public WorkFlowDataInputLayout() {
+    public WorkFlowDataInputComponent() {
         fastaFileIdToNameMap = new LinkedHashMap<>();
         _mgfFileList = new LinkedHashSet<>();
         _rawFileList = new LinkedHashSet<>();
@@ -129,8 +128,8 @@ public class WorkFlowDataInputLayout extends Panel {
      */
     public void initLayout() {
 
-        WorkFlowDataInputLayout.this.setWidth(100, Unit.PERCENTAGE);
-        WorkFlowDataInputLayout.this.setHeight(100, Unit.PERCENTAGE);
+        WorkFlowDataInputComponent.this.setWidth(100, Unit.PERCENTAGE);
+        WorkFlowDataInputComponent.this.setHeight(100, Unit.PERCENTAGE);
         /**
          * MAIN LAYOUT CONFIGURATION
          *
@@ -138,9 +137,9 @@ public class WorkFlowDataInputLayout extends Panel {
         AbsoluteLayout container = new AbsoluteLayout();
         container.setHeight(100, Unit.PERCENTAGE);
         container.setWidth(100, Unit.PERCENTAGE);
-        WorkFlowDataInputLayout.this.setContent(container);
-        WorkFlowDataInputLayout.this.setStyleName("subframe");
-        WorkFlowDataInputLayout.this.addStyleName("floatrightinyscreen");
+        WorkFlowDataInputComponent.this.setContent(container);
+        WorkFlowDataInputComponent.this.setStyleName("subframe");
+        WorkFlowDataInputComponent.this.addStyleName("floatrightinyscreen");
 
         /**
          * CONFIGURING GRAPHICAL COMPONENTS... Title
@@ -461,7 +460,6 @@ public class WorkFlowDataInputLayout extends Panel {
             public void filesUploaded(PluploadFile[] uploadedFiles) {
                 File file = (File) uploadedFiles[0].getUploadedFile();
                 appManagmentBean.getWorkFlowHandler().uploadFile(file, uploadedFiles[0].getName(), CONSTANT.FASTA_FILE_EXTENSION);
-//                uploadToGalaxy(uploadedFiles);
             }
 
         };
@@ -499,7 +497,7 @@ public class WorkFlowDataInputLayout extends Panel {
      * @return searchSettings utility
      */
     private SearchParametersForm initialiseSearchParametersForm() {
-        SearchParametersForm searchSettingsLayout = new SearchParametersForm(false) {
+        SearchParametersForm searchSettingsLayout = new SearchParametersForm(true) {
             @Override
             public void saveSearchingFile(IdentificationParameters searchParameters, boolean isNew) {
                 checkAndSaveSearchSettingsFile(searchParameters);
@@ -673,14 +671,17 @@ public class WorkFlowDataInputLayout extends Panel {
             } else {
                 usedList=_mzMLFileList;
             } 
+            try{
             VisualizationDatasetModel  dataset = appManagmentBean.getWorkFlowHandler().executeWorkFlow(projectName, fastaFilesMap.get(fastFileId), serachParamFilesMap.get(searchSettingsFileList.getSelectedValue()), usedList, selectedSearchEngines);
-
             if (dataset != null) {
                 appManagmentBean.getUserHandler().addToDatasetMap(dataset);
                 appManagmentBean.getUI_Manager().updateAll();
                 appManagmentBean.getUI_Manager().viewLayout(FileSystemView.class.getName());
                 appManagmentBean.getUserHandler().forceBusyHistory();
                 reset();
+            }
+            }catch(Exception e){
+                e.printStackTrace();
             }
         });
     }

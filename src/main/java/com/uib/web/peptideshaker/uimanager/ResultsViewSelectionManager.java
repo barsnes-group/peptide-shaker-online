@@ -1,11 +1,11 @@
-package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview;
+package com.uib.web.peptideshaker.uimanager;
 
 import com.google.common.collect.Sets;
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideObject;
+import com.uib.web.peptideshaker.model.PeptideObject;
 import com.uib.web.peptideshaker.model.core.FilteredProteins;
-import com.uib.web.peptideshaker.model.core.ModificationMatrix;
-import com.uib.web.peptideshaker.ui.components.items.SubViewSideBtn;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.RegistrableFilter;
+import com.uib.web.peptideshaker.model.core.ModificationMatrixUtilis;
+import com.uib.web.peptideshaker.ui.components.items.SubViewSideButton;
+import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
 import com.vaadin.ui.Component;
 
 import java.util.*;
@@ -15,9 +15,9 @@ import java.util.*;
  *
  * @author Yehia Farag
  */
-public class SelectionManager {
+public class ResultsViewSelectionManager {
 
-    private final Map<SubViewSideBtn, Component> btnsLayoutMap;
+    private final Map<SubViewSideButton, Component> btnsLayoutMap;
     private final Map<String, RegistrableFilter> registeredDatasetFiltersMap;
     private final Map<String, RegistrableFilter> registeredProteinComponentsMap;
     private final Set<Comparable> fullProteinSet;
@@ -36,7 +36,7 @@ public class SelectionManager {
     private String selectedProteinId;
     private PeptideObject selectedPeptide;
     private boolean singleProteinsFilter = false;
-    private ModificationMatrix modificationMatrix;
+    private ModificationMatrixUtilis modificationMatrix;
     private Map<Integer, Set<Comparable>> chromosomeMap;
     private Map<String, Set<Comparable>> piMap;
     private Map<String, Set<Comparable>> proteinValidationMap;
@@ -46,7 +46,7 @@ public class SelectionManager {
     private TreeMap<Comparable, Set<Comparable>> proteinIntinsityAllPepMap;
     private TreeMap<Comparable, Set<Comparable>> proteinIntinsityUniquePepMap;
 
-    public SelectionManager() {
+    public ResultsViewSelectionManager() {
         this.btnsLayoutMap = new LinkedHashMap<>();
         this.registeredDatasetFiltersMap = new LinkedHashMap<>();
         this.registeredProteinComponentsMap = new LinkedHashMap<>();
@@ -177,19 +177,19 @@ public class SelectionManager {
 
     }
 
-    public void setModificationsMap(ModificationMatrix modificationMatrix) {
+    public void setModificationsMap(ModificationMatrixUtilis modificationMatrix) {
         selectedModificationsMap.clear();
         this.modificationMatrix = modificationMatrix;
-        modificationMatrix.getCalculatedColumns().values().forEach((set) -> {
-            fullProteinSet.addAll(set);
-        });
+//        modificationMatrix.getCalculatedColumns().values().forEach((set) -> {
+//            fullProteinSet.addAll(set);
+//        });
     }
 
-    public void addBtnLayout(SubViewSideBtn btn, Component layout) {
+    public void addBtnLayout(SubViewSideButton btn, Component layout) {
         btnsLayoutMap.put(btn, layout);
     }
 
-    public void selectBtn(SubViewSideBtn btn) {
+    public void selectBtn(SubViewSideButton btn) {
         btnsLayoutMap.keySet().forEach((bbt) -> {
             if (btn.getData().toString().equalsIgnoreCase(bbt.getData().toString())) {
                 bbt.setSelected(true);
@@ -203,7 +203,7 @@ public class SelectionManager {
     }
 
     public void selectBtn(int index) {
-        SubViewSideBtn btn = (SubViewSideBtn) btnsLayoutMap.keySet().toArray()[index];
+        SubViewSideButton btn = (SubViewSideButton) btnsLayoutMap.keySet().toArray()[index];
         selectBtn(btn);
 
     }
@@ -295,7 +295,7 @@ public class SelectionManager {
 //            });
             Set<Comparable> selectedData = new LinkedHashSet<>();
             selectedCategories.stream().filter((str) -> !(str == null)).forEachOrdered((str) -> {
-                selectedData.addAll(Sets.intersection(filteredProtenSet, this.modificationMatrix.getCalculatedColumns().get(str.toString())));
+//                selectedData.addAll(Sets.intersection(filteredProtenSet, this.modificationMatrix.getCalculatedColumns().get(str.toString())));
             });
             tempProtenSet.addAll(Sets.difference(filteredProtenSet, selectedData));
             filteredProtenSet.removeAll(tempProtenSet);

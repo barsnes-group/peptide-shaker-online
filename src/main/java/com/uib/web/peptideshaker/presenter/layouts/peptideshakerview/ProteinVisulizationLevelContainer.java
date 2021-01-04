@@ -1,11 +1,12 @@
 package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview;
 
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideObject;
+import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager;
+import com.uib.web.peptideshaker.model.PeptideObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.ProteinGroupObject;
-import com.uib.web.peptideshaker.ui.components.items.SubViewSideBtn;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.RegistrableFilter;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.components.RangeColorGenerator;
+import com.uib.web.peptideshaker.model.ProteinGroupObject;
+import com.uib.web.peptideshaker.ui.components.items.SubViewSideButton;
+import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
+import com.uib.web.peptideshaker.ui.components.RangeColorGenerator;
 import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.GraphsContainerComponent;
 import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.Protein3DStructurePanel;
 import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.ProteinCoverageTable;
@@ -28,8 +29,8 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
     private final HorizontalLayout middleContainer;
     private final Label headerLabel;
     private final GraphsContainerComponent graphsContainerComponent;
-    private final SelectionManager Selection_Manager;
-    private final SubViewSideBtn proteinoverviewBtn;
+    private final ResultsViewSelectionManager Selection_Manager;
+    private final SubViewSideButton proteinoverviewBtn;
     private final ProteinCoverageTable proteinCoverageContainer;
     private final Protein3DStructurePanel protein3DStructurePanel;
     private final Map<Integer, Component> filterComponentsMap;
@@ -45,7 +46,7 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
      * @param Selection_Manager
      * @param proteinoverviewBtn
      */
-    public ProteinVisulizationLevelContainer(SelectionManager Selection_Manager, SubViewSideBtn proteinoverviewBtn) {
+    public ProteinVisulizationLevelContainer(ResultsViewSelectionManager Selection_Manager, SubViewSideButton proteinoverviewBtn) {
         ProteinVisulizationLevelContainer.this.setSizeFull();
         ProteinVisulizationLevelContainer.this.setSpacing(true);
         ProteinVisulizationLevelContainer.this.setMargin(false);

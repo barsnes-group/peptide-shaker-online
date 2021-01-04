@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.presenter.core;
+package com.uib.web.peptideshaker.ui.components.items;
 
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
@@ -7,7 +7,7 @@ import com.vaadin.ui.Image;
 /**
  * This class represent status label
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class StatusProgressLabel extends Image {
 

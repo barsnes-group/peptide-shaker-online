@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.uib.web.peptideshaker.presenter.core.filtercharts.filters;
+package com.uib.web.peptideshaker.ui.components;
 
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.SizeReporter;
 import com.google.common.collect.Sets;
-import com.uib.web.peptideshaker.model.core.ModificationMatrix;
+import com.uib.web.peptideshaker.model.ModificationMatrixModel;
+import com.uib.web.peptideshaker.model.core.ModificationMatrixUtilis;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -39,7 +40,7 @@ public abstract class VennDiagram extends AbsoluteLayout {
     private final Map<String, JSONObject> tempDataset;
     private final String alphabet = "abcdefghijklmnopqrstuvwxyz".toUpperCase();
     private final Map<String, String> nameToCharMap;
-    private ModificationMatrix modificationMatrix;
+    private ModificationMatrixModel modificationMatrix;
     private Map<String, Color> dataColors;
     private JSONArray dataset;
     private JSONArray selectedDatasetColors;
@@ -171,20 +172,20 @@ public abstract class VennDiagram extends AbsoluteLayout {
 
     }
 
-    public ModificationMatrix getModificationMatrix() {
+    public ModificationMatrixModel getModificationMatrix() {
         return modificationMatrix;
     }
 
-    public void initializeFilterData(ModificationMatrix modificationMatrix, Map<String, Color> dataColors, Set<Object> selectedCategories, int totalNumber) {
+    public void initializeFilterData(ModificationMatrixModel modificationMatrix, Map<String, Color> dataColors, Set<Object> selectedCategories, int totalNumber) {
 //        
         nameToCharMap.clear();
         this.modificationMatrix = modificationMatrix;
         this.dataColors = dataColors;
-        updateDiagramData(modificationMatrix.getCalculatedColumns(), modificationMatrix.getRows());
+        updateDiagramData(modificationMatrix.getColumns(), modificationMatrix.getRows());
 
     }
 
-    private void updateDiagramData(Map<String, Set<Comparable>> columns, Map<String, Integer> rows) {
+    private void updateDiagramData(Map<String, Set<Integer>> columns, Map<String, Integer> rows) {
         dataset = new JSONArray();
         selectedDatasetColors = new JSONArray();
         unselectedDatasetColors = new JSONArray();
@@ -338,13 +339,13 @@ public abstract class VennDiagram extends AbsoluteLayout {
 //            intersectionMap.clear();
             nameToCharMap.clear();
             if (singleProteinsFilter && !selfAction && !selectedCategories.isEmpty()) {
-                updateDiagramData(modificationMatrix.getCalculatedColumns(), modificationMatrix.getRows());
+                updateDiagramData(modificationMatrix.getColumns(), modificationMatrix.getRows());
 
             } else {
-                Map<String, Set<Comparable>> tbarChartValues = new LinkedHashMap<>();
+                Map<String, Set<Integer>> tbarChartValues = new LinkedHashMap<>();
                 Map<String, Integer> updatedRows = new HashMap<>();
-                modificationMatrix.getCalculatedColumns().keySet().stream().map((key) -> key.trim()).map((key) -> {
-                    tbarChartValues.put(key, Sets.intersection(modificationMatrix.getCalculatedColumns().get(key), selectedItems));
+                modificationMatrix.getColumns().keySet().stream().map((key) -> key.trim()).map((key) -> {
+                    tbarChartValues.put(key, Sets.intersection(modificationMatrix.getColumns().get(key), selectedItems));
                     return key;
                 }).forEachOrdered((key) -> {
                     if (!key.contains("[")) {

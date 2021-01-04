@@ -1,11 +1,19 @@
 package com.uib.web.peptideshaker.model;
 
+import java.awt.Color;
+
 /**
  * Main constant keywords
  *
  * @author Yehia Mokhtar Farag
  */
 public class CONSTANT {
+
+    public static final Color[] DEFAULT_CHARTS_COLOURS = new Color[]{new Color(219, 169, 1), new Color(110, 177, 206), new Color(213, 8, 8), new Color(4, 180, 95), new Color(174, 180, 4), new Color(10, 255, 14), new Color(244, 250, 88), new Color(255, 0, 64), new Color(246, 216, 206), new Color(189, 189, 189), new Color(255, 128, 0), Color.BLUE, Color.CYAN, Color.GREEN, Color.MAGENTA, Color.ORANGE, Color.PINK};
+    public static final Color[] PROTEIN_VALIDATION_COLOURS = new Color[]{Color.DARK_GRAY, new Color(4, 180, 95), Color.ORANGE, new Color(213, 8, 8)};
+    public static final String GALAXY_SOURCE = "galaxy_source";
+    public static final String USER_UPLOAD_SOURCE = "user_upload_source";
+    public static final String PRIDE_SOURCE = "pride_source";
 
     public static final String WEB_PEPTEDSHAKER_FUNCTIONAL_HISTORY = "Web-PS-Functional-History";
     public static final String APP_MANAGMENT_BEAN = "AppManagmentBean";
@@ -28,7 +36,7 @@ public class CONSTANT {
     public static final String NAME = "name";
     public static final String JOB_SOURCE_ID = "job_source_id";
     public static final String URL = "url";
-    public static final String SIZE = "size"; 
+    public static final String SIZE = "size";
     public static final String CREATE_TIME = "create_time";
     public static final String EXTENSION = "extension";
     public static final String PEEK = "peek";
@@ -52,6 +60,8 @@ public class CONSTANT {
     public static final String MGF_FILE_EXTENSION = "mgf";
     public static final String JSON_FILE_EXTENSION = "json";
     public static final String FASTA_FILE_EXTENSION = "fasta";
+    public static final String PROTEIN_FILE_TYPE = "protein";
+    public static final String PEPTIDE_FILE_TYPE = "peptide";
     public static final String THERMO_RAW_FILE_EXTENSION = "thermo.raw";
     public static final String mzML_FILE_EXTENSION = "mzml";
     public static final String TXT_FILE_EXTENSION = "txt";
@@ -63,18 +73,25 @@ public class CONSTANT {
     public static final String DESEDE_ENCRYPTION_SCHEME = "DESede";
     public static final String UNICODE_FORMAT = "UTF8";
     public static final String OUTPUTS = "outputs";
-    public static final String MOFF_TOOL_ID = "toolshed.g2.bx.psu.edu/repos/galaxyp/proteomics_moff/proteomics_moff/2.0.3.0";    
+    public static final String MOFF_TOOL_ID = "toolshed.g2.bx.psu.edu/repos/galaxyp/proteomics_moff/proteomics_moff/2.0.3.0";
     public static final String MOFF_TOOL_Version = "2.0.3.0";
     public static final String CONVERT_CHARACTERS_TOOL_ID = "Convert characters1";
-    public static final String THERMO_RAW_CONVERTOR_TOOL_ID = "toolshed.g2.bx.psu.edu/repos/galaxyp/thermo_raw_file_converter/thermo_raw_file_converter/1.2.3+galaxy0";  
+    public static final String THERMO_RAW_CONVERTOR_TOOL_ID = "toolshed.g2.bx.psu.edu/repos/galaxyp/thermo_raw_file_converter/thermo_raw_file_converter/1.2.3+galaxy0";
     public static final String THERMO_RAW_CONVERTOR_TOOL_VERSION = "1.2.3+galaxy0";
-    
-   public static final String SEARCHGUI_TOOL_ID = "testtoolshed.g2.bx.psu.edu/repos/carlosh/peptideshaker_tests/search_gui/4.0.4.0";  
+
+    public static final String SEARCHGUI_TOOL_ID = "testtoolshed.g2.bx.psu.edu/repos/carlosh/peptideshaker_tests/search_gui/4.0.4.0";
     public static final String SEARCHGUI_TOOL_VERSION = "4.0.4.0";
-     public static final String BUILD_LIST_TOOL_ID = "__BUILD_LIST__";  
-   public static final String BUILD_LIST_TOOL_VERSION = "1.0.0";  
-    public static final String PEPTIDESHAKER_TOOL_ID = "testtoolshed.g2.bx.psu.edu/repos/carlosh/peptideshaker_tests/peptide_shaker/2.0.5.0";  
+    public static final String BUILD_LIST_TOOL_ID = "__BUILD_LIST__";
+    public static final String BUILD_LIST_TOOL_VERSION = "1.0.0";
+    public static final String PEPTIDESHAKER_TOOL_ID = "testtoolshed.g2.bx.psu.edu/repos/carlosh/peptideshaker_tests/peptide_shaker/2.0.5.0";
     public static final String PEPTIDESHAKER_TOOL_VERSION = "2.0.5.0";
     public static final String SERVER_TIMEZONE = "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 
+    public static final String[] EXTRA_COLOURS = new String[]{
+        "C00000", "00C000", "0000C0", "C0C000", "C000C0", "00C0C0", "C0C0C0",
+        "400000", "004000", "000040", "404000", "400040", "004040", "404040",
+        "200000", "002000", "000020", "202000", "200020", "002020", "202020",
+        "600000", "006000", "000060", "606000", "600060", "006060", "606060",
+        "A00000", "00A000", "0000A0", "A0A000", "A000A0", "00A0A0", "A0A0A0",
+        "E00000", "00E000", "0000E0", "E0E000", "E000E0", "00E0E0", "E0E0E0",};
 }

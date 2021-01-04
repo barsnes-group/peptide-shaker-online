@@ -7,8 +7,7 @@ import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTran
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.ui.UIContainer;
-import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
-import com.uib.web.peptideshaker.ui.views.WorkflowInvokingView;
+import com.uib.web.peptideshaker.ui.views.FileSystemView;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 import pl.exsio.plupload.PluploadFile;
@@ -41,67 +40,13 @@ public abstract class UIHandler {
     public UIHandler(boolean availableGalaxyServer) {
         appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
 
-        this.uiContainer = new UIContainer(availableGalaxyServer) {
-            @Override
-            public void viewLayout(String viewId) {
-//                uiManager.viewLayout(viewId);
-            }
-
-            @Override
-            public void registerView(ViewableFrame view) {
-                UI.getCurrent().access(() -> {
-//                    uiManager.registerView(view);
-                });
-
-            }
-
-            @Override
-            public void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl) {
-                UIHandler.this.viewToShareDataset(galaxyServerUrl, userDataFolderUrl);
-            }
-
-            @Override
-            public void execute_SearchGUI_PeptideShaker_WorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> mgfIdsList, Set<String> searchEnginesList, IdentificationParameters searchParam, boolean quant) {
-                UIHandler.this.execute_SearchGUI_PeptideShaker_WorkFlow(projectName, fastaFileId, searchParameterFileId, mgfIdsList, searchEnginesList, searchParam, quant);
-            }
-
-            @Override
-            public Map<String, GalaxyTransferableFile> saveSearchGUIParameters(IdentificationParameters searchParameters, boolean isNew) {
-                return UIHandler.this.saveSearchGUIParameters(searchParameters, isNew);
-
-            }
-
-            @Override
-            public boolean uploadToGalaxy(PluploadFile[] toUploadFiles) {
-                return UIHandler.this.uploadToGalaxy(toUploadFiles);
-
-            }
-
-            @Override
-            public void deleteDataset(GalaxyFileObject fileObject) {
-                UIHandler.this.deleteDataset(fileObject);
-            }
-
-            @Override
-            public Set<String> getCsf_pr_Accession_List() {
-                return UIHandler.this.getCsf_pr_Accession_List();
-            }
-
-            @Override
-            public int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey) {
-                return UIHandler.this.insertDatsetLinkToShare(dsDetails, dsUniqueKey);
-            }
-
-        };
+        this.uiContainer = new UIContainer(availableGalaxyServer);
         UI.getCurrent().setContent(uiContainer);
-
         appManagmentBean.getUI_Manager().registerView(uiContainer.getWorkflowInvokingView());
-        appManagmentBean.getUI_Manager().registerView(uiContainer.getWelcomePageView());
-//        uiManager.viewLayout(WelcomePageView.class.getName());
+        appManagmentBean.getUI_Manager().registerView(uiContainer.getWelcomePageView());//     
         appManagmentBean.getUI_Manager().registerView(uiContainer.getFileSystemView());
-        appManagmentBean.getUI_Manager().viewLayout(WorkflowInvokingView.class.getName());
-//        uiManager.registerView(uiContainer.getInteractivePSPRojectResultsPresenter());
-//        uiManager.setSideButtonsVisible(true);
+        appManagmentBean.getUI_Manager().registerView(uiContainer.getResultsView());
+        appManagmentBean.getUI_Manager().viewLayout(FileSystemView.class.getName());
 
     }
 
@@ -229,7 +174,5 @@ public abstract class UIHandler {
      * @return dataset public key
      */
     public abstract int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey);
-
-
 
 }

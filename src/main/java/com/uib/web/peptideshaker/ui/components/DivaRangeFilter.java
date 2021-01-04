@@ -1,11 +1,11 @@
-package com.uib.web.peptideshaker.presenter.core.filtercharts.filters;
+package com.uib.web.peptideshaker.ui.components;
 
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.SizeReporter;
 import com.google.common.collect.Sets;
-import com.uib.web.peptideshaker.presenter.core.FilterButton;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.RegistrableFilter;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.SelectionManager;
+import com.uib.web.peptideshaker.ui.components.items.FilterButton;
+import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
+import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager;
 import com.vaadin.data.Property;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.shared.ui.MarginInfo;
@@ -39,20 +39,20 @@ import java.util.TreeMap;
 public abstract class DivaRangeFilter extends AbsoluteLayout implements Property.ValueChangeListener, RegistrableFilter {
 
     private final String filterId;
-    private final SelectionManager Selection_Manager;
+    private final ResultsViewSelectionManager Selection_Manager;
 
     private final VerticalLayout chartContainer;
     private final Label chartImage;
     private final Slider upperRangeSlider;
     private final Slider lowerRangeSlider;
     private final AbsoluteLayout slidersContainer;
-    private final TreeMap<Comparable, Set<Comparable>> activeData;
+    private final TreeMap<Integer, Set<Integer>> activeData;
     private final Label chartTitle;
     private final JFreeChart mainChart;
     private final FilterButton resetFilterBtn;
     private final String title;
     private final String sign;
-    private TreeMap<Comparable, Set<Comparable>> data;
+    private TreeMap<Integer, Set<Integer>> data;
     private int chartWidth;
     private int chartHeight;
     private double maxValue;
@@ -60,7 +60,7 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
     private Set<Comparable> lastselectedItems = new LinkedHashSet<>();
     private Set<Comparable> lastselectedCategories = new LinkedHashSet<>();
 
-    public DivaRangeFilter(String title, String filterId, SelectionManager Selection_Manager) {
+    public DivaRangeFilter(String title, String filterId, ResultsViewSelectionManager Selection_Manager) {
 
         DivaRangeFilter.this.setStyleName("rangefilter");
         this.filterId = filterId;
@@ -164,7 +164,7 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
 
     }
 
-    public void initializeFilterData(TreeMap<Comparable, Set<Comparable>> data) {
+    public void initializeFilterData(TreeMap<Integer, Set<Integer>> data) {
         activeData.clear();
         if (data.isEmpty()) {
             upperRangeSlider.setEnabled(false);
@@ -198,6 +198,7 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
         if (this.data == null) {
             this.data = data;
         }
+          chartImage.setValue(saveToFile(mainChart, chartWidth, chartHeight));
 
     }
 
@@ -339,7 +340,7 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
                 //reset filter value to oreginal 
                 initializeFilterData(this.data);
             } else {
-                TreeMap<Comparable, Set<Comparable>> tPieChartValues = new TreeMap<>();
+                TreeMap<Integer, Set<Integer>> tPieChartValues = new TreeMap<>();
                 data.keySet().forEach((key) -> {
                     LinkedHashSet<Comparable> tSet = new LinkedHashSet<>(Sets.intersection(data.get(key), selectedItems));
                     if (!tSet.isEmpty()) {

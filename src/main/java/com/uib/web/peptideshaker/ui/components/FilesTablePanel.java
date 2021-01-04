@@ -7,6 +7,8 @@ import com.uib.web.peptideshaker.model.VisualizationDatasetModel;
 import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
 import com.uib.web.peptideshaker.ui.components.items.ActionLabel;
 import com.uib.web.peptideshaker.ui.components.items.StatusLabel;
+import com.uib.web.peptideshaker.ui.views.ResultsView;
+import com.uib.web.peptideshaker.ui.views.subviews.DatasetProteinsSubView;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.Page;
 
@@ -147,138 +149,147 @@ public class FilesTablePanel extends Panel {
         int i = 1;
         int ii = 1;
         for (VisualizationDatasetModel dataset : datasetSet) {
-
-            StatusLabel statusLabel = new StatusLabel();
-            statusLabel.setStatus(dataset.getStatus());
-            if (statusLabel.getStatus().equals(CONSTANT.ERROR_STATUS)) {
-                statusLabel.setStatus("Some files are missings or corrupted");
-            }
-
-            ActionLabel downloadLabel = new ActionLabel(VaadinIcons.DOWNLOAD_ALT, "Download File") {
-                @Override
-                public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                    Page.getCurrent().open(dataset.getDownloadUrl() + "to_ext=" + CONSTANT.ZIP_FILE_EXTENSION, "download='file'", true);
-                }
-            };
-            ActionLabel deleteLabel = new ActionLabel(VaadinIcons.TRASH, "Delete Dataset") {
-                @Override
-                public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                    appManagmentBean.getNotificationFacade().confirmAlertNotification(VaadinIcons.TRASH.getHtml() + " Are you sure you want to delete the dataset?", (Button.ClickEvent event1) -> {
-                        appManagmentBean.getUserHandler().deleteDataset(dataset);
-                    });
+            try {
+                StatusLabel statusLabel = new StatusLabel();
+                statusLabel.setStatus(dataset.getStatus());
+                if (statusLabel.getStatus().equals(CONSTANT.ERROR_STATUS)) {
+                    statusLabel.setStatus("Some files are missings or corrupted");
                 }
 
-            };
-            if (dataset.isUploadedDataset()) {
-                String dsName = dataset.getName();
-                nameLabel = new ActionLabel(VaadinIcons.CLUSTER, dsName, "Uploaded Project results ") {
+                ActionLabel downloadLabel = new ActionLabel(VaadinIcons.DOWNLOAD_ALT, "Download File") {
                     @Override
                     public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-
-                    }
-
-                };
-                nameLabel.addStyleName("bluecolor");
-                nameLabel.addStyleName("orangecolor");
-                datasetLabelSet.put(dataset.getId(), (ActionLabel) nameLabel);
-                PopupWindow infoLabel = new PopupWindow("   ") {
-                    @Override
-                    public void onClosePopup() {
+                        Page.getCurrent().open(dataset.getDownloadUrl() + "to_ext=" + CONSTANT.ZIP_FILE_EXTENSION, "download='file'", true);
                     }
                 };
-                infoLabel.setIcon(VaadinIcons.INFO_CIRCLE_O);
-                VerticalLayout labelContainer = new VerticalLayout();
-                labelContainer.addStyleName("maxwidth90per");
-                labelContainer.setWidthUndefined();
-                labelContainer.setHeight(260, Unit.PIXELS);
-                Label datasetoverviewLabel = new Label("<h1>Uploaded Project</h1><p>Project:      " + dataset.getName() + "</p><p>Upload time: " + dataset.getCreatedTime() + "</p><p>FASTA:       " + dataset.getFastaFileName() + "</p><p>Proteins:    " + dataset.getProteinFileName() + "</p><p>Peptides:    " + dataset.getPeptideFileName() + "</p>", ContentMode.HTML);
-                datasetoverviewLabel.setSizeFull();
-                datasetoverviewLabel.setStyleName("uploadeddsinfo");
-                labelContainer.addComponent(datasetoverviewLabel);
-                infoLabel.addStyleName("centeredicon");
-                infoLabel.setContent(labelContainer);
-                infoLabel.setDescription("View search settings ");
-                infoLabel.setClosable(true);
-
-                String quant = "";
-                String quantTooltip = "";
-                if (dataset.getDatasetType().equals(CONSTANT.QUANT_DATASET)) {
-                    quant = "<font>Quant</font>";
-                }
-                Label type = new Label(VaadinIcons.FILE_TEXT_O.getHtml() + "<div class='overlayicon'>" + VaadinIcons.ARROW_CIRCLE_UP_O.getHtml() + "</div>" + quant, ContentMode.HTML);
-
-                type.setDescription(dataset.getDatasetType() + " " + quantTooltip);
-                type.setStyleName("smalliconlabel");
-                type.addStyleName("datatypeicon");
-                ClipboardComponent shareLabel = new ClipboardComponent("");
-                shareLabel.setEnabled(false);
-                downloadLabel.setEnabled(false);
-                HorizontalLayout rowLayout = initializeRowData(new Component[]{new Label(i + ""), nameLabel, type, infoLabel, shareLabel, downloadLabel, deleteLabel, statusLabel}, false);
-                topDataTable.addComponent(rowLayout);
-            } else {
-
-                nameLabel = new ActionLabel(VaadinIcons.CLUSTER, dataset.getName(), "PeptideShaker results ") {
+                downloadLabel.setEnabled(dataset.getDatasetSource().equals(CONSTANT.GALAXY_SOURCE));
+                ActionLabel deleteLabel = new ActionLabel(VaadinIcons.TRASH, "Delete Dataset") {
                     @Override
                     public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-
+                        appManagmentBean.getNotificationFacade().confirmAlertNotification(VaadinIcons.TRASH.getHtml() + " Are you sure you want to delete the dataset?", (Button.ClickEvent event1) -> {
+                            appManagmentBean.getUserHandler().deleteDataset(dataset);
+                        });
                     }
 
                 };
-                nameLabel.addStyleName("bluecolor");
-                nameLabel.addStyleName("orangecolor");
-                datasetLabelSet.put(dataset.getId(), (ActionLabel) nameLabel);
-                PopupWindow infoLabel = new PopupWindow("   ") {
-                    @Override
-                    public void onClosePopup() {
-                    }
-
-                };
-                infoLabel.setIcon(VaadinIcons.INFO_CIRCLE_O);
-                infoLabel.addStyleName("centeredicon");
-                if (dataset.getStatus().equals(CONSTANT.OK_STATUS)) {
-                    FileOverviewLayout fileOverview = new FileOverviewLayout(dataset) {
-                        private final PopupWindow tFileOverview = (PopupWindow) infoLabel;
-
+                if (dataset.getDatasetSource().equals(CONSTANT.USER_UPLOAD_SOURCE)) {
+                    String dsName = dataset.getName();
+                    nameLabel = new ActionLabel(VaadinIcons.CLUSTER, dsName, "Uploaded Project results ") {
                         @Override
-                        public void close() {
-                            ((PopupWindow) tFileOverview).setPopupVisible(false);
+                        public void layoutClick(LayoutEvents.LayoutClickEvent event) {
+                            appManagmentBean.getUI_Manager().setSelectedDatasetId(dataset.getId());
+                            appManagmentBean.getUI_Manager().viewLayout(ResultsView.class.getName());
+                            appManagmentBean.getUI_Manager().viewSubLayout(ResultsView.class.getName(), DatasetProteinsSubView.class.getName());
                         }
 
                     };
-                    infoLabel.setContent(fileOverview);
-                }
-                infoLabel.setDescription("Information! ");
-                infoLabel.setClosable(false);
-                if (statusLabel.getStatus().equals(CONSTANT.ERROR)) {
-                    statusLabel.setStatus("Some files are missings or corrupted please re-run SearchGUI-PeptideShaker-WorkFlow");
-                }//
-                String link = dataset.getSharingLink();
+                    nameLabel.addStyleName("bluecolor");
+                    nameLabel.addStyleName("orangecolor");
+                    datasetLabelSet.put(dataset.getId(), (ActionLabel) nameLabel);
+                    PopupWindow infoLabel = new PopupWindow("   ") {
+                        @Override
+                        public void onClosePopup() {
+                        }
+                    };
+                    infoLabel.setIcon(VaadinIcons.INFO_CIRCLE_O);
+                    VerticalLayout labelContainer = new VerticalLayout();
+                    labelContainer.addStyleName("maxwidth90per");
+                    labelContainer.setWidthUndefined();
+                    labelContainer.setHeight(260, Unit.PIXELS);
+                    Label datasetoverviewLabel = new Label("<h1>Uploaded Project</h1><p>Project:      " + dataset.getName() + "</p><p>Upload time: " + dataset.getCreatedTime() + "</p><p>FASTA:       " + dataset.getFastaFileName() + "</p><p>Proteins:    " + dataset.getProteinFileName() + "</p><p>Peptides:    " + dataset.getPeptideFileName() + "</p>", ContentMode.HTML);
+                    datasetoverviewLabel.setSizeFull();
+                    datasetoverviewLabel.setStyleName("uploadeddsinfo");
+                    labelContainer.addComponent(datasetoverviewLabel);
+                    infoLabel.addStyleName("centeredicon");
+                    infoLabel.setContent(labelContainer);
+                    infoLabel.setDescription("View search settings ");
+                    infoLabel.setClosable(true);
 
-                ClipboardComponent shareLabel = new ClipboardComponent(link);
-                shareLabel.setEnabled(!dataset.isUploadedDataset());
-                infoLabel.addStyleName("centeredicon");
-                String quant = null;
-                if (dataset.getDatasetType().equals(CONSTANT.QUANT_DATASET)) {
-                    quant = "Quant";
+                    String quant = "";
+                    String quantTooltip = "";
+                    if (dataset.getDatasetType().equals(CONSTANT.QUANT_DATASET)) {
+                        quant = "<font>Quant</font>";
+                    }
+                    Label type = new Label(VaadinIcons.FILE_TEXT_O.getHtml() + "<div class='overlayicon'>" + VaadinIcons.ARROW_CIRCLE_UP_O.getHtml() + "</div>" + quant, ContentMode.HTML);
+
+                    type.setDescription(dataset.getDatasetType() + " " + quantTooltip);
+                    type.setStyleName("smalliconlabel");
+                    type.addStyleName("datatypeicon");
+                    ClipboardComponent shareLabel = new ClipboardComponent("");
+                    shareLabel.setEnabled(false);
+                    downloadLabel.setEnabled(false);
+                    HorizontalLayout rowLayout = initializeRowData(new Component[]{new Label(i + ""), nameLabel, type, infoLabel, shareLabel, downloadLabel, deleteLabel, statusLabel}, false);
+                    topDataTable.addComponent(rowLayout);
+
+                } else {
+
+                    nameLabel = new ActionLabel(VaadinIcons.CLUSTER, dataset.getName(), "PeptideShaker results ") {
+                        @Override
+                        public void layoutClick(LayoutEvents.LayoutClickEvent event) {
+                            appManagmentBean.getUI_Manager().setSelectedDatasetId(dataset.getId());
+                            appManagmentBean.getUI_Manager().viewLayout(ResultsView.class.getName());
+                            appManagmentBean.getUI_Manager().viewSubLayout(ResultsView.class.getName(), DatasetProteinsSubView.class.getName());
+                        }
+
+                    };
+                    nameLabel.addStyleName("bluecolor");
+                    nameLabel.addStyleName("orangecolor");
+                    datasetLabelSet.put(dataset.getId(), (ActionLabel) nameLabel);
+                    PopupWindow infoLabel = new PopupWindow("   ") {
+                        @Override
+                        public void onClosePopup() {
+                        }
+
+                    };
+                    infoLabel.setIcon(VaadinIcons.INFO_CIRCLE_O);
+                    infoLabel.addStyleName("centeredicon");
+                    if (dataset.getStatus().equals(CONSTANT.OK_STATUS)) {
+                        FileOverviewLayout fileOverview = new FileOverviewLayout(dataset) {
+                            private final PopupWindow tFileOverview = (PopupWindow) infoLabel;
+
+                            @Override
+                            public void close() {
+                                ((PopupWindow) tFileOverview).setPopupVisible(false);
+                            }
+
+                        };
+                        infoLabel.setContent(fileOverview);
+                    }
+                    infoLabel.setDescription("Information! ");
+                    infoLabel.setClosable(false);
+                    if (statusLabel.getStatus().equals(CONSTANT.ERROR)) {
+                        statusLabel.setStatus("Some files are missings or corrupted please re-run SearchGUI-PeptideShaker-WorkFlow");
+                    }//
+                    String link = dataset.getSharingLink();
+
+                    ClipboardComponent shareLabel = new ClipboardComponent(link);
+                    shareLabel.setEnabled(dataset.getDatasetSource().equals(CONSTANT.GALAXY_SOURCE));
+                    infoLabel.addStyleName("centeredicon");
+                    String quant = null;
+                    if (dataset.getDatasetType().equals(CONSTANT.QUANT_DATASET)) {
+                        quant = "Quant";
+                    }
+                    Label type = new Label(quant);
+                    type.setIcon(new ThemeResource("img/psiconHRNS.png"));
+                    type.setDescription(dataset.getDatasetTypeString());
+                    type.setStyleName("smalliconlabel");
+                    HorizontalLayout rowLayout = initializeRowData(new Component[]{new Label(i + ""), nameLabel, type, infoLabel, shareLabel, downloadLabel, deleteLabel, statusLabel}, false);
+                    topDataTable.addComponent(rowLayout);
+                    if (statusLabel.getStatus().equals(CONSTANT.ERROR_STATUS)) {
+                        rowLayout.setEnabled(false);
+                    } else if (statusLabel.getStatus().equals(CONSTANT.RUNNING_STATUS)) {
+                        rowLayout.getComponent(0).setReadOnly(true);
+                        rowLayout.getComponent(1).setReadOnly(true);
+                        rowLayout.getComponent(2).setReadOnly(true);
+                        rowLayout.getComponent(3).setEnabled(false);
+                        rowLayout.getComponent(4).setEnabled(false);
+                        rowLayout.getComponent(5).setEnabled(false);
+                        rowLayout.getComponent(6).setEnabled(false);
+                        rowLayout.getComponent(7).setEnabled(true);
+                    }
                 }
-                Label type = new Label(quant);
-                type.setIcon(new ThemeResource("img/psiconHRNS.png"));
-                type.setDescription(dataset.getDatasetTypeString());
-                type.setStyleName("smalliconlabel");
-                HorizontalLayout rowLayout = initializeRowData(new Component[]{new Label(i + ""), nameLabel, type, infoLabel, shareLabel, downloadLabel, deleteLabel, statusLabel}, false);
-                topDataTable.addComponent(rowLayout);
-                if (statusLabel.getStatus().equals(CONSTANT.ERROR_STATUS)) {
-                    rowLayout.setEnabled(false);
-                } else if (statusLabel.getStatus().equals(CONSTANT.RUNNING_STATUS)) {
-                    rowLayout.getComponent(0).setReadOnly(true);
-                    rowLayout.getComponent(1).setReadOnly(true);
-                    rowLayout.getComponent(2).setReadOnly(true);
-                    rowLayout.getComponent(3).setEnabled(false);
-                    rowLayout.getComponent(4).setEnabled(false);
-                    rowLayout.getComponent(5).setEnabled(false);
-                    rowLayout.getComponent(6).setEnabled(false);
-                    rowLayout.getComponent(7).setEnabled(true);
-                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             i++;
         }
@@ -385,8 +396,8 @@ public class FilesTablePanel extends Panel {
         datasetLabelSet.values().forEach((dsNameLabel) -> {
             dsNameLabel.updateLabelTitle(dsNameLabel.getLabelValue().replace(html_Img, ""));
         });
-        if (appManagmentBean.getUI_Manager().getViewedDatasetId() != null) {
-            ActionLabel dsNameLabel = datasetLabelSet.get(appManagmentBean.getUI_Manager().getViewedDatasetId());
+        if (appManagmentBean.getUI_Manager().getSelectedDatasetId() != null) {
+            ActionLabel dsNameLabel = datasetLabelSet.get(appManagmentBean.getUI_Manager().getSelectedDatasetId());
             dsNameLabel.updateLabelTitle(dsNameLabel.getLabelValue() + html_Img);
         }
 

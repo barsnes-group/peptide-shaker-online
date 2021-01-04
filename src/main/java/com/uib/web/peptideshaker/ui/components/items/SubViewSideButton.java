@@ -12,7 +12,7 @@ import com.vaadin.ui.Label;
  *
  * @author Yehia Farag
  */
-public class SubViewSideBtn extends HorizontalLayout {
+public class SubViewSideButton extends HorizontalLayout {
 
     private final Label iconLabel;
     private final int btnId;
@@ -24,11 +24,11 @@ public class SubViewSideBtn extends HorizontalLayout {
      * @param text  buttons text
      * @param btnId buttons id
      */
-    public SubViewSideBtn(String text, int btnId) {
+    public SubViewSideButton(String text, int btnId) {
         btnThumbIconImage = new Image() {
             @Override
             public void setSource(Resource source) {
-                SubViewSideBtn.this.setVisible((source != null));
+                SubViewSideButton.this.setVisible((source != null));
                 if (source == null || btnThumbIconImage.getSource() == source) {
                     return;
                 }
@@ -44,16 +44,16 @@ public class SubViewSideBtn extends HorizontalLayout {
         this.iconLabel.setSizeFull();
         this.iconLabel.setContentMode(ContentMode.HTML);
         this.btnId = btnId;
-        SubViewSideBtn.this.setHeight(100, Unit.PIXELS);
-        SubViewSideBtn.this.setWidth(100, Unit.PIXELS);
-        SubViewSideBtn.this.addComponent(btnThumbIconImage);
-        SubViewSideBtn.this.setComponentAlignment(btnThumbIconImage, Alignment.MIDDLE_CENTER);
-        SubViewSideBtn.this.setExpandRatio(btnThumbIconImage, 1);
-        SubViewSideBtn.this.addComponent(iconLabel);
-        SubViewSideBtn.this.setComponentAlignment(iconLabel, Alignment.MIDDLE_CENTER);
-        SubViewSideBtn.this.setExpandRatio(iconLabel, 1);
-        SubViewSideBtn.this.setSizeFull();
-        SubViewSideBtn.this.setStyleName("bigmenubtn");
+        SubViewSideButton.this.setHeight(100, Unit.PIXELS);
+        SubViewSideButton.this.setWidth(100, Unit.PIXELS);
+        SubViewSideButton.this.addComponent(btnThumbIconImage);
+        SubViewSideButton.this.setComponentAlignment(btnThumbIconImage, Alignment.MIDDLE_CENTER);
+        SubViewSideButton.this.setExpandRatio(btnThumbIconImage, 1);
+        SubViewSideButton.this.addComponent(iconLabel);
+        SubViewSideButton.this.setComponentAlignment(iconLabel, Alignment.MIDDLE_CENTER);
+        SubViewSideButton.this.setExpandRatio(iconLabel, 1);
+        SubViewSideButton.this.setSizeFull();
+        SubViewSideButton.this.setStyleName("bigmenubtn");
 
     }
 
@@ -115,9 +115,9 @@ public class SubViewSideBtn extends HorizontalLayout {
      */
     public void setSelected(boolean selected) {
         if (selected) {
-            SubViewSideBtn.this.addStyleName("selectedbiglbtn");
+            SubViewSideButton.this.addStyleName("selectedbiglbtn");
         } else {
-            SubViewSideBtn.this.removeStyleName("selectedbiglbtn");
+            SubViewSideButton.this.removeStyleName("selectedbiglbtn");
         }
     }
 

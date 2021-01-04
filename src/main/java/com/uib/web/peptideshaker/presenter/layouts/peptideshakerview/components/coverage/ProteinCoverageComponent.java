@@ -1,9 +1,9 @@
 package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage;
 
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideObject;
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.ProteinGroupObject;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.components.RangeColorGenerator;
+import com.uib.web.peptideshaker.model.PeptideObject;
+import com.uib.web.peptideshaker.model.ProteinGroupObject;
+import com.uib.web.peptideshaker.ui.components.RangeColorGenerator;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Component;

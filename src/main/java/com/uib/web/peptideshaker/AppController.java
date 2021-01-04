@@ -30,7 +30,6 @@ public class AppController {
      */
     private ModelLayer Model_Layer;
     private Future uiExecutorFuture;
-//    private Future modelFuture;
     private boolean availableGalaxyServer;
     private final AppManagmentBean appManagmentBean;
 

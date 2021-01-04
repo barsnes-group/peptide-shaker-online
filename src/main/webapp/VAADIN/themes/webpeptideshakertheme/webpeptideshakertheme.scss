@@ -8972,9 +8972,10 @@
     position: relative !important;
   }
   .v-horizontallayout-minhight30 .v-horizontallayout .v-absolutelayout-infopopupcontainer {
-    width: 40px !important;
-    margin-top: -5px;
-    margin-left: -15px;
+   width: 40px !important;
+	/** margin-top: -5px;*/
+	margin-left: -15px;
+        line-height: 30px;
 
   }
 
@@ -9083,9 +9084,24 @@
 .workflowstyle .v-absolutelayout-searchguiicon, .filesystemstyle .v-absolutelayout-dataoverviewsmallbtn, .resultsviewstyle .v-absolutelayout-resultsmallbtn{
     border-color:orange !important;
 }
-.v-readonly .v-icon{
+/*.v-readonly .v-icon{
 	color:gray !important;
+}*/
+.v-horizontallayout-bigmenubtn.v-horizontallayout-prideimg  {
+	height:100px !important;
 }
+
+.useruploaddatasubviewstyle .v-horizontallayout-uploadbigbtn, .pridesubviewstyle  .v-horizontallayout-prideimg , .datasetproteinssubviewstyle .v-horizontallayout-dsoverviewbtn{
+    border-color: orange !important;
+    border-right-color:white !important;
+}
+
+
+.v-absolutelayout-wrapper-infopopup .v-popupview-infopopup .v-icon.v-icon-question_circle{
+	
+}
+
+
 }
 
 

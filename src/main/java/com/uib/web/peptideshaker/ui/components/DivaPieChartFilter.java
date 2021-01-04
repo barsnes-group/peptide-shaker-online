@@ -1,13 +1,13 @@
-package com.uib.web.peptideshaker.presenter.core.filtercharts.filters;
+package com.uib.web.peptideshaker.ui.components;
 
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.ComponentResizeListener;
 import com.ejt.vaadin.sizereporter.SizeReporter;
 import com.google.common.collect.Sets;
-import com.uib.web.peptideshaker.presenter.core.FilterButton;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.RegistrableFilter;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.components.LegendItem;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.SelectionManager;
+import com.uib.web.peptideshaker.ui.components.items.FilterButton;
+import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
+import com.uib.web.peptideshaker.ui.components.items.LegendItem;
+import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.Page;
 import com.vaadin.shared.ui.absolutelayout.AbsoluteLayoutState;
@@ -41,10 +41,10 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
     private final String title;
     private final String filterId;
     private final Set<Comparable> fullItemsSet;
-    private final SelectionManager Selection_Manager;
+    private final ResultsViewSelectionManager Selection_Manager;
     private final Set<Comparable> appliedFilter;
     /**
-     * The highlight selection color (required by JFree chart).
+     * The highlight selection colour (required by JFree chart).
      */
     private final Color selectedColor = Color.decode("#197de1");
     /**
@@ -59,14 +59,6 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
      */
     private int mainWidth;
     /**
-     * A wite layout that has the label and turn pie-chart into donut chart.
-     */
-//    private VerticalLayout middleDountLayout;
-    /**
-     * The chart label contain the total number of datasets.
-     */
-//    private Label selectAllLabel;
-    /**
      * The height of the chart.
      */
     private int mainHeight;
@@ -77,14 +69,13 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
      * The bar-chart JFree chart (required by JFree chart).
      */
     private JFreeChart chart;
-//    private int imageRepaintCounter;
     private FilterButton resetFilterBtn;
     private VerticalLayout rightLayout;
     private AbsoluteLayout mainChartContainer;
-    private Map<String, Set<Comparable>> fullData;
+    private Map<String, Set<Integer>> fullData;
     private List<Color> colorsList;
 
-    public DivaPieChartFilter(String title, String filterId, SelectionManager Selection_Manager) {
+    public DivaPieChartFilter(String title, String filterId, ResultsViewSelectionManager Selection_Manager) {
         this.mainWidth = -1;
         this.mainHeight = -1;
         this.title = title;
@@ -96,7 +87,6 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
         this.dountChartListener = (LayoutEvents.LayoutClickEvent event) -> {
             Component clickedComponent = event.getClickedComponent();
             if (clickedComponent instanceof Label && clickedComponent.getId() != null && clickedComponent.getId().equalsIgnoreCase(this.title)) {
-
                 ChartEntity ent = mainChartRenderingInfo.getEntityCollection().getEntity(event.getRelativeX(), event.getRelativeY());
                 if (ent instanceof PieSectionEntity) {
                     applyFilter(((PieSectionEntity) ent).getSectionKey() + "");
@@ -148,18 +138,6 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
         frame.addComponent(mainChartContainer, "left:-10px; top:20px;right:70px;bottom:5px");
         mainChartContainer.addLayoutClickListener(dountChartListener);
 
-//        middleDountLayout = new VerticalLayout();
-//        middleDountLayout.setSizeFull();
-//        middleDountLayout.setVisible(false);
-////        mainChartContainer.addComponent(middleDountLayout, "left:0px; top:0px;");
-//        selectAllLabel = new Label();//"<center>1000000</center>", ContentMode.HTML);
-//        selectAllLabel.addStyleName("middledountchart");
-//        selectAllLabel.addStyleName(ValoTheme.LABEL_TINY);
-//        selectAllLabel.addStyleName(ValoTheme.LABEL_SMALL);
-//        selectAllLabel.setReadOnly(true);
-//        
-//        middleDountLayout.addComponent(selectAllLabel);
-//        middleDountLayout.setComponentAlignment(selectAllLabel, Alignment.MIDDLE_CENTER);
         mainChartImg = new Label("", ContentMode.HTML);
         mainChartImg.setVisible(true);
         mainChartImg.setId(title);
@@ -221,7 +199,6 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
             mainHeight = tChartHeight;
             updateComponentSize();
             redrawChart();
-//            middleDountLayout.setVisible(true);
             mainChartImg.setVisible(true);
         } catch (Exception ex) {
             System.out.println("at error " + this.getClass().getName() + "  " + ex);
@@ -229,9 +206,9 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
 
     }
 
-    public void initializeFilterData(Map<String, Set<Comparable>> fullData, List<Color> colorsArr) {
+    public void initializeFilterData(Map<String, Set<Integer>> fullData, List<Color> colorsArr) {
         activateFilter = true;
-        Map<String, Set<Comparable>> filterfullData = new LinkedHashMap<>(fullData);
+        Map<String, Set<Integer>> filterfullData = new LinkedHashMap<>(fullData);
         colorsList = new ArrayList<>(colorsArr);
         int index = 0;
         filterfullData.keySet().stream().filter((key) -> (fullData.get(key).isEmpty())).map((key) -> {
@@ -250,9 +227,9 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
 
     }
 
-    public void initializeFilterData(Map<String, Set<Comparable>> fullData, Map<String, Color> colorMap) {
+    public void initializeFilterData(Map<String, Set<Integer>> fullData, Map<String, Color> colorMap) {
         activateFilter = true;
-        Map<String, Set<Comparable>> filterfullData = new LinkedHashMap<>(fullData);
+        Map<String, Set<Integer>> filterfullData = new LinkedHashMap<>(fullData);
         colorsList = new ArrayList<>();
         filterfullData.keySet().stream().filter((key) -> (fullData.get(key).isEmpty())).map((key) -> {
             fullData.remove(key);
@@ -269,14 +246,7 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
         sizeChanged(mainWidth, mainHeight);
 
     }
-
-    //    private void reDrawLayout() {
-//        //calc 60% of width
-//        double w = Math.min(mainWidth, mainHeight);
-//        w = 60 * w / 100.0;
-//        selectAllLabel.setWidth((float) w, Unit.PIXELS);
-//        selectAllLabel.setHeight((float) w, Unit.PIXELS);
-//    }
+    
     private void unselectAll() {
         PiePlot plot = ((PiePlot) chart.getPlot());
         fullData.keySet().stream().map((sliceKey) -> {
@@ -293,7 +263,6 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
         if (mainWidth < 1 || mainHeight < 1 || !activateFilter) {
             return;
         }
-//        reDrawLayout();
         String genImgUrl = saveToFile(chart, mainChartRenderingInfo, mainWidth, mainHeight);
         mainChartImg.setValue(genImgUrl);
 
@@ -311,7 +280,7 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
                 //reset filter value to oreginal 
                 initializeFilterData(fullData, colorsList);
             } else {
-                Map<String, Set<Comparable>> tPieChartValues = new LinkedHashMap<>();
+                Map<String, Set<Integer>> tPieChartValues = new LinkedHashMap<>();
                 fullData.keySet().forEach((key) -> {
                     tPieChartValues.put(key, new LinkedHashSet<>(Sets.intersection(fullData.get(key), selectedItems)));
                 });
@@ -371,8 +340,8 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
      * Convert JFree chart into image and encode it as base64 string to be used
      * as image link.
      *
-     * @param chart  JFree chart instance
-     * @param width  Image width
+     * @param chart JFree chart instance
+     * @param width Image width
      * @param height Image height.
      */
     private String saveToFile(final JFreeChart chart, ChartRenderingInfo chartRenderingInfo, int width, int height) {
@@ -426,7 +395,7 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
 
     }
 
-    private void updateChartDataset(Map<String, Set<Comparable>> datasetValuesData) {
+    private void updateChartDataset(Map<String, Set<Integer>> datasetValuesData) {
         // column keys...    
         int counter = 0;
         // update the dataset...
@@ -452,8 +421,8 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
      * be any double value.
      *
      * @param linearValue the value to be converted to log scale
-     * @param max         The upper limit number for the input numbers
-     * @param lowerLimit  the lower limit for the input numbers
+     * @param max The upper limit number for the input numbers
+     * @param lowerLimit the lower limit for the input numbers
      * @return the value in log scale
      */
     private double scaleValues(double linearValue, double max, double lowerLimit) {

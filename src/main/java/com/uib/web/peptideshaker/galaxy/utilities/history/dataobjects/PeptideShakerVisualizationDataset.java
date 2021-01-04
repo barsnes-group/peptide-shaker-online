@@ -1,5 +1,7 @@
 package com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects;
 
+import com.uib.web.peptideshaker.model.PeptideObject;
+import com.uib.web.peptideshaker.model.ProteinGroupObject;
 import com.compomics.util.experiment.biology.aminoacids.sequence.AminoAcidPattern;
 import com.compomics.util.experiment.biology.enzymes.Enzyme;
 import com.compomics.util.experiment.biology.enzymes.EnzymeFactory;
@@ -16,9 +18,9 @@ import com.compomics.util.parameters.identification.advanced.SequenceMatchingPar
 import com.itextpdf.text.pdf.PdfName;
 import com.uib.web.peptideshaker.galaxy.utilities.history.FastaFileWebService;
 import com.uib.web.peptideshaker.galaxy.utilities.history.GalaxyDatasetServingUtil;
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.utilities.TableHeaderConstatnts;
-import com.uib.web.peptideshaker.model.core.ModificationMatrix;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.components.RangeColorGenerator;
+import com.uib.web.peptideshaker.model.TableHeaderConstatnts;
+import com.uib.web.peptideshaker.model.core.ModificationMatrixUtilis;
+import com.uib.web.peptideshaker.ui.components.RangeColorGenerator;
 import com.uib.web.peptideshaker.presenter.pscomponents.SpectrumInformation;
 import graphmatcher.NetworkGraphEdge;
 import graphmatcher.NetworkGraphNode;
@@ -1351,11 +1353,11 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      *
      * @return Modification matrix object
      */
-    public ModificationMatrix getModificationMatrix() {
+    public ModificationMatrixUtilis getModificationMatrix() {
         try {
             while (!peptideProcessFuture.isDone()) {
             }
-            return (ModificationMatrix) peptideProcessFuture.get();
+            return (ModificationMatrixUtilis) peptideProcessFuture.get();
         } catch (InterruptedException | ExecutionException ex) {
             ex.printStackTrace();
         }
@@ -1989,7 +1991,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
      * This class is used to create task that is used to process output peptide
      * file.
      */
-    private final class ProcessPeptidesTask implements Callable<ModificationMatrix> {
+    private final class ProcessPeptidesTask implements Callable<ModificationMatrixUtilis> {
 
         /**
          * Protein modifications map (based on user search input).
@@ -2023,7 +2025,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
         /**
          * Calculated matrix for Diva Matrix Layout Chart Filter.
          */
-        private ModificationMatrix modificationMatrix;
+        private ModificationMatrixUtilis modificationMatrix;
         private TreeSet<Double> proteinIntensityValuesSet;
 
         /**
@@ -2184,7 +2186,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
 
                 }
 
-                modificationMatrix = new ModificationMatrix(new LinkedMap<>(modificationMap));
+                modificationMatrix = new ModificationMatrixUtilis();//new LinkedMap<>(modificationMap)
 
                 if (uploadedProject) {
                     if (peptideFileHeaderIndexerMap.get(table_headers.Quant) != -1) {
@@ -2275,7 +2277,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
          *
          * @return Modification matrix object
          */
-        public ModificationMatrix getModificationMatrix() {
+        public ModificationMatrixUtilis getModificationMatrix() {
             return modificationMatrix;
         }
 
@@ -2305,7 +2307,7 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
          * @throws Exception
          */
         @Override
-        public ModificationMatrix call() throws Exception {
+        public ModificationMatrixUtilis call() throws Exception {
             return this.modificationMatrix;
         }
 

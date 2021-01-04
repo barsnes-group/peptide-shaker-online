@@ -6,9 +6,7 @@ import com.uib.web.peptideshaker.model.GalaxyCollectionModel;
 import com.uib.web.peptideshaker.model.GalaxyFileModel;
 import com.uib.web.peptideshaker.model.VisualizationDatasetModel;
 import com.vaadin.server.VaadinSession;
-import com.vaadin.ui.UI;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -80,21 +78,20 @@ public class UserHandler implements Serializable {
         Object[] userData = appManagmentBean.getGalaxyFacad().getUserData(loggedinUserAPIKey);
         this.collectionList = (List<GalaxyCollectionModel>) userData[0];
         this.filesMap = (Map<String, GalaxyFileModel>) userData[1];
-        this.userInformationMap.put(CONSTANT.FILES_NUMBER, filesToViewList.size() + "");
         filesToViewList.addAll(filesMap.values());
         return busyHistory;
     }
 
     private Set<VisualizationDatasetModel> constructDatasets() {
         this.datasetNames.clear();
-        Set<VisualizationDatasetModel> datasetSet = new TreeSet<>();
+        Set<VisualizationDatasetModel> tempDatasetSet = new TreeSet<>();
         filesMap.values().stream().filter((stepIFile) -> (stepIFile.getExtension().equals(CONSTANT.SEARCH_GUI_FILE_EXTENSION))).map(new Function<GalaxyFileModel, VisualizationDatasetModel>() {
             @Override
             public VisualizationDatasetModel apply(GalaxyFileModel searchGUIFile) {
                 VisualizationDatasetModel dataset;
                 if (searchGUIFile.getStatus().equals(CONSTANT.OK_STATUS)) {
                     VisualizationDatasetModel tempdataset = new VisualizationDatasetModel();
-                    tempdataset.setUploadedDataset(false);
+                    tempdataset.setDatasetSource(CONSTANT.GALAXY_SOURCE);
                     tempdataset.setName(searchGUIFile.getName());
                     tempdataset.setDatasetType(CONSTANT.ID_DATASET);
                     tempdataset.setSearchGUIZipFile(searchGUIFile);
@@ -131,7 +128,7 @@ public class UserHandler implements Serializable {
                                                     });
                                                 }
                                             } else if (collectionModel.getElementsExtension().equals(CONSTANT.TABULAR_FILE_EXTENSION)) {
-                                                collectionModel.getElements().get(0).getGalaxyJob().getInputFileIds().stream().filter((id) -> (tempdataset.getPsZipFile().getGalaxyJob().getOutputFileIds().contains(id))).map((String _item) -> {              
+                                                collectionModel.getElements().get(0).getGalaxyJob().getInputFileIds().stream().filter((id) -> (tempdataset.getPsZipFile().getGalaxyJob().getOutputFileIds().contains(id))).map((String _item) -> {
                                                     if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().equals(CONSTANT.CONVERT_CHARACTERS_TOOL_ID)) {
                                                         tempdataset.setMgfList(collectionModel);
                                                     } else if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().contains(CONSTANT.MOFF_TOOL_ID)) {
@@ -174,11 +171,12 @@ public class UserHandler implements Serializable {
             } else {
                 dataset.setCreatedTime(java.util.Calendar.getInstance().getTime());
             }
-            datasetSet.add(dataset);
+            tempDatasetSet.add(dataset);
             this.datasetNames.add(dataset.getName().trim().toLowerCase());
         });
-        this.userInformationMap.put(CONSTANT.PS_DATASET_NUMBER, datasetSet.size() + "");
-        return datasetSet;
+        this.userInformationMap.put(CONSTANT.PS_DATASET_NUMBER, tempDatasetSet.size() + "");
+        this.userInformationMap.put(CONSTANT.FILES_NUMBER, filesToViewList.size() + "");
+        return tempDatasetSet;
     }
 
     public Map<String, String> getUserInformation() {
@@ -294,6 +292,7 @@ public class UserHandler implements Serializable {
     public void syncAndUpdateUserData() {
         this.synchronizeWithGalaxyHistory();
         this.datasetSet = this.constructDatasets();
+
     }
 
     public boolean checkBusyHistory() {
@@ -307,6 +306,7 @@ public class UserHandler implements Serializable {
 
     private boolean toFollowUpBusyHistory;
     private ScheduledFuture toFollowUpBusyHistoryFuture;
+
     public void forceBusyHistory() {
         toFollowUpBusyHistory = true;
         appManagmentBean.getUI_Manager().setOngoingJob(true);
@@ -316,8 +316,8 @@ public class UserHandler implements Serializable {
                 toFollowUpBusyHistory = false;
             }
             if (!busyHistory && !toFollowUpBusyHistory) {
-                syncAndUpdateUserData();               
-                appManagmentBean.getUI_Manager().updateAll(); 
+                syncAndUpdateUserData();
+                appManagmentBean.getUI_Manager().updateAll();
                 appManagmentBean.getUI_Manager().setOngoingJob(false);
                 toFollowUpBusyHistoryFuture.cancel(true);
                 appManagmentBean.getNotificationFacade().showInfoNotification("Data are ready to visualize!");
@@ -325,6 +325,16 @@ public class UserHandler implements Serializable {
 
         }, 0, 20, TimeUnit.SECONDS);
         appManagmentBean.addScheduledFuture(toFollowUpBusyHistoryFuture);
+
+    }
+
+    public VisualizationDatasetModel getDataset(String datasetId){
+        for (VisualizationDatasetModel dataset : datasetSet) {
+            if (dataset.getId().equalsIgnoreCase(datasetId)) {
+                return dataset;
+            }
+        }
+        return null;
 
     }
 

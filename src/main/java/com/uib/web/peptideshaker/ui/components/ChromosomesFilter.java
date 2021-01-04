@@ -1,10 +1,9 @@
-package com.uib.web.peptideshaker.presenter.core.filtercharts.filters;
+package com.uib.web.peptideshaker.ui.components;
 
 import com.google.common.collect.Sets;
-import com.uib.web.peptideshaker.presenter.core.FilterButton;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.RegistrableFilter;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.components.RangeColorGenerator;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.SelectionManager;
+import com.uib.web.peptideshaker.ui.components.items.FilterButton;
+import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
+import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
@@ -27,7 +26,7 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
     private final Set<Comparable> appliedFilters;
     private final Map<Integer, Set<Comparable>> filteredData;
     private final AbsoluteLayout frame;
-    private final SelectionManager Selection_Manager;
+    private final ResultsViewSelectionManager Selection_Manager;
     private final Map<Comparable, Label> chromosomessLabelMap;
     private final Set<Comparable> selectedData;
     private final AbsoluteLayout mainChartContainer;
@@ -37,7 +36,7 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
     private Map<Integer, Set<Comparable>> fullData;
     private int totalItemsNumber;
 
-    public ChromosomesFilter(String title, String filterId, SelectionManager Selection_Manager) {
+    public ChromosomesFilter(String title, String filterId, ResultsViewSelectionManager Selection_Manager) {
 
         this.filterId = filterId;
         this.Selection_Manager = Selection_Manager;
@@ -70,8 +69,6 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
 
             }
         };
-//        resetFilterBtn.setWidth(10, Unit.PERCENTAGE);
-//        resetFilterBtn.setHeight(10, Unit.PERCENTAGE);
         resetFilterBtn.setVisible(false);
         resetFilterBtn.addStyleName("btninframe");
         resetFilterBtn.addStyleName("chromosomefilterrest");
@@ -87,9 +84,7 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
         frame.addComponent(mainFilterPanel, "top: 51px;left: 10px;right: 10px;bottom: 0px;");
 
         chromosomessLabelMap = new LinkedHashMap<>();
-        this.filteredData = new LinkedHashMap<>();
-        ;
-
+        this.filteredData = new LinkedHashMap<>();       
         this.mainClickListener = (LayoutEvents.LayoutClickEvent event) -> {
             Component clickedComponent = event.getClickedComponent();
             if (clickedComponent instanceof Label) {
@@ -140,8 +135,10 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
 
     private void updateChromosomesLabelsColor() {
         activeChromosomes = 0;
-        for (Label chromosomImg : chromosomessLabelMap.values()) {
+        chromosomessLabelMap.values().stream().map((chromosomImg) -> {
             chromosomImg.removeStyleName("pointer");
+            return chromosomImg;
+        }).forEachOrdered((chromosomImg) -> {
             int chromosomId = (int) chromosomImg.getData();
             String color = "whitesmoke";
             String desc = "No proteins";
@@ -157,18 +154,40 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
             chromosomImg.addStyleName(cursor);
             chromosomImg.addStyleName("resizableimg");
             chromosomImg.setDescription(desc);
-
-        }
+        });
     }
 
-    public void initializeFilterData(Map<Integer, Set<Comparable>> data) {
-        this.fullData = data;
+    public void initializeFilterData(Map<String, Set<Integer>> data) {
+        this.fullData = new LinkedHashMap<>();        
+        data.keySet().forEach((key) -> {
+            int chrIndex = -1;
+            try {
+                chrIndex = Integer.parseInt(key);
+            } catch (NumberFormatException ex) {
+                if (key.contains("HSCHR")) {
+                    chrIndex = Integer.parseInt(key.split("HSCHR")[1].split("_")[0].replaceAll("[\\D]", ""));
+                } else if (key.equalsIgnoreCase("X")) {
+                    chrIndex = 23;
+                } else if (key.equalsIgnoreCase("Y")) {
+                    chrIndex = 24;
+                }
+
+            }
+            if(!fullData.containsKey(chrIndex)){
+                fullData.put(chrIndex, new HashSet<>());
+            }
+            fullData.get(chrIndex).addAll(data.get(key));
+        });
+        localResetFilterData();
+
+    }
+     private void localResetFilterData() {
         filteredData.clear();
-        filteredData.putAll(data);
+        filteredData.putAll(fullData);
         appliedFilters.clear();
         selectedCategories.clear();
         TreeSet<Integer> treeSet = new TreeSet<>();
-        data.keySet().stream().map((key) -> data.get(key)).map((set) -> {
+        fullData.keySet().stream().map((key) -> fullData.get(key)).map((set) -> {
             treeSet.add(set.size());
             return set;
         }).forEachOrdered((set) -> {
@@ -195,17 +214,16 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
         if (!selfAction) {
             if (singleProteinsFilter && !selfAction && !selectedCategories.isEmpty()) {
                 //reset filter value to oreginal 
-                initializeFilterData(fullData);
+                localResetFilterData();
             } else {
                 filteredData.clear();
                 TreeSet<Integer> treeSet = new TreeSet<>();
-                for (int key : fullData.keySet()) {
+                fullData.keySet().forEach((key) -> {
                     Set<Comparable> set = fullData.get(key);
                     Set<Comparable> tSet = new LinkedHashSet<>(Sets.intersection(set, selectedItems));
                     treeSet.add(tSet.size());
                     filteredData.put(key, tSet);
-
-                }
+                });
                 if (colorGenerator != null) {
                     frame.removeComponent(colorGenerator.getColorScale());
                 }
@@ -240,10 +258,9 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
         selectedCategories.clear();
         appliedFilters.clear();
         List<Double> barChartData = new ArrayList<>();
-        for (int key : fullData.keySet()) {
-            int size = fullData.get(key).size();
+        fullData.keySet().stream().map((key) -> fullData.get(key).size()).forEachOrdered((size) -> {
             barChartData.add((double) size);
-        }
+        });
         TreeSet<Double> barChartset = new TreeSet<>(barChartData);
         double counter = 0;
         List<Double> updatedBarChartData = new ArrayList<>();

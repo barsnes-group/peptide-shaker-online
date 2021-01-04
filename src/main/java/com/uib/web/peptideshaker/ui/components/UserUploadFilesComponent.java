@@ -1,12 +1,18 @@
-package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview;
+package com.uib.web.peptideshaker.ui.components;
 
-import com.uib.web.peptideshaker.presenter.core.BasicUploader;
+import com.uib.web.peptideshaker.AppManagmentBean;
+import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.ui.components.items.HelpPopupButton;
-import com.uib.web.peptideshaker.ui.components.items.SubViewSideBtn;
-import com.uib.web.peptideshaker.presenter.core.StatusProgressLabel;
-import com.vaadin.icons.VaadinIcons;
+import com.uib.web.peptideshaker.ui.components.items.StatusProgressLabel;
+import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.*;
+import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.ProgressBar;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import org.apache.commons.collections15.map.LinkedMap;
 import pl.exsio.plupload.PluploadFile;
@@ -19,47 +25,37 @@ import java.util.Map;
  * This class represents the layout that contains PeptideShaker datasets
  * overview
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
-public abstract class UserUploadFilesContainer extends HorizontalLayout {
+public class UserUploadFilesComponent extends HorizontalLayout {
 
     private final AbsoluteLayout container;
     private final AbsoluteLayout subContainerLayout;
     private final Map<String, PluploadFile> uploadedFileMap;
     private TextField projectNameField;
     private AbsoluteLayout textFilesInputContainer;
-    //    private AbsoluteLayout mzTabInputContainer;
-//    private AbsoluteLayout mzIdentMLContainer;
     private AbsoluteLayout projectVisulizationButtonsContainer;
     private AbsoluteLayout fastaFileContainerLayout;
     private AbsoluteLayout proteinFileContainerLayout;
     private AbsoluteLayout peptideFileContainerLayout;
-//    private AbsoluteLayout moffFileContainerLayout;
+    private final AppManagmentBean appManagmentBean;
 
     /**
      * Constructor to initialise the main layout and variables.
-     *
-     * @param Selection_Manager
-     * @param uploadOwnDataBtn
      */
-    public UserUploadFilesContainer(SelectionManager Selection_Manager, SubViewSideBtn uploadOwnDataBtn) {
+    public UserUploadFilesComponent() {
 
-        UserUploadFilesContainer.this.setSizeFull();
-        UserUploadFilesContainer.this.setStyleName("transitionallayout");
-        UserUploadFilesContainer.this.setSpacing(false);
-        UserUploadFilesContainer.this.setMargin(false);
-        uploadOwnDataBtn.setDescription("Upload project files");
-        uploadOwnDataBtn.updateIconByHTMLCode(VaadinIcons.FILE_TEXT_O.getHtml() + "<div class='overlayicon'>" + VaadinIcons.ARROW_CIRCLE_UP_O.getHtml() + "</div>");//VaadinIcons.UPLOAD.getHtml()
-
-        uploadOwnDataBtn.addStyleName("padding20");
-        uploadOwnDataBtn.addStyleName("uploadbigbtn");
-        uploadOwnDataBtn.setData("upload-project");
+        appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
+        UserUploadFilesComponent.this.setSizeFull();
+        UserUploadFilesComponent.this.setStyleName("transitionallayout");
+        UserUploadFilesComponent.this.setSpacing(false);
+        UserUploadFilesComponent.this.setMargin(false);
 
         uploadedFileMap = new LinkedHashMap<>();
         container = new AbsoluteLayout();
         container.setSizeFull();
 
-        UserUploadFilesContainer.this.addComponent(container);
+        UserUploadFilesComponent.this.addComponent(container);
         HorizontalLayout topLabelContainer = new HorizontalLayout();
         topLabelContainer.setSizeFull();
         topLabelContainer.addStyleName("minhight30");
@@ -76,7 +72,7 @@ public abstract class UserUploadFilesContainer extends HorizontalLayout {
         container.addComponent(titleLabel, "left:40px;top:13px");
         HelpPopupButton helpBtn = new HelpPopupButton("<h1>Upload / Visualize Projects</h1>Users can upload and visualise their own processed files ( FASTA, protein and  peptide files )the format of the protein and peptide files should follow the sample files format <a href='VAADIN/sample_files.zip' download>[download sample files]</a>.\n"
                 + "please note that the files will be automatically deleted after the session expire.", "", 400, 150);
-        container.addComponent(helpBtn, "left:265px;top:0px");
+        container.addComponent(helpBtn, "left:265px;top:10px");
 
         AbsoluteLayout mainContainerLayout = new AbsoluteLayout();
         mainContainerLayout.setSizeFull();
@@ -142,7 +138,7 @@ public abstract class UserUploadFilesContainer extends HorizontalLayout {
         FastaFileContainer.setHeight(60, Unit.PIXELS);
         FastaFileContainer.setStyleName("titleinborder");
 
-        fastaFileContainerLayout = this.initUploaderField("FASTA File", "fasta");
+        fastaFileContainerLayout = this.initUploaderField("FASTA File", CONSTANT.FASTA_FILE_EXTENSION, CONSTANT.FASTA_FILE_EXTENSION);
         FastaFileContainer.addComponent(fastaFileContainerLayout, "left:15px;top:15px;right:15px;bottom:15px");
         return FastaFileContainer;
     }
@@ -156,10 +152,10 @@ public abstract class UserUploadFilesContainer extends HorizontalLayout {
 
 //        AbsoluteLayout fastaFileContainerLayout = this.initUploaderField("Fasta File", "fasta");
 //        initTextFilesInputContainer.addComponent(fastaFileContainerLayout, "left:15px;top:15px;right:15px");
-        proteinFileContainerLayout = this.initUploaderField("Protein File", "txt");
+        proteinFileContainerLayout = this.initUploaderField("Protein File", CONSTANT.PROTEIN_FILE_TYPE, "txt");
         initTextFilesInputContainer.addComponent(proteinFileContainerLayout, "left:15px;top:15px;right:15px");
 
-        peptideFileContainerLayout = this.initUploaderField("Peptide File", "txt");
+        peptideFileContainerLayout = this.initUploaderField("Peptide File", CONSTANT.PEPTIDE_FILE_TYPE, "txt");
         initTextFilesInputContainer.addComponent(peptideFileContainerLayout, "left:15px;top:60px;right:15px");
 
 //        moffFileContainerLayout = this.initUploaderField("Moff File", "tabular");
@@ -200,7 +196,7 @@ public abstract class UserUploadFilesContainer extends HorizontalLayout {
         return projectVisulizationButtonsLayoutContainer;
     }
 
-    private AbsoluteLayout initUploaderField(String title, String format) {
+    private AbsoluteLayout initUploaderField(String title, String fileType, String format) {
         AbsoluteLayout uploaderFieldContainer = new AbsoluteLayout();
         uploaderFieldContainer.setWidth(100, Unit.PERCENTAGE);
         uploaderFieldContainer.setHeight(30, Unit.PIXELS);
@@ -217,7 +213,9 @@ public abstract class UserUploadFilesContainer extends HorizontalLayout {
         final Label uploadedFileLabel = new Label();
         uploadedFileLabel.setSizeFull();
 
-        BasicUploader uploader = new BasicUploader() {
+        BasicUploader uploader = new BasicUploader(appManagmentBean.getAppConfig().getUserFolderUri()) {
+            private final String localFileType = fileType;
+
             @Override
             public void startFilesUpload(String fileName) {
                 uploadedFileLabel.setStyleName("uploadedfilelabel");
@@ -228,9 +226,22 @@ public abstract class UserUploadFilesContainer extends HorizontalLayout {
             @Override
             public void filesUploaded(PluploadFile[] uploadedFiles) {
                 for (PluploadFile file : uploadedFiles) {
-                    uploadedFileMap.put(title.replace("File", "").trim(), file);
-                    validationProgressLabel.setStatus("ok");
+                    boolean check = appManagmentBean.getFilesUtils().validateUploadedFiles((File) file.getUploadedFile(), localFileType);
                     uploadedFileLabel.addStyleName("done");
+                    if (check) {
+                        uploadedFileMap.put(localFileType, file);
+                        uploaderFieldContainer.removeStyleName("errorstyle");
+                        validationProgressLabel.setStatus(CONSTANT.OK_STATUS);
+                        appManagmentBean.getNotificationFacade().showInfoNotification("File uploaded");
+                    } else {
+                        uploadedFileMap.remove(localFileType);
+                        ((File) file.getUploadedFile()).delete();
+                        validationProgressLabel.setStatus(CONSTANT.ERROR_STATUS);
+                        uploaderFieldContainer.addStyleName("errorstyle");
+                        appManagmentBean.getNotificationFacade().showErrorNotification("Check the input fields");
+
+                    }
+
                 }
 
             }
@@ -248,8 +259,10 @@ public abstract class UserUploadFilesContainer extends HorizontalLayout {
             }
 
             @Override
-            public void uploadError(String error) {
-
+            public void notification(String message, boolean error) {
+                if (error) {
+                    appManagmentBean.getNotificationFacade().showErrorNotification(message);
+                }
             }
         };
         progressBar.setWidth(100, Unit.PERCENTAGE);
@@ -280,57 +293,28 @@ public abstract class UserUploadFilesContainer extends HorizontalLayout {
         if (projectNameField.getValue() == null || projectNameField.getValue().trim().equalsIgnoreCase("")) {
             projectNameField.setRequired(true);
             projectNameField.addStyleName("errorstyle");
-            Notification.show("Error", "Check the input fields", Notification.Type.TRAY_NOTIFICATION);
+            appManagmentBean.getNotificationFacade().showErrorNotification("Check the input fields");
             return;
 
         }
-        if (!uploadedFileMap.containsKey("FASTA")) {
+        if (!uploadedFileMap.containsKey(CONSTANT.FASTA_FILE_EXTENSION)) {
             fastaFileContainerLayout.addStyleName("errorstyle");
-            Notification.show("Error", "Check the input fields", Notification.Type.TRAY_NOTIFICATION);
+            appManagmentBean.getNotificationFacade().showErrorNotification("Check the input fields");
             return;
 
         }
-
-        boolean valid = true;
-        if (!uploadedFileMap.containsKey("Protein")) {
+        if (!uploadedFileMap.containsKey(CONSTANT.PROTEIN_FILE_TYPE)) {
             proteinFileContainerLayout.addStyleName("errorstyle");
-            valid = false;
-        }
-        if (!uploadedFileMap.containsKey("Peptide")) {
-            peptideFileContainerLayout.addStyleName("errorstyle");
-            valid = false;
-        }
-        if (!valid) {
+            appManagmentBean.getNotificationFacade().showErrorNotification("Check the input fields");
             return;
         }
-
-        /**
-         * data is ready to visualise*
-         */
-        boolean[] check = processVisualizationDataset(projectNameField.getValue(), new LinkedMap<>(uploadedFileMap));
-        if (!check[0]) {
-            proteinFileContainerLayout.addStyleName("errorstyle");
-            Notification.show("Check your input files", Notification.Type.ERROR_MESSAGE);
-        }
-        if (!check[1]) {
+        if (!uploadedFileMap.containsKey(CONSTANT.PEPTIDE_FILE_TYPE)) {
             peptideFileContainerLayout.addStyleName("errorstyle");
-            Notification.show("Check your input files", Notification.Type.ERROR_MESSAGE);
-        }
-
-        if (check[0] && check[1]) {
-            clearForms();
-        }
-
+            appManagmentBean.getNotificationFacade().showErrorNotification("Check the input fields");
+            return;
+        }        
+        appManagmentBean.getDatasetUtils().initialiseDatasetFromUploadedFiles(projectNameField.getValue(), uploadedFileMap);
+        clearForms();
     }
-
-    /**
-     * Visualise dataset
-     *
-     * @param projectName
-     * @param uploadedFileMap
-     * @param projectType     (1) identification data from files, (2) quant data
-     *                        from files, (3) data from mzTab, (4) data from mzIdentML file
-     */
-    public abstract boolean[] processVisualizationDataset(String projectName, Map<String, PluploadFile> uploadedFileMap);
 
 }

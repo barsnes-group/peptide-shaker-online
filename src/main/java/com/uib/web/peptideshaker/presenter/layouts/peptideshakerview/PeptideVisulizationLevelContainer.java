@@ -1,9 +1,10 @@
 package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview;
 
+import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PSMObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
-import com.uib.web.peptideshaker.ui.components.items.SubViewSideBtn;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.RegistrableFilter;
+import com.uib.web.peptideshaker.ui.components.items.SubViewSideButton;
+import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
 import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.PSMViewComponent;
 import com.uib.web.peptideshaker.presenter.pscomponents.SpectrumInformation;
 import com.vaadin.ui.AbsoluteLayout;
@@ -24,8 +25,8 @@ public class PeptideVisulizationLevelContainer extends HorizontalLayout implemen
 
     private final AbsoluteLayout container;
     private final Label headerLabel;
-    private final SelectionManager Selection_Manager;
-    private final SubViewSideBtn psmViewBtn;
+    private final ResultsViewSelectionManager Selection_Manager;
+    private final SubViewSideButton psmViewBtn;
     private final PSMViewComponent psmViewComponent;
     private PeptideShakerVisualizationDataset peptideShakerVisualizationDataset;
 
@@ -35,7 +36,7 @@ public class PeptideVisulizationLevelContainer extends HorizontalLayout implemen
      * @param Selection_Manager
      * @param psmViewBtn
      */
-    public PeptideVisulizationLevelContainer(SelectionManager Selection_Manager, SubViewSideBtn psmViewBtn) {
+    public PeptideVisulizationLevelContainer(ResultsViewSelectionManager Selection_Manager, SubViewSideButton psmViewBtn) {
 
         PeptideVisulizationLevelContainer.this.setSizeFull();
         PeptideVisulizationLevelContainer.this.setSpacing(true);

@@ -1,8 +1,8 @@
 package com.uib.web.peptideshaker.ui.views;
 
 import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
-import com.uib.web.peptideshaker.ui.components.items.SubViewSideBtn;
-import com.uib.web.peptideshaker.ui.components.WorkFlowDataInputLayout;
+import com.uib.web.peptideshaker.ui.components.items.SubViewSideButton;
+import com.uib.web.peptideshaker.ui.components.WorkFlowDataInputComponent;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
@@ -19,7 +19,7 @@ public class WorkflowInvokingView extends AbsoluteLayout implements ViewableFram
     /**
      * The work-flow input form layout container.
      */
-    protected WorkFlowDataInputLayout workflowDataInputLayout;
+    protected WorkFlowDataInputComponent workflowDataInputLayout;
     /**
      * The work-flow side button container (left side button container).
      */
@@ -42,7 +42,7 @@ public class WorkflowInvokingView extends AbsoluteLayout implements ViewableFram
         leftSideButtonsContainer.addStyleName("singlebtn");
         this.addComponent(leftSideButtonsContainer, "top:120px;left:3px");
 
-        SubViewSideBtn workFlowBtn = new SubViewSideBtn("Work-Flow", 2);
+        SubViewSideButton workFlowBtn = new SubViewSideButton("Work-Flow", 2);
         workFlowBtn.updateIconByResource(new ThemeResource("img/searchguiblue.png"));
         workFlowBtn.addStyleName("searchguiicon");
         workFlowBtn.addStyleName("padding20");
@@ -51,7 +51,7 @@ public class WorkflowInvokingView extends AbsoluteLayout implements ViewableFram
         leftSideButtonsContainer.setComponentAlignment(workFlowBtn, Alignment.TOP_LEFT);
         workFlowBtn.setSelected(true);
 
-        workflowDataInputLayout = new WorkFlowDataInputLayout();
+        workflowDataInputLayout = new WorkFlowDataInputComponent();
         workflowDataInputLayout.initLayout();
 
         AbsoluteLayout toolViewFrame = new AbsoluteLayout();

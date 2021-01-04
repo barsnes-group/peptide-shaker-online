@@ -144,9 +144,10 @@ public class WorkFlowHandler {
         JsonObject body = prepareWorkFlowInvoking(fastaFile, searchParam, inputListId, quant);
         Response response = appManagmentBean.getGalaxyFacad().invokeWorkFlow(workflowId, body);
         boolean status = response.getStatus() == HttpResponseStatus.OK.code();
+        System.out.println("at response "+response.getStatus() +"  "+response);
         JsonArray jsonArrayResp = new JsonArray(response.readEntity(String.class));
         //delete workflow
-        appManagmentBean.getGalaxyFacad().deleteWorkFlow(workflowId);
+//        appManagmentBean.getGalaxyFacad().deleteWorkFlow(workflowId);
         if (status) {
             VisualizationDatasetModel tempDataset = appManagmentBean.getDatasetUtils().getOnProgressDataset(datasetType);
             tempDataset.setName(projectName);
@@ -199,6 +200,7 @@ public class WorkFlowHandler {
             workflowFile = new File(appManagmentBean.getAppConfig().getId_workflow_file_path());
         }
 
+        System.out.println("at workflow exise "+workflowFile.exists());
         /**
          * prepare the workflow
          */
@@ -231,11 +233,11 @@ public class WorkFlowHandler {
         /**
          * PeptideShaker
          */
-        steps.getJsonObject(step+"").put("content_id", CONSTANT.PEPTIDESHAKER_TOOL_ID);
-        steps.getJsonObject(step+"").put("tool_id", CONSTANT.PEPTIDESHAKER_TOOL_ID);
-        steps.getJsonObject(step+"").put("tool_version", CONSTANT.PEPTIDESHAKER_TOOL_VERSION);
-        steps.getJsonObject(step+"").getJsonObject("post_job_actions").getJsonObject("RenameDatasetActionoutput_zip").getJsonObject("action_arguments").put("newname", projectName);
-       
+        steps.getJsonObject(step + "").put("content_id", CONSTANT.PEPTIDESHAKER_TOOL_ID);
+        steps.getJsonObject(step + "").put("tool_id", CONSTANT.PEPTIDESHAKER_TOOL_ID);
+        steps.getJsonObject(step + "").put("tool_version", CONSTANT.PEPTIDESHAKER_TOOL_VERSION);
+        steps.getJsonObject(step + "").getJsonObject("post_job_actions").getJsonObject("RenameDatasetActionoutput_zip").getJsonObject("action_arguments").put("newname", projectName);
+
         /**
          * moff tool
          */
@@ -248,7 +250,9 @@ public class WorkFlowHandler {
         JsonObject body = new JsonObject();
         body.put("workflow", workflowAsJson);
         Response response = appManagmentBean.getGalaxyFacad().uploadWorkFlow(body);
+        System.out.println("at response of upload "+response);
         JsonObject jsonObject = new JsonObject(response.readEntity(String.class));
+         System.out.println("at response of upload "+jsonObject);
         return jsonObject.getString(CONSTANT.ID);
     }
 

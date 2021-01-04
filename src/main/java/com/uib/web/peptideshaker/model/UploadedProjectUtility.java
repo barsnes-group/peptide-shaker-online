@@ -41,16 +41,16 @@ public abstract class UploadedProjectUtility {
         filesnames.add("");
         for (String key : uploadedFileMap.keySet()) {
             switch (key) {
-                case "FASTA":
+                case CONSTANT.FASTA_FILE_EXTENSION:
                     fastaFile = (File) uploadedFileMap.get(key).getUploadedFile();
                     filesnames.set(0, uploadedFileMap.get(key).getName());
                     break;
-                case "Protein":
+                case CONSTANT.PROTEIN_FILE_TYPE:
                     proteinFile = (File) uploadedFileMap.get(key).getUploadedFile();
                     checkFiles[0] = checkProteinsFile(proteinFile);
                     filesnames.set(1, uploadedFileMap.get(key).getName());
                     break;
-                case "Peptide":
+                case CONSTANT.PEPTIDE_FILE_TYPE:
                     peptideFile = (File) uploadedFileMap.get(key).getUploadedFile();
                     checkFiles[1] = checkPeptideFile(peptideFile);
                     filesnames.set(2, uploadedFileMap.get(key).getName());

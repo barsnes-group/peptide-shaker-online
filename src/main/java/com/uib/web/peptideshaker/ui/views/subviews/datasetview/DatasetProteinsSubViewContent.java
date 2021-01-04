@@ -1,17 +1,12 @@
-package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview;
+package com.uib.web.peptideshaker.ui.views.subviews.datasetview;
 
-import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager;
-import com.compomics.util.parameters.identification.IdentificationParameters;
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.ui.components.items.FilterButton;
 import com.uib.web.peptideshaker.ui.components.items.HelpPopupButton;
 import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
-import com.uib.web.peptideshaker.ui.components.items.SubViewSideButton;
-import com.uib.web.peptideshaker.ui.components.SearchParametersForm;
 import com.uib.web.peptideshaker.ui.views.subviews.datasetview.components.DatasetProteinsSubViewComponent;
+import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
@@ -22,9 +17,9 @@ import java.util.Set;
  * This class represents the layout that contains PeptideShaker datasets
  * overview
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
-public class DatasetVisulizationLevelContainer extends HorizontalLayout {
+public class DatasetProteinsSubViewContent extends HorizontalLayout {
 
     private final AbsoluteLayout container;
     private final PopupWindow headerLabel;
@@ -32,22 +27,16 @@ public class DatasetVisulizationLevelContainer extends HorizontalLayout {
 
     /**
      * Constructor to initialise the main layout and variables.
-     *
-     * @param Selection_Manager
-     * @param datasetsOverviewBtn
      */
-    public DatasetVisulizationLevelContainer(ResultsViewSelectionManager Selection_Manager, SubViewSideButton datasetsOverviewBtn) {
-        DatasetVisulizationLevelContainer.this.setSizeFull();
-        DatasetVisulizationLevelContainer.this.setStyleName("transitionallayout");
-        DatasetVisulizationLevelContainer.this.setSpacing(false);
-        DatasetVisulizationLevelContainer.this.setMargin(false);
-        datasetsOverviewBtn.setDescription("Selected dataset overview and the proteins list");
-
-        datasetsOverviewBtn.updateIconByHTMLCode(VaadinIcons.CLUSTER.getHtml());
-        datasetsOverviewBtn.updateIconByResource(new ThemeResource("img/venn_color.png"));//img/vizicon.png
+    public DatasetProteinsSubViewContent() {
+        DatasetProteinsSubViewContent.this.setSizeFull();
+        DatasetProteinsSubViewContent.this.setStyleName("transitionallayout");
+        DatasetProteinsSubViewContent.this.setSpacing(false);
+        DatasetProteinsSubViewContent.this.setMargin(false);
+        
         container = new AbsoluteLayout();
         container.setSizeFull();
-        DatasetVisulizationLevelContainer.this.addComponent(container);
+        DatasetProteinsSubViewContent.this.addComponent(container);
 
         HorizontalLayout topLabelContainer = new HorizontalLayout();
         topLabelContainer.setSizeFull();
@@ -76,7 +65,7 @@ public class DatasetVisulizationLevelContainer extends HorizontalLayout {
         FilterButton removeFilterIcon = new FilterButton() {
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                Selection_Manager.resetDatasetSelection();
+                
 
             }
         };
@@ -88,15 +77,14 @@ public class DatasetVisulizationLevelContainer extends HorizontalLayout {
         commentLabel.addStyleName("selectiondescriptionlabel");
         topLabelContainer.addComponent(commentLabel);
         topLabelContainer.setComponentAlignment(commentLabel, Alignment.TOP_RIGHT);
-        datasetVisulizationLevelComponent = new DatasetProteinsSubViewComponent(Selection_Manager) {
+        datasetVisulizationLevelComponent = new DatasetProteinsSubViewComponent(new ResultsViewSelectionManager()) {
             @Override
             public void updateFilterSelection(Set<Comparable> selection, Set<Comparable> selectedCategories, boolean topFilter, boolean selectOnly, boolean selfAction) {
-                removeFilterIcon.setVisible(Selection_Manager.isDatasetFilterApplied());
-                super.updateFilterSelection(selection, selectedCategories, topFilter, selectOnly, selfAction);
+//                removeFilterIcon.setVisible(Selection_Manager.isDatasetFilterApplied());
+//                super.updateFilterSelection(selection, selectedCategories, topFilter, selectOnly, selfAction);
             }
         };
         container.addComponent(datasetVisulizationLevelComponent, "left:0px;top:40px;");
-
         HorizontalLayout paggingBtnsContainer = new HorizontalLayout();
         paggingBtnsContainer.setWidth(100, Unit.PERCENTAGE);
         paggingBtnsContainer.setHeight(20, Unit.PIXELS);
@@ -128,28 +116,28 @@ public class DatasetVisulizationLevelContainer extends HorizontalLayout {
 
     }
 
-    public void selectDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
-
-        headerLabel.setLabelValue("Dataset: " + peptideShakerVisualizationDataset.getProjectName());
-        if (!peptideShakerVisualizationDataset.isUploadedProject() && !peptideShakerVisualizationDataset.isToShareDataset()) {
-            SearchParametersForm dsOverview = new SearchParametersForm(false) {
-            //((PeptideShakerVisualizationDataset) peptideShakerVisualizationDataset, true) {
-                @Override
-                public void saveSearchingFile(IdentificationParameters searchParameters, boolean isNew) {
-//                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-                }
-
-                @Override
-                public void cancel() {
-                    headerLabel.setPopupVisible(false);
-                }
-
-            };
-            headerLabel.setContent(dsOverview);
-        }
-        headerLabel.setEnabled(!peptideShakerVisualizationDataset.isUploadedProject());
+//    public void selectDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
+//
+//        headerLabel.setLabelValue("Dataset: " + peptideShakerVisualizationDataset.getProjectName());
+//        if (!peptideShakerVisualizationDataset.isUploadedProject() && !peptideShakerVisualizationDataset.isToShareDataset()) {
+//            SearchParametersForm dsOverview = new SearchParametersForm(false) {
+//            //((PeptideShakerVisualizationDataset) peptideShakerVisualizationDataset, true) {
+//                @Override
+//                public void saveSearchingFile(IdentificationParameters searchParameters, boolean isNew) {
+////                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//                }
+//
+//                @Override
+//                public void cancel() {
+//                    headerLabel.setPopupVisible(false);
+//                }
+//
+//            };
+//            headerLabel.setContent(dsOverview);
+//        }
+//        headerLabel.setEnabled(!peptideShakerVisualizationDataset.isUploadedProject());
 //        datasetVisulizationLevelComponent.updateData(peptideShakerVisualizationDataset);
-
-    }
+//
+//    }
 
 }

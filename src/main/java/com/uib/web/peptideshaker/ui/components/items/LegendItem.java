@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.presenter.core.filtercharts.components;
+package com.uib.web.peptideshaker.ui.components.items;
 
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.label.ContentMode;

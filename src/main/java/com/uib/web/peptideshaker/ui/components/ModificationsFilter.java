@@ -1,10 +1,12 @@
-package com.uib.web.peptideshaker.presenter.core.filtercharts.filters;
+package com.uib.web.peptideshaker.ui.components;
 
+import com.compomics.util.experiment.biology.modifications.ModificationFactory;
+import static com.compomics.util.experiment.identification.IdentificationMatch.MatchType.PTM;
 import com.itextpdf.text.pdf.codec.Base64;
-import com.uib.web.peptideshaker.model.core.ModificationMatrix;
-import com.uib.web.peptideshaker.presenter.core.FilterButton;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.RegistrableFilter;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.SelectionManager;
+import com.uib.web.peptideshaker.model.ModificationMatrixModel;
+import com.uib.web.peptideshaker.ui.components.items.FilterButton;
+import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
+import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.icons.VaadinIcons;
@@ -22,6 +24,7 @@ import org.jfree.chart.encoders.ImageFormat;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -46,7 +49,7 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
     /**
      * The central selection manager.
      */
-    private final SelectionManager Selection_Manager;
+    private final ResultsViewSelectionManager Selection_Manager;
     /**
      * Reset filter button.
      */
@@ -59,9 +62,14 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
      * Venn diagram to represent limited number of data intersections .
      */
     private final VennDiagram vennDiagram;
+    /**
+     * The post translational modifications factory.
+     */
+    private final ModificationFactory PTM = ModificationFactory.getInstance();
     private final Panel modificationFilterPanel;
     private final OptionGroup modificationOptionGroup;
-    public ModificationsFilter(String title, String filterId, SelectionManager Selection_Manager) {
+
+    public ModificationsFilter(String title, String filterId, ResultsViewSelectionManager Selection_Manager) {
         this.filterId = filterId;
         this.Selection_Manager = Selection_Manager;
         this.Selection_Manager.RegistrDatasetsFilter(ModificationsFilter.this);
@@ -207,10 +215,20 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
 
     }
 
-    public void initializeFilterData(ModificationMatrix modificationMatrix, Map<String, Color> modificationsColorMap, Set<Object> selectedCategories, int totalNumber) {
-        matrixDiagram.initializeFilterData(modificationMatrix, modificationsColorMap, selectedCategories, totalNumber);
-        vennDiagram.initializeFilterData(modificationMatrix, modificationsColorMap, selectedCategories, totalNumber);
-        populateModificationOptionGroup(modificationsColorMap);
+    public void initializeFilterData(ModificationMatrixModel modificationMatrix, Set<Object> selectedCategories, int totalNumber) {
+        Map<String, Color> modificationColorMap = new LinkedHashMap<>();
+        modificationMatrix.getRows().keySet().forEach((mod) -> {
+            if (PTM.containsModification(mod)) {
+                modificationColorMap.put(mod, new Color(ModificationFactory.getDefaultColor(mod)));
+            } else {
+                modificationColorMap.put(mod, Color.LIGHT_GRAY);
+            }
+        });
+
+        matrixDiagram.initializeFilterData(modificationMatrix, modificationColorMap, selectedCategories, totalNumber);
+        vennDiagram.initializeFilterData(modificationMatrix, modificationColorMap, selectedCategories, totalNumber);
+        populateModificationOptionGroup(modificationColorMap);
+       
 
     }
 
@@ -247,7 +265,7 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
     public void applyFilter(Set<Integer> columnIndexs) {
 
         Set<Comparable> appliedFilter = matrixDiagram.filterAction(columnIndexs);
-        if (columnIndexs == null || columnIndexs.isEmpty() || columnIndexs.size() == vennDiagram.getModificationMatrix().getCalculatedColumns().size()) {
+        if (columnIndexs == null || columnIndexs.isEmpty() || columnIndexs.size() == vennDiagram.getModificationMatrix().getColumns().size()) {
             vennDiagram.resetFilter();
             matrixDiagram.resetFilter();
             Selection_Manager.setSelection("dataset_filter_selection", new LinkedHashSet<>(), null, filterId);

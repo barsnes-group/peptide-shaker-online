@@ -1,6 +1,6 @@
 package com.uib.web.peptideshaker.galaxy.utilities.history;
 
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.ProteinGroupObject;
+import com.uib.web.peptideshaker.model.ProteinGroupObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;

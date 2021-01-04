@@ -22231,9 +22231,9 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .v-horizontallayout-minhight30 .v-horizontallayout .v-absolutelayout-infopopupcontainer {
-	width: 40px !important;
-	margin-top: -5px;
+	width: 40px !important;/** margin-top: -5px;*/
 	margin-left: -15px;
+	line-height: 30px;
 }
 
 .webpeptideshakertheme .v-horizontallayout-minhight30 .v-horizontallayout .v-absolutelayout-infopopupcontainer .v-icon {
@@ -22349,6 +22349,12 @@ div.v-layout.v-horizontal.v-widget {
 .webpeptideshakertheme .workflowstyle .v-absolutelayout-searchguiicon, .webpeptideshakertheme .filesystemstyle .v-absolutelayout-dataoverviewsmallbtn, .webpeptideshakertheme .resultsviewstyle .v-absolutelayout-resultsmallbtn {
 	border-color: orange !important;
 }
-.v-readonly .v-icon{
-	color:gray !important;
+
+.webpeptideshakertheme .v-horizontallayout-bigmenubtn.v-horizontallayout-prideimg {
+	height: 100px !important;
+}
+
+.webpeptideshakertheme .useruploaddatasubviewstyle .v-horizontallayout-uploadbigbtn, .webpeptideshakertheme .pridesubviewstyle .v-horizontallayout-prideimg, .webpeptideshakertheme .datasetproteinssubviewstyle .v-horizontallayout-dsoverviewbtn {
+	border-color: orange !important;
+	border-right-color: white !important;
 }

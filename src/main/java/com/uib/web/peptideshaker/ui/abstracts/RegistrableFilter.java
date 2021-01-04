@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.presenter.core.filtercharts;
+package com.uib.web.peptideshaker.ui.abstracts;
 
 import com.vaadin.ui.Layout;
 

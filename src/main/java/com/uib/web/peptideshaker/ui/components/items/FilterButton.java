@@ -1,9 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.uib.web.peptideshaker.presenter.core;
+
+package com.uib.web.peptideshaker.ui.components.items;
 
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.ThemeResource;
@@ -11,7 +7,7 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class FilterButton extends VerticalLayout implements LayoutEvents.LayoutClickListener {
 

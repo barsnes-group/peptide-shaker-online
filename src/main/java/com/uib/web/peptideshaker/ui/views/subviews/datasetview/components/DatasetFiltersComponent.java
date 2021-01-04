@@ -1,14 +1,15 @@
-package com.uib.web.peptideshaker.presenter.core.filtercharts;
+package com.uib.web.peptideshaker.ui.views.subviews.datasetview.components;
 
-import com.uib.web.peptideshaker.model.core.ModificationMatrix;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.filters.ChromosomesFilter;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.filters.DivaPieChartFilter;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.filters.DivaRangeFilter;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.filters.ModificationsFilter;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.SelectionManager;
+import com.uib.web.peptideshaker.model.CONSTANT;
+import com.uib.web.peptideshaker.model.VisualizationDatasetModel;
+import com.uib.web.peptideshaker.ui.components.ChromosomesFilter;
+import com.uib.web.peptideshaker.ui.components.DivaPieChartFilter;
+import com.uib.web.peptideshaker.ui.components.DivaRangeFilter;
+import com.uib.web.peptideshaker.ui.components.ModificationsFilter;
+import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.*;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.themes.ValoTheme;
 
 import java.awt.*;
@@ -21,7 +22,7 @@ import java.util.*;
  *
  * @author Yehia Farag
  */
-public class FiltersContainer extends HorizontalLayout {
+public class DatasetFiltersComponent extends HorizontalLayout {
 
     private final ModificationsFilter modificationFilter;
 
@@ -41,26 +42,15 @@ public class FiltersContainer extends HorizontalLayout {
 
     private final VerticalLayout filterRightPanelContainer;
     private final VerticalLayout filterLeftPanelContainer;
-    private final Map<String, Color> PIColorMap;
+    private final Map<String, Color> proteinInferenceColourMap;
     private final List<Color> colorList;
     /**
      * Array of default slice colours.
      */
-    private final Color[] defaultColors = new Color[]{new Color(219, 169, 1), new Color(110, 177, 206), new Color(213, 8, 8), new Color(4, 180, 95), new Color(174, 180, 4), new Color(10, 255, 14), new Color(244, 250, 88), new Color(255, 0, 64), new Color(246, 216, 206), new Color(189, 189, 189), new Color(255, 128, 0), Color.BLUE, Color.CYAN, Color.GREEN, Color.MAGENTA, Color.ORANGE, Color.PINK};
-    private final SelectionManager Selection_Manager;
-    private final Color[] colorsArrII = new Color[]{Color.DARK_GRAY, new Color(4, 180, 95), Color.ORANGE, new Color(213, 8, 8)};
+    private final ResultsViewSelectionManager Selection_Manager;
+
     private int piWidth = -1;
     private int valWidth = -1;
-    /**
-     * Array of extra colours.
-     */
-    private String[] extraColourValues = new String[]{
-            "C00000", "00C000", "0000C0", "C0C000", "C000C0", "00C0C0", "C0C0C0",
-            "400000", "004000", "000040", "404000", "400040", "004040", "404040",
-            "200000", "002000", "000020", "202000", "200020", "002020", "202020",
-            "600000", "006000", "000060", "606000", "600060", "006060", "606060",
-            "A00000", "00A000", "0000A0", "A0A000", "A000A0", "00A0A0", "A0A0A0",
-            "E00000", "00E000", "0000E0", "E0E000", "E000E0", "00E0E0", "E0E0E0",};
     private boolean disableresize;
 
     /**
@@ -68,20 +58,20 @@ public class FiltersContainer extends HorizontalLayout {
      *
      * @param Selection_Manager main selection manager
      */
-    public FiltersContainer(SelectionManager Selection_Manager) {
-        FiltersContainer.this.setSizeFull();
-        FiltersContainer.this.setSpacing(true);
-        FiltersContainer.this.setStyleName("datasetfilterstyle");
-        PIColorMap = new HashMap<>();
-        PIColorMap.put("Single", new Color(4, 180, 95));
-        PIColorMap.put("Related", new Color(245, 226, 80));
-        PIColorMap.put("Related & Unrelated", Color.ORANGE);
-        PIColorMap.put("Unrelated", new Color(213, 8, 8));
+    public DatasetFiltersComponent(ResultsViewSelectionManager Selection_Manager) {
+        DatasetFiltersComponent.this.setSizeFull();
+        DatasetFiltersComponent.this.setSpacing(true);
+        DatasetFiltersComponent.this.setStyleName("datasetfilterstyle");
+        proteinInferenceColourMap = new HashMap<>();
+        proteinInferenceColourMap.put("Single", new Color(4, 180, 95));
+        proteinInferenceColourMap.put("Related", new Color(245, 226, 80));
+        proteinInferenceColourMap.put("Related & Unrelated", Color.ORANGE);
+        proteinInferenceColourMap.put("Unrelated", new Color(213, 8, 8));
         this.Selection_Manager = Selection_Manager;
-        colorList = new ArrayList<>(Arrays.asList(defaultColors));
-        for (String str : extraColourValues) {
+        colorList = new ArrayList<>(Arrays.asList(CONSTANT.DEFAULT_CHARTS_COLOURS));
+        for (String str : CONSTANT.EXTRA_COLOURS) {
             Color c = hex2Rgb("#" + str);
-            if (c.getRGB() == Color.WHITE.getRGB() || c.getRGB() == Color.BLACK.getRGB() || Arrays.asList(defaultColors).contains(c)) {
+            if (c.getRGB() == Color.WHITE.getRGB() || c.getRGB() == Color.BLACK.getRGB() || Arrays.asList(CONSTANT.DEFAULT_CHARTS_COLOURS).contains(c)) {
                 continue;
             }
             colorList.add(c);
@@ -112,8 +102,8 @@ public class FiltersContainer extends HorizontalLayout {
         filterLeftPanelContainer.setSpacing(false);
         filterLeftPanelContainer.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
         filterLeftPanelContainer.addStyleName("cornerfiltercontainerstyle");
-        FiltersContainer.this.addComponent(filterLeftPanelContainer);
-        FiltersContainer.this.setExpandRatio(filterLeftPanelContainer, 1);
+        DatasetFiltersComponent.this.addComponent(filterLeftPanelContainer);
+        DatasetFiltersComponent.this.setExpandRatio(filterLeftPanelContainer, 1);
         filterLeftPanelContainer.addComponent(ProteinInferenceFilter);
         filterLeftPanelContainer.setComponentAlignment(ProteinInferenceFilter, Alignment.TOP_LEFT);
 
@@ -158,9 +148,9 @@ public class FiltersContainer extends HorizontalLayout {
         filterMiddlePanelContainer.setSpacing(true);
         filterMiddlePanelContainer.addStyleName("cornerfiltercontainerstyle");
         filterMiddlePanelContainer.addStyleName("middlefiltercontainerstyle");
-        FiltersContainer.this.addComponent(filterMiddlePanelContainer);
-        FiltersContainer.this.setComponentAlignment(filterMiddlePanelContainer, Alignment.TOP_LEFT);
-        FiltersContainer.this.setExpandRatio(filterMiddlePanelContainer, 2);
+        DatasetFiltersComponent.this.addComponent(filterMiddlePanelContainer);
+        DatasetFiltersComponent.this.setComponentAlignment(filterMiddlePanelContainer, Alignment.TOP_LEFT);
+        DatasetFiltersComponent.this.setExpandRatio(filterMiddlePanelContainer, 2);
 
         modificationFilter = new ModificationsFilter("Modifications", "modifications_filter", Selection_Manager) {
 
@@ -183,9 +173,9 @@ public class FiltersContainer extends HorizontalLayout {
         filterRightPanelContainer.addStyleName("cornerfiltercontainerstyle");
         filterRightPanelContainer.addStyleName("rightpanelfilter");
         filterRightPanelContainer.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
-        FiltersContainer.this.addComponent(filterRightPanelContainer);
-        FiltersContainer.this.setComponentAlignment(filterRightPanelContainer, Alignment.TOP_LEFT);
-        FiltersContainer.this.setExpandRatio(filterRightPanelContainer, 1);
+        DatasetFiltersComponent.this.addComponent(filterRightPanelContainer);
+        DatasetFiltersComponent.this.setComponentAlignment(filterRightPanelContainer, Alignment.TOP_LEFT);
+        DatasetFiltersComponent.this.setExpandRatio(filterRightPanelContainer, 1);
 
         //add range filter
         intensityAllPeptidesRange = new DivaRangeFilter("Intensity (% - All peptides)", "intensityAllPep_filter", this.Selection_Manager) {
@@ -256,47 +246,40 @@ public class FiltersContainer extends HorizontalLayout {
     /**
      * Update filters data
      *
-     * @param toShareDataset               dataset is shared by user
-     * @param modificationMatrix           main modification matrix
-     * @param modificationsColorMap        main modification colour map
-     * @param chromosomeMap                chromosomes map for the dataset
-     * @param piMap                        protein inference map for the dataset
-     * @param proteinValidationMap         protein validation map for the dataset
-     * @param proteinPeptidesNumberMap     protein to peptides number map
-     * @param proteinPSMNumberMap          proteins to PSM number map
-     * @param proteinCoverageMap           protein coverage map
-     * @param proteinIntinsityAllPepMap    protein intensity map (based on all
-     *                                     peptides intensity)
+     * @param toShareDataset dataset is shared by user
+     * @param modificationMatrix main modification matrix
+     * @param modificationsColorMap main modification colour map
+     * @param chromosomeMap chromosomes map for the dataset
+     * @param piMap protein inference map for the dataset
+     * @param proteinValidationMap protein validation map for the dataset
+     * @param proteinPeptidesNumberMap protein to peptides number map
+     * @param proteinPSMNumberMap proteins to PSM number map
+     * @param proteinCoverageMap protein coverage map
+     * @param proteinIntinsityAllPepMap protein intensity map (based on all
+     * peptides intensity)
      * @param proteinIntinsityUniquePepMap protein intensity map (based on
-     *                                     unique peptides intensity)
+     * unique peptides intensity)
      */
-    public void updateFiltersData(boolean toShareDataset, ModificationMatrix modificationMatrix, Map<String, Color> modificationsColorMap, Map<Integer, Set<Comparable>> chromosomeMap, Map<String, Set<Comparable>> piMap, Map<String, Set<Comparable>> proteinValidationMap, TreeMap<Comparable, Set<Comparable>> proteinPeptidesNumberMap, TreeMap<Comparable, Set<Comparable>> proteinPSMNumberMap, TreeMap<Comparable, Set<Comparable>> proteinCoverageMap, TreeMap<Comparable, Set<Comparable>> proteinIntinsityAllPepMap, TreeMap<Comparable, Set<Comparable>> proteinIntinsityUniquePepMap) {
-        Selection_Manager.reset();
-        Selection_Manager.setModificationsMap(modificationMatrix);
-        modificationFilter.initializeFilterData(modificationMatrix, modificationsColorMap, new HashSet<>(), Selection_Manager.getFullProteinSet().size());
-        chromosomeFilter.initializeFilterData(chromosomeMap);
-        Selection_Manager.setChromosomeMap(chromosomeMap);
-        ProteinInferenceFilter.initializeFilterData(piMap, PIColorMap);
-
-        Selection_Manager.setPiMap(piMap);
-        if (!proteinValidationMap.containsKey("No Information")) {
-            Map<String, Set<Comparable>> tproteinValidationMap = new LinkedHashMap<>();
-            tproteinValidationMap.put("No Information", new HashSet<>());
-            tproteinValidationMap.putAll(proteinValidationMap);
-            proteinValidationMap.clear();
-            proteinValidationMap.putAll(tproteinValidationMap);
-        }
-        Selection_Manager.setProteinValidationMap(proteinValidationMap);
-        validationFilter.initializeFilterData(proteinValidationMap, new ArrayList<>(Arrays.asList(colorsArrII)));
-        Selection_Manager.setProteinCoverageMap(proteinCoverageMap);
-        Selection_Manager.setProteinIntinsityAllPepMap(proteinIntinsityAllPepMap);
-        Selection_Manager.setProteinIntinsityUniquePepMap(proteinIntinsityUniquePepMap);
-        Selection_Manager.setProteinPSMNumberMap(proteinPSMNumberMap);
-        Selection_Manager.setProteinPeptidesNumberMap(proteinPeptidesNumberMap);
-        peptidesNumberFilter.initializeFilterData(proteinPeptidesNumberMap);
-        psmNumberFilter.initializeFilterData(proteinPSMNumberMap);
-        coverageFilter.initializeFilterData(proteinCoverageMap);
-        if (proteinIntinsityAllPepMap.isEmpty()) {
+    public void updateFiltersData(VisualizationDatasetModel dataset) {
+      
+//        Selection_Manager.reset();
+//        Selection_Manager.setModificationsMap(modificationMatrix);
+        modificationFilter.initializeFilterData(dataset.getModificationMatrixModel(), new HashSet<>(), Selection_Manager.getFullProteinSet().size());
+        chromosomeFilter.initializeFilterData(dataset.getChromosomeMap());
+//        Selection_Manager.setChromosomeMap(chromosomeMap);
+        ProteinInferenceFilter.initializeFilterData(dataset.getProteinInferenceMap(), proteinInferenceColourMap);
+//        Selection_Manager.setPiMap(piMap);
+//        Selection_Manager.setProteinValidationMap(proteinValidationMap);
+        validationFilter.initializeFilterData(dataset.getProteinValidationMap(), new ArrayList<>(Arrays.asList(CONSTANT.PROTEIN_VALIDATION_COLOURS)));
+//        Selection_Manager.setProteinCoverageMap(proteinCoverageMap);
+//        Selection_Manager.setProteinIntinsityAllPepMap(proteinIntinsityAllPepMap);
+//        Selection_Manager.setProteinIntinsityUniquePepMap(proteinIntinsityUniquePepMap);
+//        Selection_Manager.setProteinPSMNumberMap(proteinPSMNumberMap);
+//        Selection_Manager.setProteinPeptidesNumberMap(proteinPeptidesNumberMap);
+        peptidesNumberFilter.initializeFilterData(dataset.getValidatedPetideMap());
+        psmNumberFilter.initializeFilterData(dataset.getValidatedPsmsMap());
+        coverageFilter.initializeFilterData(dataset.getValidatedCoverageMap());
+        if (dataset.getDatasetType().equals(CONSTANT.ID_DATASET)) {
             Label noquant = new Label("<center> No quant data available </center>", ContentMode.HTML);
             noquant.setSizeFull();
             noquant.setStyleName("noquantlabel");
@@ -305,13 +288,13 @@ public class FiltersContainer extends HorizontalLayout {
             intensityAllPeptidesRange.suspendFilter(true);
 
         } else {
-            intensityAllPeptidesRange.initializeFilterData(proteinIntinsityAllPepMap);
-            intensityUniquePeptidesRange.initializeFilterData(proteinIntinsityUniquePepMap);
+//            intensityAllPeptidesRange.initializeFilterData(dataset.getAllPeptideIntensityMap());
+//            intensityUniquePeptidesRange.initializeFilterData(dataset.getUniquePeptideIntensityMap());
 
         }
-        if (toShareDataset) {
-            peptidesNumberFilter.redrawChart();
-        }
+//        if (toShareDataset) {
+//            peptidesNumberFilter.redrawChart();
+//        }
 
     }
 

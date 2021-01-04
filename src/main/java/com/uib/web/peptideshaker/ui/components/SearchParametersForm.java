@@ -267,7 +267,7 @@ public abstract class SearchParametersForm extends VerticalLayout {
         upperPanel.addComponent(modificationLabelsContainer);
         modificationContainer = inititModificationLayout();
         modificationsBtn.addClickListener((Button.ClickEvent event) -> {
-            if (editable) {
+            if (!editable) {
                 return;
             }
             modificationContainer.setPopupVisible(true);
@@ -299,7 +299,7 @@ public abstract class SearchParametersForm extends VerticalLayout {
         });
         proteaseFragmentationContainer = inititProteaseFragmentationLayout();
         proteaseFragmentationBtn.addClickListener((Button.ClickEvent event) -> {
-            if (editable) {
+            if (!editable) {
                 return;
             }
             proteaseFragmentationContainer.setPopupVisible(true);
@@ -323,6 +323,15 @@ public abstract class SearchParametersForm extends VerticalLayout {
         });
         upperPanel.addComponent(saveBtn);
         upperPanel.setComponentAlignment(saveBtn, Alignment.TOP_CENTER);
+        if (!editable) {
+            this.searchsettingsContainer.setVisible(false);
+            modificationsBtn.setIcon(null);
+            proteaseFragmentationBtn.setIcon(null);
+            saveBtn.setVisible(false);
+            _advSearchEnginesSettings.setVisible(false);
+            _advSearchSettings.setVisible(false);
+            titleLayout.setHeight(25, Unit.PIXELS);
+        }
 //        this.viewCoordinatorListener = (LayoutEvents.LayoutClickEvent event) -> {
 //            Component comp = event.getClickedComponent();
 //            if ((comp instanceof Label)) {

@@ -1,9 +1,9 @@
 package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components;
 
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideObject;
+import com.uib.web.peptideshaker.model.PeptideObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.ProteinGroupObject;
-import com.uib.web.peptideshaker.presenter.core.filtercharts.components.RangeColorGenerator;
+import com.uib.web.peptideshaker.model.ProteinGroupObject;
+import com.uib.web.peptideshaker.ui.components.RangeColorGenerator;
 import com.uib.web.peptideshaker.presenter.core.graph.GraphComponent;
 import com.vaadin.ui.VerticalLayout;
 import graphmatcher.NetworkGraphComponent;

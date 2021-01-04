@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects;
+package com.uib.web.peptideshaker.model;
 
 import com.compomics.util.experiment.biology.modifications.Modification;
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
@@ -330,7 +330,7 @@ public class PeptideObject extends Peptide {
      * Set protein variable modifications list included in the peptide sequence.
      *
      * @param variableModifications protein variable modifications list(as
-     *                              string) included in the peptide sequence.
+     * string) included in the peptide sequence.
      */
     @Override
     public void setVariableModifications(ModificationMatch[] variableModifications) {
@@ -341,7 +341,7 @@ public class PeptideObject extends Peptide {
      * Set protein variable modifications list included in the peptide sequence.
      *
      * @param variableModifications protein variable modifications list(as
-     *                              string) included in the peptide sequence.
+     * string) included in the peptide sequence.
      */
     public void setVariableModifications(String variableModifications) {
 
@@ -390,7 +390,7 @@ public class PeptideObject extends Peptide {
      * Set protein fixed modifications list included in the peptide sequence.
      *
      * @param fixedModificationsAsString protein fixed modifications list(as
-     *                                   string) included in the peptide sequence.
+     * string) included in the peptide sequence.
      */
     public void setFixedModificationsAsString(String fixedModificationsAsString) {
         this.fixedModificationsAsString = fixedModificationsAsString;
@@ -449,12 +449,12 @@ public class PeptideObject extends Peptide {
      * @param proteinGroups ';'separated strings of accessions
      */
     public void setProteinGroups(String proteinGroups) {
-        proteinGroupKey = proteinGroups.replace("(Confident)", "").replace("(Doubtful)", "");
+        proteinGroupKey = proteinGroups.replace("(Confident)", "").replace("(Doubtful)", "").replace("(NotValidated)", "");
 //        proteinGroupKey = proteinGroupKey.replace("Not Validated", "").replace("(","").replace(")", "");
-        proteinGroupKey = proteinGroupKey.replace(" ", "").replace(",", "-_-");
-        for (String protGroup : proteinGroups.split(",")) {
-            proteinGroupsSet.add(protGroup.replace(" ", ""));
-        }
+//        proteinGroupKey = proteinGroupKey.replace(" ", "").replace(",", "-_-");
+//        for (String protGroup : proteinGroups.split(",")) {
+//            proteinGroupsSet.add(protGroup.replace(" ", ""));
+//        }
     }
 
     /**
@@ -473,8 +473,7 @@ public class PeptideObject extends Peptide {
      */
     public Set<String> getProteinsSet() {
         if (proteinsSet.isEmpty()) {
-
-            for (String acc : proteinGroupsSet) {
+            for (String acc : getProteinsSet()) {
                 acc = acc.replace("(Doubtful)", "").replace("(Confident)", "").replace("(NotValidated)", "").replace(" ", "").replace(",", ";");
                 proteinsSet.addAll(Arrays.asList(acc.split(";")));
             }
@@ -488,6 +487,11 @@ public class PeptideObject extends Peptide {
      * @return set of main protein groups accessions for the peptide
      */
     public Set<String> getProteinGroupsSet() {
+        if (proteinGroupsSet.isEmpty()) {
+            for (String protGroup : proteinGroupKey.split(",")) {
+                proteinGroupsSet.add(protGroup);
+            }
+        }
         return proteinGroupsSet;
     }
 

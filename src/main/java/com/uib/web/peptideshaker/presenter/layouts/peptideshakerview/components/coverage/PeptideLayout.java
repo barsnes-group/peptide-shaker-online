@@ -2,7 +2,7 @@ package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components
 
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideObject;
+import com.uib.web.peptideshaker.model.PeptideObject;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Label;

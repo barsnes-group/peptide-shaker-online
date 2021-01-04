@@ -27,7 +27,7 @@ import java.util.Set;
  *
  * @author Yehia Mokhtar Farag
  */
-public abstract class UIContainer extends AbsoluteLayout {
+public class UIContainer extends AbsoluteLayout {
 
 //    private final HorizontalLayout mainComponentContainer;
 //    /**
@@ -59,7 +59,7 @@ public abstract class UIContainer extends AbsoluteLayout {
     /**
      * Container to view selected PeptideShaker projects.
      */
-    private ResultsView interactivePSPRojectResultsPresenter;
+    private ResultsView resultsView;
     /**
      * The SearchGUI & PeptideShaker tools view component (frame to start
      * analysis).
@@ -131,13 +131,8 @@ public abstract class UIContainer extends AbsoluteLayout {
         fileSystemView = new FileSystemView();
         UIContainer.this.addComponent(fileSystemView, "left:0px");
 //
-//        interactivePSPRojectResultsPresenter = new ResultsView(false) {
-//            @Override
-//            public boolean[] processVisualizationDataset(String projectName, Map<String, PluploadFile> uploadedFileMap) {
-//                return uploadedProjectUtility.processVisualizationDataset(projectName, uploadedFileMap, getCsf_pr_Accession_List());
-//            }
-//
-//        };
+        resultsView = new ResultsView(false);
+        UIContainer.this.addComponent(resultsView, "left:0px");
 //
 //        this.uploadedProjectUtility = new UploadedProjectUtility() {
 //            @Override
@@ -148,8 +143,8 @@ public abstract class UIContainer extends AbsoluteLayout {
 //                historyFilesMap.put(peptideShakerVisualizationDataset.getProjectName(), peptideShakerVisualizationDataset);
 //                historyFilesMap.putAll(fileSystemView.getHistoryFilesMap());
 //                fileSystemView.updateData(historyFilesMap, fileSystemView.isJobInProgress(),peptideShakerVisualizationDataset.getGalaxyId());
-//                interactivePSPRojectResultsPresenter.setSelectedDataset(peptideShakerVisualizationDataset);
-////                viewLayout(interactivePSPRojectResultsPresenter.getViewId());
+//                resultsView.setSelectedDataset(peptideShakerVisualizationDataset);
+////                viewLayout(resultsView.getViewId());
 //            }
 //
 //        };
@@ -180,15 +175,14 @@ public abstract class UIContainer extends AbsoluteLayout {
 //    public VerticalLayout getMiddleLayoutContainer() {
 //        return middleLayoutContainer;
 //    }
-    public AbsoluteLayout getPresenterButtonsContainerLayout() {
-        return new AbsoluteLayout();// presenterButtonsContainerLayout;
-    }
-
+//    public AbsoluteLayout getPresenterButtonsContainerLayout() {
+//        return new AbsoluteLayout();// presenterButtonsContainerLayout;
+//    }
 //    public Button getSignOutBtn() {
 //        return signOutBtn;
 //    }
-    public ResultsView getInteractivePSPRojectResultsPresenter() {
-        return interactivePSPRojectResultsPresenter;
+    public ResultsView getResultsView() {
+        return resultsView;
     }
 
     public WorkflowInvokingView getWorkflowInvokingView() {
@@ -211,10 +205,9 @@ public abstract class UIContainer extends AbsoluteLayout {
 ////        fileSystemView.updateData(tempHistoryFilesMap, jobsInProgress,"");
 //        workflowInvokingView.updateData(historyFilesMap);
 //    }
+//    public abstract void viewLayout(String viewId);
 
-    public abstract void viewLayout(String viewId);
-
-    public abstract void registerView(ViewableFrame view);
+//    public abstract void registerView(ViewableFrame view);
 
     /**
      * Connect the system to Galaxy Server
@@ -222,7 +215,7 @@ public abstract class UIContainer extends AbsoluteLayout {
      * @param galaxyServerUrl the address of Galaxy Server
      * @param userDataFolderUrl main folder for storing users data
      */
-    public abstract void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl);
+//    public abstract void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl);
 
     /**
      * Run Online Peptide-Shaker work-flow
@@ -235,7 +228,7 @@ public abstract class UIContainer extends AbsoluteLayout {
      * @param searchParam
      * @param quant
      */
-    public abstract void execute_SearchGUI_PeptideShaker_WorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> mgfIdsList, Set<String> searchEnginesList, IdentificationParameters searchParam, boolean quant);
+//    public abstract void execute_SearchGUI_PeptideShaker_WorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> mgfIdsList, Set<String> searchEnginesList, IdentificationParameters searchParam, boolean quant);
 
     /**
      * Save search settings file into galaxy
@@ -244,7 +237,7 @@ public abstract class UIContainer extends AbsoluteLayout {
      * @param isNew is new search parameter file
      * @return updated search parameters file list
      */
-    public abstract Map<String, GalaxyTransferableFile> saveSearchGUIParameters(IdentificationParameters searchParameters, boolean isNew);
+//    public abstract Map<String, GalaxyTransferableFile> saveSearchGUIParameters(IdentificationParameters searchParameters, boolean isNew);
 
     /**
      * upload file into galaxy
@@ -252,7 +245,7 @@ public abstract class UIContainer extends AbsoluteLayout {
      * @param toUploadFiles files to be uploaded to galaxy
      * @return updated files map
      */
-    public abstract boolean uploadToGalaxy(PluploadFile[] toUploadFiles);
+//    public abstract boolean uploadToGalaxy(PluploadFile[] toUploadFiles);
 
     /**
      * Abstract method to allow customised delete action for files from Galaxy
@@ -260,9 +253,9 @@ public abstract class UIContainer extends AbsoluteLayout {
      *
      * @param fileObject the file to be removed from Galaxy Server
      */
-    public abstract void deleteDataset(GalaxyFileObject fileObject);
+//    public abstract void deleteDataset(GalaxyFileObject fileObject);
 
-    public abstract Set<String> getCsf_pr_Accession_List();
+//    public abstract Set<String> getCsf_pr_Accession_List();
 
     /**
      * Store and retrieve dataset details index to share in link
@@ -271,6 +264,6 @@ public abstract class UIContainer extends AbsoluteLayout {
      * @param dsUniqueKey
      * @return dataset public key
      */
-    public abstract int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey);
+//    public abstract int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey);
 
 }

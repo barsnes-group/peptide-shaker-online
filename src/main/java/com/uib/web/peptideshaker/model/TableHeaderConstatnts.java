@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.utilities;
+package com.uib.web.peptideshaker.model;
 
 /**
  * This class contains standard header values for protein, peptides, psm and
@@ -8,14 +8,14 @@ package com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.utilities
  */
 public class TableHeaderConstatnts {
 
-    public final String Index = "";
+    public  final String Index = "";
     public final String Main_Accession = "mainaccession";
     public final String Description = "description";
     public final String Gene_Name = "genename";
     public final String Chromosome = "chromosome";
     public final String MW_kDa = "mw[kda]";
     public final String Possible_Coverage_Pers = "possiblecoverage[%]";
-    public final String Coverage_Pers = "coverage[%]";
+    public final String Coverage_Pers = "validatedcoverage[%]";
     public final String Spectrum_Counting = "spectrumcounting";
     public final String Confidently_Localized_Modification_Sites = "confidentlylocalizedmodificationsites";
     public final String Number_Confidently_Localized_Modification_Sites = "#confidentlylocalizedmodificationsites";

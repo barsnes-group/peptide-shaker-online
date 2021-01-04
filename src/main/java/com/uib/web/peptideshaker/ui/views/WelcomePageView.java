@@ -281,7 +281,6 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         fileSystemViewButton.updateIconResource(new ThemeResource("img/globeearthanimation.png"));
         fileSystemViewButton.addStyleName("glubimg");
         fileSystemViewButton.addLayoutClickListener(listener);
-        fileSystemViewButton.addLayoutClickListener(listener);
         viewBtnsContainer.addComponent(fileSystemViewButton, "left:0%;top:50%;");
         /**
          * The Results view button.
@@ -293,6 +292,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         resultsViewBtn.setEnabled(true);
         resultsViewBtn.addStyleName("orangeiconcolor");
         resultsViewBtn.addStyleName("resultsbtn");
+        resultsViewBtn.setData(ResultsView.class.getName());
         viewBtnsContainer.addComponent(resultsViewBtn, "left:50%;top:0%;");
         resultsViewBtn.addLayoutClickListener(listener);
         viewsControlButtonsLayout.addComponent(viewBtnsContainer);
