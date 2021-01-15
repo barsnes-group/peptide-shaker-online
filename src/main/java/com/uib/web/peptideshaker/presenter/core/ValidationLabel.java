@@ -1,5 +1,6 @@
 package com.uib.web.peptideshaker.presenter.core;
 
+import com.uib.web.peptideshaker.model.CONSTANT;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
@@ -31,12 +32,12 @@ public class ValidationLabel extends VerticalLayout implements Comparable<Valida
         this.icon.setContentMode(ContentMode.HTML);
         ValidationLabel.this.addComponent(icon);
         ValidationLabel.this.setComponentAlignment(icon, Alignment.TOP_CENTER);
-        if (validation.trim().equalsIgnoreCase("confident")) {
+        if (validation.trim().equalsIgnoreCase(CONSTANT.VALIDATION_CONFIDENT)) {
             ValidationLabel.this.setStyleName("validlabel");
             this.icon.setValue("<center style='padding-top: 5px;'>" + VaadinIcons.CHECK_CIRCLE.getHtml() + "</center>");
             sortIndex = 0;
 
-        } else if (validation.trim().equalsIgnoreCase("doubtful")) {
+        } else if (validation.trim().equalsIgnoreCase(CONSTANT.VALIDATION_DOUBTFUL)) {
             ValidationLabel.this.setStyleName("doubtfullabel");
             this.icon.setValue("<center style='padding-top: 5px;'>" + VaadinIcons.WARNING.getHtml() + "</center>");
             sortIndex = 1;

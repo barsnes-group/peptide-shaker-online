@@ -1,5 +1,6 @@
 package com.uib.web.peptideshaker.presenter.core.filtercharts.components.coverage;
 
+import com.uib.web.peptideshaker.model.CONSTANT;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -168,7 +169,7 @@ public class ProteinSequenceCoverageComponent extends VerticalLayout {
         final LinkedHashSet<StackedBarPeptideComponent> barComponentMap = new LinkedHashSet<>();
         componentWidth = width;
         double charW = (double) ((double) width / (double) sequence.length());
-        quantPeptidesSet.stream().filter((quantPeptide) -> !(quantPeptide.getPeptideSequence().equalsIgnoreCase("not available"))).map((quantPeptide) -> {
+        quantPeptidesSet.stream().filter((quantPeptide) -> !(quantPeptide.getPeptideSequence().equalsIgnoreCase(CONSTANT.NO_INFORMATION))).map((quantPeptide) -> {
             return quantPeptide;
         }).forEach((quantPeptide) -> {
             String peptideSequence = quantPeptide.getPeptideSequence().trim();

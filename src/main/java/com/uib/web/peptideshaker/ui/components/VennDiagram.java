@@ -1,15 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.uib.web.peptideshaker.ui.components;
 
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.SizeReporter;
-import com.google.common.collect.Sets;
-import com.uib.web.peptideshaker.model.ModificationMatrixModel;
-import com.uib.web.peptideshaker.model.core.ModificationMatrixUtilis;
+import com.uib.web.peptideshaker.model.CONSTANT;
+import com.uib.web.peptideshaker.model.Selection;
+import com.uib.web.peptideshaker.uimanager.SelectionManager;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -27,7 +22,7 @@ import java.awt.*;
 import java.util.*;
 
 /**
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class VennDiagram extends AbsoluteLayout {
 
@@ -35,13 +30,12 @@ public abstract class VennDiagram extends AbsoluteLayout {
     private final HorizontalLayout legendContainer;
     private final Map<String, String> indexMap;
     private final SizeReporter legendSizeReported;
-    private final Set<Integer> selectedIndexes;
+    private final Set<Integer> selectedColumns;
     private final String vennDiagramfilter = "vennDiagramfilter";
     private final Map<String, JSONObject> tempDataset;
     private final String alphabet = "abcdefghijklmnopqrstuvwxyz".toUpperCase();
-    private final Map<String, String> nameToCharMap;
-    private ModificationMatrixModel modificationMatrix;
-    private Map<String, Color> dataColors;
+    private final Map<Comparable, String> nameToCharMap;
+    private Map<Comparable, Color> dataColors;
     private JSONArray dataset;
     private JSONArray selectedDatasetColors;
     private JSONArray unselectedDatasetColors;
@@ -53,12 +47,14 @@ public abstract class VennDiagram extends AbsoluteLayout {
      * The height of the chart.
      */
     private int mainHeight;
+    private final SelectionManager selectionManager;
 
-    public VennDiagram() {
+    public VennDiagram(SelectionManager selectionManager) {
+        this.selectionManager = selectionManager;
         VennDiagram.this.setSizeFull();
         this.indexMap = new HashMap<>();
         this.nameToCharMap = new HashMap<>();
-        this.selectedIndexes = new LinkedHashSet<>();
+        this.selectedColumns = new LinkedHashSet<>();
         this.tempDataset = new LinkedHashMap<>();
         dataset = new JSONArray();
         selectedDatasetColors = new JSONArray();
@@ -77,17 +73,17 @@ public abstract class VennDiagram extends AbsoluteLayout {
 
                     if (value.trim().equalsIgnoreCase("")) {
                         //unselectall
-                        selectedIndexes.clear();
+                        selectedColumns.clear();
                     } else {
                         String[] valueArr = value.split(",");
-                        selectedIndexes.clear();
+                        selectedColumns.clear();
                         for (String valueArr1 : valueArr) {
-                            selectedIndexes.add(Integer.parseInt(valueArr1.trim()));
+                             System.out.println("at select category "+((Label)legendContainer.getComponent(Integer.parseInt(valueArr1.trim()))).getData());
+                            selectedColumns.add(Integer.parseInt(valueArr1.trim()));
                         }
                     }
-
                     updateLegendSelectionStyle();
-                    applyFilter(selectedIndexes);
+//                    applyFilter(selectedIndexes);
                 }
 
             }
@@ -111,16 +107,18 @@ public abstract class VennDiagram extends AbsoluteLayout {
             if (index == -1) {
                 return;
             }
-            if (selectedIndexes.contains(index)) {
-                selectedIndexes.remove(index);
+            if (selectedColumns.contains(index)) {
+//                selectedColumns.remove(index);
+                System.out.println("at remove category "+((Label)legendContainer.getComponent(index)).getData());
             } else {
-                selectedIndexes.add(index);
+                 System.out.println("at select category "+((Label)legendContainer.getComponent(index)).getData());
+//                selectedColumns.add(index);
             }
-            updateLegendSelectionStyle();
+//            updateLegendSelectionStyle();
+//            //updatevenn diagram
+//            updateVennDiagramSelectionStyle();
 
-            //updatevenn diagram
-            updateVennDiagramSelectionStyle();
-            applyFilter(selectedIndexes);
+//            applyFilter(selectedIndexes);
         });
 
         SizeReporter reporter = new SizeReporter(vennDiagramComponent);
@@ -132,29 +130,10 @@ public abstract class VennDiagram extends AbsoluteLayout {
             }
             sizeChanged(width, height);
         });
-
         VennDiagram.this.setId(vennDiagramfilter);
-//        JavaScript.getCurrent().addFunction("getElSizeof" + vennDiagramfilter,
-//                (arg) -> {
-//                    int width = (int) arg.getNumber(0);
-//                    int height = (int) arg.getNumber(1);
-//                    if (mainWidth == width && mainHeight == height) {
-//                        return;
-//                    }
-//                    sizeChanged(width, height);
-//
-//                });
-//        Page.getCurrent().addBrowserWindowResizeListener((Page.BrowserWindowResizeEvent event) -> {
-//            updateComponentSize();
-//        });
-//        updateComponentSize();
 
     }
 
-    //    private void updateComponentSize() {
-//        JavaScript.getCurrent().execute(" var elem = document.getElementById('" + vennDiagramfilter + "'); "
-//                + " if(elem){ getElSizeof" + vennDiagramfilter + "(elem.clientWidth, elem.clientHeight); }");
-//    }
     private void sizeChanged(int tChartWidth, int tChartHeight) {
         if (tChartWidth > 0 && tChartHeight > 0) {
             mainWidth = tChartWidth;
@@ -166,26 +145,13 @@ public abstract class VennDiagram extends AbsoluteLayout {
     }
 
     public void resetFilter() {
-        selectedIndexes.clear();
+        selectedColumns.clear();
         updateLegendSelectionStyle();
         updateVennDiagramSelectionStyle();
 
     }
 
-    public ModificationMatrixModel getModificationMatrix() {
-        return modificationMatrix;
-    }
-
-    public void initializeFilterData(ModificationMatrixModel modificationMatrix, Map<String, Color> dataColors, Set<Object> selectedCategories, int totalNumber) {
-//        
-        nameToCharMap.clear();
-        this.modificationMatrix = modificationMatrix;
-        this.dataColors = dataColors;
-        updateDiagramData(modificationMatrix.getColumns(), modificationMatrix.getRows());
-
-    }
-
-    private void updateDiagramData(Map<String, Set<Integer>> columns, Map<String, Integer> rows) {
+    private void updateDiagramData(Map<Comparable, Set<Integer>> columns, Map<Comparable, Integer> rows) {
         dataset = new JSONArray();
         selectedDatasetColors = new JSONArray();
         unselectedDatasetColors = new JSONArray();
@@ -196,26 +162,27 @@ public abstract class VennDiagram extends AbsoluteLayout {
         Map<String, Integer> mainCategories = new HashMap<>();
         int index = 0;
         int dsIndex = 0;
-        for (String key : columns.keySet()) {
+        for (Comparable key : columns.keySet()) {
             if (columns.get(key).isEmpty()) {
                 continue;
             }
-            if (!key.contains("[")) {
-                if (!nameToCharMap.containsKey(key)) {
-                    nameToCharMap.put(key, alphabet.charAt(index++) + "");
+            if (!key.toString().contains(",")) {
+                String rowKey = key.toString().replace("[", "").replace("]", "");
+                if (!nameToCharMap.containsKey(rowKey)) {
+                    nameToCharMap.put(rowKey.toString(), alphabet.charAt(index++) + "");
                 }
-                int logSize = rows.get(key);//((int) (Math.log(rows.get(key)) * 10)) + 1;
-                dataset.put(initDatasetObject(new String[]{nameToCharMap.get(key)}, logSize));
-                indexMap.put((dsIndex++) + "", key);
-                Color c = dataColors.get(key);
+                int logSize = rows.get(rowKey);//((int) (Math.log(rows.get(key)) * 10)) + 1;
+                dataset.put(initDatasetObject(new String[]{nameToCharMap.get(rowKey)}, logSize));
+                indexMap.put((dsIndex++) + "", rowKey);
+                Color c = dataColors.get(rowKey);
                 String colorStr = "rgba(" + c.getRed() + "," + c.getGreen() + "," + c.getBlue() + ",1.0)";
                 selectedDatasetColors.put(colorStr);
-                legendContainer.addComponent(initLegendItem(key, nameToCharMap.get(key), colorStr, columns.get(key).size()));
+                legendContainer.addComponent(initLegendItem(rowKey, nameToCharMap.get(rowKey), colorStr, columns.get(key).size(), key));
                 colorStr = "rgba(" + c.getRed() + "," + c.getGreen() + "," + c.getBlue() + ",0.3)";
                 unselectedDatasetColors.put(colorStr);
-                mainCategories.put(key, logSize);
+                mainCategories.put(rowKey, logSize);
             } else {
-                String[] intersections = key.replace("[", "").replace("]", "").split(",");
+                String[] intersections = key.toString().replace("[", "").replace("]", "").split(",");
                 String[] updatedIntersection = new String[intersections.length];
                 Map<String, String> charToColorMap = new LinkedHashMap<>();
                 int z = 0;
@@ -233,22 +200,19 @@ public abstract class VennDiagram extends AbsoluteLayout {
                     charToColorMap.put(nameToCharMap.get(cer), colorStr);
 
                 }
-                intersectionCategories.put(key, logSize);
-                tempDataset.put(key, initDatasetObject(updatedIntersection, logSize));
+                intersectionCategories.put(key.toString(), logSize);
+                tempDataset.put(key.toString(), initDatasetObject(updatedIntersection, logSize));
 //                dataset.put(initDatasetObject(updatedIntersection, logSize));
-                indexMap.put((dsIndex++) + "", key);
+                indexMap.put((dsIndex++) + "", key.toString());
                 Color c = mixColors(colorsToMix).darker();
                 String colorStr = "rgba(" + c.getRed() + "," + c.getGreen() + "," + c.getBlue() + ",1.0)";
                 selectedDatasetColors.put(colorStr);
                 c = c.brighter();
                 colorStr = "rgba(" + c.getRed() + "," + c.getGreen() + "," + c.getBlue() + ",1)";
                 unselectedDatasetColors.put(colorStr);
-                legendContainer.addComponent(initLegendItem(charToColorMap, columns.get(key).size()));
-
+                legendContainer.addComponent(initLegendItem(charToColorMap, columns.get(key).size(), key));
             }
-
         }
-        ;
         for (String key : intersectionCategories.keySet()) {
             String[] intersections = key.replace("[", "").replace("]", "").split(",");
             boolean allUnAvailable = true;
@@ -278,7 +242,7 @@ public abstract class VennDiagram extends AbsoluteLayout {
                         Color c = dataColors.get(inter);
                         String colorStr = "rgba(" + c.getRed() + "," + c.getGreen() + "," + c.getBlue() + ",1.0)";
                         selectedDatasetColors.put(colorStr);
-                        legendContainer.addComponent(initLegendItem(inter, nameToCharMap.get(inter), colorStr, 0));
+                        legendContainer.addComponent(initLegendItem(inter, nameToCharMap.get(inter), colorStr, 0, "[" + inter + "]"));
                         colorStr = "rgba(" + c.getRed() + "," + c.getGreen() + "," + c.getBlue() + ",0.3)";
                         unselectedDatasetColors.put(colorStr);
                     }
@@ -303,16 +267,16 @@ public abstract class VennDiagram extends AbsoluteLayout {
     }
 
     private void updateLegendSelectionStyle() {
-        if (selectedIndexes.size() == legendContainer.getComponentCount()) {
-            selectedIndexes.clear();
+        if (selectedColumns.size() == legendContainer.getComponentCount()) {
+            selectedColumns.clear();
         }
         for (int i = 0; i < legendContainer.getComponentCount(); i++) {
             legendContainer.getComponent(i).removeStyleName("selectedvennlegend");
         }
-        if (selectedIndexes.isEmpty()) {
+        if (selectedColumns.isEmpty()) {
             return;
         }
-        selectedIndexes.forEach((i) -> {
+        selectedColumns.forEach((i) -> {
             legendContainer.getComponent(i).addStyleName("selectedvennlegend");
         });
 
@@ -320,7 +284,7 @@ public abstract class VennDiagram extends AbsoluteLayout {
 
     private void updateVennDiagramSelectionStyle() {
         JSONArray selection = new JSONArray();
-        selectedIndexes.forEach((i) -> {
+        selectedColumns.forEach((i) -> {
             selection.put(i);
         });
         if (mainWidth <= 0 || mainHeight <= 0) {
@@ -329,49 +293,6 @@ public abstract class VennDiagram extends AbsoluteLayout {
             mainHeight = size[1];
         }
         vennDiagramComponent.setValue(":selection:" + selection.toString(), (mainWidth - 40), (mainHeight - 60));
-
-//        updateComponentSize();
-    }
-
-    public void updateFilterSelection(Set<Comparable> selectedItems, Set<Comparable> selectedCategories, boolean topFilter, boolean singleProteinsFilter, boolean selfAction) {
-
-        if (!selfAction) {
-//            intersectionMap.clear();
-            nameToCharMap.clear();
-            if (singleProteinsFilter && !selfAction && !selectedCategories.isEmpty()) {
-                updateDiagramData(modificationMatrix.getColumns(), modificationMatrix.getRows());
-
-            } else {
-                Map<String, Set<Integer>> tbarChartValues = new LinkedHashMap<>();
-                Map<String, Integer> updatedRows = new HashMap<>();
-                modificationMatrix.getColumns().keySet().stream().map((key) -> key.trim()).map((key) -> {
-                    tbarChartValues.put(key, Sets.intersection(modificationMatrix.getColumns().get(key), selectedItems));
-                    return key;
-                }).forEachOrdered((key) -> {
-                    if (!key.contains("[")) {
-                        if (!updatedRows.containsKey(key)) {
-                            updatedRows.put(key, 0);
-                        }
-                        updatedRows.replace(key, updatedRows.get(key) + tbarChartValues.get(key).size());
-
-                    } else {
-                        String[] intersections = key.replace("[", "").replace("]", "").split(",");
-                        for (String subKey : intersections) {
-                            subKey = subKey.trim();
-                            if (!updatedRows.containsKey(subKey)) {
-                                updatedRows.put(subKey, 0);
-                            }
-                            updatedRows.replace(subKey, updatedRows.get(subKey) + tbarChartValues.get(key).size());
-                        }
-
-                    }
-                });
-                updateDiagramData(tbarChartValues, updatedRows);
-            }
-
-        }
-//        setMainAppliedFilter(topFilter && !selectedCategories.isEmpty());
-//        selectColumn(selectedCategories);
     }
 
     private JSONObject initDatasetObject(String[] ids, int size) {
@@ -401,16 +322,17 @@ public abstract class VennDiagram extends AbsoluteLayout {
         }
     }
 
-    private Component initLegendItem(String title, String charRep, String color, int size) {
+    private Component initLegendItem(String title, String charRep, String color, int size, Comparable columnId) {
         Label legendItem = new Label("<div style='background:" + color + ";'>" + charRep + "</div>" + title + "<font>(" + size + ")</font>");
         legendItem.setWidth(100, Unit.PERCENTAGE);
         legendItem.setContentMode(ContentMode.HTML);
         legendItem.setStyleName("venndiagramlegend");
+        legendItem.setData(columnId);
         return legendItem;
 
     }
 
-    private Component initLegendItem(Map<String, String> charToColorMap, int size) {
+    private Component initLegendItem(Map<String, String> charToColorMap, int size, Comparable columnId) {
         String labelContent = "";// VaadinIcons.CIRCLE.getHtml();
         labelContent = charToColorMap.keySet().stream().map((charKey) -> "<div style='background:" + charToColorMap.get(charKey) + ";    margin-right: 0px !important;'>" + charKey + "</div>").reduce(labelContent, String::concat);
         labelContent += "<font>(" + size + ")</font>";
@@ -418,6 +340,7 @@ public abstract class VennDiagram extends AbsoluteLayout {
         legendItem.setWidth(100, Unit.PERCENTAGE);
         legendItem.setContentMode(ContentMode.HTML);
         legendItem.setStyleName("venndiagramlegend");
+        legendItem.setData(columnId);
         return legendItem;
 
     }
@@ -446,6 +369,27 @@ public abstract class VennDiagram extends AbsoluteLayout {
 
     public abstract void compleateLoading(boolean done);
 
-    public abstract void applyFilter(Set<Integer> columnIndexs);
+    public void updateFilter(Map<Comparable, Set<Integer>> columns, Map<Comparable, Integer> rows, Map<Comparable, Color> dataColors, Set<Comparable> selectedCategories) {
+        nameToCharMap.clear();
+        this.dataColors = dataColors;
+        updateDiagramData(columns, rows);
+        updateLegendSelectionStyle();
+        //updatevenn diagram
+        updateVennDiagramSelectionStyle();
+    }
+
+    private void selectCategory(Comparable category) {
+        Set<Comparable> selectionCategories = new LinkedHashSet<>();
+        selectionCategories.add(category);
+        Selection selection = new Selection(CONSTANT.DATASET_SELECTION, CONSTANT.MODIFICATIONS_FILTER_ID, selectionCategories, true);
+        selectionManager.setSelection(selection);
+    }
+
+    private void unSelectCategory(Comparable category) {
+        Set<Comparable> selectionCategories = new LinkedHashSet<>();
+        selectionCategories.add(category);
+        Selection selection = new Selection(CONSTANT.DATASET_SELECTION, CONSTANT.MODIFICATIONS_FILTER_ID, selectionCategories, false);
+        selectionManager.setSelection(selection);
+    }
 
 }

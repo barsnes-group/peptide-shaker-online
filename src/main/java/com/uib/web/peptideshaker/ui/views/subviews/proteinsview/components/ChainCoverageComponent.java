@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components;
+package com.uib.web.peptideshaker.ui.views.subviews.proteinsview.components;
 
 import com.itextpdf.text.pdf.codec.Base64;
 import com.uib.web.peptideshaker.presenter.core.Protein3DStructureCoverage;

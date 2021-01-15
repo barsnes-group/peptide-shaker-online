@@ -12,6 +12,7 @@ import com.github.jmchilton.blend4j.galaxy.beans.collection.response.CollectionE
 import com.github.jmchilton.blend4j.galaxy.beans.collection.response.CollectionResponse;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
+import com.uib.web.peptideshaker.model.CONSTANT;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Notification;
@@ -177,7 +178,7 @@ public abstract class GalaxyToolsHandler {
         if (search_GUI_Tool != null) {
             return search_GUI_Tool.getVersion();
         } else {
-            return "Not available";
+            return CONSTANT.NO_INFORMATION;
         }
 
     }
@@ -191,7 +192,7 @@ public abstract class GalaxyToolsHandler {
         if (peptideShaker_Tool != null) {
             return peptideShaker_Tool.getVersion();
         } else {
-            return "Not available";
+            return CONSTANT.NO_INFORMATION;
         }
     }
 

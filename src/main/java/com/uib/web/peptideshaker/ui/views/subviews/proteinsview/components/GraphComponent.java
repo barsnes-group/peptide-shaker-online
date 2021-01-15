@@ -1,13 +1,16 @@
-package com.uib.web.peptideshaker.presenter.core.graph;
+package com.uib.web.peptideshaker.ui.views.subviews.proteinsview.components;
 
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.SizeReporter;
 import com.itextpdf.text.pdf.codec.Base64;
+import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.PeptideObject;
 import com.uib.web.peptideshaker.model.ProteinGroupObject;
 import com.uib.web.peptideshaker.ui.components.RangeColorGenerator;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage.Legend;
+import com.uib.web.peptideshaker.ui.components.items.Edge;
+import com.uib.web.peptideshaker.ui.components.items.Node;
+import com.uib.web.peptideshaker.ui.components.items.Legend;
 import com.vaadin.data.Property;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.dd.DragAndDropEvent;
@@ -96,7 +99,7 @@ public abstract class GraphComponent extends VerticalLayout {
      * The edges: the keys are the node labels and the elements the list of
      * objects.
      */
-    private HashMap<String, ArrayList<String>> edges;
+    private HashMap<String, Set<String>> edges;
     /**
      * Creates new form GraphForm
      */
@@ -123,10 +126,10 @@ public abstract class GraphComponent extends VerticalLayout {
         this.selectedProteins = new HashSet<>();
         this.selectedPeptides = new HashSet<>();
 
-        styles.put("Confident", "greenbackground");
-        styles.put("Doubtful", "orangebackground");
-        styles.put("Not Validated", "redbackground");
-        styles.put("Not Available", "graybackground");
+        styles.put(CONSTANT.VALIDATION_CONFIDENT, "greenbackground");
+        styles.put(CONSTANT.VALIDATION_DOUBTFUL, "orangebackground");
+        styles.put(CONSTANT.VALIDATION_NOT_VALID, "redbackground");
+        styles.put(CONSTANT.NO_INFORMATION, "graybackground");
         styles.put("Protein", "greenbackground");
         styles.put("Transcript", "orangebackground");
         styles.put("Homology", "seabluebackground");
@@ -425,7 +428,16 @@ public abstract class GraphComponent extends VerticalLayout {
             proteinPeptideGraphWrapper.setVisible(!proteoformLayerContainer.isVisible());
             if (proteoformLayerContainer.isVisible()) {
                 updateProteinsMode("Proteoform");
-                selectedItem(selectedProteins, selectedPeptides, graphsControl.getValue().toString().equalsIgnoreCase("Proteoform"));
+                Map<String, PeptideObject> selectedPeptidesAction = new HashMap<>();
+                Map<String, ProteinGroupObject> selectedProteinsAction = new HashMap<>();
+                this.selectedProteins.forEach((item) -> {
+                    selectedProteinsAction.put(item.toString(), proteinNodes.get(item.toString()));
+                });
+
+                this.selectedPeptides.forEach((item) -> {
+                    selectedPeptidesAction.put(item.toString(), peptidesNodes.get(item.toString()));
+                });
+                selectedItem(selectedProteinsAction, selectedPeptidesAction, graphsControl.getValue().toString().equalsIgnoreCase("Proteoform"));
             } else {
                 proteinsControl.setValue(lastSelected);
                 updateProteinsMode("Protein-Peptide");
@@ -471,7 +483,8 @@ public abstract class GraphComponent extends VerticalLayout {
 
     }
 
-    public void updateGraphData(ProteinGroupObject selectedProtein, Map<String, ProteinGroupObject> proteinNodes, Map<String, PeptideObject> peptidesNodes, HashMap<String, ArrayList<String>> edges, RangeColorGenerator psmColorScale, boolean quantDs, RangeColorGenerator intensityColorScale) {
+    public void updateGraphData(ProteinGroupObject selectedProtein, Map<String, ProteinGroupObject> proteinNodes, Map<String, PeptideObject> peptidesNodes, HashMap<String, Set<String>> edges, RangeColorGenerator psmColorScale, boolean quantDs, RangeColorGenerator intensityColorScale) {
+
         uniqueOnly = nodeControl.getValue().equals("Unique Only");
         canvas.removeAllComponents();
         nodesMap.clear();
@@ -495,6 +508,7 @@ public abstract class GraphComponent extends VerticalLayout {
             System.out.println("at error o catch ");
             return;
         }
+
         graph.getVertices().forEach((node) -> {
             String modificationsAsString = "";
             ModificationMatch[] modifications = null;
@@ -550,9 +564,9 @@ public abstract class GraphComponent extends VerticalLayout {
                 n.setValidationStatuesStyle(styles.get(peptidesNodes.get(node).getValidation()));
                 n.setProteinEvidenceStyle(styles.get("Not Applicable"));
                 n.setEvidenceColor(Color.lightGray);
-                if (peptidesNodes.get(node).getValidation().equalsIgnoreCase("Confident")) {
+                if (peptidesNodes.get(node).getValidation().equalsIgnoreCase(CONSTANT.VALIDATION_CONFIDENT)) {
                     n.setValidationColor(new Color(4, 180, 95));
-                } else if (peptidesNodes.get(node).getValidation().equalsIgnoreCase("doubtful")) {
+                } else if (peptidesNodes.get(node).getValidation().equalsIgnoreCase(CONSTANT.VALIDATION_DOUBTFUL)) {
                     n.setValidationColor(new Color(255, 200, 0));
                 } else {
                     n.setValidationColor(new Color(213, 8, 8));
@@ -563,9 +577,9 @@ public abstract class GraphComponent extends VerticalLayout {
                     n.setValidationStatuesStyle(styles.get(proteinNodes.get(node).getValidation()));
                     n.setProteinEvidenceStyle(styles.get(proteinNodes.get(node).getProteinEvidence()));
                     if (proteinNodes.get(node).getValidation() == null) {
-                    } else if (proteinNodes.get(node).getValidation().equalsIgnoreCase("Confident")) {
+                    } else if (proteinNodes.get(node).getValidation().equalsIgnoreCase(CONSTANT.VALIDATION_CONFIDENT)) {
                         n.setValidationColor(new Color(4, 180, 95));
-                    } else if (proteinNodes.get(node).getValidation().equalsIgnoreCase("doubtful")) {
+                    } else if (proteinNodes.get(node).getValidation().equalsIgnoreCase(CONSTANT.VALIDATION_DOUBTFUL)) {
                         n.setValidationColor(new Color(255, 200, 0));
                     } else {
                         n.setValidationColor(new Color(213, 8, 8));
@@ -585,8 +599,8 @@ public abstract class GraphComponent extends VerticalLayout {
                     }
 
                 } else {
-                    n.setValidationStatuesStyle(styles.get("Not Available"));
-                    n.setProteinEvidenceStyle(styles.get("Not Available"));
+                    n.setValidationStatuesStyle(styles.get(CONSTANT.NO_INFORMATION));
+                    n.setProteinEvidenceStyle(styles.get(CONSTANT.NO_INFORMATION));
                 }
 
                 n.setDefaultStyleName("proteinnode");
@@ -606,7 +620,7 @@ public abstract class GraphComponent extends VerticalLayout {
         });
         Set<String> tnodesMap = new HashSet<>();
         edges.keySet().forEach((key) -> {
-            ArrayList<String> edg = edges.get(key);
+            Set<String> edg = edges.get(key);
             edg.stream().map((node) -> {
 
                 Node n1 = nodesMap.get(key);
@@ -648,6 +662,7 @@ public abstract class GraphComponent extends VerticalLayout {
             intensityColorScaleLayout.setVisible(false);
             informationLegend.updateIntensityLayout(intensityColorScale.getColorScale());
         }
+        proteinsControl.setValue("PSMNumber");
 
     }
 
@@ -675,7 +690,15 @@ public abstract class GraphComponent extends VerticalLayout {
 
     private void selectNodes(Object[] ids) {
         redrawSelection(ids, true);
-        selectedItem(selectedProteins, selectedPeptides, graphsControl.getValue().toString().equalsIgnoreCase("Proteoform"));
+        Map<String, PeptideObject> selectedPeptidesAction = new HashMap<>();
+        Map<String, ProteinGroupObject> selectedProteinsAction = new HashMap<>();
+        this.selectedProteins.forEach((item) -> {
+            selectedProteinsAction.put(item.toString(), proteinNodes.get(item.toString()));
+        });
+        this.selectedPeptides.forEach((item) -> {
+            selectedPeptidesAction.put(item.toString(), peptidesNodes.get(item.toString()));
+        });
+        selectedItem(selectedProteinsAction, selectedPeptidesAction, graphsControl.getValue().toString().equalsIgnoreCase("Proteoform"));
     }
 
     private void selectAll() {
@@ -906,7 +929,7 @@ public abstract class GraphComponent extends VerticalLayout {
         return new Line2D.Double(x1, y1, x2, y2);
     }
 
-    public abstract void selectedItem(Set<Object> selectedParentItems, Set<Object> selectedChildsItems, boolean updateProteform);
+    public abstract void selectedItem(Map<String, ProteinGroupObject> selectedParentItems, Map<String, PeptideObject> selectedChildsItems, boolean updateProteform);
 
     public abstract void updateProteinsMode(String modeType);
 
@@ -994,7 +1017,7 @@ public abstract class GraphComponent extends VerticalLayout {
         /**
          * Constructor to initialise the main attributes.
          *
-         * @param content     the dropped component (the label layout)
+         * @param content the dropped component (the label layout)
          * @param dropHandler The layout drop handler.
          */
         public WrappedComponent(final Component content, final DropHandler dropHandler) {

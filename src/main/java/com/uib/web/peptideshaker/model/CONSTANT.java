@@ -11,6 +11,9 @@ public class CONSTANT {
 
     public static final Color[] DEFAULT_CHARTS_COLOURS = new Color[]{new Color(219, 169, 1), new Color(110, 177, 206), new Color(213, 8, 8), new Color(4, 180, 95), new Color(174, 180, 4), new Color(10, 255, 14), new Color(244, 250, 88), new Color(255, 0, 64), new Color(246, 216, 206), new Color(189, 189, 189), new Color(255, 128, 0), Color.BLUE, Color.CYAN, Color.GREEN, Color.MAGENTA, Color.ORANGE, Color.PINK};
     public static final Color[] PROTEIN_VALIDATION_COLOURS = new Color[]{Color.DARK_GRAY, new Color(4, 180, 95), Color.ORANGE, new Color(213, 8, 8)};
+
+    public static final Color[] PROTEIN_INFERENCE_COLOURS = new Color[]{Color.DARK_GRAY, new Color(4, 180, 95), new Color(245, 226, 80), Color.ORANGE, new Color(213, 8, 8)};
+
     public static final String GALAXY_SOURCE = "galaxy_source";
     public static final String USER_UPLOAD_SOURCE = "user_upload_source";
     public static final String PRIDE_SOURCE = "pride_source";
@@ -94,4 +97,30 @@ public class CONSTANT {
         "600000", "006000", "000060", "606000", "600060", "006060", "606060",
         "A00000", "00A000", "0000A0", "A0A000", "A000A0", "00A0A0", "A0A0A0",
         "E00000", "00E000", "0000E0", "E0E000", "E000E0", "00E0E0", "E0E0E0",};
+
+    public static final String DATASET_SELECTION = "dataset_filter_selection";
+    public static final String PROTEINS_SELECTION = "proteins_selection";
+    public static final String PEPTIDES_SELECTION = "peptides_selection";
+
+    public static final String VALIDATION_FILTER_ID = "validation_filter";
+    public static final String PI_FILTER_ID = "pi_filter";
+    public static final String CHROMOSOME_FILTER_ID = "chromosome_filter";
+    public static final String MODIFICATIONS_FILTER_ID = "modifications_filter";
+    public static final String INTENSITY_FILTER_ID = "intensityAllPep_filter";
+    public static final String INTENSITY_UNIQUE_FILTER_ID = "intensityUniquePep_filter";
+    public static final String PEPTIDES_NUMBER_FILTER_ID = "peptidesNum_filter";
+    public static final String COVERAGE_FILTER_ID = "possibleCoverage_filter";
+    public static final String PSM_NUMBER_FILTER_ID = "psmNum_filter";
+    public static final String PROTEIN_TABLE_FILTER_ID = "proteins_table_filter";
+
+    public static final String VALIDATION_CONFIDENT = "Confident";
+    public static final String VALIDATION_DOUBTFUL = "Doubtful";
+    public static final String VALIDATION_NOT_VALID = "Not Validated";
+    public static final String NO_INFORMATION = "No Information";
+
+    /**
+     * Protein evidence options array.
+     */
+    public static final String[] PROTEIN_EVIDENCE = new String[]{NO_INFORMATION, "Protein", "Transcript", "Homology", "Predicted", "Uncertain"};
+
 }

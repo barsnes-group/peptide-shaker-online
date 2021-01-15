@@ -1,5 +1,6 @@
 package com.uib.web.peptideshaker.galaxy.utilities.history;
 
+import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.ProteinGroupObject;
 
 import java.io.BufferedReader;
@@ -20,7 +21,7 @@ public class FastaFileWebService {
     /**
      * Protein evidence list.
      */
-    private final String[] proteinEvidence = new String[]{"Not Available", "Protein", "Transcript", "Homology", "Predicted", "Uncertain"};
+    private final String[] proteinEvidence = new String[]{CONSTANT.NO_INFORMATION, "Protein", "Transcript", "Homology", "Predicted", "Uncertain"};
 
     /**
      * Update protein information from Uniprot web service.

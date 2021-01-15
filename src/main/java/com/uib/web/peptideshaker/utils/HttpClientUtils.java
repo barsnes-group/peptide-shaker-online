@@ -1,11 +1,14 @@
 package com.uib.web.peptideshaker.utils;
 
 import io.vertx.core.json.JsonObject;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -14,6 +17,8 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.ws.rs.client.Client;
@@ -24,6 +29,7 @@ import org.glassfish.jersey.client.ClientProperties;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import static junit.framework.Assert.assertEquals;
 import static org.apache.poi.hssf.usermodel.HeaderFooter.file;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
@@ -93,19 +99,19 @@ public class HttpClientUtils implements Serializable {
             ZipInputStream Zis = new ZipInputStream(conn.getInputStream());
             int counter = 0;
             ZipEntry entry = Zis.getNextEntry();
-            while (entry != null && counter < 10) {                
-             if (entryToFilesMap.containsKey(counter)) {
+            while (entry != null && counter < 10) {
+                if (entryToFilesMap.containsKey(counter)) {
                     try (ReadableByteChannel rbc = Channels.newChannel(Zis)) {
                         fos = new FileOutputStream(entryToFilesMap.get(counter));
                         fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 //                        fos.close();
 //                        rbc.close();
 //                     
-                    } 
+                    }
                     System.out.println("at ---> entry --> " + entry.getName() + "  " + counter);
                     counter++;
-                    
-                }               
+
+                }
                 if (counter > entryToFilesMap.size()) {
 //                    Zis.close();
 //                    fos.close();
@@ -132,7 +138,7 @@ public class HttpClientUtils implements Serializable {
 
     }
 
-    public File downloadFileFromZipFolder(String uri, int entryIndex, File file) {
+    public File downloadFileFromZipFolder(String uri, String  entryName, File file) {
         FileOutputStream fos = null;
         try {
 
@@ -141,11 +147,10 @@ public class HttpClientUtils implements Serializable {
             conn.addRequestProperty("Accept", "*/*");
             conn.setDoInput(true);
             ZipInputStream Zis = new ZipInputStream(conn.getInputStream());
-            int counter = 0;
             ZipEntry entry = Zis.getNextEntry();
-            
-            while (entry != null && counter < 10) {
-                if (entryIndex == counter) {
+
+            while (entry != null) {
+                if (entry.getName().contains(entryName)) {
                     try (ReadableByteChannel rbc = Channels.newChannel(Zis)) {
                         fos = new FileOutputStream(file);
                         fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
@@ -157,7 +162,6 @@ public class HttpClientUtils implements Serializable {
                 }
 
                 entry = Zis.getNextEntry();
-                counter++;
             }
         } catch (MalformedURLException ex) {
             System.err.println("at Error: " + this.getClass().getName() + " : " + ex);
@@ -222,6 +226,39 @@ public class HttpClientUtils implements Serializable {
         }
         return file;
 
+    }
+
+    public boolean testURL(String url) {
+
+        try {
+            URL linkToCheck = new URL(url);
+            HttpURLConnection urlConn = (HttpURLConnection) linkToCheck.openConnection();
+            urlConn.setConnectTimeout(10000);
+            urlConn.connect();
+            assertEquals(HttpURLConnection.HTTP_OK, urlConn.getResponseCode());
+        } catch (IOException e) {
+            System.err.println("Error creating HTTP connection");
+            return false;
+        }
+        return true;
+    }
+
+    public BufferedReader streamFile(String fileurl) {
+        try {
+            URL downloadableFile = new URL(fileurl);
+            URLConnection urlConn = downloadableFile.openConnection();
+            urlConn.setConnectTimeout(30000);
+            urlConn.addRequestProperty("Connection", "keep-alive");
+            InputStream in = urlConn.getInputStream();
+            InputStreamReader r = new InputStreamReader(in);
+            BufferedReader br = new BufferedReader(r);
+            return br;
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(HttpClientUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(HttpClientUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
 }

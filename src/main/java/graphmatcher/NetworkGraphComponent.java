@@ -3,7 +3,7 @@ package graphmatcher;
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.SizeReporter;
 import com.itextpdf.text.pdf.codec.Base64;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage.Legend;
+import com.uib.web.peptideshaker.ui.components.items.Legend;
 import com.vaadin.data.Property;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.dd.DragAndDropEvent;

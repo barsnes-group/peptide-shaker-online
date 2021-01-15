@@ -12,6 +12,15 @@ import java.util.Set;
  */
 public class PSMObject {
 
+    private String key;
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
     /**
      * Set of proteins where the PSM belong to.
      */
@@ -87,7 +96,7 @@ public class PSMObject {
     /**
      * Intensity value of the quantification.
      */
-    private double intensity = -10000;
+    private double intensity = 0;
     /**
      * Intensity hash-code colour of the quantification.
      */

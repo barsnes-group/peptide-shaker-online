@@ -1,6 +1,6 @@
 package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview;
 
-import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager;
+import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager_old;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.ui.components.items.FilterButton;
@@ -28,7 +28,7 @@ public class DatasetVisulizationLevelContainer extends HorizontalLayout {
 
     private final AbsoluteLayout container;
     private final PopupWindow headerLabel;
-    private final DatasetProteinsSubViewComponent datasetVisulizationLevelComponent;
+    private  DatasetProteinsSubViewComponent datasetVisulizationLevelComponent;
 
     /**
      * Constructor to initialise the main layout and variables.
@@ -36,7 +36,7 @@ public class DatasetVisulizationLevelContainer extends HorizontalLayout {
      * @param Selection_Manager
      * @param datasetsOverviewBtn
      */
-    public DatasetVisulizationLevelContainer(ResultsViewSelectionManager Selection_Manager, SubViewSideButton datasetsOverviewBtn) {
+    public DatasetVisulizationLevelContainer(ResultsViewSelectionManager_old Selection_Manager, SubViewSideButton datasetsOverviewBtn) {
         DatasetVisulizationLevelContainer.this.setSizeFull();
         DatasetVisulizationLevelContainer.this.setStyleName("transitionallayout");
         DatasetVisulizationLevelContainer.this.setSpacing(false);
@@ -88,13 +88,13 @@ public class DatasetVisulizationLevelContainer extends HorizontalLayout {
         commentLabel.addStyleName("selectiondescriptionlabel");
         topLabelContainer.addComponent(commentLabel);
         topLabelContainer.setComponentAlignment(commentLabel, Alignment.TOP_RIGHT);
-        datasetVisulizationLevelComponent = new DatasetProteinsSubViewComponent(Selection_Manager) {
-            @Override
-            public void updateFilterSelection(Set<Comparable> selection, Set<Comparable> selectedCategories, boolean topFilter, boolean selectOnly, boolean selfAction) {
-                removeFilterIcon.setVisible(Selection_Manager.isDatasetFilterApplied());
-                super.updateFilterSelection(selection, selectedCategories, topFilter, selectOnly, selfAction);
-            }
-        };
+//        datasetVisulizationLevelComponent = new DatasetProteinsSubViewComponent(Selection_Manager) {
+//            @Override
+//            public void updateFilterSelection(Set<Comparable> selection, Set<Comparable> selectedCategories, boolean topFilter, boolean selectOnly, boolean selfAction) {
+//                removeFilterIcon.setVisible(Selection_Manager.isDatasetFilterApplied());
+//                super.updateFilterSelection(selection, selectedCategories, topFilter, selectOnly, selfAction);
+//            }
+//        };
         container.addComponent(datasetVisulizationLevelComponent, "left:0px;top:40px;");
 
         HorizontalLayout paggingBtnsContainer = new HorizontalLayout();

@@ -1,7 +1,8 @@
-package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage;
+package com.uib.web.peptideshaker.ui.components.items;
 
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
-import com.uib.web.peptideshaker.presenter.core.graph.Node;
+import com.uib.web.peptideshaker.model.CONSTANT;
+import com.uib.web.peptideshaker.ui.components.items.Node;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -112,7 +113,7 @@ public abstract class Legend extends VerticalLayout {
             proteinEvidenceContainer.addComponent(generateLabel(uncertain, "Uncertain"));
             Node notAvailable = generateNode("proteinnode");
             notAvailable.addStyleName("graybackground");
-            proteinEvidenceContainer.addComponent(generateLabel(notAvailable, "Not Available"));
+            proteinEvidenceContainer.addComponent(generateLabel(notAvailable, CONSTANT.NO_INFORMATION));
 
             VerticalLayout proteinValidationContainer = new VerticalLayout();
             proteinValidationContainer.setHeight(170, Unit.PIXELS);
@@ -123,17 +124,17 @@ public abstract class Legend extends VerticalLayout {
             lowerContainer.addComponent(proteinValidationContainer);
             Node confedent = generateNode("proteinnode");
             confedent.addStyleName("greenbackground");
-            proteinValidationContainer.addComponent(generateLabel(confedent, "Confident"));
+            proteinValidationContainer.addComponent(generateLabel(confedent, CONSTANT.VALIDATION_CONFIDENT));
             Node doubtful = generateNode("proteinnode");
             doubtful.addStyleName("orangebackground");
-            proteinValidationContainer.addComponent(generateLabel(doubtful, "Doubtful"));
+            proteinValidationContainer.addComponent(generateLabel(doubtful, CONSTANT.VALIDATION_DOUBTFUL));
 
             Node notValidated = generateNode("proteinnode");
             notValidated.addStyleName("redbackground");
-            proteinValidationContainer.addComponent(generateLabel(notValidated, "Not Validated"));
+            proteinValidationContainer.addComponent(generateLabel(notValidated, CONSTANT.VALIDATION_NOT_VALID));
             Node notAvailable2 = generateNode("proteinnode");
             notAvailable2.addStyleName("graybackground");
-            proteinValidationContainer.addComponent(generateLabel(notAvailable2, "Not Available"));
+            proteinValidationContainer.addComponent(generateLabel(notAvailable2, CONSTANT.NO_INFORMATION));
 
             VerticalLayout psmNumberContainer = new VerticalLayout();
             psmNumberContainer.setHeightUndefined();

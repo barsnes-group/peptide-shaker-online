@@ -1,8 +1,14 @@
-package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage;
+package com.uib.web.peptideshaker.ui.views.subviews.proteinsview.components;
 
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
+import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.PeptideObject;
 import com.uib.web.peptideshaker.model.ProteinGroupObject;
+import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage.HighlightPeptide;
+import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage.PeptideLayout;
+import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage.ProteinCoverageLayout;
+import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage.ProteoformLayout;
+import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage.ProteoformModificationLayout;
 import com.uib.web.peptideshaker.ui.components.RangeColorGenerator;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.ui.AbsoluteLayout;
@@ -38,10 +44,10 @@ public abstract class ProteinCoverageComponent extends AbsoluteLayout {
     public ProteinCoverageComponent(ProteinGroupObject protein, Map<String, PeptideObject> peptidesNodes, RangeColorGenerator colorScale) {
         ProteinCoverageComponent.this.setWidth(100, Unit.PERCENTAGE);
         HashMap<String, String> styles = new HashMap<>();
-        styles.put("Confident", "greenbackground");
-        styles.put("Doubtful", "orangebackground");
-        styles.put("Not Validated", "redbackground");
-        styles.put("Not Available", "graybackground");
+        styles.put(CONSTANT.VALIDATION_CONFIDENT, "greenbackground");
+        styles.put(CONSTANT.VALIDATION_DOUBTFUL, "orangebackground");
+        styles.put(CONSTANT.VALIDATION_NOT_VALID, "redbackground");
+        styles.put(CONSTANT.NO_INFORMATION, "graybackground");
         styles.put("Protein", "greenbackground");
         styles.put("Transcript", "orangebackground");
         styles.put("Homology", "seabluebackground");
@@ -51,7 +57,7 @@ public abstract class ProteinCoverageComponent extends AbsoluteLayout {
         this.mainProteinObject = protein;
         modificationPeptideMap = new LinkedHashMap<>();
         if (protein.getValidation() == null) {
-            protein.setValidation("Not Available");
+            protein.setValidation(CONSTANT.NO_INFORMATION);
         }
         this.peptideObjectsSet = new LinkedHashSet<>();
         chainCoverage3dLayout = new AbsoluteLayout() {
@@ -231,7 +237,7 @@ public abstract class ProteinCoverageComponent extends AbsoluteLayout {
 
     }
 
-    public void selectSubComponents(Set<Object> peptidesId) {
+    public void selectSubComponents(Set<String> peptidesId) {
         peptideDistMap.forEach((peptide) -> {
             peptide.setSelected(peptidesId.contains(peptide.getPeptideId()));
         });

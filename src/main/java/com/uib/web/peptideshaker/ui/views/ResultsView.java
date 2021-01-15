@@ -2,7 +2,7 @@ package com.uib.web.peptideshaker.ui.views;
 
 import com.uib.web.peptideshaker.ui.components.UserUploadFilesComponent;
 import com.uib.web.peptideshaker.AppManagmentBean;
-import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager;
+import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager_old;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
@@ -15,6 +15,7 @@ import com.uib.web.peptideshaker.ui.views.subviews.ProteinPeptidesSubView;
 import com.uib.web.peptideshaker.ui.views.subviews.UserUploadDataSubView;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.*;
@@ -43,11 +44,18 @@ public class ResultsView extends AbsoluteLayout implements ViewableFrame {
     /**
      * The central selection manager .
      */
-    private ResultsViewSelectionManager Selection_Manager;
+    private ResultsViewSelectionManager_old Selection_Manager;
     /**
      * The main left side buttons container in big screen mode.
      */
     private VerticalLayout leftSideButtonsContainer;
+    private SubViewSideButton proteinPeptidesOverviewBtn;
+    private SubViewSideButton peptidePsmoverviewBtn;
+
+    private PeptidePsmsSubView peptidePsmsSubView;
+    private ProteinPeptidesSubView proteinPeptidesSubView;
+    private DatasetProteinsSubView datasetProteinsSubView;
+
     private Future dataprocessFuture;
     /**
      * The first presenter layout (Dataset-protein level visualisation) .
@@ -87,7 +95,7 @@ public class ResultsView extends AbsoluteLayout implements ViewableFrame {
         ResultsView.this.setStyleName("activelayout");
         ResultsView.this.addStyleName("hidelowerpanel");
         this.appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
-//        this.Selection_Manager = new ResultsViewSelectionManager();
+//        this.Selection_Manager = new ResultsViewSelectionManager_old();
         this.initLayout(sharedDataset);
 //        ResultsView.this.minimizeView();
     }
@@ -193,7 +201,7 @@ public class ResultsView extends AbsoluteLayout implements ViewableFrame {
 //        datasetVisulizationLevelContainer.setSizeFull();
 //        Selection_Manager.addBtnLayout(datasetsOverviewBtn, datasetVisulizationLevelContainer);
 
-        SubViewSideButton proteinPeptidesOverviewBtn = new SubViewSideButton("Protein Overview", buttonIndex++);
+        proteinPeptidesOverviewBtn = new SubViewSideButton("Protein Overview", buttonIndex++);
         proteinPeptidesOverviewBtn.setDescription("Protein Overview");
         proteinPeptidesOverviewBtn.updateIconByResource(null);
         proteinPeptidesOverviewBtn.setData(ProteinPeptidesSubView.class.getName());
@@ -205,7 +213,7 @@ public class ResultsView extends AbsoluteLayout implements ViewableFrame {
 
 //        proteinsVisulizationLevelContainer = new ProteinVisulizationLevelContainer(Selection_Manager, proteinoverviewBtn);
 //        Selection_Manager.addBtnLayout(proteinoverviewBtn, proteinsVisulizationLevelContainer);
-        SubViewSideButton peptidePsmoverviewBtn = new SubViewSideButton("PSM Overview", buttonIndex++);
+        peptidePsmoverviewBtn = new SubViewSideButton("PSM Overview", buttonIndex++);
         peptidePsmoverviewBtn.updateIconByResource(null);
         peptidePsmoverviewBtn.setDescription("Peptide Spectrum Matches");
         peptidePsmoverviewBtn.setData(PeptidePsmsSubView.class.getName());
@@ -237,15 +245,15 @@ public class ResultsView extends AbsoluteLayout implements ViewableFrame {
         subviewContainerContent.addComponent(userUploadDataSubView);
         appManagmentBean.getUI_Manager().registerSubView(this.getViewId(), userUploadDataSubView);
 
-        DatasetProteinsSubView datasetProteinsSubView = new DatasetProteinsSubView();
+        datasetProteinsSubView = new DatasetProteinsSubView();
         subviewContainerContent.addComponent(datasetProteinsSubView);
         appManagmentBean.getUI_Manager().registerSubView(this.getViewId(), datasetProteinsSubView);
 
-        ProteinPeptidesSubView proteinPeptidesSubView = new ProteinPeptidesSubView();
+        proteinPeptidesSubView = new ProteinPeptidesSubView();
         subviewContainerContent.addComponent(proteinPeptidesSubView);
         appManagmentBean.getUI_Manager().registerSubView(this.getViewId(), proteinPeptidesSubView);
 
-        PeptidePsmsSubView peptidePsmsSubView = new PeptidePsmsSubView();
+        peptidePsmsSubView = new PeptidePsmsSubView();
         subviewContainerContent.addComponent(peptidePsmsSubView);
         appManagmentBean.getUI_Manager().registerSubView(this.getViewId(), peptidePsmsSubView);
 
@@ -421,53 +429,70 @@ public class ResultsView extends AbsoluteLayout implements ViewableFrame {
      * dataset
      */
     public void setSelectedDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
-        this.peptideShakerVisualizationDataset = peptideShakerVisualizationDataset;
-        ExecutorService executorService = Executors.newFixedThreadPool(4);
-
-        Runnable runnableTask1 = () -> {
-//            mainPresenterBtn.setEnabled(peptideShakerVisualizationDataset != null);
-//            smallPresenterBtn.setEnabled(peptideShakerVisualizationDataset != null);
-            Selection_Manager.reset();
-            Selection_Manager.selectBtn(0);
-            datasetVisulizationLevelContainer.selectDataset(peptideShakerVisualizationDataset);
-        };
-        Runnable runnableTask2 = () -> {
-            proteinsVisulizationLevelContainer.selectDataset(peptideShakerVisualizationDataset);
-        };
-        Runnable runnableTask3 = () -> {
-            if (!peptideShakerVisualizationDataset.isUploadedProject()) {
-                peptideVisulizationLevelContainer.selectDataset(peptideShakerVisualizationDataset);
-            }
-
-        };
-        dataprocessFuture = executorService.submit(runnableTask1);
-        executorService.submit(runnableTask2);
-        executorService.submit(runnableTask3);
-        executorService.shutdown();
-        UI.getCurrent().addStyleName("busybrocess");
-        while (!dataprocessFuture.isDone()) {
-        }
-        uploadOwnDataBtn.updateIconByHTMLCode(VaadinIcons.FILE_TEXT_O.getHtml() + "<div class='overlayicon'>" + VaadinIcons.ARROW_CIRCLE_UP_O.getHtml() + "</div>");
-        if (!peptideShakerVisualizationDataset.isUploadedProject() || !maximisedMode) {
-            maximisedMode = false;
-            this.maximizeView();
-        } else {
-            UI.getCurrent().removeStyleName("busybrocess");
-//            selectSubviewButton(datasetProteinsOverviewBtn);
-            datasetProteinsOverviewBtn.removeStyleName("inactive");
-            datasetProteinsOverviewBtn.setId(null);
-            datasetProteinsOverviewBtn.setEnabled(true);
-        }
+//        this.peptideShakerVisualizationDataset = peptideShakerVisualizationDataset;
+//        ExecutorService executorService = Executors.newFixedThreadPool(4);
+//
+//        Runnable runnableTask1 = () -> {
+////            mainPresenterBtn.setEnabled(peptideShakerVisualizationDataset != null);
+////            smallPresenterBtn.setEnabled(peptideShakerVisualizationDataset != null);
+//            Selection_Manager.reset();
+//            Selection_Manager.selectBtn(0);
+//            datasetVisulizationLevelContainer.selectDataset(peptideShakerVisualizationDataset);
+//        };
+//        Runnable runnableTask2 = () -> {
+//            proteinsVisulizationLevelContainer.selectDataset(peptideShakerVisualizationDataset);
+//        };
+//        Runnable runnableTask3 = () -> {
+//            if (!peptideShakerVisualizationDataset.isUploadedProject()) {
+//                peptideVisulizationLevelContainer.selectDataset(peptideShakerVisualizationDataset);
+//            }
+//
+//        };
+//        dataprocessFuture = executorService.submit(runnableTask1);
+//        executorService.submit(runnableTask2);
+//        executorService.submit(runnableTask3);
+//        executorService.shutdown();
+//        UI.getCurrent().addStyleName("busybrocess");
+//        while (!dataprocessFuture.isDone()) {
+//        }
+//        uploadOwnDataBtn.updateIconByHTMLCode(VaadinIcons.FILE_TEXT_O.getHtml() + "<div class='overlayicon'>" + VaadinIcons.ARROW_CIRCLE_UP_O.getHtml() + "</div>");
+//        if (!peptideShakerVisualizationDataset.isUploadedProject() || !maximisedMode) {
+//            maximisedMode = false;
+//            this.maximizeView();
+//        } else {
+//            UI.getCurrent().removeStyleName("busybrocess");
+//            datasetProteinsOverviewBtn.removeStyleName("inactive");
+//            datasetProteinsOverviewBtn.setId(null);
+//            datasetProteinsOverviewBtn.setEnabled(true);
+//        }
 
     }
 
     @Override
     public void update() {
-        if (appManagmentBean.getUI_Manager().getSelectedDatasetId() != null) {
-            datasetProteinsOverviewBtn.removeStyleName("inactive");
-        } else {
-            datasetProteinsOverviewBtn.addStyleName("inactive");
+        try {
+
+            if (appManagmentBean.getUI_Manager().getSelectedDatasetId() != null) {
+                datasetProteinsOverviewBtn.removeStyleName("inactive");        
+                if (appManagmentBean.getUI_Manager().getSelectedProteinIndex() != -1) {
+                    proteinPeptidesOverviewBtn.setVisible(true);
+                    proteinPeptidesOverviewBtn.updateIconByResource(new ExternalResource(appManagmentBean.getUI_Manager().getEncodedProteinButtonImage()));
+                } else {
+                    proteinPeptidesOverviewBtn.setVisible(false);
+                }
+                if (appManagmentBean.getUI_Manager().getSelectedPeptideIndex() != -1) {
+                    peptidePsmoverviewBtn.setVisible(true);
+                    peptidePsmoverviewBtn.updateIconByResource(new ExternalResource(appManagmentBean.getUI_Manager().getEncodedPeptideButtonImage()));
+                } else {
+                    peptidePsmoverviewBtn.setVisible(false);
+                }
+            } else {
+                datasetProteinsOverviewBtn.addStyleName("inactive");
+                peptidePsmoverviewBtn.setVisible(false);
+                proteinPeptidesOverviewBtn.setVisible(false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

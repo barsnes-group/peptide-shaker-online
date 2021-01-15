@@ -3,7 +3,7 @@ package com.uib.web.peptideshaker.uimanager;
 import com.google.common.collect.Sets;
 import com.uib.web.peptideshaker.model.PeptideObject;
 import com.uib.web.peptideshaker.model.core.FilteredProteins;
-import com.uib.web.peptideshaker.model.core.ModificationMatrixUtilis;
+import com.uib.web.peptideshaker.utils.ModificationMatrixUtilis;
 import com.uib.web.peptideshaker.ui.components.items.SubViewSideButton;
 import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
 import com.vaadin.ui.Component;
@@ -15,7 +15,7 @@ import java.util.*;
  *
  * @author Yehia Farag
  */
-public class ResultsViewSelectionManager {
+public class ResultsViewSelectionManager_old {
 
     private final Map<SubViewSideButton, Component> btnsLayoutMap;
     private final Map<String, RegistrableFilter> registeredDatasetFiltersMap;
@@ -46,7 +46,7 @@ public class ResultsViewSelectionManager {
     private TreeMap<Comparable, Set<Comparable>> proteinIntinsityAllPepMap;
     private TreeMap<Comparable, Set<Comparable>> proteinIntinsityUniquePepMap;
 
-    public ResultsViewSelectionManager() {
+    public ResultsViewSelectionManager_old() {
         this.btnsLayoutMap = new LinkedHashMap<>();
         this.registeredDatasetFiltersMap = new LinkedHashMap<>();
         this.registeredProteinComponentsMap = new LinkedHashMap<>();
@@ -222,7 +222,7 @@ public class ResultsViewSelectionManager {
     }
 
     /**
-     * Set Selection in the system to update other registered listeners
+     * Set Selection in the system to updateSelection other registered listeners
      *
      * @return
      */

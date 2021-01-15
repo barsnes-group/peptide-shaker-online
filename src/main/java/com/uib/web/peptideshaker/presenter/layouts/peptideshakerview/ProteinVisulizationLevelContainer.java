@@ -1,15 +1,16 @@
 package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview;
 
-import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager;
+import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager_old;
 import com.uib.web.peptideshaker.model.PeptideObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
+import com.uib.web.peptideshaker.model.FilterUpdatingEvent;
 import com.uib.web.peptideshaker.model.ProteinGroupObject;
 import com.uib.web.peptideshaker.ui.components.items.SubViewSideButton;
 import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
 import com.uib.web.peptideshaker.ui.components.RangeColorGenerator;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.GraphsContainerComponent;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.Protein3DStructurePanel;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.ProteinCoverageTable;
+import com.uib.web.peptideshaker.ui.views.subviews.proteinsview.ProteinsGraphsContainerView;
+import com.uib.web.peptideshaker.ui.views.subviews.proteinsview.Protein3DStructureView;
+import com.uib.web.peptideshaker.ui.views.subviews.proteinsview.ProteinCoverageView;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -28,11 +29,11 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
     private final AbsoluteLayout container;
     private final HorizontalLayout middleContainer;
     private final Label headerLabel;
-    private final GraphsContainerComponent graphsContainerComponent;
-    private final ResultsViewSelectionManager Selection_Manager;
+    private final ProteinsGraphsContainerView graphsContainerComponent;
+    private final ResultsViewSelectionManager_old Selection_Manager;
     private final SubViewSideButton proteinoverviewBtn;
-    private final ProteinCoverageTable proteinCoverageContainer;
-    private final Protein3DStructurePanel protein3DStructurePanel;
+    private final ProteinCoverageView proteinCoverageContainer;
+    private final Protein3DStructureView protein3DStructurePanel;
     private final Map<Integer, Component> filterComponentsMap;
     private Map<String, PeptideObject> proteinPeptides;
     private RangeColorGenerator colorScale;
@@ -46,7 +47,7 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
      * @param Selection_Manager
      * @param proteinoverviewBtn
      */
-    public ProteinVisulizationLevelContainer(ResultsViewSelectionManager Selection_Manager, SubViewSideButton proteinoverviewBtn) {
+    public ProteinVisulizationLevelContainer(ResultsViewSelectionManager_old Selection_Manager, SubViewSideButton proteinoverviewBtn) {
         ProteinVisulizationLevelContainer.this.setSizeFull();
         ProteinVisulizationLevelContainer.this.setSpacing(true);
         ProteinVisulizationLevelContainer.this.setMargin(false);
@@ -95,11 +96,11 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
         middleContainer.setSpacing(true);
         subContainer.addComponent(middleContainer);
 
-        graphsContainerComponent = new GraphsContainerComponent() {
+        graphsContainerComponent = new ProteinsGraphsContainerView() {
             @Override
-            public void selectedItem(Set<Object> selectedItems, Set<Object> selectedChildsItems, boolean isProteform) {
+            public void selectedItem(Map<String,ProteinGroupObject> selectedItems, Map<String,PeptideObject> selectedChildsItems, boolean isProteform) {
                 if (selectedItems.size() == 1) {
-                    headerLabel.setValue("Protein Overview (" + graphsContainerComponent.getProteinName(selectedItems.iterator().next().toString()) + ")");
+//                    headerLabel.setValue("Protein Overview (" + graphsContainerComponent.getProteinName(selectedItems.iterator().next().toString()) + ")");
                 } else {
                     headerLabel.setValue("Protein Overview ");
                 }
@@ -113,31 +114,31 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
                     return;
                 }
                 if (selectedItems.size() == 1) {
-                    ProteinGroupObject protein = this.getProteinNodes().get((String) selectedItems.iterator().next());
-                    proteinPeptides = new LinkedHashMap<>();
-                    this.getPeptidesNodes().values().stream().filter((peptide) -> (peptide.getProteinsSet().contains(protein.getAccession()))).forEachOrdered((peptide) -> {
-                        proteinPeptides.put(peptide.getModifiedSequence(), peptide);
-                    });
-                    if (protein3DStructurePanel.getLastSelectedAccession() != null && !protein3DStructurePanel.getLastSelectedAccession().toString().equalsIgnoreCase(protein.getAccession())) {
-                        initialized3D = false;
-                    }
-                    protein3DStructurePanel.updatePanel(protein.getAccession(), protein.getSequence(), proteinPeptides.values(), proteinoverviewBtn.getStyleName().contains("selectedbiglbtn"));
+//                    ProteinGroupObject protein = this.getProteinNodes().get((String) selectedItems.iterator().next());
+//                    proteinPeptides = new LinkedHashMap<>();
+//                    this.getPeptidesNodes().values().stream().filter((peptide) -> (peptide.getProteinsSet().contains(protein.getAccession()))).forEachOrdered((peptide) -> {
+//                        proteinPeptides.put(peptide.getModifiedSequence(), peptide);
+//                    });
+//                    if (protein3DStructurePanel.getLastSelectedAccession() != null && !protein3DStructurePanel.getLastSelectedAccession().toString().equalsIgnoreCase(protein.getAccession())) {
+//                        initialized3D = false;
+//                    }
+//                    protein3DStructurePanel.updatePanel(protein.getAccession(), protein.getSequence(), proteinPeptides.values(), proteinoverviewBtn.getStyleName().contains("selectedbiglbtn"));
 
                 } else {
                     protein3DStructurePanel.reset();
                 }
 
                 if (selectedChildsItems.size() == 1) {
-                    Object peptideId = selectedChildsItems.iterator().next();
-                    Object proteinId = selectedItems.iterator().next();
-                    peptideSelection(peptideId, proteinId);
-                    protein3DStructurePanel.selectPeptide(peptideId + "");
+//                    Object peptideId = selectedChildsItems.iterator().next();
+//                    Object proteinId = selectedItems.iterator().next();
+//                    peptideSelection(peptideId, proteinId);
+//                    protein3DStructurePanel.selectPeptide(peptideId + "");
 
                 } else {
 
                     if (initialized3D && selectedItems.size() == 1) {
-                        Object proteinId = selectedItems.toArray()[0];
-                        peptideSelection(null, proteinId);
+//                        Object proteinId = selectedItems.toArray()[0];
+//                        peptideSelection(null, proteinId);
                         protein3DStructurePanel.selectPeptide(null + "");
 
                     } else {
@@ -178,14 +179,14 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
         middleContainer.setExpandRatio(graphsContainerComponent, 60);
         graphsContainerComponent.addStyleName("graphcontainerstyle");
 
-        protein3DStructurePanel = new Protein3DStructurePanel();
+        protein3DStructurePanel = new Protein3DStructureView();
         middleContainer.addComponent(protein3DStructurePanel);
         middleContainer.setExpandRatio(protein3DStructurePanel, 40);
         protein3DStructurePanel.addStyleName("protein3dcontainerstyle");
 
         Selection_Manager.RegistrProteinInformationComponent(ProteinVisulizationLevelContainer.this);
 
-        proteinCoverageContainer = new ProteinCoverageTable(protein3DStructurePanel.getChainCoverageLayout()) {
+        proteinCoverageContainer = new ProteinCoverageView(protein3DStructurePanel.getChainCoverageLayout()) {
             @Override
             public void selectPeptide(Object proteinId, Object peptideId) {
                 specificPeptideSelection = true;
@@ -236,7 +237,7 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
     }
 
     public void selectDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
-        graphsContainerComponent.selectDataset(peptideShakerVisualizationDataset);
+//        graphsContainerComponent.selectDataset(peptideShakerVisualizationDataset);
     }
 
     @Override
@@ -253,9 +254,9 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
     public void selectionChange(String type) {
         if (type.equalsIgnoreCase("protein_selection")) {
             String proteinsId = Selection_Manager.getSelectedProteinId();
-            String imgUrl = graphsContainerComponent.updateGraphData(proteinsId);
-            this.colorScale = graphsContainerComponent.getColorScale();
-            proteinCoverageContainer.selectDataset(graphsContainerComponent.getProteinNodes(), graphsContainerComponent.getPeptidesNodes(), graphsContainerComponent.getSelectedProteins(), graphsContainerComponent.getSelectedPeptides(), colorScale, graphsContainerComponent.isQuantDataSet());
+            String imgUrl ="";//; graphsContainerComponent.updateGraphData(proteinsId);
+            this.colorScale = graphsContainerComponent.getPsmsColorScale();
+//            proteinCoverageContainer.selectDataset(graphsContainerComponent.getProteinNodes(), graphsContainerComponent.getPeptidesNodes(), graphsContainerComponent.getSelectedProteins(), graphsContainerComponent.getSelectedPeptides(), colorScale, graphsContainerComponent.isQuantDataSet());
             if (imgUrl != null) {
                 this.proteinoverviewBtn.updateIconByResource(new ExternalResource(imgUrl));
             } else {
@@ -283,10 +284,10 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
         } else {
             if (proteinPeptides == null || proteinPeptides.get(peptideId.toString()) == null) {
                 proteinPeptides = new LinkedHashMap<>();
-                ProteinGroupObject protein = graphsContainerComponent.getProteinNodes().get((String) proteinId);
-                graphsContainerComponent.getPeptidesNodes().values().stream().filter((peptide) -> (peptide.getProteinsSet().contains(protein.getAccession()))).forEachOrdered((peptide) -> {
-                    proteinPeptides.put(peptide.getModifiedSequence(), peptide);
-                });
+//                ProteinGroupObject protein = graphsContainerComponent.getProteinNodes().get((String) proteinId);
+//                graphsContainerComponent.getPeptidesNodes().values().stream().filter((peptide) -> (peptide.getProteinsSet().contains(protein.getAccession()))).forEachOrdered((peptide) -> {
+//                    proteinPeptides.put(peptide.getModifiedSequence(), peptide);
+//                });
             }
             Selection_Manager.setSelectedPeptide(proteinPeptides.get(peptideId.toString()));
             Selection_Manager.setSelection("peptide_selection", new HashSet<>(Arrays.asList(new Comparable[]{peptideId + ""})), null, getFilterId());
@@ -349,6 +350,10 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
         }
 
         return currentFilterView;
+    }
+     @Override
+    public void updateSelection(FilterUpdatingEvent event) {
+        
     }
 
 }

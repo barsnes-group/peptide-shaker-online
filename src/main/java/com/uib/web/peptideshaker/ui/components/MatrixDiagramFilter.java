@@ -3,13 +3,18 @@ package com.uib.web.peptideshaker.ui.components;
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.SizeReporter;
 import com.google.common.collect.Sets;
+import com.uib.web.peptideshaker.AppManagmentBean;
+import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.ModificationMatrixModel;
-import com.uib.web.peptideshaker.model.core.ModificationMatrixUtilis;
+import com.uib.web.peptideshaker.model.Selection;
+import com.uib.web.peptideshaker.utils.ModificationMatrixUtilis;
 import com.uib.web.peptideshaker.presenter.core.HBarWithLabel;
 import com.uib.web.peptideshaker.ui.components.items.SelectableNode;
 import com.uib.web.peptideshaker.ui.components.items.SparkLine;
+import com.uib.web.peptideshaker.uimanager.SelectionManager;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
@@ -24,17 +29,17 @@ import java.util.*;
  *
  * @author Yehia Farag
  */
-public abstract class MatrixDiagramRedraw extends VerticalLayout {
+public abstract class MatrixDiagramFilter extends VerticalLayout {
 
     private final AbsoluteLayout container;
-    private final Map<String, Integer> rows = new LinkedHashMap<>();
+    private final Map<Comparable, Integer> rows = new LinkedHashMap<>();
     private final Set<Comparable> fullItemsSet;
     private final Map<Integer, Double> barChartValues;
     private final Map<Comparable, List<SelectableNode>> nodesTable;
     private final LayoutEvents.LayoutClickListener barListener;
     private final Map<String, HBarWithLabel> columnMap;
     private final Map<String, SparkLine> rowLabelsMap;
-    private final Set<Integer> selectedIndexes;
+    private final Set<Comparable> selectedColumns;
     /**
      * The width of the filter container.
      */
@@ -46,8 +51,8 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
     /**
      * The title text of the filter.
      */
-    private Map<String, Set<Integer>> columns;
-    private Map<String, Color> dataColors;
+    private Map<Comparable, Set<Integer>> columns;
+    private Map<Comparable, Color> dataColors;
     private int rowLabelsWidth;
     private int minimumWidth;
     private boolean allowRedraw = false;
@@ -55,14 +60,16 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
     private int frameWidth;
     private int frameHeight;
     private boolean visibleScrollbar;
+    private final SelectionManager selectionManager;
 
-    public MatrixDiagramRedraw() {
+    public MatrixDiagramFilter(SelectionManager selectionManager) {
+        this.selectionManager = selectionManager;
         this.container = new AbsoluteLayout();
-        MatrixDiagramRedraw.this.addStyleName("autooverflow");
+        MatrixDiagramFilter.this.addStyleName("autooverflow");
         this.container.setSizeFull();
-        MatrixDiagramRedraw.this.setSizeFull();
-        MatrixDiagramRedraw.this.addComponent(container);
-        MatrixDiagramRedraw.this.setComponentAlignment(container, Alignment.MIDDLE_CENTER);
+        MatrixDiagramFilter.this.setSizeFull();
+        MatrixDiagramFilter.this.addComponent(container);
+        MatrixDiagramFilter.this.setComponentAlignment(container, Alignment.MIDDLE_CENTER);
         this.mainWidth = 300;
         this.mainHeight = 300;
         this.rowLabelsMap = new LinkedHashMap<>();
@@ -70,21 +77,19 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
         this.columnMap = new LinkedHashMap<>();
         this.barChartValues = new LinkedHashMap<>();
         this.fullItemsSet = new LinkedHashSet<>();
-        this.selectedIndexes = new LinkedHashSet<>();
-        MatrixDiagramRedraw.this.addStyleName("slowredraw");
+        this.selectedColumns = new LinkedHashSet<>();
+        MatrixDiagramFilter.this.addStyleName("slowredraw");
         this.barListener = (LayoutEvents.LayoutClickEvent event) -> {
             Component barLayout = event.getComponent();
             if (barLayout == null) {
                 return;
             }
-            int columnIndx = (int) ((HBarWithLabel) barLayout).getData();
-            if (selectedIndexes.contains(columnIndx)) {
-                selectedIndexes.remove(columnIndx);
+            Comparable columnId = (Comparable) ((HBarWithLabel) barLayout).getData();
+            if (selectedColumns.contains(columnId)) {
+                unSelectCategory(columnId);
             } else {
-                selectedIndexes.add(columnIndx);
+                selectCategory(columnId);
             }
-
-            applyFilter(selectedIndexes);
         };
         this.initlayout();
 
@@ -92,7 +97,7 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
 
     private void initlayout() {
 
-        SizeReporter mainSizeReporter = new SizeReporter(MatrixDiagramRedraw.this);
+        SizeReporter mainSizeReporter = new SizeReporter(MatrixDiagramFilter.this);
         mainSizeReporter.addResizeListener((ComponentResizeEvent event) -> {
             int tChartWidth = event.getWidth();
             int tChartHeight = event.getHeight();
@@ -111,29 +116,10 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
         });
     }
 
-    public void initializeFilterData(ModificationMatrixModel modificationMatrix, Map<String, Color> dataColors, Set<Object> selectedCategories, int totalNumber) {
-        rows.clear();
-        rowLabelsMap.clear();
-        this.dataColors = dataColors;
-        rows.putAll(modificationMatrix.getRows());
-        columns = modificationMatrix.getColumns();
-        barChartValues.clear();
-        fullItemsSet.clear();
-        int coulmnIndx = 0;
-        for (String key : columns.keySet()) {
-            fullItemsSet.addAll(columns.get(key));
-            barChartValues.put(coulmnIndx++, (double) columns.get(key).size());
-        }
-        drawLayout();
-        reDrawLayout(false);
-    }
-
     private void reDrawLayout(boolean local) {
-
         if (!allowRedraw) {
             return;
         }
-
         int step;
         if (columnMap.size() > 1) {
             step = (frameWidth - 30 - rowLabelsWidth - 20) / (columnMap.size() - 1);
@@ -166,12 +152,11 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
         } else {
             container.setWidth((x + 25), Unit.PIXELS);
         }
-
         visibleScrollbar = container.getWidth() > frameWidth || container.getHeight() > frameHeight;
-
-        setVisibleScrollbar(visibleScrollbar || local);
-
+        this.setVisibleScrollbar(visibleScrollbar || local);
     }
+
+    public abstract void setVisibleScrollbar(boolean visible);
 
     public int getBarChartX() {
         if (columnMap.size() == 1) {
@@ -206,12 +191,12 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
                     continue;
                 }
                 String columnKey = columns.keySet().toArray()[columnIndex] + "";
-                if (columnKey.contains(rowKey)) {
+                if (columnKey.contains(rowKey.toString())) {
                     numInRow += barChartValues.get(columnIndex);
                 }
             }
             if (numInRow > 0) {
-                effictiveRowMap.put(rowKey, numInRow);
+                effictiveRowMap.put(rowKey.toString(), numInRow);
             }
         });
         ;
@@ -260,12 +245,12 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
 
             container.addComponent(bar, "left:" + currentX + "px; top:" + y + "px;");
 
-            bar.setData(columnIndex);
+            bar.setData(columnKey);
             String mod = columns.keySet().toArray()[columnIndex++].toString().replace("[", "").replace("]", "").replace(",", "<br/>") + "<font style='font-size:10px !important;margin-right:5px'><br/>" + VaadinIcons.HASH.getHtml() + "</font>Proteins" + " (" + ((int) (double) barChartValues.get(columnIndex - 1)) + ")";
-            for (String key : dataColors.keySet()) {
-                if (mod.contains(key)) {
+            for (Comparable key : dataColors.keySet()) {
+                if (mod.contains(key.toString())) {
                     Color c = dataColors.get(key);
-                    mod = mod.replace(key, "<font style='color:rgb(" + c.getRed() + "," + c.getGreen() + "," + c.getBlue() + ");font-size:10px !important;margin-right:5px'> " + VaadinIcons.CIRCLE.getHtml() + "</font>" + key);
+                    mod = mod.replace(key.toString(), "<font style='color:rgb(" + c.getRed() + "," + c.getGreen() + "," + c.getBlue() + ");font-size:10px !important;margin-right:5px'> " + VaadinIcons.CIRCLE.getHtml() + "</font>" + key);
                 }
 
             }
@@ -288,7 +273,7 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
 
             SparkLine sl = new SparkLine(rowKey, effictiveRowMap.get(rowKey), 0, max, dataColors.get(rowKey));
             sl.setWidth(rowLabelsWidth, Unit.PIXELS);
-            sl.setData(rowIndex);
+            sl.setData(rowKey);
             sl.setDescription(rowKey);
             this.container.addComponent(sl, "left:" + currentX + "px;top:" + currentY + "px");
             rowLabelsMap.put(rowKey, sl);
@@ -301,14 +286,18 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
             int columnIndex = 0;
             for (String columnKey : columnMap.keySet()) {
                 SelectableNode node = new SelectableNode(rowKey, columnIndex, columns.get(columnKey).isEmpty(), dataColors.get(rowKey)) {
+                    private final Comparable columnId = columnKey;
+
                     @Override
                     public void selectNode(int columnIndex) {//
-                        if (selectedIndexes.contains(columnIndex)) {
-                            selectedIndexes.remove(columnIndex);
+                        if (selectedColumns.contains(columnIndex)) {
+                            unSelectCategory(columnId);
+//                            selectedIndexes.remove(columnIndex);
                         } else {
-                            selectedIndexes.add(columnIndex);
+                            selectCategory(columnId);
+//                            selectedIndexes.add(columnIndex);
                         }
-                        applyFilter(selectedIndexes);
+//                        applyFilter(selectedIndexes);
                     }
                 };
                 node.setData(columns.get(columnKey).size());
@@ -362,14 +351,11 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
 
     private void selectColumn(Set<Comparable> columnIds) {
         unselectAll();
-        if (columnIds.isEmpty()) {
+        if (columnIds == null || columnIds.isEmpty()) {
             return;
         }
-//        String columnId = columnIds.iterator().next() + "";
+        this.selectedColumns.addAll(columnIds);
         columnIds.stream().map((columnId) -> {
-            //            if (nodesTable.get(columnId).get(0).isSelected()) {
-//                continue;
-//            }
             rowLabelsMap.values().forEach((sL) -> {
                 if (columnId.toString().contains(sL.getDescription())) {
                     sL.setSelected(true);
@@ -404,21 +390,20 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
         });
     }
 
-    public void resetFilter() {
-        selectedIndexes.clear();
-        unselectAll();
-
-    }
-
+//    public void resetFilter() {
+//        selectedColumns.clear();
+//        unselectAll();
+//
+//    }
     public void updateViewedModifications(Set<String> modifications) {
-        Set<String> rowSet = new HashSet<>();
-        Set<String> columnSet = new HashSet<>();
+        Set<Comparable> rowSet = new HashSet<>();
+        Set<Comparable> columnSet = new HashSet<>();
 
-        for (String columnKey : columns.keySet()) {
+        for (Comparable columnKey : columns.keySet()) {
             for (String modKey : modifications) {
-                if (columnKey.contains(modKey)) {
-                    columnSet.add(columnKey);
-                    String[] mods = columnKey.replace("[", "").replace("]", "").split(",");
+                if (columnKey.toString().contains(modKey)) {
+                    columnSet.add(columnKey.toString());
+                    String[] mods = columnKey.toString().replace("[", "").replace("]", "").split(",");
                     for (String mod : mods) {
                         rowSet.add(mod.trim());
                     }
@@ -426,79 +411,70 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
             }
 
         }
-        ;
         localDrawLayout(rowSet, columnSet);
         reDrawLayout(true);
     }
 
-    public abstract void setVisibleScrollbar(boolean visible);
-
-    public Map<String, Color> updateFilterSelection(Set<Comparable> selectedItems, Set<Comparable> selectedCategories, boolean topFilter, boolean singleProteinsFilter, boolean selfAction) {
-        Map<String, Color> modMap = new LinkedHashMap<>();
-        if (!selfAction) {
-            barChartValues.clear();
-            if (singleProteinsFilter && !selfAction && !selectedCategories.isEmpty()) {
-                int coulmnIndex = 0;
-                for (String key : columns.keySet()) {
-                    double d = (double) columns.get(key).size();
-                    barChartValues.put(coulmnIndex, d);
-                    coulmnIndex++;
-                }
-            } else {
-                Map<Integer, Double> tbarChartValues = new LinkedHashMap<>();
-                int coulmnIndex = 0;
-                for (String key : columns.keySet()) {
-                    double d = (double) Sets.intersection(columns.get(key), selectedItems).size();
-                    if (d > 0) {
-                        tbarChartValues.put(coulmnIndex, d);
-                        String columnKey = columns.keySet().toArray()[coulmnIndex] + "";
-                        String[] mods = columnKey.replace("[", "").replace("]", "").split(",");
-                        for (String mod : mods) {
-                            modMap.put(mod.trim(), dataColors.get(mod.trim()));
-                        }
-                    }
-                    coulmnIndex++;
-                }
-                barChartValues.putAll(tbarChartValues);
-
-            }
-            drawLayout();
-            reDrawLayout(false);
-        }
-        setMainAppliedFilter(topFilter && !selectedCategories.isEmpty());
-        selectColumn(selectedCategories);
-        return modMap;
-    }
-
-    public Set<Comparable> filterAction(Set<Integer> columnIndexs) {
-        if (columnMap.size() == 1 || columnIndexs == null || columnIndexs.isEmpty()) {
-            return null;
-        }
-        Set<Comparable> appliedFilter = new LinkedHashSet<>();
-        columnIndexs.forEach((columnIndex) -> {
-            appliedFilter.add((columns.keySet().toArray()[columnIndex] + ""));
-        });
-        return appliedFilter;
-    }
-
-    public abstract void setMainAppliedFilter(boolean mainAppliedFilter);
-
-    public abstract void applyFilter(Set<Integer> columnIndexs);
-
-    private void localDrawLayout(Set<String> rowSet, Set<String> columnSet) {
+//    public Map<String, Color> updateFilterSelection(Set<Comparable> selectedItems, Set<Comparable> selectedCategories, boolean topFilter, boolean singleProteinsFilter, boolean selfAction) {
+//        Map<String, Color> modMap = new LinkedHashMap<>();
+//        if (!selfAction) {
+//            barChartValues.clear();
+//            if (singleProteinsFilter && !selfAction && !selectedCategories.isEmpty()) {
+//                int coulmnIndex = 0;
+//                for (Comparable key : columns.keySet()) {
+//                    double d = (double) columns.get(key).size();
+//                    barChartValues.put(coulmnIndex, d);
+//                    coulmnIndex++;
+//                }
+//            } else {
+//                Map<Integer, Double> tbarChartValues = new LinkedHashMap<>();
+//                int coulmnIndex = 0;
+//                for (Comparable key : columns.keySet()) {
+//                    double d = (double) Sets.intersection(columns.get(key), selectedItems).size();
+//                    if (d > 0) {
+//                        tbarChartValues.put(coulmnIndex, d);
+//                        String columnKey = columns.keySet().toArray()[coulmnIndex] + "";
+//                        String[] mods = columnKey.replace("[", "").replace("]", "").split(",");
+//                        for (String mod : mods) {
+//                            modMap.put(mod.trim(), dataColors.get(mod.trim()));
+//                        }
+//                    }
+//                    coulmnIndex++;
+//                }
+//                barChartValues.putAll(tbarChartValues);
+//
+//            }
+//            drawLayout();
+//            reDrawLayout(false);
+//        }
+//        setMainAppliedFilter(topFilter && !selectedCategories.isEmpty());
+//        selectColumn(selectedCategories);
+//        return modMap;
+//    }
+//    public Set<Comparable> filterAction(Set<Integer> columnIndexs) {
+//        if (columnMap.size() == 1 || columnIndexs == null || columnIndexs.isEmpty()) {
+//            return null;
+//        }
+//        Set<Comparable> appliedFilter = new LinkedHashSet<>();
+//        columnIndexs.forEach((columnIndex) -> {
+//            appliedFilter.add((columns.keySet().toArray()[columnIndex] + ""));
+//        });
+//        return appliedFilter;
+//    }
+//    public abstract void setMainAppliedFilter(boolean mainAppliedFilter);
+////    public abstract void applyFilter(Set<Integer> columnIndexs);
+    private void localDrawLayout(Set<Comparable> rowSet, Set<Comparable> columnSet) {
         allowRedraw = false;
         container.removeAllComponents();
         rowLabelsMap.clear();
         columnMap.clear();
         nodesTable.clear();
-
         int currentX = 0;
         int currentY = 0;
         int max = (-1 * Integer.MAX_VALUE);
         int min = Integer.MAX_VALUE;
         rowLabelsWidth = 0;
-
-        Map<String, Integer> effictiveRowMap = new LinkedHashMap<>();
+        Map<Comparable, Integer> effictiveRowMap = new LinkedHashMap<>();
         rows.keySet().forEach((rowKey) -> {
             if (!rowSet.isEmpty() && !rowSet.contains(rowKey)) {
             } else {
@@ -509,20 +485,18 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
                         continue;
                     }
                     String columnKey = columns.keySet().toArray()[columnIndex] + "";
-                    if (columnKey.contains(rowKey)) {
+                    if (columnKey.contains(rowKey.toString())) {
                         numInRow += barChartValues.get(columnIndex);
                     }
                 }
                 if (numInRow > 0) {
-                    effictiveRowMap.put(rowKey, numInRow);
+                    effictiveRowMap.put(rowKey.toString(), numInRow);
                 }
             }
         });
-        ;
-
-        for (String row : effictiveRowMap.keySet()) {
+        for (Comparable row : effictiveRowMap.keySet()) {
             int i = effictiveRowMap.get(row);
-            rowLabelsWidth = Math.min(Math.max(rowLabelsWidth, (row).length()), 200);
+            rowLabelsWidth = Math.min(Math.max(rowLabelsWidth, (row).toString().length()), 200);
             if (max < i) {
                 max = i;
             }
@@ -535,7 +509,7 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
         int barchartHeight = 130;//Math.min(Math.max(100, mainHeight - (effictiveRows * 25)), 200); //start drawing columns
         double factor = -1;
         currentX = rowLabelsWidth;
-        List<String> sortedKeysList = new ArrayList<>(effictiveRowMap.keySet());
+        List<Comparable> sortedKeysList = new ArrayList<>(effictiveRowMap.keySet());
         for (int columnIndex : barChartValues.keySet()) {
             int columnValue = barChartValues.get(columnIndex).intValue();
             String columnKey = columns.keySet().toArray()[columnIndex] + "";
@@ -552,12 +526,12 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
             bar.setHeight(bheight, Unit.PIXELS);
             bar.addLayoutClickListener(barListener);
             container.addComponent(bar, "left:" + currentX + "px; top:" + (barchartHeight - bheight) + "px;");
-            bar.setData(columnIndex);
+            bar.setData(columnKey);
             String mod = columns.keySet().toArray()[columnIndex++].toString().replace("[", "").replace("]", "").replace(",", "<br/>") + "<font style='font-size:10px !important;margin-right:5px'><br/>" + VaadinIcons.HASH.getHtml() + "</font>Proteins" + " (" + ((int) (double) barChartValues.get(columnIndex - 1)) + ")";
-            for (String key : dataColors.keySet()) {
-                if (mod.contains(key)) {
+            for (Comparable key : dataColors.keySet()) {
+                if (mod.contains(key.toString())) {
                     Color c = dataColors.get(key);
-                    mod = mod.replace(key, "<font style='color:rgb(" + c.getRed() + "," + c.getGreen() + "," + c.getBlue() + ");font-size:10px !important;margin-right:5px'> " + VaadinIcons.CIRCLE.getHtml() + "</font>" + key);
+                    mod = mod.replace(key.toString(), "<font style='color:rgb(" + c.getRed() + "," + c.getGreen() + "," + c.getBlue() + ");font-size:10px !important;margin-right:5px'> " + VaadinIcons.CIRCLE.getHtml() + "</font>" + key);
                 }
 
             }
@@ -575,14 +549,13 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
         currentX = 0;
         currentY = barchartHeight + 7;
         int rowIndex = 0;
-        for (String rowKey : effictiveRowMap.keySet()) {
-
-            SparkLine sl = new SparkLine(rowKey, effictiveRowMap.get(rowKey), 0, max, dataColors.get(rowKey));
+        for (Comparable rowKey : effictiveRowMap.keySet()) {
+            SparkLine sl = new SparkLine(rowKey.toString(), effictiveRowMap.get(rowKey), 0, max, dataColors.get(rowKey));
             sl.setWidth(rowLabelsWidth, Unit.PIXELS);
-            sl.setData(rowIndex);
-            sl.setDescription(rowKey);
+            sl.setData(rowKey);
+            sl.setDescription(rowKey.toString());
             this.container.addComponent(sl, "left:" + currentX + "px;top:" + currentY + "px");
-            rowLabelsMap.put(rowKey, sl);
+            rowLabelsMap.put(rowKey.toString(), sl);
             currentY += 25;
             rowIndex++;
         }
@@ -592,15 +565,19 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
             int columnIndex = 0;
             for (String columnKey : columnMap.keySet()) {
                 SelectableNode node = new SelectableNode(rowKey, columnIndex, columns.get(columnKey).isEmpty(), dataColors.get(rowKey)) {
+                    private final Comparable columnId = columnKey;
+
                     @Override
-                    public void selectNode(int columnIndex) {//                           
-                        if (selectedIndexes.contains(columnIndex)) {
-                            selectedIndexes.remove(columnIndex);
+                    public void selectNode(int columnIndex) {//
+                        if (selectedColumns.contains(columnIndex)) {
+                            unSelectCategory(columnId);
+//                            selectedIndexes.remove(columnIndex);
                         } else {
-                            selectedIndexes.add(columnIndex);
+                            selectCategory(columnId);
+//                            selectedIndexes.add(columnIndex);
                         }
-                        applyFilter(selectedIndexes);
                     }
+
                 };
                 node.setData(columns.get(columnKey).size());
                 node.setDescription(columnMap.get(columnKey).getDescription());
@@ -649,6 +626,74 @@ public abstract class MatrixDiagramRedraw extends VerticalLayout {
         container.setHeight(finalheight + 30, Unit.PIXELS);
         allowRedraw = true;
 
+    }
+
+    public void updateFilter(Map<Comparable, Set<Integer>> columns, Map<Comparable, Integer> rows, Map<Comparable, Color> dataColors, Set<Comparable> selectedCategories) {
+       
+        if (selectedCategories != null && selectedCategories.containsAll(columns.keySet())) {
+            reset();
+            return;
+        }
+        boolean sameData = true;
+        if (this.rows.size() == rows.size() && this.rows.keySet().containsAll(rows.keySet())) {
+            for (Comparable key : rows.keySet()) {
+                if (rows.get(key).intValue() != this.rows.get(key).intValue()) {
+                    sameData = false;
+                    break;
+                }
+            }
+        } else {
+            sameData = false;
+        }
+        if (sameData && this.columns.size() == columns.size() && this.columns.keySet().containsAll(columns.keySet())) {
+            for (Comparable key : columns.keySet()) {
+                if (columns.get(key).size() != this.columns.get(key).size()) {
+                    sameData = false;
+                    break;
+                }
+            }
+        } else {
+            sameData = false;
+        }
+        if (sameData) {
+            selectColumn(selectedCategories);
+            return;
+        }
+        this.rows.clear();
+        rowLabelsMap.clear();
+        this.selectedColumns.clear();
+        this.dataColors = dataColors;
+        this.rows.putAll(rows);
+        this.columns = columns;
+        barChartValues.clear();
+        fullItemsSet.clear();
+        int coulmnIndx = 0;
+        for (Comparable key : columns.keySet()) {
+            fullItemsSet.addAll(columns.get(key));
+            barChartValues.put(coulmnIndx++, (double) columns.get(key).size());
+        }
+        drawLayout();
+        reDrawLayout(false);
+        selectColumn(selectedCategories);
+    }
+
+    private void selectCategory(Comparable category) {
+        Set<Comparable> selectionCategories = new LinkedHashSet<>();
+        selectionCategories.add(category);
+        Selection selection = new Selection(CONSTANT.DATASET_SELECTION, CONSTANT.MODIFICATIONS_FILTER_ID, selectionCategories, true);
+        selectionManager.setSelection(selection);
+    }
+
+    private void unSelectCategory(Comparable category) {
+        Set<Comparable> selectionCategories = new LinkedHashSet<>();
+        selectionCategories.add(category);
+        Selection selection = new Selection(CONSTANT.DATASET_SELECTION, CONSTANT.MODIFICATIONS_FILTER_ID, selectionCategories, false);
+        selectionManager.setSelection(selection);
+    }
+
+    private void reset() {
+        Selection selection = new Selection(CONSTANT.DATASET_SELECTION, CONSTANT.MODIFICATIONS_FILTER_ID, null, false);
+        selectionManager.setSelection(selection);
     }
 
 }

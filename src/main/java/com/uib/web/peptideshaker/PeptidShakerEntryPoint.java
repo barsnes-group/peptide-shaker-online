@@ -89,6 +89,7 @@ public class PeptidShakerEntryPoint extends UI {
         }
 
         VaadinSession.getCurrent().setErrorHandler((com.vaadin.server.ErrorEvent event) -> {
+            event.getThrowable().printStackTrace();
             System.out.println("Error handler: " + event.getThrowable().getCause());
         });
 

@@ -15,11 +15,11 @@ public class CSFPRLabel extends Link implements Comparable<CSFPRLabel> {
     private final Boolean available;
     private final String link;
 
-    public CSFPRLabel(String accession, boolean available) {
-        this.available = available;
+    public CSFPRLabel(String accession, boolean available,String link) {
+        this.available = available; 
+        this.link = link;
         if (available) {
-            link = (VaadinSession.getCurrent().getAttribute("csfprLink") + "").replace("VAADIN/", "searchby:Protein*Accession___searchkey:" + accession + "__");
-
+           
 //            link = "/searchby:Protein*Accession___searchkey:" + accession + "__";
             CSFPRLabel.this.setIcon(new ThemeResource("img/csf_logo.png"));
             CSFPRLabel.this.setResource(new ExternalResource(link));

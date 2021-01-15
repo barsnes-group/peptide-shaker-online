@@ -2,10 +2,12 @@ package com.uib.web.peptideshaker.ui.components;
 
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.SizeReporter;
-import com.google.common.collect.Sets;
+import com.uib.web.peptideshaker.model.CONSTANT;
+import com.uib.web.peptideshaker.model.FilterUpdatingEvent;
+import com.uib.web.peptideshaker.model.Selection;
 import com.uib.web.peptideshaker.ui.components.items.FilterButton;
 import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
-import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager;
+import com.uib.web.peptideshaker.uimanager.SelectionManager;
 import com.vaadin.data.Property;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.shared.ui.MarginInfo;
@@ -13,8 +15,11 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Slider;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+import java.awt.Color;
+import java.awt.Rectangle;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.NumberAxis;
@@ -25,42 +30,36 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
 import org.jfree.ui.RectangleInsets;
 
-import java.awt.*;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * This class represents range component with lower and upper range
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class DivaRangeFilter extends AbsoluteLayout implements Property.ValueChangeListener, RegistrableFilter {
 
     private final String filterId;
-    private final ResultsViewSelectionManager Selection_Manager;
-
+    private final SelectionManager selectionManager;
     private final VerticalLayout chartContainer;
     private final Label chartImage;
     private final Slider upperRangeSlider;
     private final Slider lowerRangeSlider;
     private final AbsoluteLayout slidersContainer;
-    private final TreeMap<Integer, Set<Integer>> activeData;
+    private final TreeMap<Comparable, Set<Integer>> activeData;
     private final Label chartTitle;
     private final JFreeChart mainChart;
     private final FilterButton resetFilterBtn;
     private final String title;
     private final String sign;
-    private TreeMap<Integer, Set<Integer>> data;
     private int chartWidth;
     private int chartHeight;
     private double maxValue;
-    private boolean suspendFilter;
-    private Set<Comparable> lastselectedItems = new LinkedHashSet<>();
-    private Set<Comparable> lastselectedCategories = new LinkedHashSet<>();
 
-    public DivaRangeFilter(String title, String filterId, ResultsViewSelectionManager Selection_Manager) {
+    public DivaRangeFilter(String title, String filterId, SelectionManager selectionManager) {
 
         DivaRangeFilter.this.setStyleName("rangefilter");
         this.filterId = filterId;
@@ -72,10 +71,9 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
             this.sign = "";
         }
 
-        this.Selection_Manager = Selection_Manager;
+        this.selectionManager = selectionManager;
         this.activeData = new TreeMap<>();
         DivaRangeFilter.this.setSizeFull();
-
 
         AbsoluteLayout frame = new AbsoluteLayout();
         frame.setSizeFull();
@@ -92,7 +90,7 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
         chartTitle.addStyleName("toppanel");
         frame.addComponent(chartTitle, "left:10px;top:10px;");
 
-        this.Selection_Manager.RegistrDatasetsFilter(DivaRangeFilter.this);
+        this.selectionManager.RegistrDatasetsFilter(DivaRangeFilter.this);
 
         chartContainer = new VerticalLayout();
         chartContainer.setStyleName("chartcontainer");
@@ -105,8 +103,6 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
         chartContainer.addComponent(chartImage);
         SizeReporter reporter = new SizeReporter(chartContainer);
         mainChart = initChart();
-
-
         reporter.addResizeListener((ComponentResizeEvent event) -> {
             int tChartWidth = event.getWidth();
             int tChartHeight = event.getHeight();
@@ -118,7 +114,9 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
             }
             chartWidth = tChartWidth;
             chartHeight = tChartHeight;
-            chartImage.setValue(saveToFile(mainChart, chartWidth, chartHeight));
+            if (!activeData.isEmpty()) {
+                chartImage.setValue(saveToFile(mainChart, chartWidth, chartHeight));
+            }
         });
 
         frame.addComponent(chartContainer, "top: 30px;left: 21px;right: 9px;bottom: 18px;");
@@ -145,7 +143,7 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
         resetFilterBtn = new FilterButton() {
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                applyFilter(lowerRangeSlider.getMin(), lowerRangeSlider.getMax());
+                reset();
 
             }
         };
@@ -161,93 +159,45 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
         label.setHeight(100, Unit.PERCENTAGE);
         frame.addComponent(label, "top: 22px;left: 1px;bottom: 18px;");
 
-
-    }
-
-    public void initializeFilterData(TreeMap<Integer, Set<Integer>> data) {
-        activeData.clear();
-        if (data.isEmpty()) {
-            upperRangeSlider.setEnabled(false);
-            lowerRangeSlider.setEnabled(false);
-            chartContainer.removeAllComponents();
-            return;
-        }
-
-        upperRangeSlider.setEnabled(true);
-        lowerRangeSlider.setEnabled(true);
-        double min = 0.0;//Double.valueOf(data.firstKey() + "");
-        if (sign.equalsIgnoreCase("")) {
-            maxValue = Double.valueOf(data.lastKey() + "");
-        } else {
-            maxValue = 100.0;
-        }
-        upperRangeSlider.removeValueChangeListener(DivaRangeFilter.this);
-        lowerRangeSlider.removeValueChangeListener(DivaRangeFilter.this);
-        lowerRangeSlider.setMin(min);
-        lowerRangeSlider.setMax(maxValue);
-        lowerRangeSlider.setValue(min);
-        upperRangeSlider.setMin(min);
-        upperRangeSlider.setMax(maxValue);
-        upperRangeSlider.setValue(maxValue);
-
-        upperRangeSlider.addValueChangeListener(DivaRangeFilter.this);
-        lowerRangeSlider.addValueChangeListener(DivaRangeFilter.this);
-        chartTitle.setValue("<font>" + title + "</font> [" + (int) min + " " + "&#x2014;" + " " + (int) maxValue + "] " + sign);
-        activeData.putAll(data);
-        updateChartDataset();
-        if (this.data == null) {
-            this.data = data;
-        }
-          chartImage.setValue(saveToFile(mainChart, chartWidth, chartHeight));
-
     }
 
     private void updateChartDataset() {
         XYPlot plot = ((XYPlot) mainChart.getPlot());
         XYSeriesCollection dataset = (XYSeriesCollection) plot.getDataset();
-        dataset.removeAllSeries();
+//        dataset.removeAllSeries();
         final XYSeries series1 = new XYSeries("rangeData");
-
         for (int index = (int) lowerRangeSlider.getMin(); index <= (int) lowerRangeSlider.getMax(); index++) {
             if (activeData.containsKey(index)) {
                 series1.add(index, scaleValues(activeData.get(index).size(), 100, 10));
             } else {
                 series1.add(index, 0);
             }
-
         }
         dataset.addSeries(series1);
+        plot.setDataset(dataset);
         XYAreaRenderer renderer = (XYAreaRenderer) ((XYPlot) mainChart.getPlot()).getRenderer();
         renderer.setSeriesPaint(0, new Color(211, 211, 211), true);
         if (lowerRangeSlider.getMin() > 0) {
             ((NumberAxis) plot.getDomainAxis()).setAutoRangeMinimumSize(lowerRangeSlider.getMin());
-
         }
         ((NumberAxis) plot.getDomainAxis()).setFixedAutoRange(lowerRangeSlider.getMax() - lowerRangeSlider.getMin());
+        plot.setRenderer(renderer);
 
     }
 
     private JFreeChart initChart() {
-
         XYSeriesCollection dataset = new XYSeriesCollection();
         final NumberAxis domainAxis = new NumberAxis();
         domainAxis.setVisible(false);
         domainAxis.setAutoRange(true);
         domainAxis.setAutoRangeIncludesZero(false);
-
-        final NumberAxis rangeAxis = new NumberAxis() {
-
-        };
-
+        final NumberAxis rangeAxis = new NumberAxis();
         rangeAxis.setVisible(false);
         XYAreaRenderer renderer = new XYAreaRenderer();
-
         renderer.setSeriesPaint(0, new Color(211, 211, 211), true);
-
         XYPlot plot = new XYPlot(dataset, domainAxis, rangeAxis, renderer);
         plot.setOutlineVisible(false);
         plot.setRangeAxisLocation(AxisLocation.TOP_OR_RIGHT);
-
         plot.setDomainGridlinesVisible(false);
         plot.setRangeGridlinesVisible(false);
         plot.getDomainAxis().setLowerMargin(0.0D);
@@ -266,12 +216,14 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
      * Convert JFree chart into image and encode it as base64 string to be used
      * as image link.
      *
-     * @param chart  JFree chart instance
-     * @param width  Image width
+     * @param chart JFree chart instance
+     * @param width Image width
      * @param height Image height.
      */
     private String saveToFile(final JFreeChart chart, int width, int height) {
-
+        if (activeData.isEmpty()) {
+            return "";
+        }
         chart.getLegend().setVisible(false);
         chart.fireChartChanged();
         SVGGraphics2D g2 = new SVGGraphics2D(width, height);
@@ -280,119 +232,12 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
         return g2.getSVGElement();
     }
 
-    public void valueChange() {
-        upperRangeSlider.removeStyleName("lower");
-        upperRangeSlider.removeStyleName("upper");
-        lowerRangeSlider.removeStyleName("lower");
-        lowerRangeSlider.removeStyleName("upper");
-        AbsoluteLayout.ComponentPosition lowerPos = slidersContainer.getPosition(lowerRangeSlider);
-        AbsoluteLayout.ComponentPosition upperPos = slidersContainer.getPosition(upperRangeSlider);
-        slidersContainer.removeAllComponents();
-        double min;
-        double max;
-
-        if (lowerRangeSlider.getValue() <= upperRangeSlider.getValue() && slidersContainer.getComponentCount() == 0) {
-
-            slidersContainer.addComponent(lowerRangeSlider, lowerPos.getCSSString());
-            slidersContainer.addComponent(upperRangeSlider, upperPos.getCSSString());
-            upperRangeSlider.addStyleName("upper");
-            lowerRangeSlider.addStyleName("lower");
-
-            min = lowerRangeSlider.getValue();
-
-            max = upperRangeSlider.getValue();
-        } else {
-
-            slidersContainer.addComponent(upperRangeSlider, upperPos.getCSSString());
-            slidersContainer.addComponent(lowerRangeSlider, lowerPos.getCSSString());
-            lowerRangeSlider.addStyleName("upper");
-            upperRangeSlider.addStyleName("lower");
-            min = upperRangeSlider.getValue();
-            max = lowerRangeSlider.getValue();
-
-        }
-        chartTitle.setValue("<font>" + title + "</font> [" + (int) min + " " + "&#x2014;" + " " + (int) max + "] " + sign);
-        applyFilter(min, max);
-
-    }
-
-    private void applyFilter(double min, double max) {
-        LinkedHashSet filter = new LinkedHashSet<>();
-        if (min != lowerRangeSlider.getMin() || max != lowerRangeSlider.getMax()) {
-            filter.addAll(Arrays.asList(new Comparable[]{min, max}));
-        }
-        Selection_Manager.setSelection("dataset_filter_selection", filter, null, filterId);
-    }
-
     @Override
     public void updateFilterSelection(Set<Comparable> selectedItems, Set<Comparable> selectedCategories, boolean topFilter, boolean singleProteinsFilter, boolean selfAction) {
-        if (suspendFilter || selectedItems == null || selectedCategories == null || (lastselectedItems.containsAll(selectedItems) && lastselectedCategories.containsAll(selectedCategories) && selectedCategories.size() == lastselectedCategories.size() && selectedItems.size() == lastselectedItems.size())) {
-            return;
-        }
-        lastselectedItems = selectedItems;
-        lastselectedCategories = selectedCategories;
-        if (!selfAction) {
-            if (selectedItems.isEmpty()) {
-                return;
-            }
 
-            if (singleProteinsFilter && !selectedCategories.isEmpty()) {
-                //reset filter value to oreginal 
-                initializeFilterData(this.data);
-            } else {
-                TreeMap<Integer, Set<Integer>> tPieChartValues = new TreeMap<>();
-                data.keySet().forEach((key) -> {
-                    LinkedHashSet<Comparable> tSet = new LinkedHashSet<>(Sets.intersection(data.get(key), selectedItems));
-                    if (!tSet.isEmpty()) {
-                        tPieChartValues.put(key, new LinkedHashSet<>(Sets.intersection(data.get(key), selectedItems)));
-                    }
-                });
-                initializeFilterData(tPieChartValues);
-            }
-        }
-        if (selectedCategories.isEmpty()) {
-            if (chartWidth <= 0 || chartHeight <= 0) {
-                return;
-            }
-            XYSeriesCollection dataset = (XYSeriesCollection) ((XYPlot) mainChart.getPlot()).getDataset();
-            if (dataset.getSeriesCount() == 2) {
-                dataset.removeSeries(0);
-            }
-            redrawRangeOnChart(Math.min(lowerRangeSlider.getValue(), upperRangeSlider.getValue()), Math.max(lowerRangeSlider.getValue(), upperRangeSlider.getValue()), false);
-            setMainAppliedFilter(false);
-            return;
-        }
-        double min = Math.min(lowerRangeSlider.getValue(), upperRangeSlider.getValue());
-        double max = Math.max(lowerRangeSlider.getValue(), upperRangeSlider.getValue());
-
-        double tmin = (double) selectedCategories.toArray()[0];
-        double tmax;
-        if (selectedCategories.size() == 1) {
-            tmax = min;
-        } else {
-            tmax = (double) selectedCategories.toArray()[1];
-        }
-        min = Math.max(min, tmin);
-        max = Math.min(max, tmax);
-        redrawRangeOnChart(min, max, true);
-        setMainAppliedFilter(topFilter);
     }
 
     private void redrawRangeOnChart(double start, double end, boolean highlight) {
-        if (start != -1 && end != -1) {
-            upperRangeSlider.removeValueChangeListener(DivaRangeFilter.this);
-            lowerRangeSlider.removeValueChangeListener(DivaRangeFilter.this);
-            if (lowerRangeSlider.getStyleName().contains("lower")) {
-                lowerRangeSlider.setValue(start);
-                upperRangeSlider.setValue(end);
-            } else {
-                upperRangeSlider.setValue(start);
-                lowerRangeSlider.setValue(end);
-            }
-            upperRangeSlider.addValueChangeListener(DivaRangeFilter.this);
-            lowerRangeSlider.addValueChangeListener(DivaRangeFilter.this);
-
-        }
 
         XYSeriesCollection dataset = (XYSeriesCollection) ((XYPlot) mainChart.getPlot()).getDataset();
         if (dataset.getSeriesCount() == 2) {
@@ -424,12 +269,37 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
             return;
         }
         chartImage.setVisible(true);
-        chartImage.setValue(saveToFile(mainChart, chartWidth, chartHeight));
     }
 
     @Override
     public void valueChange(Property.ValueChangeEvent event) {
-        valueChange();
+        upperRangeSlider.removeStyleName("lower");
+        upperRangeSlider.removeStyleName("upper");
+        lowerRangeSlider.removeStyleName("lower");
+        lowerRangeSlider.removeStyleName("upper");
+        AbsoluteLayout.ComponentPosition lowerPos = slidersContainer.getPosition(lowerRangeSlider);
+        AbsoluteLayout.ComponentPosition upperPos = slidersContainer.getPosition(upperRangeSlider);
+        slidersContainer.removeAllComponents();
+        double min;
+        double max;
+        if (lowerRangeSlider.getValue() <= upperRangeSlider.getValue() && slidersContainer.getComponentCount() == 0) {
+            slidersContainer.addComponent(lowerRangeSlider, lowerPos.getCSSString());
+            slidersContainer.addComponent(upperRangeSlider, upperPos.getCSSString());
+            upperRangeSlider.addStyleName("upper");
+            lowerRangeSlider.addStyleName("lower");
+            min = lowerRangeSlider.getValue();
+            max = upperRangeSlider.getValue();
+        } else {
+            slidersContainer.addComponent(upperRangeSlider, upperPos.getCSSString());
+            slidersContainer.addComponent(lowerRangeSlider, lowerPos.getCSSString());
+            lowerRangeSlider.addStyleName("upper");
+            upperRangeSlider.addStyleName("lower");
+            min = upperRangeSlider.getValue();
+            max = lowerRangeSlider.getValue();
+
+        }
+        selectCategory(activeData.subMap((int) min, (int) max + 1).keySet());
+
     }
 
     @Override
@@ -439,7 +309,7 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
 
     @Override
     public void redrawChart() {
-        applyFilter(lowerRangeSlider.getMin(), lowerRangeSlider.getMax());
+//        applyFilter(lowerRangeSlider.getMin(), lowerRangeSlider.getMax());
     }
 
     /**
@@ -448,8 +318,8 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
      * be any double value.
      *
      * @param linearValue the value to be converted to log scale
-     * @param max         The upper limit number for the input numbers
-     * @param lowerLimit  the lower limit for the input numbers
+     * @param max The upper limit number for the input numbers
+     * @param lowerLimit the lower limit for the input numbers
      * @return the value in log scale
      */
     private double scaleValues(double linearValue, double max, double lowerLimit) {
@@ -459,10 +329,14 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
         return logValue;
     }
 
-
     @Override
     public void suspendFilter(boolean suspendFilter) {
-        this.suspendFilter = suspendFilter;
+            Label noquant = new Label("<center> No data available </center>", ContentMode.HTML);
+            noquant.setSizeFull();
+            noquant.setStyleName("noquantlabel");
+            this.removeAllComponents();
+            this.addComponent(noquant);
+        
     }
 
     private void setMainAppliedFilter(boolean mainAppliedFilter) {
@@ -470,23 +344,91 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
         if (mainAppliedFilter) {
             this.addStyleName("highlightfilter");
         } else {
-
             this.removeStyleName("highlightfilter");
-
-            upperRangeSlider.removeValueChangeListener(DivaRangeFilter.this);
-            lowerRangeSlider.removeValueChangeListener(DivaRangeFilter.this);
-            lowerRangeSlider.setValue(lowerRangeSlider.getMin());
-            upperRangeSlider.setValue(lowerRangeSlider.getMax());
-
-            upperRangeSlider.addValueChangeListener(DivaRangeFilter.this);
-            lowerRangeSlider.addValueChangeListener(DivaRangeFilter.this);
         }
 
     }
 
-    public String externalTitle() {
-        chartTitle.setVisible(false);
-        return chartTitle.getValue();
+    @Override
+    public void updateSelection(FilterUpdatingEvent event) {
+        System.out.println("at event "+event.getSelectionMap().size()+ "  "+filterId);
+        activeData.clear();
+        try {
+
+            upperRangeSlider.setEnabled(!event.getSelectionMap().isEmpty());
+            lowerRangeSlider.setEnabled(!event.getSelectionMap().isEmpty());
+            if (event.getSelectionMap().isEmpty()) {
+                chartContainer.removeAllComponents();
+                return;
+            }
+            event.getSelectionMap().keySet().forEach((compKey) -> {
+                if ((int) compKey != -1 && !event.getSelectionMap().get(compKey).isEmpty()) {
+                    if (!activeData.containsKey(compKey)) {
+                        activeData.put(compKey, new HashSet<>());
+                    }
+                    activeData.get(compKey).addAll(event.getSelectionMap().get(compKey));
+                }
+            });
+            if (event.getSeletionCategories() != null && event.getSeletionCategories().containsAll(activeData.keySet())) {
+                reset();
+                return;
+            }
+            double min = 0.0;//Double.valueOf(data.firstKey() + "");
+            if (sign.equalsIgnoreCase("")) {
+                maxValue = Double.valueOf(activeData.lastKey().toString());
+            } else {
+                maxValue = 100.0;
+            }
+            upperRangeSlider.removeValueChangeListener(DivaRangeFilter.this);
+            lowerRangeSlider.removeValueChangeListener(DivaRangeFilter.this);
+            lowerRangeSlider.setMin(min);
+            lowerRangeSlider.setMax(maxValue);
+
+            upperRangeSlider.setMin(min);
+            upperRangeSlider.setMax(maxValue);
+
+            chartTitle.setValue("<font>" + title + "</font> [" + (int) min + " " + "&#x2014;" + " " + (int) maxValue + "] " + sign);
+            UI.getCurrent().accessSynchronously(() -> {
+                updateChartDataset();
+                if ((event.getSeletionCategories() != null && !event.getSeletionCategories().isEmpty())) {
+                    TreeSet<Comparable> sortedSet = new TreeSet<>(event.getSeletionCategories());
+                    double minValue = Double.parseDouble(sortedSet.first().toString());
+                    double maxValue = Double.parseDouble(sortedSet.last().toString());
+                    upperRangeSlider.setValue(maxValue);
+                    lowerRangeSlider.setValue(minValue);
+                    redrawRangeOnChart(minValue, maxValue, true);
+                    setMainAppliedFilter(true);
+                } else {
+                    upperRangeSlider.setValue(maxValue);
+                    lowerRangeSlider.setValue(min);
+                    setMainAppliedFilter(false);
+                }
+
+                upperRangeSlider.addValueChangeListener(DivaRangeFilter.this);
+                lowerRangeSlider.addValueChangeListener(DivaRangeFilter.this);
+//                updateChartDataset();
+                chartImage.setValue(saveToFile(mainChart, chartWidth, chartHeight));
+                UI.getCurrent().push();
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    private void selectCategory(Set<Comparable> categories) {
+        Selection selection = new Selection(CONSTANT.DATASET_SELECTION, filterId, categories, true);
+        selectionManager.setSelection(selection);
+    }
+
+    private void reset() {
+        Selection selection = new Selection(CONSTANT.DATASET_SELECTION, filterId, null, false);
+        selectionManager.setSelection(selection);
+    }
+
+    public void forceRest() {
+        if (this.getStyleName().contains("highlightfilter")) {
+            reset();
+        }
+    }
 }

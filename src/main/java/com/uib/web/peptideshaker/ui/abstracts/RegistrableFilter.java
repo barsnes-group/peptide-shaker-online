@@ -1,6 +1,8 @@
 package com.uib.web.peptideshaker.ui.abstracts;
 
+import com.uib.web.peptideshaker.model.FilterUpdatingEvent;
 import com.vaadin.ui.Layout;
+import java.util.Map;
 
 import java.util.Set;
 
@@ -22,13 +24,15 @@ public interface RegistrableFilter extends Layout {
     /**
      * Update filter selection
      *
-     * @param selection          current selected data
+     * @param selection current selected data
      * @param selectedCategories current selected categories
-     * @param topFilter          top filter selected
-     * @param singleFilter       only one filter selected
-     * @param selfAction         action come from filter to ignore update
+     * @param topFilter top filter selected
+     * @param singleFilter only one filter selected
+     * @param selfAction action come from filter to ignore updateSelection
      */
     public void updateFilterSelection(Set<Comparable> selection, Set<Comparable> selectedCategories, boolean topFilter, boolean singleFilter, boolean selfAction);
+
+    public void updateSelection(FilterUpdatingEvent event);
 
     /**
      * Filter selection invoked

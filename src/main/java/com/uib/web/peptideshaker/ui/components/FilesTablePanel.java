@@ -168,6 +168,9 @@ public class FilesTablePanel extends Panel {
                     public void layoutClick(LayoutEvents.LayoutClickEvent event) {
                         appManagmentBean.getNotificationFacade().confirmAlertNotification(VaadinIcons.TRASH.getHtml() + " Are you sure you want to delete the dataset?", (Button.ClickEvent event1) -> {
                             appManagmentBean.getUserHandler().deleteDataset(dataset);
+                            if (appManagmentBean.getUI_Manager().getSelectedDatasetId().equals(dataset.getId())) {
+                                appManagmentBean.getUI_Manager().setSelectedDatasetId(null);
+                            }
                         });
                     }
 

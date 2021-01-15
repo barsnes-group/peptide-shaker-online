@@ -3,13 +3,16 @@ package com.uib.web.peptideshaker.model;
 import com.compomics.util.experiment.biology.proteins.Protein;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PSMObject;
+import com.uib.web.peptideshaker.ui.components.RangeColorGenerator;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import org.biojava.nbio.core.sequence.ProteinSequence;
 
 /**
  * This class contains all files and data needed to visualise the data
@@ -33,18 +36,39 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
     private GalaxyFileModel proteinFileModel;
     private GalaxyFileModel peptideFileModel;
 
-    private Map<String, Set<Integer>> proteinInferenceMap;
-    private Map<String, Set<Integer>> proteinValidationMap;
-    private Map<String, Set<Integer>> chromosomeMap;
-    private TreeMap<Integer, Set<Integer>> validatedPetideMap;
-    private TreeMap<Integer, Set<Integer>> validatedPsmsMap;
-    private TreeMap<Integer, Set<Integer>> validatedCoverageMap;
+    private Map<Comparable, Set<Integer>> proteinInferenceMap;
+    private Map<Comparable, Set<Integer>> proteinValidationMap;
+    private Map<Comparable, Set<Integer>> chromosomeMap;
+    private TreeMap<Comparable, Set<Integer>> validatedPetideMap;
+    private TreeMap<Comparable, Set<Integer>> validatedPsmsMap;
+    private TreeMap<Comparable, Set<Integer>> validatedCoverageMap;
     private Map<String, Set<Integer>> accessionToGroupMap;
     private Map<Integer, ProteinGroupObject> proteinsMap;
-    private TreeMap<Integer, Set<Integer>> uniquePeptideIntensityMap;
-    private TreeMap<Integer, Set<Integer>> allPeptideIntensityMap;
+    private TreeMap<Comparable, Set<Integer>> uniquePeptideIntensityMap;
+    private TreeMap<Comparable, Set<Integer>> allPeptideIntensityMap;
     private Map<Integer, PeptideObject> peptidesMap;
     private Map<String, PSMObject> psmsMap;
+    private final Map<String, FilterUpdatingEvent> datasetFilterEventsMap;
+    private final Map<String, Object[]> proteinsGraphDataMap;
+    private  RangeColorGenerator peptideIntinsityColorScale;
+
+    public Map<String, FilterUpdatingEvent> getDatasetFilterEventsMap() {
+        return datasetFilterEventsMap;
+    }
+
+    public VisualizationDatasetModel() {
+        this.datasetFilterEventsMap = new LinkedHashMap<>();
+        this.proteinsGraphDataMap = new HashMap<>();
+
+    }
+
+    public void addProteinGraphData(String proteinAccession, Object[] graphData) {
+        proteinsGraphDataMap.put(proteinAccession, graphData);
+    }
+
+    public Map<String, Object[]> getProteinsGraphDataMap() {
+        return proteinsGraphDataMap;
+    }
 
     public Map<String, PSMObject> getPsmsMap() {
         return psmsMap;
@@ -62,19 +86,25 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
         this.peptidesMap = peptidesMap;
     }
 
-    public TreeMap<Integer, Set<Integer>> getUniquePeptideIntensityMap() {
+    public TreeMap<Comparable, Set<Integer>> getUniquePeptideIntensityMap() {
         return uniquePeptideIntensityMap;
     }
 
-    public void setUniquePeptideIntensityMap(TreeMap<Integer, Set<Integer>> uniquePeptideIntensityMap) {
+    public void setUniquePeptideIntensityMap(TreeMap<Comparable, Set<Integer>> uniquePeptideIntensityMap) {
+        FilterUpdatingEvent event = new FilterUpdatingEvent();
+        event.setSelectionMap(uniquePeptideIntensityMap);
+        this.datasetFilterEventsMap.put(CONSTANT.INTENSITY_UNIQUE_FILTER_ID, event);
         this.uniquePeptideIntensityMap = uniquePeptideIntensityMap;
     }
 
-    public TreeMap<Integer, Set<Integer>> getAllPeptideIntensityMap() {
+    public TreeMap<Comparable, Set<Integer>> getAllPeptideIntensityMap() {
         return allPeptideIntensityMap;
     }
 
-    public void setAllPeptideIntensityMap(TreeMap<Integer, Set<Integer>> allPeptideIntensityMap) {
+    public void setAllPeptideIntensityMap(TreeMap<Comparable, Set<Integer>> allPeptideIntensityMap) {
+        FilterUpdatingEvent event = new FilterUpdatingEvent();
+        event.setSelectionMap(allPeptideIntensityMap);
+        this.datasetFilterEventsMap.put(CONSTANT.INTENSITY_FILTER_ID, event);
         this.allPeptideIntensityMap = allPeptideIntensityMap;
     }
     private String datasetSource;
@@ -89,17 +119,37 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
     private String fastaFileName;
     private double maxMS2Quant;
     private double maxMW;
-    private Map<String, Set<Integer>> modificationMap;
-    private ModificationMatrixModel modificationMatrixModel;
+    private Map<Comparable, Set<Integer>> modificationMap;
+    private Map<Comparable, Set<Integer>> proteinTableMap;
+    private LinkedHashMap<String, ProteinSequence> proteinSequenceMap;
+//    private ModificationMatrixModel modificationMatrixModel;
 
-    public ModificationMatrixModel getModificationMatrixModel() {
-        return modificationMatrixModel;
+    public LinkedHashMap<String, ProteinSequence> getProteinSequenceMap() {
+        return proteinSequenceMap;
     }
 
-    public void setModificationMatrixModel(ModificationMatrixModel modificationMatrixModel) {
-        this.modificationMatrixModel = modificationMatrixModel;
+    public void setProteinSequenceMap(LinkedHashMap<String, ProteinSequence> proteinSequenceMap) {
+        this.proteinSequenceMap = proteinSequenceMap;
     }
 
+    public Map<Comparable, Set<Integer>> getProteinTableMap() {
+        return proteinTableMap;
+    }
+
+    public void setProteinTableMap(Map<Comparable, Set<Integer>> proteinTableMap) {
+        FilterUpdatingEvent event = new FilterUpdatingEvent();
+        event.setSelectionMap(proteinTableMap);
+        this.datasetFilterEventsMap.put(CONSTANT.PROTEIN_TABLE_FILTER_ID, event);
+        this.proteinTableMap = proteinTableMap;
+    }
+
+//    public ModificationMatrixModel getModificationMatrixModel() {
+//        return modificationMatrixModel;
+//    }
+//
+//    public void setModificationMatrixModel(ModificationMatrixModel modificationMatrixModel) {
+//        this.modificationMatrixModel = modificationMatrixModel;
+//    }
     public Map<Integer, ProteinGroupObject> getProteinsMap() {
         return proteinsMap;
     }
@@ -267,7 +317,6 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
 
     public String getStatus() {
         if (status != null) {
-            System.out.println("error 0");
             return status;
         }
         if (searchGUIZipFile == null) {
@@ -357,51 +406,69 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
         this.datasetSource = datasetSource;
     }
 
-    public Map<String, Set<Integer>> getProteinInferenceMap() {
+    public Map<Comparable, Set<Integer>> getProteinInferenceMap() {
         return proteinInferenceMap;
     }
 
-    public void setProteinInferenceMap(Map<String, Set<Integer>> proteinInferenceMap) {
+    public void setProteinInferenceMap(Map<Comparable, Set<Integer>> proteinInferenceMap) {
         this.proteinInferenceMap = proteinInferenceMap;
+        FilterUpdatingEvent event = new FilterUpdatingEvent();
+        event.setSelectionMap(proteinInferenceMap);
+        this.datasetFilterEventsMap.put(CONSTANT.PI_FILTER_ID, event);
     }
 
-    public Map<String, Set<Integer>> getProteinValidationMap() {
+    public Map<Comparable, Set<Integer>> getProteinValidationMap() {
         return proteinValidationMap;
     }
 
-    public void setProteinValidationMap(Map<String, Set<Integer>> proteinValidationMap) {
+    public void setProteinValidationMap(Map<Comparable, Set<Integer>> proteinValidationMap) {
+        FilterUpdatingEvent event = new FilterUpdatingEvent();
+        event.setSelectionMap(proteinValidationMap);
+        this.datasetFilterEventsMap.put(CONSTANT.VALIDATION_FILTER_ID, event);
         this.proteinValidationMap = proteinValidationMap;
     }
 
-    public Map<String, Set<Integer>> getChromosomeMap() {
+    public Map<Comparable, Set<Integer>> getChromosomeMap() {
         return chromosomeMap;
     }
 
-    public void setChromosomeMap(Map<String, Set<Integer>> chromosomeMap) {
+    public void setChromosomeMap(Map<Comparable, Set<Integer>> chromosomeMap) {
+        FilterUpdatingEvent event = new FilterUpdatingEvent();
+        event.setSelectionMap(chromosomeMap);
+        this.datasetFilterEventsMap.put(CONSTANT.CHROMOSOME_FILTER_ID, event);
         this.chromosomeMap = chromosomeMap;
     }
 
-    public TreeMap<Integer, Set<Integer>> getValidatedPetideMap() {
+    public TreeMap<Comparable, Set<Integer>> getValidatedPetideMap() {
         return validatedPetideMap;
     }
 
-    public void setValidatedPetideMap(TreeMap<Integer, Set<Integer>> validatedPetideMap) {
+    public void setValidatedPetideMap(TreeMap<Comparable, Set<Integer>> validatedPetideMap) {
+        FilterUpdatingEvent event = new FilterUpdatingEvent();
+        event.setSelectionMap(validatedPetideMap);
+        this.datasetFilterEventsMap.put(CONSTANT.PEPTIDES_NUMBER_FILTER_ID, event);
         this.validatedPetideMap = validatedPetideMap;
     }
 
-    public TreeMap<Integer, Set<Integer>> getValidatedPsmsMap() {
+    public TreeMap<Comparable, Set<Integer>> getValidatedPsmsMap() {
         return validatedPsmsMap;
     }
 
-    public void setValidatedPsmsMap(TreeMap<Integer, Set<Integer>> validatedPsmsMap) {
+    public void setValidatedPsmsMap(TreeMap<Comparable, Set<Integer>> validatedPsmsMap) {
+        FilterUpdatingEvent event = new FilterUpdatingEvent();
+        event.setSelectionMap(validatedPsmsMap);
+        this.datasetFilterEventsMap.put(CONSTANT.PSM_NUMBER_FILTER_ID, event);
         this.validatedPsmsMap = validatedPsmsMap;
     }
 
-    public TreeMap<Integer, Set<Integer>> getValidatedCoverageMap() {
+    public TreeMap<Comparable, Set<Integer>> getValidatedCoverageMap() {
         return validatedCoverageMap;
     }
 
-    public void setValidatedCoverageMap(TreeMap<Integer, Set<Integer>> validatedCoverageMap) {
+    public void setValidatedCoverageMap(TreeMap<Comparable, Set<Integer>> validatedCoverageMap) {
+        FilterUpdatingEvent event = new FilterUpdatingEvent();
+        event.setSelectionMap(validatedCoverageMap);
+        this.datasetFilterEventsMap.put(CONSTANT.COVERAGE_FILTER_ID, event);
         this.validatedCoverageMap = validatedCoverageMap;
     }
 
@@ -429,12 +496,23 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
         this.maxMW = maxMW;
     }
 
-    public Map<String, Set<Integer>> getModificationMap() {
+    public Map<Comparable, Set<Integer>> getModificationMap() {
         return modificationMap;
     }
 
-    public void setModificationMap(Map<String, Set<Integer>> modificationMap) {
+    public void setModificationMap(Map<Comparable, Set<Integer>> modificationMap) {
+        FilterUpdatingEvent event = new FilterUpdatingEvent();
+        event.setSelectionMap(modificationMap);
+        this.datasetFilterEventsMap.put(CONSTANT.MODIFICATIONS_FILTER_ID, event);
         this.modificationMap = modificationMap;
+    }
+
+    public RangeColorGenerator getPeptideIntinsityColorScale() {
+        return peptideIntinsityColorScale;
+    }
+
+    public void setPeptideIntinsityColorScale(RangeColorGenerator peptideIntinsityColorScale) {
+        this.peptideIntinsityColorScale = peptideIntinsityColorScale;
     }
 
 }

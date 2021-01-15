@@ -1,13 +1,14 @@
 package com.uib.web.peptideshaker.ui.components;
 
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
-import com.ejt.vaadin.sizereporter.ComponentResizeListener;
 import com.ejt.vaadin.sizereporter.SizeReporter;
-import com.google.common.collect.Sets;
+import com.uib.web.peptideshaker.model.CONSTANT;
+import com.uib.web.peptideshaker.model.FilterUpdatingEvent;
+import com.uib.web.peptideshaker.model.Selection;
 import com.uib.web.peptideshaker.ui.components.items.FilterButton;
 import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
 import com.uib.web.peptideshaker.ui.components.items.LegendItem;
-import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager;
+import com.uib.web.peptideshaker.uimanager.SelectionManager;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.Page;
 import com.vaadin.shared.ui.absolutelayout.AbsoluteLayoutState;
@@ -40,8 +41,7 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
 
     private final String title;
     private final String filterId;
-    private final Set<Comparable> fullItemsSet;
-    private final ResultsViewSelectionManager Selection_Manager;
+    private final SelectionManager SelectionManager;
     private final Set<Comparable> appliedFilter;
     /**
      * The highlight selection colour (required by JFree chart).
@@ -72,36 +72,32 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
     private FilterButton resetFilterBtn;
     private VerticalLayout rightLayout;
     private AbsoluteLayout mainChartContainer;
-    private Map<String, Set<Integer>> fullData;
-    private List<Color> colorsList;
+    private List<Color> standardColorList;
+    private final List<Color> activeColorsList;
 
-    public DivaPieChartFilter(String title, String filterId, ResultsViewSelectionManager Selection_Manager) {
+    public DivaPieChartFilter(String title, String filterId, SelectionManager SelectionManager) {
         this.mainWidth = -1;
         this.mainHeight = -1;
         this.title = title;
         this.filterId = filterId;
-        this.Selection_Manager = Selection_Manager;
-        this.Selection_Manager.RegistrDatasetsFilter(DivaPieChartFilter.this);
-        this.fullItemsSet = new LinkedHashSet<>();
+        this.SelectionManager = SelectionManager;
+        this.activeColorsList = new ArrayList<>();
+        this.SelectionManager.RegistrDatasetsFilter(DivaPieChartFilter.this);
         this.appliedFilter = new LinkedHashSet<>();
         this.dountChartListener = (LayoutEvents.LayoutClickEvent event) -> {
             Component clickedComponent = event.getClickedComponent();
             if (clickedComponent instanceof Label && clickedComponent.getId() != null && clickedComponent.getId().equalsIgnoreCase(this.title)) {
                 ChartEntity ent = mainChartRenderingInfo.getEntityCollection().getEntity(event.getRelativeX(), event.getRelativeY());
                 if (ent instanceof PieSectionEntity) {
-                    applyFilter(((PieSectionEntity) ent).getSectionKey() + "");
+                    applySelectedSliceFilter(((PieSectionEntity) ent).getSectionKey() + "");
                 }
-            } else {
-                applyFilter(null);
             }
+
         };
         this.initlayout();
         legendSizeReporter = new SizeReporter(rightLayout);
-        legendSizeReporter.addResizeListener(new ComponentResizeListener() {
-            @Override
-            public void sizeChanged(ComponentResizeEvent event) {
-                updateLegendWidth(event.getWidth());
-            }
+        legendSizeReporter.addResizeListener((ComponentResizeEvent event) -> {
+            updateLegendWidth(event.getWidth());
         });
 
     }
@@ -172,8 +168,7 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
         resetFilterBtn = new FilterButton() {
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                appliedFilter.clear();
-                applyFilter(null);
+                reset();
 
             }
         };
@@ -206,54 +201,13 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
 
     }
 
-    public void initializeFilterData(Map<String, Set<Integer>> fullData, List<Color> colorsArr) {
-        activateFilter = true;
-        Map<String, Set<Integer>> filterfullData = new LinkedHashMap<>(fullData);
-        colorsList = new ArrayList<>(colorsArr);
-        int index = 0;
-        filterfullData.keySet().stream().filter((key) -> (fullData.get(key).isEmpty())).map((key) -> {
-            fullData.remove(key);
-            return key;
-        }).forEachOrdered((_item) -> {
-            colorsList.remove(index);
-        });
-        this.fullData = fullData;
-        fullItemsSet.clear();
-        fullData.keySet().forEach((key) -> {
-            fullItemsSet.addAll(fullData.get(key));
-        });
-        updateChartDataset(fullData);
-        sizeChanged(mainWidth, mainHeight);
-
-    }
-
-    public void initializeFilterData(Map<String, Set<Integer>> fullData, Map<String, Color> colorMap) {
-        activateFilter = true;
-        Map<String, Set<Integer>> filterfullData = new LinkedHashMap<>(fullData);
-        colorsList = new ArrayList<>();
-        filterfullData.keySet().stream().filter((key) -> (fullData.get(key).isEmpty())).map((key) -> {
-            fullData.remove(key);
-            return key;
-        }).forEachOrdered((_item) -> {
-        });
-        this.fullData = fullData;
-        fullItemsSet.clear();
-        fullData.keySet().forEach((key) -> {
-            colorsList.add(colorMap.get(key.replace("Protein", "").trim()));
-            fullItemsSet.addAll(fullData.get(key));
-        });
-        updateChartDataset(fullData);
-        sizeChanged(mainWidth, mainHeight);
-
-    }
-    
-    private void unselectAll() {
+    private void unselectAll(Set<Comparable> allCategories) {
         PiePlot plot = ((PiePlot) chart.getPlot());
-        fullData.keySet().stream().map((sliceKey) -> {
+        allCategories.stream().map((sliceKey) -> {
             plot.setSectionOutlinePaint(sliceKey, null);
             return sliceKey;
         }).forEachOrdered((sliceKey) -> {
-            plot.setSectionPaint(sliceKey, colorsList.get(plot.getDataset().getIndex(sliceKey)));
+            plot.setSectionPaint(sliceKey, activeColorsList.get(plot.getDataset().getIndex(sliceKey)));
         });
 
     }
@@ -275,37 +229,22 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
 
     @Override
     public void updateFilterSelection(Set<Comparable> selectedItems, Set<Comparable> selectedCategories, boolean topFilter, boolean singleProteinsFilter, boolean selfAction) {
-        if (!selfAction) {
-            if (singleProteinsFilter && !selfAction && !selectedCategories.isEmpty()) {
-                //reset filter value to oreginal 
-                initializeFilterData(fullData, colorsList);
-            } else {
-                Map<String, Set<Integer>> tPieChartValues = new LinkedHashMap<>();
-                fullData.keySet().forEach((key) -> {
-                    tPieChartValues.put(key, new LinkedHashSet<>(Sets.intersection(fullData.get(key), selectedItems)));
-                });
-                updateChartDataset(tPieChartValues);
-            }
-            redrawChart();
-        }
-        selectSlice(selectedCategories);
-        setMainAppliedFilter(topFilter && !selectedCategories.isEmpty());
     }
 
     /**
      * Select slice action.
      *
-     * @param sliceKey selected slice key.
+     * @param sliceKeys selected slice key.
      */
-    private void selectSlice(Set<Comparable> sliceKeys) {
-        unselectAll();
-        if (!sliceKeys.isEmpty()) {
+    private void selectSlice(Set<Comparable> sliceKeys, Set<Comparable> allCategories) {
+        unselectAll(allCategories);
+        if (sliceKeys != null && !sliceKeys.isEmpty()) {
             PiePlot plot = ((PiePlot) chart.getPlot());
             sliceKeys.stream().filter((sliceKey) -> !(sliceKey == null)).map((sliceKey) -> {
                 plot.setSectionOutlinePaint(sliceKey, selectedColor);
                 return sliceKey;
             }).map((sliceKey) -> {
-                plot.setSectionPaint(sliceKey, colorsList.get(plot.getDataset().getIndex(sliceKey)).darker().darker());
+                plot.setSectionPaint(sliceKey, activeColorsList.get(plot.getDataset().getIndex(sliceKey)).darker().darker());
                 return sliceKey;
             }).forEachOrdered((sliceKey) -> {
                 appliedFilter.add(sliceKey);
@@ -315,25 +254,15 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
         redrawChart();
     }
 
-    private void applyFilter(String pieSlice) {
-        if ((appliedFilter.size() >= rightLayout.getComponentCount() && (rightLayout.getComponentCount() != fullData.size())) || rightLayout.getComponentCount() == 1) {
-            return;
-        }
+    private void applySelectedSliceFilter(String pieSlice) {
         PiePlot plot = ((PiePlot) chart.getPlot());
         if (pieSlice != null) {
-
             if (plot.getSectionOutlinePaint(pieSlice) != null) {
-                appliedFilter.remove(pieSlice);
+                unSelectCategory(pieSlice);
             } else {
-                appliedFilter.add(pieSlice);
-                if (appliedFilter.size() == rightLayout.getComponentCount()) {
-                    appliedFilter.clear();
-                    applyFilter(null);
-                }
+                selectCategory(pieSlice);
             }
         }
-
-        Selection_Manager.setSelection("dataset_filter_selection", new LinkedHashSet<>(appliedFilter), null, filterId);
     }
 
     /**
@@ -364,7 +293,6 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
      */
     private void initChart() {
         DefaultPieDataset dataset = new DefaultPieDataset();
-
         PiePlot plot = new PiePlot(dataset);
         plot.setNoDataMessage("No data available");
         plot.setCircular(true);
@@ -395,7 +323,7 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
 
     }
 
-    private void updateChartDataset(Map<String, Set<Integer>> datasetValuesData) {
+    private void updateChartDataset(Map<Comparable, Set<Integer>> datasetValuesData) {
         // column keys...    
         int counter = 0;
         // update the dataset...
@@ -403,11 +331,11 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
         DefaultPieDataset dataset = (DefaultPieDataset) ((PiePlot) chart.getPlot()).getDataset();
         dataset.clear();
 
-        for (String key : datasetValuesData.keySet()) {
+        for (Comparable key : datasetValuesData.keySet()) {
             dataset.setValue(key, scaleValues(datasetValuesData.get(key).size(), 100, 20));
-            ((PiePlot) chart.getPlot()).setSectionPaint(key, this.colorsList.get(counter));
+            ((PiePlot) chart.getPlot()).setSectionPaint(key, this.activeColorsList.get(counter));
             if (!datasetValuesData.get(key).isEmpty()) {
-                LegendItem item = new LegendItem(key + "", this.colorsList.get(counter));
+                LegendItem item = new LegendItem(key + "", this.activeColorsList.get(counter));
                 rightLayout.addComponent(item);
             }
             counter++;
@@ -460,6 +388,56 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
 
     public void setLegendWidth(int width) {
         rightLayout.setWidth(width, Unit.PIXELS);
+    }
+
+    private void selectCategory(String category) {
+        Set<Comparable> selectionCategories = new LinkedHashSet<>();
+        selectionCategories.add(category);
+        Selection selection = new Selection(CONSTANT.DATASET_SELECTION, filterId, selectionCategories, true);
+        SelectionManager.setSelection(selection);
+//        SelectionManager.setSelection("dataset_filter_selection", new LinkedHashSet<>(appliedFilter), null, filterId);
+    }
+
+    private void unSelectCategory(String category) {
+        Set<Comparable> selectionCategories = new LinkedHashSet<>();
+        selectionCategories.add(category);
+        Selection selection = new Selection(CONSTANT.DATASET_SELECTION, filterId, selectionCategories, false);
+        SelectionManager.setSelection(selection);
+//        SelectionManager.setSelection("dataset_filter_selection", new LinkedHashSet<>(appliedFilter), null, filterId);
+    }
+
+    private void reset() {
+        Selection selection = new Selection(CONSTANT.DATASET_SELECTION, filterId, null, false);
+        SelectionManager.setSelection(selection);
+    }
+
+    @Override
+    public void updateSelection(FilterUpdatingEvent updateEvent) {
+        appliedFilter.clear();
+        activateFilter = true;
+        Map<Comparable, Set<Integer>> selectionMap = new LinkedHashMap<>(updateEvent.getSelectionMap());
+        activeColorsList.clear();
+        int index = 0;
+        for (Comparable key : updateEvent.getSelectionMap().keySet()) {
+            if (updateEvent.getSelectionMap().get(key).isEmpty()) {
+                selectionMap.remove(key);
+            } else {
+                activeColorsList.add(standardColorList.get(index));
+            }
+            index++;
+        }
+        if (updateEvent.getSeletionCategories() != null && updateEvent.getSeletionCategories().containsAll(selectionMap.keySet())) {
+            reset();
+            return;
+        }
+        updateChartDataset(selectionMap);
+        selectSlice(updateEvent.getSeletionCategories(), selectionMap.keySet());
+        sizeChanged(mainWidth, mainHeight);
+        setMainAppliedFilter(updateEvent.getSeletionCategories() != null && !updateEvent.getSeletionCategories().isEmpty());
+    }
+
+    public void setColours(Color[] standardColours) {
+        this.standardColorList = new ArrayList<>(Arrays.asList(standardColours));
     }
 
 //

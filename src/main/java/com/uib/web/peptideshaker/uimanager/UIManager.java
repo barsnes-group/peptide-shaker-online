@@ -27,6 +27,11 @@ import java.util.Set;
 public class UIManager implements Serializable {
 
     private String selectedDatasetId;
+    private int selectedProteinIndex=-1;
+    private int selectedPeptideIndex;
+
+    private String encodedProteinButtonImage;
+    private String encodedPeptideButtonImage;
     private final Map<String, String> stylingMap = new HashMap<>();
     private final Map<String, String> subStylingMap = new HashMap<>();
     /**
@@ -129,11 +134,21 @@ public class UIManager implements Serializable {
 
     }
 
+    public int getSelectedProteinIndex() {
+        return selectedProteinIndex;
+    }
+
+    public int getSelectedPeptideIndex() {
+        return selectedPeptideIndex;
+    }
+
     public String getSelectedDatasetId() {
         return selectedDatasetId;
     }
 
     public void setSelectedDatasetId(String selectedDatasetId) {
+        selectedProteinIndex = -1;
+        selectedPeptideIndex = -1;
         if (!selectedDatasetId.equalsIgnoreCase(this.selectedDatasetId)) {
             this.selectedDatasetId = selectedDatasetId;
             visualizationMap.get(ResultsView.class.getName()).update();
@@ -143,12 +158,43 @@ public class UIManager implements Serializable {
         }
     }
 
+    public void setSelectedProteinIndex(int proteinIndex) {
+        this.selectedPeptideIndex = -1;
+        this.selectedProteinIndex = proteinIndex;        
+        this.updateResultsSubViews();
+        visualizationMap.get(ResultsView.class.getName()).update();
+
+    }
+
+    public void setSelectedPeptideIndex(int selectedPeptideIndex) {
+        this.selectedPeptideIndex = selectedPeptideIndex;
+        this.updateResultsSubViews();
+        visualizationMap.get(ResultsView.class.getName()).update();
+
+    }
+
     public void setOngoingJob(boolean ongoing) {
         if (ongoing) {
             UI.getCurrent().addStyleName("ongoingjob");
         } else {
             UI.getCurrent().removeStyleName("ongoingjob");
         }
+    }
+
+    public String getEncodedProteinButtonImage() {
+        return encodedProteinButtonImage;
+    }
+
+    public void setEncodedProteinButtonImage(String encodedProteinButtonImage) {
+        this.encodedProteinButtonImage = encodedProteinButtonImage;
+    }
+
+    public String getEncodedPeptideButtonImage() {
+        return encodedPeptideButtonImage;
+    }
+
+    public void setEncodedPeptideButtonImage(String encodedPeptideButtonImage) {
+        this.encodedPeptideButtonImage = encodedPeptideButtonImage;
     }
 
 }

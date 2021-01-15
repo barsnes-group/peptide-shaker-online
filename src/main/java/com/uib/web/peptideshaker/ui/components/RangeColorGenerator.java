@@ -28,6 +28,10 @@ public class RangeColorGenerator {
     private final Map<Double, String> colorCategories;
     private final DecimalFormat df = new DecimalFormat("0.00E00");
 
+    public double getMax() {
+        return max;
+    }
+
     /**
      * Constructor to initialise the main attributes
      *
@@ -88,7 +92,7 @@ public class RangeColorGenerator {
         double step = max / 50.0;
         for (double x = max; x > 0; ) {
             if (gradeScale) {
-                l = new Label("<center style= ' background-color: " + RangeColorGenerator.this.getGradeColor(x, max, 0) + ";'></center>", ContentMode.HTML);
+                l = new Label("<center style= ' background-color: " + RangeColorGenerator.this.getGradeColor(x) + ";'></center>", ContentMode.HTML);
                 x -= step;
             } else {
                 l = new Label("<center style= ' background-color: " + RangeColorGenerator.this.getColor(x * 0.02 * max) + ";'></center>", ContentMode.HTML);
@@ -159,7 +163,7 @@ public class RangeColorGenerator {
      * @param min   minimum value
      * @return RGB colour as string
      */
-    public String getGradeColor(double value, double max1, double min) {
+    public String getGradeColor(double value) {
 
         if (value == 0.0) {
             return "RGB(" + 245 + "," + 245 + "," + 245 + ")";

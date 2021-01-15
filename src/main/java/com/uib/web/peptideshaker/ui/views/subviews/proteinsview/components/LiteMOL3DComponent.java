@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components;
+package com.uib.web.peptideshaker.ui.views.subviews.proteinsview.components;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.ui.VerticalLayout;
@@ -31,6 +31,7 @@ public class LiteMOL3DComponent extends VerticalLayout {
     }
 
     public void excuteQuery(String pdbId, int entity, String chainId, HashMap<String, Integer> proteinColor, HashSet<HashMap> entriesSet) {
+      
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> jsonQuery = new HashMap();
         HashMap<String, Object> coloring = new HashMap<>();

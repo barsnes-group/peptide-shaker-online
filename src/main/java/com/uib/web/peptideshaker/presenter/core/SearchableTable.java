@@ -25,7 +25,7 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
     private final Map<String, String> tableSearchingMap;
     private final Table mainTable;
     private final HorizontalLayout serachComponent;
-    private final Map<Comparable, Object[]> tableData;
+//    private final Map<Comparable, Object[]> tableData;
     private Label searchResultsLabel;
     private boolean resetSearching = false;
     private Button searchBtn;
@@ -35,9 +35,9 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
     /**
      * Initialise table component with search in table support
      *
-     * @param title                   table title
+     * @param title table title
      * @param defaultSearchingMessage default message in blank search field
-     * @param tableHeaders            array of table headers
+     * @param tableHeaders array of table headers
      */
     public SearchableTable(String title, String defaultSearchingMessage, TableColumnHeader[] tableHeaders) {
         SearchableTable.this.setSizeFull();
@@ -48,7 +48,7 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
         SearchableTable.this.addComponent(mainTable, "top: 35px;left: 0px;");
         serachComponent = initSearchComponentLayout(defaultSearchingMessage);
         SearchableTable.this.addComponent(serachComponent, "top: 10px;right: 0px;");
-        this.tableData = new LinkedHashMap<>();
+//        this.tableData = new LinkedHashMap<>();
     }
 
     private HorizontalLayout initSearchComponentLayout(String defaultSearchingMessage) {
@@ -294,14 +294,14 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
         mainTable.setSortEnabled(false);
     }
 
-    /**
-     * Get table data items
-     *
-     * @return map of data items mapped to its id
-     */
-    public Map<Comparable, Object[]> getTableData() {
-        return tableData;
-    }
+//    /**
+//     * Get table data items
+//     *
+//     * @return map of data items mapped to its id
+//     */
+//    public Map<Comparable, Object[]> getTableData() {
+//        return tableData;
+//    }
 
     /**
      * Get table object
@@ -317,7 +317,7 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
      */
     public void resetTable() {
         this.tableSearchingMap.clear();
-        this.tableData.clear();
+//        this.tableData.clear();
         mainTable.removeValueChangeListener(SearchableTable.this);
         mainTable.removeAllItems();
     }
@@ -325,8 +325,8 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
     /**
      * Add item (row) to the table
      *
-     * @param dataKey          row id
-     * @param value            row data as array
+     * @param dataKey row id
+     * @param value row data as array
      * @param searchingKeyword keyword to search/select added row
      */
     public void addTableItem(Comparable dataKey, Object[] value, String searchingKeyword) {
@@ -338,7 +338,7 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
         }
         this.tableSearchingMap.put(searchingKeyword.toLowerCase().replace(",", "_"), dataKey.toString());
 
-        this.tableData.put(dataKey.toString().trim(), value);
+//        this.tableData.put(dataKey.toString().trim(), value);
 
     }
 
@@ -359,14 +359,25 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
     /**
      * Update table label (title) with current available data in the table
      */
-    public void updateLabel() {
-        mainTable.setCaption("<b>" + tableMainTitle + " (" + mainTable.getItemIds().size() + "/" + tableData.size() + ")</b>");
-        if (mainTable.getItemIds().size() == 1) {
-            mainTable.select(mainTable.getCurrentPageFirstItemId());
-        } else {
-            mainTable.select(null);
-            itemSelected(null);
+    public void updateLabel(int totalNumber) {
+        mainTable.setCaption("<b>" + tableMainTitle + " (" + mainTable.getItemIds().size() + "/" +totalNumber + ")</b>");
+//        if (mainTable.getItemIds().size() == 1) {
+//            mainTable.select(mainTable.getCurrentPageFirstItemId());
+//        } else {
+//            mainTable.select(null);
+//            itemSelected(null);
+//        }
+    }
+
+    public void updateIndexes() {
+        mainTable.setSortEnabled(true);
+        mainTable.sort();
+        int index = 1;
+        for (Object key : mainTable.getItemIds()) {
+            mainTable.getItem(key).getItemProperty("index").setValue(index++);
         }
+        mainTable.setSortEnabled(false);
+
     }
 
     @Override
@@ -387,38 +398,38 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
      *
      * @param objectIds set of items(row ids)
      */
-    public void filterTable(Set<Comparable> objectIds) {
-        if ((objectIds == null || objectIds.isEmpty()) && this.mainTable.getItemIds().size() == tableData.size()) {
-            return;
-        }
-        if (objectIds != null && objectIds.size() == mainTable.getItemIds().size()) {
-            return;
-        }
-        mainTable.removeValueChangeListener(SearchableTable.this);
-        mainTable.removeAllItems();
-        if (objectIds != null && !objectIds.isEmpty()) {
-            objectIds.forEach((data) -> {
-                if (tableData.containsKey(data)) {
-                    this.mainTable.addItem(tableData.get(data), data);
-                }
-            });
-        } else if ((objectIds == null || objectIds.isEmpty()) && this.mainTable.getItemIds().size() != tableData.size()) {
-            tableData.keySet().forEach((data) -> {
-                this.mainTable.addItem(tableData.get(data), data);
-            });
-
-        }
-        mainTable.setCaption("<b>" + tableMainTitle + " (" + mainTable.getItemIds().size() + "/" + tableData.size() + ")</b>");
-        mainTable.addValueChangeListener(SearchableTable.this);
-        if (mainTable.getItemIds().size() == 1) {
-            mainTable.select(mainTable.getCurrentPageFirstItemId());
-        } else {
-            mainTable.select(null);
-            itemSelected(null);
-        }
-        searchBtn.click();
-
-    }
+//    public void filterTable(Set<Integer> objectIds) {
+//        if ((objectIds == null || objectIds.isEmpty()) && this.mainTable.getItemIds().size() == tableData.size()) {
+//            return;
+//        }
+//        if (objectIds != null && objectIds.size() == mainTable.getItemIds().size()) {
+//            return;
+//        }
+//        mainTable.removeValueChangeListener(SearchableTable.this);
+//        mainTable.removeAllItems();
+//        if (objectIds != null && !objectIds.isEmpty()) {
+//            objectIds.forEach((data) -> {
+//                if (tableData.containsKey(data)) {
+//                    this.mainTable.addItem(tableData.get(data), data);
+//                }
+//            });
+//        } else if ((objectIds == null || objectIds.isEmpty()) && this.mainTable.getItemIds().size() != tableData.size()) {
+//            tableData.keySet().forEach((data) -> {
+//                this.mainTable.addItem(tableData.get(data), data);
+//            });
+//
+//        }
+//        mainTable.setCaption("<b>" + tableMainTitle + " (" + mainTable.getItemIds().size() + "/" + tableData.size() + ")</b>");
+//        mainTable.addValueChangeListener(SearchableTable.this);
+//        if (mainTable.getItemIds().size() == 1) {
+//            mainTable.select(mainTable.getCurrentPageFirstItemId());
+//        } else {
+//            mainTable.select(null);
+//            itemSelected(null);
+//        }
+//        searchBtn.click();
+//
+//    }
 
     /**
      * Add button to the table layout

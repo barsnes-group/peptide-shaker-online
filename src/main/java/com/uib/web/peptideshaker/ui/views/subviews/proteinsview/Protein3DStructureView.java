@@ -1,11 +1,14 @@
-package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components;
+package com.uib.web.peptideshaker.ui.views.subviews.proteinsview;
 
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
+import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.PeptideObject;
 import com.uib.web.peptideshaker.model.core.pdb.ChainBlock;
 import com.uib.web.peptideshaker.model.core.pdb.PDBMatch;
 import com.uib.web.peptideshaker.model.core.pdb.PdbHandler;
+import com.uib.web.peptideshaker.ui.views.subviews.proteinsview.components.ChainCoverageComponent;
+import com.uib.web.peptideshaker.ui.views.subviews.proteinsview.components.LiteMOL3DComponent;
 import com.vaadin.data.Property;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Label;
@@ -20,7 +23,7 @@ import java.util.*;
  *
  * @author Yehia Farag
  */
-public class Protein3DStructurePanel extends AbsoluteLayout {
+public class Protein3DStructureView extends AbsoluteLayout {
 
     private final VerticalLayout LiteMolPanel;
     private final LiteMOL3DComponent liteMOL3DComponent;
@@ -58,9 +61,9 @@ public class Protein3DStructurePanel extends AbsoluteLayout {
     private int proteinSequenceLength;
     private PDBMatch lastSelectedMatch;
 
-    public Protein3DStructurePanel() {
-        Protein3DStructurePanel.this.setSizeFull();
-        Protein3DStructurePanel.this.setStyleName("proteinStructiorpanel");
+    public Protein3DStructureView() {
+        Protein3DStructureView.this.setSizeFull();
+        Protein3DStructureView.this.setStyleName("proteinStructiorpanel");
 
         this.pdbBlockMap = new HashMap<>();
         this.peptidesQueryMap = new LinkedHashMap<>();
@@ -84,7 +87,7 @@ public class Protein3DStructurePanel extends AbsoluteLayout {
         };
         chainCoverageLayout.setSizeFull();
         LiteMolPanel.addComponent(liteMOL3DComponent);
-        Protein3DStructurePanel.this.addComponent(LiteMolPanel);
+        Protein3DStructureView.this.addComponent(LiteMolPanel);
 
         uniprotLabel = new Label("UniProt:");
         uniprotLabel.addStyleName("selectchain3dMenue");
@@ -101,7 +104,7 @@ public class Protein3DStructurePanel extends AbsoluteLayout {
         dropdownMenuesContainer.setHeight(25, Unit.PIXELS);
         dropdownMenuesContainer.setStyleName("select3dMenue");
 
-        Protein3DStructurePanel.this.addComponent(dropdownMenuesContainer, "left: 10px; bottom:-12.5px");
+        Protein3DStructureView.this.addComponent(dropdownMenuesContainer, "left: 10px; bottom:-12.5px");
         this.pdbChainsSelectlistener = ((Property.ValueChangeEvent event) -> {
             LiteMolPanel.setVisible(pdbChainsSelect.getValue() != null);
             if (LiteMolPanel.isVisible()) {
@@ -211,12 +214,12 @@ public class Protein3DStructurePanel extends AbsoluteLayout {
         return lastSelectedAccession;
     }
 
-    public void updatePanel(Object accession, String proteinSequence, Collection<PeptideObject> proteinPeptides, boolean showNotifications) {
+    public void updatePanel(Object accession, String proteinSequence, Collection<PeptideObject> proteinPeptides) {
         this.lastSelectedAccession = accession;
         this.lastSelectedProteinSequence = proteinSequence;
         this.uniprotLabel.setValue("UniProt: " + lastSelectedAccession);
         this.proteinPeptides = proteinPeptides;
-        loadData(lastSelectedAccession, lastSelectedProteinSequence, showNotifications);
+        loadData(lastSelectedAccession, lastSelectedProteinSequence, true);
 
     }
 
@@ -338,13 +341,13 @@ public class Protein3DStructurePanel extends AbsoluteLayout {
                 peptidesQueryMap.keySet().forEach((key) -> {
                     for (HashMap peptide : peptidesQueryMap.get(key)) {
                         switch (peptide.get("validation").toString()) {
-                            case "Doubtful":
+                            case CONSTANT.VALIDATION_DOUBTFUL:
                                 peptide.put("color", initColorMap(selectedDoubtfulColor));
                                 break;
-                            case "Confident":
+                            case CONSTANT.VALIDATION_CONFIDENT:
                                 peptide.put("color", initColorMap(selectedConfidentColor));
                                 break;
-                            case "Not Validated":
+                            case CONSTANT.NO_INFORMATION:
                                 peptide.put("color", initColorMap(selectedNotValidatedColor));
                                 break;
                             default:
@@ -360,13 +363,13 @@ public class Protein3DStructurePanel extends AbsoluteLayout {
                     for (HashMap peptide : peptidesQueryMap.get(peptideKey)) {
                         if (chainId.contains("All") || chainId.equalsIgnoreCase(peptide.get("struct_asym_id").toString())) {
                             switch (peptide.get("validation").toString()) {
-                                case "Doubtful":
+                                case CONSTANT.VALIDATION_DOUBTFUL:
                                     peptide.put("color", initColorMap(defaultSelectedDoubtfulColor));
                                     break;
-                                case "Confident":
+                                case CONSTANT.VALIDATION_CONFIDENT:
                                     peptide.put("color", initColorMap(defaultSelectedConfidentColor));
                                     break;
-                                case "Not Validated":
+                                case CONSTANT.NO_INFORMATION:
                                     peptide.put("color", initColorMap(defaultSelectedNotValidatedColor));
                                     break;
                                 default:

@@ -19,6 +19,10 @@ import java.util.Set;
 public class PeptideObject extends Peptide {
 
     /**
+     * Set of psm keys mapped for the peptide.
+     */
+    private final Set<String> psmsSet;
+    /**
      * Set of main protein accessions for the peptide.
      */
     private final Set<String> proteinsSet;
@@ -135,7 +139,7 @@ public class PeptideObject extends Peptide {
     public PeptideObject() {
         this.proteinsSet = new LinkedHashSet<>();
         this.proteinGroupsSet = new LinkedHashSet<>();
-
+        this.psmsSet = new LinkedHashSet<>();
     }
 
     /**
@@ -219,6 +223,9 @@ public class PeptideObject extends Peptide {
         for (String acc : proteins.split(",")) {
             proteinsSet.add(acc.replace(" ", ""));
         }
+    }
+    public void addPSmKey(String psmKey){
+        this.psmsSet.add(psmKey);
     }
 
     /**
@@ -449,7 +456,7 @@ public class PeptideObject extends Peptide {
      * @param proteinGroups ';'separated strings of accessions
      */
     public void setProteinGroups(String proteinGroups) {
-        proteinGroupKey = proteinGroups.replace("(Confident)", "").replace("(Doubtful)", "").replace("(NotValidated)", "");
+        proteinGroupKey = proteinGroups.replace(" ", "").replace("(Confident)", "").replace("(Doubtful)", "").replace("(NotValidated)", "");
 //        proteinGroupKey = proteinGroupKey.replace("Not Validated", "").replace("(","").replace(")", "");
 //        proteinGroupKey = proteinGroupKey.replace(" ", "").replace(",", "-_-");
 //        for (String protGroup : proteinGroups.split(",")) {
@@ -473,9 +480,8 @@ public class PeptideObject extends Peptide {
      */
     public Set<String> getProteinsSet() {
         if (proteinsSet.isEmpty()) {
-            for (String acc : getProteinsSet()) {
-                acc = acc.replace("(Doubtful)", "").replace("(Confident)", "").replace("(NotValidated)", "").replace(" ", "").replace(",", ";");
-                proteinsSet.addAll(Arrays.asList(acc.split(";")));
+            for (String acc : getProteinGroupsSet()) {
+                proteinsSet.addAll(Arrays.asList(acc.split(",")));
             }
         }
         return proteinsSet;
@@ -488,7 +494,7 @@ public class PeptideObject extends Peptide {
      */
     public Set<String> getProteinGroupsSet() {
         if (proteinGroupsSet.isEmpty()) {
-            for (String protGroup : proteinGroupKey.split(",")) {
+            for (String protGroup : proteinGroupKey.split(";")) {               
                 proteinGroupsSet.add(protGroup);
             }
         }

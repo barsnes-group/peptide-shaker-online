@@ -4,8 +4,9 @@ import com.uib.web.peptideshaker.facades.GalaxyFacade;
 import com.uib.web.peptideshaker.facades.NotificationsFacade;
 import com.uib.web.peptideshaker.handler.UserHandler;
 import com.uib.web.peptideshaker.handler.WorkFlowHandler;
-import com.uib.web.peptideshaker.model.core.ModificationMatrixUtilis;
-import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager;
+import com.uib.web.peptideshaker.utils.ModificationMatrixUtilis;
+import com.uib.web.peptideshaker.uimanager.SelectionManager;
+import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager_old;
 import com.uib.web.peptideshaker.uimanager.UIManager;
 import com.uib.web.peptideshaker.utils.CoreUtils;
 import com.uib.web.peptideshaker.utils.DatabaseUtils;
@@ -38,6 +39,8 @@ public class AppManagmentBean implements Serializable {
     }
 
     private UIManager UI_Manager;
+    private SelectionManager selectionManager;
+
     private Config appConfig;
     private GalaxyFacade galaxyFacad;
     private NotificationsFacade notificationFacade;
@@ -51,13 +54,12 @@ public class AppManagmentBean implements Serializable {
     private CoreUtils coreUtils;
     private ScheduledExecutorService scheduler;
     private Set<ScheduledFuture> scheduledFutureSet;
-    private ResultsViewSelectionManager resultsViewSelectionManager;
 
-    public ResultsViewSelectionManager getResultsViewSelectionManager() {
-        if (resultsViewSelectionManager == null) {
-            resultsViewSelectionManager = new ResultsViewSelectionManager();
+    public SelectionManager getSelectionManager() {
+        if (selectionManager == null) {
+            selectionManager = new SelectionManager();
         }
-        return resultsViewSelectionManager;
+        return selectionManager;
     }
 
     public DatasetUtils getDatasetUtils() {

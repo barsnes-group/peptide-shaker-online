@@ -9,6 +9,7 @@ import com.uib.web.peptideshaker.galaxy.utilities.history.GalaxyDatasetServingUt
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFileObject;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
+import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.utils.URLUtils;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinSession;
@@ -619,7 +620,7 @@ public abstract class GalaxyHistoryHandler {
          */
         private History workingHistory;
         private boolean jobRunning;
-        private String usedStorageSpace = "Not Available";
+        private String usedStorageSpace = CONSTANT.NO_INFORMATION;
         private int filesNumber;
         private int dsNumbers;
         private Set<String> toDeleteMap = new HashSet<>();

@@ -45,7 +45,7 @@ public class WorkFlowHandler {
             File file = new File(path);
             return IdentificationParameters.getIdentificationParameters(file);
         } catch (IOException ex) {
-            System.err.println("at Error: " + this.getClass().getName() + " : " + ex);
+            System.err.println("at Error: 1" + this.getClass().getName() + " : " + ex);
         }
         return null;
     }
@@ -59,11 +59,11 @@ public class WorkFlowHandler {
                 file = appManagmentBean.getHttpClientUtil().downloadFile(galaxyfile.getDownloadUrl(), file);
             }
             if (!IdentificationParameters.supportedVersion(file)) {
-                System.err.println("at Error: " + this.getClass().getName() + " : " + "not supported virsion");
+                System.err.println("at Error: 2" + this.getClass().getName() + " : " + "not supported virsion");
             }
             return IdentificationParameters.getIdentificationParameters(file);
         } catch (IOException ex) {
-            System.err.println("at Error: " + this.getClass().getName() + " : " + ex);
+            System.err.println("at Error: 3" + this.getClass().getName() + " : " + ex);
         }
         return null;
     }
@@ -86,7 +86,7 @@ public class WorkFlowHandler {
             IdentificationParameters.saveIdentificationParameters(searchParameters, file);
             return galaxyFileModel;
         } catch (IOException ex) {
-            System.err.println("at Error: " + this.getClass().getName() + " : " + ex);
+            System.err.println("at Error: 4" + this.getClass().getName() + " : " + ex);
         }
         return null;
     }
@@ -121,7 +121,7 @@ public class WorkFlowHandler {
         try {
             tempGalaxyFile.setCreatedDate(format.parse(dataset.getString(CONSTANT.CREATE_TIME)));
         } catch (ParseException ex) {
-            System.out.println("Error : GalaxyFacad - " + ex);
+            System.out.println("Error 5: GalaxyFacad - " + ex);
         }
         tempGalaxyFile.setDownloadUrl(appManagmentBean.getAppConfig().getGalaxyServerUrl() + dataset.getString(CONSTANT.URL) + "/display?key=" + appManagmentBean.getUserHandler().getLoggedinUserAPIKey());
 
@@ -144,10 +144,9 @@ public class WorkFlowHandler {
         JsonObject body = prepareWorkFlowInvoking(fastaFile, searchParam, inputListId, quant);
         Response response = appManagmentBean.getGalaxyFacad().invokeWorkFlow(workflowId, body);
         boolean status = response.getStatus() == HttpResponseStatus.OK.code();
-        System.out.println("at response "+response.getStatus() +"  "+response);
         JsonArray jsonArrayResp = new JsonArray(response.readEntity(String.class));
         //delete workflow
-//        appManagmentBean.getGalaxyFacad().deleteWorkFlow(workflowId);
+        appManagmentBean.getGalaxyFacad().deleteWorkFlow(workflowId);
         if (status) {
             VisualizationDatasetModel tempDataset = appManagmentBean.getDatasetUtils().getOnProgressDataset(datasetType);
             tempDataset.setName(projectName);
@@ -155,7 +154,7 @@ public class WorkFlowHandler {
             try {
                 tempDataset.setCreatedTime(appManagmentBean.getCoreUtils().getDateFormater().parse(jsonArrayResp.getJsonObject(0).getString(CONSTANT.CREATE_TIME)));
             } catch (ParseException ex) {
-                System.err.println("ar Errot -" + this.getClass().getName() + " - " + ex);
+                System.err.println("ar Errot 6-" + this.getClass().getName() + " - " + ex);
                 tempDataset.setCreatedTime(java.util.Calendar.getInstance().getTime());
             }
             return tempDataset;
@@ -199,8 +198,6 @@ public class WorkFlowHandler {
         } else {
             workflowFile = new File(appManagmentBean.getAppConfig().getId_workflow_file_path());
         }
-
-        System.out.println("at workflow exise "+workflowFile.exists());
         /**
          * prepare the workflow
          */
@@ -250,9 +247,7 @@ public class WorkFlowHandler {
         JsonObject body = new JsonObject();
         body.put("workflow", workflowAsJson);
         Response response = appManagmentBean.getGalaxyFacad().uploadWorkFlow(body);
-        System.out.println("at response of upload "+response);
         JsonObject jsonObject = new JsonObject(response.readEntity(String.class));
-         System.out.println("at response of upload "+jsonObject);
         return jsonObject.getString(CONSTANT.ID);
     }
 

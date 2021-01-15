@@ -5,7 +5,10 @@
  */
 package com.uib.web.peptideshaker.ui.views.subviews;
 
+import com.uib.web.peptideshaker.AppManagmentBean;
+import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.AbsoluteLayout;
 
 /**
@@ -13,8 +16,9 @@ import com.vaadin.ui.AbsoluteLayout;
  * @author Yehia Mokhtar Farag
  */
 public class PeptidePsmsSubView extends AbsoluteLayout implements ViewableFrame{
-
+ private final AppManagmentBean appManagmentBean;
     public PeptidePsmsSubView() {
+        this.appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
         PeptidePsmsSubView.this.setSizeFull();
     }
 
@@ -41,7 +45,14 @@ public class PeptidePsmsSubView extends AbsoluteLayout implements ViewableFrame{
 
     @Override
     public void update() {
-        System.out.println("at update peptide-psm  overview ");
+//        if (appManagmentBean.getUI_Manager().getSelectedPeptideIndex()== -1) {
+//            this.minimizeView();
+//            appManagmentBean.getUI_Manager().setEncodedPeptideButtonImage("null");
+//        } else {
+//            System.out.println("at update protein peptide overview " + appManagmentBean.getUI_Manager().getSelectedPeptideIndex());
+//            appManagmentBean.getUI_Manager().setEncodedPeptideButtonImage("Kokowawa protein image");
+//        }
+
     }
     
 }

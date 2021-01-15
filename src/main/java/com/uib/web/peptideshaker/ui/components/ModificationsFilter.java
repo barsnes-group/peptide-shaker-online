@@ -1,12 +1,14 @@
 package com.uib.web.peptideshaker.ui.components;
 
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
-import static com.compomics.util.experiment.identification.IdentificationMatch.MatchType.PTM;
 import com.itextpdf.text.pdf.codec.Base64;
+import com.uib.web.peptideshaker.model.CONSTANT;
+import com.uib.web.peptideshaker.model.FilterUpdatingEvent;
 import com.uib.web.peptideshaker.model.ModificationMatrixModel;
+import com.uib.web.peptideshaker.model.Selection;
 import com.uib.web.peptideshaker.ui.components.items.FilterButton;
 import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
-import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager;
+import com.uib.web.peptideshaker.uimanager.SelectionManager;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.icons.VaadinIcons;
@@ -49,7 +51,7 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
     /**
      * The central selection manager.
      */
-    private final ResultsViewSelectionManager Selection_Manager;
+    private final SelectionManager selectionManager;
     /**
      * Reset filter button.
      */
@@ -57,7 +59,7 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
     /**
      * Matrix diagram to represent multiple data intersections .
      */
-    private final MatrixDiagramRedraw matrixDiagram;
+    private final MatrixDiagramFilter matrixDiagram;
     /**
      * Venn diagram to represent limited number of data intersections .
      */
@@ -69,10 +71,10 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
     private final Panel modificationFilterPanel;
     private final OptionGroup modificationOptionGroup;
 
-    public ModificationsFilter(String title, String filterId, ResultsViewSelectionManager Selection_Manager) {
+    public ModificationsFilter(String title, String filterId, SelectionManager selectionManager) {
         this.filterId = filterId;
-        this.Selection_Manager = Selection_Manager;
-        this.Selection_Manager.RegistrDatasetsFilter(ModificationsFilter.this);
+        this.selectionManager = selectionManager;
+        this.selectionManager.RegistrDatasetsFilter(ModificationsFilter.this);
         ModificationsFilter.this.setSizeFull();
         ModificationsFilter.this.setStyleName("thumbfilterframe");
         chartTitle = new Label("<font>" + title + "</font>", ContentMode.HTML);
@@ -84,7 +86,7 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
         resetFilterbtn = new FilterButton() {
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                applyFilter(null);
+               reset();
             }
         };
         resetFilterbtn.setWidth(15, Unit.PIXELS);
@@ -94,16 +96,16 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
         resetFilterbtn.addStyleName("modificationfilterreset");
         ModificationsFilter.this.addComponent(resetFilterbtn, "right:14px;top:-1px;");
 
-        this.matrixDiagram = new MatrixDiagramRedraw() {
-            @Override
-            public void setMainAppliedFilter(boolean mainAppliedFilter) {
-                ModificationsFilter.this.setMainAppliedFilter(mainAppliedFilter);
-            }
+        this.matrixDiagram = new MatrixDiagramFilter(selectionManager) {
+//            @Override
+//            public void setMainAppliedFilter(boolean mainAppliedFilter) {
+//                ModificationsFilter.this.setMainAppliedFilter(mainAppliedFilter);
+//            }
 
-            @Override
-            public void applyFilter(Set<Integer> columnIndexs) {
-                ModificationsFilter.this.applyFilter(columnIndexs);
-            }
+//            @Override
+//            public void applyFilter(Set<Integer> columnIndexs) {
+//                ModificationsFilter.this.applyFilter(columnIndexs);
+//            }
 
             @Override
             public void setVisibleScrollbar(boolean visible) {
@@ -121,7 +123,7 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
         ModificationsFilter.this.addComponent(matrixDiagram, "left:10px;top:30px;right:10px;bottom:10px;");
         matrixDiagram.setVisible(false);
 
-        this.vennDiagram = new VennDiagram() {
+        this.vennDiagram = new VennDiagram(selectionManager) {
             @Override
             public void compleateLoading(boolean done) {
                 vennDiagram.setVisible(done);
@@ -130,11 +132,7 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
 
             }
 
-            @Override
-            public void applyFilter(Set<Integer> columnIndexs) {
-                ModificationsFilter.this.applyFilter(columnIndexs);
-            }
-
+           
         };
         ModificationsFilter.this.addComponent(vennDiagram, "left:0px;top:0px;");
 
@@ -154,21 +152,17 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
         modificationFilterPanel.setSizeUndefined();
         modificationFilterPanel.setStyleName("modificationlistpanel");
         ModificationsFilter.this.addComponent(modificationFilterPanel, "left:10px;top:30px;");
-        modificationFilterPanel.addClickListener(new MouseEvents.ClickListener() {
-            @Override
-            public void click(MouseEvents.ClickEvent event) {
-                int y = event.getRelativeY();
-                if (modificationFilterPanel.getStyleName().contains("compressmodpanel")) {
-                    modificationFilterPanel.removeStyleName("compressmodpanel");
-                    modificationFilterPanel.setIcon(VaadinIcons.ANGLE_DOUBLE_UP);
-                } else if (y >= 11 && y <= 33) {
-                    int x = event.getRelativeX();
-                    int startX = (int) modificationFilterPanel.getWidth() - x;
-                    if (startX >= 17 && startX <= 39) {
-                        modificationFilterPanel.addStyleName("compressmodpanel");
-                        modificationFilterPanel.setIcon(VaadinIcons.FILTER);
-                    }
-
+        modificationFilterPanel.addClickListener((MouseEvents.ClickEvent event) -> {
+            int y = event.getRelativeY();
+            if (modificationFilterPanel.getStyleName().contains("compressmodpanel")) {
+                modificationFilterPanel.removeStyleName("compressmodpanel");
+                modificationFilterPanel.setIcon(VaadinIcons.ANGLE_DOUBLE_UP);
+            } else if (y >= 11 && y <= 33) {
+                int x = event.getRelativeX();
+                int startX = (int) modificationFilterPanel.getWidth() - x;
+                if (startX >= 17 && startX <= 39) {
+                    modificationFilterPanel.addStyleName("compressmodpanel");
+                    modificationFilterPanel.setIcon(VaadinIcons.FILTER);
                 }
 
             }
@@ -193,21 +187,16 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
                     selection.add(Id.toString());
                 }
             }
-            updateModificationMatrixDiagram(selection);
+             matrixDiagram.updateViewedModifications(selection);
 
         });
 
         return modificationOptionGroup;
     }
 
-    private void updateModificationMatrixDiagram(Set<String> selection) {
-        matrixDiagram.updateViewedModifications(selection);
-
-    }
-
-    private void populateModificationOptionGroup(Map<String, Color> modificationsColorMap) {
+    private void populateModificationOptionGroup(Map<Comparable, Color> modificationsColorMap) {
         modificationOptionGroup.removeAllItems();
-        for (String modification : modificationsColorMap.keySet()) {
+        for (Comparable modification : modificationsColorMap.keySet()) {
             modificationOptionGroup.addItem(modification);
             modificationOptionGroup.setItemIcon(modification, new ExternalResource(colorToIconResource(modificationsColorMap.get(modification))));
 
@@ -215,22 +204,6 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
 
     }
 
-    public void initializeFilterData(ModificationMatrixModel modificationMatrix, Set<Object> selectedCategories, int totalNumber) {
-        Map<String, Color> modificationColorMap = new LinkedHashMap<>();
-        modificationMatrix.getRows().keySet().forEach((mod) -> {
-            if (PTM.containsModification(mod)) {
-                modificationColorMap.put(mod, new Color(ModificationFactory.getDefaultColor(mod)));
-            } else {
-                modificationColorMap.put(mod, Color.LIGHT_GRAY);
-            }
-        });
-
-        matrixDiagram.initializeFilterData(modificationMatrix, modificationColorMap, selectedCategories, totalNumber);
-        vennDiagram.initializeFilterData(modificationMatrix, modificationColorMap, selectedCategories, totalNumber);
-        populateModificationOptionGroup(modificationColorMap);
-       
-
-    }
 
     @Override
     public void suspendFilter(boolean suspend) {
@@ -249,12 +222,6 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
     @Override
     public void updateFilterSelection(Set<Comparable> selectedItems, Set<Comparable> selectedCategories, boolean topFilter, boolean singleProteinsFilter, boolean selfAction) {
 
-        Map<String, Color> modifications = matrixDiagram.updateFilterSelection(selectedItems, selectedCategories, topFilter, singleProteinsFilter, selfAction);
-        vennDiagram.updateFilterSelection(selectedItems, selectedCategories, topFilter, singleProteinsFilter, selfAction);
-        if (!selfAction) {
-            populateModificationOptionGroup(modifications);
-        }
-
     }
 
     @Override
@@ -262,18 +229,7 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void applyFilter(Set<Integer> columnIndexs) {
-
-        Set<Comparable> appliedFilter = matrixDiagram.filterAction(columnIndexs);
-        if (columnIndexs == null || columnIndexs.isEmpty() || columnIndexs.size() == vennDiagram.getModificationMatrix().getColumns().size()) {
-            vennDiagram.resetFilter();
-            matrixDiagram.resetFilter();
-            Selection_Manager.setSelection("dataset_filter_selection", new LinkedHashSet<>(), null, filterId);
-            return;
-        }
-
-        Selection_Manager.setSelection("dataset_filter_selection", appliedFilter, null, filterId);
-    }
+   
 
     private void setMainAppliedFilter(boolean mainAppliedFilter) {
         resetFilterbtn.setVisible(mainAppliedFilter);
@@ -306,5 +262,38 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
         base64 = "data:image/png;base64," + base64;
         //total chain coverage     
         return base64;
+    }
+
+    @Override
+    public void updateSelection(FilterUpdatingEvent event) {
+        Map<Comparable, Color> modificationColorMap = new LinkedHashMap<>();
+        Map<Comparable, Set<Integer>> columns = new LinkedHashMap<>();
+        Map<Comparable, Integer> rows = new LinkedHashMap<>();
+        for (Comparable compKey : event.getSelectionMap().keySet()) {
+            if (compKey.toString().contains("[")) {
+                columns.put(compKey, new LinkedHashSet<>(event.getSelectionMap().get(compKey)));
+            } else {
+                rows.put(compKey, event.getSelectionMap().get(compKey).size());
+            }
+        }
+        rows.keySet().forEach((mod) -> {
+            if (PTM.containsModification(mod.toString())) {
+                modificationColorMap.put(mod.toString(), new Color(ModificationFactory.getDefaultColor(mod.toString())));
+            } else {
+                modificationColorMap.put(mod.toString(), Color.LIGHT_GRAY);
+            }
+        });
+        matrixDiagram.updateFilter(columns, rows, modificationColorMap, event.getSeletionCategories());
+        vennDiagram.updateFilter(columns, rows, modificationColorMap, event.getSeletionCategories());
+        populateModificationOptionGroup(modificationColorMap);
+
+//        matrixDiagram.setVisible(true);
+//        modificationFilterPanel.setVisible(true);
+        setMainAppliedFilter(event.getSeletionCategories() != null && !event.getSeletionCategories().isEmpty());
+    }
+    
+    private void reset() {
+        Selection selection = new Selection(CONSTANT.DATASET_SELECTION, CONSTANT.MODIFICATIONS_FILTER_ID, null, false);
+        selectionManager.setSelection(selection);
     }
 }

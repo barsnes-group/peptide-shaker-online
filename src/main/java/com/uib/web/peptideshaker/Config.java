@@ -37,6 +37,12 @@ public class Config implements Serializable {
     
     private String quant_workflow_invoking_file_path;
     private String id_workflow_invoking_file_path;
+    private String csfprLink;
+
+    public String getCsfprLink() {
+        return csfprLink;
+    }
+    
 
     public String getMainGalaxyHistoryId() {
         return mainGalaxyHistoryId;
@@ -118,7 +124,7 @@ public class Config implements Serializable {
         ServletContext scx = VaadinServlet.getCurrent().getServletContext();
         testUserAPIKey = (scx.getInitParameter("testUserAPIKey"));
         galaxyServerUrl = (scx.getInitParameter("galaxyServerUrl"));
-        String csfprLink = (scx.getInitParameter("csfprservice"));
+        csfprLink = (scx.getInitParameter("csfprservice"));
         dbURL = (scx.getInitParameter("url"));
         dbDriver = (scx.getInitParameter("driver"));
         dbUserName = (scx.getInitParameter("userName"));
@@ -132,7 +138,7 @@ public class Config implements Serializable {
         id_workflow_invoking_file_path= basePath +"/VAADIN/Multi-Id-Invoking.json";
         String appName = (scx.getInitParameter("appName"));
         VaadinSession.getCurrent().setAttribute("appName", appName);
-        VaadinSession.getCurrent().setAttribute("csfprLink", csfprLink);
+//        VaadinSession.getCurrent().setAttribute("csfprLink", csfprLink);
         String psVersion = (scx.getInitParameter("psvirsion"));
         String searchGUIversion = (scx.getInitParameter("searchguivirsion"));
         String moffVersion = (scx.getInitParameter("moffvirsion"));

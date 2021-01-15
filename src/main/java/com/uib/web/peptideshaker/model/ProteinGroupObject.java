@@ -10,10 +10,11 @@ import java.util.*;
  * This class represents protein for Online PeptideShaker system the class
  * contains all the required information for visualising the proteins data
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class ProteinGroupObject extends Protein {
 
+    private final Set<Integer> peptidesSet;
     private final Map<String, NetworkGraphNode> proteoformsNodes;
     private final Set<NetworkGraphEdge> localEdges;
     /**
@@ -37,7 +38,6 @@ public class ProteinGroupObject extends Protein {
     /**
      * UniProt protein group key.
      */
-    private String proteinGroupKey;
     private double quantValue;
     /**
      * Intensity value of the quantification using average of all related
@@ -84,7 +84,7 @@ public class ProteinGroupObject extends Protein {
     /**
      * Chromosome index.
      */
-    private int chromosomeIndex;
+    private int chromosomeIndex = -1;
     /**
      * Molecular weight.
      */
@@ -128,7 +128,7 @@ public class ProteinGroupObject extends Protein {
     /**
      * Protein group that is related to the main protein.
      */
-    private String proteinGroup;
+    private String oreginalProteinGroup;
     /**
      * Number of validated peptides.
      */
@@ -190,8 +190,18 @@ public class ProteinGroupObject extends Protein {
         this.secondaryAccessionSet = new LinkedHashSet<>();
         this.proteinGroupSet = new LinkedHashSet<>();
         this.relatedPeptidesList = new HashMap<>();
+        this.peptidesSet = new LinkedHashSet<>();
         this.proteoformsNodes = new LinkedHashMap<>();
+
         this.localEdges = new HashSet<>();
+    }
+
+    public void addPeptide(int peptideIndex) {
+        peptidesSet.add(peptideIndex);
+    }
+
+    public Set<Integer> getPeptidesSet() {
+        return peptidesSet;
     }
 
     /**
@@ -237,16 +247,7 @@ public class ProteinGroupObject extends Protein {
      * @return protein group key
      */
     public String getProteinGroupKey() {
-        return proteinGroupKey;
-    }
-
-    /**
-     * Set protein group unique key
-     *
-     * @param proteinGroupKey protein group key
-     */
-    public void setProteinGroupKey(String proteinGroupKey) {
-        this.proteinGroupKey = proteinGroupKey;
+        return oreginalProteinGroup;
     }
 
     /**
@@ -273,6 +274,19 @@ public class ProteinGroupObject extends Protein {
      * @return chromosome index
      */
     public int getChromosomeIndex() {
+        if (chromosomeIndex == -1) {
+            try {
+                chromosomeIndex = Integer.parseInt(chromosome);
+            } catch (NumberFormatException ex) {
+                if (chromosome.equalsIgnoreCase("X")) {
+                    chromosomeIndex = 23;
+                } else if (chromosome.equalsIgnoreCase("Y")) {
+                    chromosomeIndex = 24;
+                } else {
+                    chromosomeIndex = 25;
+                }
+            }
+        }
         return chromosomeIndex;
     }
 
@@ -335,21 +349,21 @@ public class ProteinGroupObject extends Protein {
      * Add peptide
      *
      * @param peptideKey peptides keys (modified sequence)
+     * @param enzymatic
      */
-    public void addPeptideSequence(String peptideKey) {
-        relatedPeptidesList.put(peptideKey, true);
-    }
-
-    /**
-     * Update peptide type
-     *
-     * @param peptideKey peptides keys (modified sequence)
-     * @param enzymatic enzymatic peptide
-     */
-    public void updatePeptideType(String peptideKey, boolean enzymatic) {
+    public void addPeptideType(String peptideKey, boolean enzymatic) {
         relatedPeptidesList.put(peptideKey, enzymatic);
     }
 
+//    /**
+//     * Update peptide type
+//     *
+//     * @param peptideKey peptides keys (modified sequence)
+//     * @param enzymatic enzymatic peptide
+//     */
+//    public void updatePeptideType(String peptideKey, boolean enzymatic) {
+//        relatedPeptidesList.put(peptideKey, enzymatic);
+//    }
     /**
      * Check if the peptide is enzymatic
      *
@@ -360,7 +374,7 @@ public class ProteinGroupObject extends Protein {
         if (relatedPeptidesList.containsKey(peptideKey)) {
             return relatedPeptidesList.get(peptideKey);
         } else {
-            return true;
+            return false;
         }
 
     }
@@ -611,7 +625,7 @@ public class ProteinGroupObject extends Protein {
      * @param proteinInference protein inference type.
      */
     public void setProteinInference(String proteinInference) {
-        this.proteinInference = proteinInference.replace(" Proteins", "").replace(" Protein", "").replace("and", "&");
+        this.proteinInference = proteinInference;
     }
 
     /**
@@ -639,20 +653,17 @@ public class ProteinGroupObject extends Protein {
      *
      * @return protein accessions
      */
-    public String getProteinGroup() {
-        return proteinGroup;
+    public String getOreginalProteinGroup() {
+        return oreginalProteinGroup;
     }
 
     /**
      * Set protein group that is related to the main protein.
      *
-     * @param proteinGroup protein accessions
+     * @param oreginalProteinGroup protein accessions
      */
-    public void setProteinGroup(String proteinGroup) {
-        this.proteinGroup = proteinGroup;
-//        for (String acc : proteinGroup.split(",")) {
-//            proteinGroupSet.add(acc.trim());
-//        }
+    public void setOreginalProteinGroup(String oreginalProteinGroup) {
+        this.oreginalProteinGroup = oreginalProteinGroup;
     }
 
     /**
@@ -707,7 +718,7 @@ public class ProteinGroupObject extends Protein {
      */
     public Set<String> getProteinGroupSet() {
         if (proteinGroupSet.isEmpty()) {
-            proteinGroupSet.addAll(Arrays.asList(proteinGroup.replace(" ", "").split(",")));
+            proteinGroupSet.addAll(Arrays.asList(oreginalProteinGroup.replace(" ", "").split(",")));
         }
         return proteinGroupSet;
     }

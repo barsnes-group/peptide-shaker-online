@@ -1,9 +1,11 @@
 package com.uib.web.peptideshaker.ui.components;
 
-import com.google.common.collect.Sets;
+import com.uib.web.peptideshaker.model.CONSTANT;
+import com.uib.web.peptideshaker.model.FilterUpdatingEvent;
+import com.uib.web.peptideshaker.model.Selection;
 import com.uib.web.peptideshaker.ui.components.items.FilterButton;
 import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
-import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager;
+import com.uib.web.peptideshaker.uimanager.SelectionManager;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
@@ -22,26 +24,19 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
     private final Panel mainFilterPanel;
     private final Label chartTitle;
     private final FilterButton resetFilterBtn;
-    private final Set<Object> selectedCategories;
-    private final Set<Comparable> appliedFilters;
-    private final Map<Integer, Set<Comparable>> filteredData;
+    private final Map<Comparable, Set<Integer>> filteredData;
     private final AbsoluteLayout frame;
-    private final ResultsViewSelectionManager Selection_Manager;
+    private final SelectionManager selectionManager;
     private final Map<Comparable, Label> chromosomessLabelMap;
-    private final Set<Comparable> selectedData;
     private final AbsoluteLayout mainChartContainer;
     private final LayoutEvents.LayoutClickListener mainClickListener;
     int activeChromosomes;
     private RangeColorGenerator colorGenerator;
-    private Map<Integer, Set<Comparable>> fullData;
-    private int totalItemsNumber;
 
-    public ChromosomesFilter(String title, String filterId, ResultsViewSelectionManager Selection_Manager) {
+    public ChromosomesFilter(String title, String filterId, SelectionManager selectionManager) {
 
         this.filterId = filterId;
-        this.Selection_Manager = Selection_Manager;
-        selectedData = new LinkedHashSet<>();
-        this.appliedFilters = new LinkedHashSet<>();
+        this.selectionManager = selectionManager;
         ChromosomesFilter.this.setSizeFull();
 
         frame = new AbsoluteLayout();
@@ -51,11 +46,7 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
         frame.addStyleName("reorderlayout");
         frame.addStyleName("chromosomfilter");
         ChromosomesFilter.this.addComponent(frame);
-
-
-        this.selectedCategories = new LinkedHashSet<>();
-        this.Selection_Manager.RegistrDatasetsFilter(ChromosomesFilter.this);
-
+        this.selectionManager.RegistrDatasetsFilter(ChromosomesFilter.this);
         chartTitle = new Label("<font >" + title + "</font>", ContentMode.HTML);
         chartTitle.setStyleName(ValoTheme.LABEL_BOLD);
         chartTitle.setWidth(100, Unit.PERCENTAGE);
@@ -65,7 +56,7 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
         resetFilterBtn = new FilterButton() {
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                applyFilter(null);
+                reset();
 
             }
         };
@@ -73,7 +64,6 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
         resetFilterBtn.addStyleName("btninframe");
         resetFilterBtn.addStyleName("chromosomefilterrest");
         ChromosomesFilter.this.addComponent(resetFilterBtn, "top:5px;right:0px;");
-
 
         mainFilterPanel = new Panel();
         mainFilterPanel.setHeight(100, Unit.PERCENTAGE);
@@ -84,29 +74,23 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
         frame.addComponent(mainFilterPanel, "top: 51px;left: 10px;right: 10px;bottom: 0px;");
 
         chromosomessLabelMap = new LinkedHashMap<>();
-        this.filteredData = new LinkedHashMap<>();       
+        this.filteredData = new LinkedHashMap<>();
         this.mainClickListener = (LayoutEvents.LayoutClickEvent event) -> {
             Component clickedComponent = event.getClickedComponent();
             if (clickedComponent instanceof Label) {
-                if (clickedComponent == chartTitle) {
-                    applyFilter(null);
+                if (clickedComponent == chartTitle || clickedComponent.getDescription().equalsIgnoreCase("No Proteins")) {
                     return;
                 }
-                if (clickedComponent.getDescription().equalsIgnoreCase("No Proteins")) {
-                    return;
+                if (clickedComponent.getStyleName().contains("resizableselectedimg")) {
+                    unSelectCategory((int) ((Label) clickedComponent).getData());
+                } else {
+                    selectCategory((int) ((Label) clickedComponent).getData());
                 }
-                applyFilter(((Label) clickedComponent).getData() + "");
 
-            } else {
-                applyFilter(null);
             }
         };
         mainChartContainer = initFilterLayout();
         mainFilterPanel.setContent(mainChartContainer);
-    }
-
-    public boolean isAppliedFilter() {
-        return !(selectedData.isEmpty() || selectedData.size() == totalItemsNumber);
     }
 
     private AbsoluteLayout initFilterLayout() {
@@ -116,7 +100,7 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
         filter.setSpacing(false);
         filter.setSizeFull();
 
-        for (int i = 1; i < 25; i++) {
+        for (int i = 1; i < 26; i++) {
 
             Label img = new Label("", ContentMode.HTML);
             img.setHeight(95, Unit.PERCENTAGE);
@@ -130,11 +114,11 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
         filterContainer.addStyleName("chromosomefiltercontainerstyle");
         filterContainer.setSizeFull();
         filterContainer.addComponent(filter);
+
         return filterContainer;
     }
 
     private void updateChromosomesLabelsColor() {
-        activeChromosomes = 0;
         chromosomessLabelMap.values().stream().map((chromosomImg) -> {
             chromosomImg.removeStyleName("pointer");
             return chromosomImg;
@@ -147,94 +131,49 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
                 activeChromosomes++;
                 color = colorGenerator.getColor(filteredData.get(chromosomId).size());
                 desc = filteredData.get(chromosomId).size() + " Proteins";
+                if (chromosomId == 25) {
+                    desc = "Other chromosomes, " + desc;
+                }
                 cursor = "pointer";
             }
             chromosomImg.setValue("<img style= 'background-color: " + color + ";' src='VAADIN/themes/webpeptideshakertheme/img/chromosoms/" + (chromosomId) + ".png'>");
-
             chromosomImg.addStyleName(cursor);
             chromosomImg.addStyleName("resizableimg");
             chromosomImg.setDescription(desc);
+
         });
     }
 
-    public void initializeFilterData(Map<String, Set<Integer>> data) {
-        this.fullData = new LinkedHashMap<>();        
-        data.keySet().forEach((key) -> {
-            int chrIndex = -1;
-            try {
-                chrIndex = Integer.parseInt(key);
-            } catch (NumberFormatException ex) {
-                if (key.contains("HSCHR")) {
-                    chrIndex = Integer.parseInt(key.split("HSCHR")[1].split("_")[0].replaceAll("[\\D]", ""));
-                } else if (key.equalsIgnoreCase("X")) {
-                    chrIndex = 23;
-                } else if (key.equalsIgnoreCase("Y")) {
-                    chrIndex = 24;
-                }
-
-            }
-            if(!fullData.containsKey(chrIndex)){
-                fullData.put(chrIndex, new HashSet<>());
-            }
-            fullData.get(chrIndex).addAll(data.get(key));
-        });
-        localResetFilterData();
-
-    }
-     private void localResetFilterData() {
+    private void localResetFilterData(Map<Comparable, Set<Integer>> localMap) {
         filteredData.clear();
-        filteredData.putAll(fullData);
-        appliedFilters.clear();
-        selectedCategories.clear();
+        filteredData.putAll(localMap);
         TreeSet<Integer> treeSet = new TreeSet<>();
-        fullData.keySet().stream().map((key) -> fullData.get(key)).map((set) -> {
+        localMap.keySet().stream().map((key) -> localMap.get(key)).map((set) -> {
             treeSet.add(set.size());
             return set;
         }).forEachOrdered((set) -> {
-            totalItemsNumber += set.size();
         });
         if (colorGenerator != null) {
-            ChromosomesFilter.this.removeComponent(colorGenerator.getColorScale());
+            ChromosomesFilter.this.frame.removeComponent(colorGenerator.getColorScale());
         }
         colorGenerator = new RangeColorGenerator(treeSet.last());
-        frame.addComponent(colorGenerator.getColorScale(), "left:150px;top:12;right:35px");
+        frame.addComponent(colorGenerator.getColorScale(), "left:150px;top:12px;right:35px");
         updateChromosomesLabelsColor();
 
     }
 
     private void selectCategory(Set<Comparable> categoryIds) {
         unselectAll();
-        categoryIds.stream().map((id) -> chromosomessLabelMap.get(Integer.valueOf(id.toString()))).forEachOrdered((chromosomImg) -> {
-            chromosomImg.addStyleName("resizableselectedimg");
-        });
+        if (categoryIds != null) {
+            categoryIds.stream().map((id) -> chromosomessLabelMap.get(Integer.valueOf(id.toString()))).forEachOrdered((chromosomImg) -> {
+                chromosomImg.addStyleName("resizableselectedimg");
+            });
+        }
     }
 
     @Override
     public void updateFilterSelection(Set<Comparable> selectedItems, Set<Comparable> selectedCategories, boolean topFilter, boolean singleProteinsFilter, boolean selfAction) {
-        if (!selfAction) {
-            if (singleProteinsFilter && !selfAction && !selectedCategories.isEmpty()) {
-                //reset filter value to oreginal 
-                localResetFilterData();
-            } else {
-                filteredData.clear();
-                TreeSet<Integer> treeSet = new TreeSet<>();
-                fullData.keySet().forEach((key) -> {
-                    Set<Comparable> set = fullData.get(key);
-                    Set<Comparable> tSet = new LinkedHashSet<>(Sets.intersection(set, selectedItems));
-                    treeSet.add(tSet.size());
-                    filteredData.put(key, tSet);
-                });
-                if (colorGenerator != null) {
-                    frame.removeComponent(colorGenerator.getColorScale());
-                }
-                colorGenerator = new RangeColorGenerator(treeSet.last());
-                frame.addComponent(colorGenerator.getColorScale(), "left:150px;top:12;right:35px");
-                updateChromosomesLabelsColor();
 
-            }
-        }
-        selectCategory(selectedCategories);
-        setMainAppliedFilter(topFilter && !selectedCategories.isEmpty());
     }
 
     private void unselectAll() {
@@ -252,78 +191,6 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
         return filterId;
     }
 
-    public void resetFilter() {
-        filteredData.clear();
-        filteredData.putAll(fullData);
-        selectedCategories.clear();
-        appliedFilters.clear();
-        List<Double> barChartData = new ArrayList<>();
-        fullData.keySet().stream().map((key) -> fullData.get(key).size()).forEachOrdered((size) -> {
-            barChartData.add((double) size);
-        });
-        TreeSet<Double> barChartset = new TreeSet<>(barChartData);
-        double counter = 0;
-        List<Double> updatedBarChartData = new ArrayList<>();
-        for (double linar : barChartData) {
-            double sv = 0;
-            if (linar > 0.0) {
-                sv = scaleValues(linar, barChartset.last(), barChartset.first());
-            }
-            counter += sv;
-            updatedBarChartData.add(sv);
-        }
-        barChartData.clear();
-        for (double log : updatedBarChartData) {
-            barChartData.add((double) ((int) (log * 100.0 / counter)));
-
-        }
-        unselectAll();
-
-    }
-
-    public void applyFilter(String chromosome) {
-        if (activeChromosomes == 1) {
-            return;
-        }
-
-        if (chromosome != null) {
-            if (appliedFilters.contains(chromosome)) {
-                appliedFilters.remove(chromosome);
-            } else {
-                appliedFilters.add(chromosome);
-            }
-        } else {
-            appliedFilters.clear();
-        }
-
-        Selection_Manager.setSelection("dataset_filter_selection", appliedFilters, null, filterId);
-
-    }
-
-    public Set<Comparable> getSelectedData() {
-        if (selectedData.isEmpty()) {
-            selectedData.addAll(filteredData.keySet());
-        }
-        return selectedData;
-    }
-
-    /**
-     * Converts the value from linear scale to log scale. The log scale numbers
-     * are limited by the range of the type float. The linear scale numbers can
-     * be any double value.
-     *
-     * @param linearValue the value to be converted to log scale
-     * @param max         The upper limit number for the input numbers
-     * @param lowerLimit  the lower limit for the input numbers
-     * @return the value in log scale
-     */
-    private double scaleValues(double linearValue, double max, double lowerLimit) {
-        double logMax = (Math.log(max) / Math.log(2));
-        double logValue = (Math.log(linearValue + 1) / Math.log(2));
-        logValue = (logValue * 2 / logMax) + lowerLimit;
-        return Math.min(logValue, max);
-    }
-
     @Override
     public void suspendFilter(boolean suspend) {
     }
@@ -337,4 +204,52 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
         }
 
     }
+
+    @Override
+    public void updateSelection(FilterUpdatingEvent updateEvent) {
+        try {
+            Map<Comparable, Set<Integer>> fullData = new LinkedHashMap<>();
+            updateEvent.getSelectionMap().keySet().forEach((compKey) -> {
+                if ((int) compKey != -1) {
+                    if (!fullData.containsKey(compKey)) {
+                        fullData.put(compKey, new HashSet<>());
+                    }
+                    fullData.get(compKey).addAll(updateEvent.getSelectionMap().get(compKey));
+                }
+            });
+
+            if (updateEvent.getSeletionCategories() != null && updateEvent.getSeletionCategories().containsAll(fullData.keySet())) {
+                reset();
+                return;
+            }
+
+            localResetFilterData(fullData);
+            selectCategory(updateEvent.getSeletionCategories());
+            setMainAppliedFilter(updateEvent.getSeletionCategories() != null && !updateEvent.getSeletionCategories().isEmpty());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void selectCategory(Comparable category) {
+        Set<Comparable> selectionCategories = new LinkedHashSet<>();
+        selectionCategories.add(category);
+        Selection selection = new Selection(CONSTANT.DATASET_SELECTION, filterId, selectionCategories, true);
+        selectionManager.setSelection(selection);
+    }
+
+    private void unSelectCategory(Comparable category) {
+        Set<Comparable> selectionCategories = new LinkedHashSet<>();
+        selectionCategories.add(category);
+        Selection selection = new Selection(CONSTANT.DATASET_SELECTION, filterId, selectionCategories, false);
+        selectionManager.setSelection(selection);
+    }
+
+    private void reset() {
+        Selection selection = new Selection(CONSTANT.DATASET_SELECTION, filterId, null, false);
+        selectionManager.setSelection(selection);
+    }
+
 }

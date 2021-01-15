@@ -1,8 +1,8 @@
-package com.uib.web.peptideshaker.model.core;
+package com.uib.web.peptideshaker.utils;
 
-import com.compomics.util.experiment.biology.modifications.Modification;
 import com.google.common.collect.Sets;
 import com.uib.web.peptideshaker.model.ModificationMatrixModel;
+import com.uib.web.peptideshaker.model.core.AlphanumComparator;
 
 import java.util.*;
 
@@ -16,7 +16,7 @@ public class ModificationMatrixUtilis {
     /**
      * Rows data map.
      */
-    private final Map<String, Integer> rows;
+    private final Map<String, Set<Integer>> rows;
     /**
      * The full calculated matrix.
      */
@@ -38,7 +38,7 @@ public class ModificationMatrixUtilis {
         keySorter = new TreeSet<>();
     }
 
-    public ModificationMatrixModel generateMatrixModel(Map<String, Set<Integer>> data) {
+    public ModificationMatrixModel generateMatrixModel(Map<Comparable, Set<Integer>> data) {
         rows.clear();
         keySorter.clear();
         ModificationMatrixModel model = new ModificationMatrixModel();
@@ -52,7 +52,7 @@ public class ModificationMatrixUtilis {
      *
      * @return map of rows title to number
      */
-    public Map<String, Integer> getRows() {
+    public Map<String, Set<Integer>> getRows() {
         return rows;
     }
 
@@ -71,18 +71,18 @@ public class ModificationMatrixUtilis {
      * @param data map of data rows as keys and columns as set
      * @return calculated matrix
      */
-    private Map<String, Set<Integer>> calculateMatrix(Map<String, Set<Integer>> data) {
+    private Map<Comparable, Set<Integer>> calculateMatrix(Map<Comparable, Set<Integer>> data) {
         //calculate matrix
         Map<String, Set<Integer>> matrixData = new LinkedHashMap<>();
         TreeMap<AlphanumComparator, String> sortingMap = new TreeMap<>(Collections.reverseOrder());
         data.keySet().forEach((key) -> {
             AlphanumComparator sortingKey = new AlphanumComparator(data.get(key).size() + "_" + key);
-            sortingMap.put(sortingKey, key);
+            sortingMap.put(sortingKey, key + "");
         });
         Map<String, Set<Integer>> sortedData = new LinkedHashMap<>();
         sortingMap.values().stream().map((key) -> {
-            int size = data.get(key).size();
-            this.rows.put(key, size);
+//            int size = data.get(key).size();
+            this.rows.put(key, data.get(key));
             return key;
         }).forEachOrdered((key) -> {
             sortedData.put(key, data.get(key));
@@ -175,10 +175,11 @@ public class ModificationMatrixUtilis {
             sortingKeyColumnsMap.put(sortKey, key);
         });
         tempMatrixData.clear();
+        Map<Comparable, Set<Integer>> matrixComparableData = new LinkedHashMap<>();
         sortingKeyColumnsMap.values().forEach((key) -> {
-            tempMatrixData.put(key, matrixData.get(key));
+            matrixComparableData.put(key, matrixData.get(key));
         });
-        return tempMatrixData;
+        return matrixComparableData;
     }
 
 }

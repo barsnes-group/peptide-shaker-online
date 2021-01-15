@@ -281,7 +281,7 @@
                     "type": "tabular"
                 },
                 {
-                    "name": "output_proteins",
+                    "name": "output_proteins_nonvalidated",
                     "type": "tabular"
                 }
             ],
@@ -312,7 +312,7 @@
                 "owner": "carlosh",
                 "tool_shed": "testtoolshed.g2.bx.psu.edu"
             },
-            "tool_state": {"exporting_options": {"zip_conditional": {"zip_output_boolean": true, "__current_case__": 1, "export_reports_when_zip": true, "export_mgf_when_zip": "true"}, "mzidentml_conditional": {"mzidentml_creation": false, "__current_case__": 1}, "followup_conditional": {"followup_conditional_selector": "yes", "__current_case__": 1, "followup_export_spectra": "off", "followup_export_accession_numbers": "off", "followup_export_sequences": "off", "followup_export_proteoforms": "on", "followup_export_progenesis_conditional": {"followup_export_progenesis_selector": "off", "__current_case__": 4}, "followup_export_inclusion_list_conditional": {"followup_export_inclusion_list_selector": "off", "__current_case__": 4}}, "output_reports": ["4", "7", "9"]}, "optional_main_parameters": {"input_optional_identification_parameters": {"__class__": "RuntimeValue"}, "input_fasta_file": {"__class__": "RuntimeValue"}, "input_optional_spectrum_files": {"__class__": "RuntimeValue"}}, "searchgui_input": {"__class__": "ConnectedValue"}, "__page__": null, "__rerun_remap_job_id__": null},
+            "tool_state": {"exporting_options": {"zip_conditional": {"zip_output_boolean": true, "__current_case__": 1, "export_reports_when_zip": true, "export_mgf_when_zip": "true"}, "mzidentml_conditional": {"mzidentml_creation": false, "__current_case__": 1}, "followup_conditional": {"followup_conditional_selector": "yes", "__current_case__": 1, "followup_export_spectra": "off", "followup_export_accession_numbers": "off", "followup_export_sequences": "off", "followup_export_proteoforms": "on", "followup_export_progenesis_conditional": {"followup_export_progenesis_selector": "off", "__current_case__": 4}, "followup_export_inclusion_list_conditional": {"followup_export_inclusion_list_selector": "off", "__current_case__": 4}}, "output_reports": ["4", "7", "10"]}, "optional_main_parameters": {"input_optional_identification_parameters": {"__class__": "RuntimeValue"}, "input_fasta_file": {"__class__": "RuntimeValue"}, "input_optional_spectrum_files": {"__class__": "RuntimeValue"}}, "searchgui_input": {"__class__": "ConnectedValue"}, "__page__": null, "__rerun_remap_job_id__": null},
             "tool_version": "2.0.5.0",
             "type": "tool",
             "uuid": "701d1ce0-8c75-48af-a551-8cad7a14a675",
@@ -324,7 +324,7 @@
                 },
                 {
                     "label": null,
-                    "output_name": "output_proteins",
+                    "output_name": "output_proteins_nonvalidated",
                     "uuid": "540b9c81-83d6-4cb4-8152-20f98fcf7923"
                 },
                 {
