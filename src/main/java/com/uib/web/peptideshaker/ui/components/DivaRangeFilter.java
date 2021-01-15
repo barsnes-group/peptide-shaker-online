@@ -331,12 +331,12 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
 
     @Override
     public void suspendFilter(boolean suspendFilter) {
-            Label noquant = new Label("<center> No data available </center>", ContentMode.HTML);
-            noquant.setSizeFull();
-            noquant.setStyleName("noquantlabel");
-            this.removeAllComponents();
-            this.addComponent(noquant);
-        
+        Label noquant = new Label("<center> No data available </center>", ContentMode.HTML);
+        noquant.setSizeFull();
+        noquant.setStyleName("noquantlabel");
+        this.removeAllComponents();
+        this.addComponent(noquant);
+
     }
 
     private void setMainAppliedFilter(boolean mainAppliedFilter) {
@@ -351,7 +351,6 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
 
     @Override
     public void updateSelection(FilterUpdatingEvent event) {
-        System.out.println("at event "+event.getSelectionMap().size()+ "  "+filterId);
         activeData.clear();
         try {
 
@@ -374,11 +373,11 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
                 return;
             }
             double min = 0.0;//Double.valueOf(data.firstKey() + "");
-            if (sign.equalsIgnoreCase("")) {
+//            if (sign.equalsIgnoreCase("")) {
                 maxValue = Double.valueOf(activeData.lastKey().toString());
-            } else {
-                maxValue = 100.0;
-            }
+//            } else {
+//                maxValue = 100.0;
+//            }
             upperRangeSlider.removeValueChangeListener(DivaRangeFilter.this);
             lowerRangeSlider.removeValueChangeListener(DivaRangeFilter.this);
             lowerRangeSlider.setMin(min);
@@ -410,6 +409,8 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
                 chartImage.setValue(saveToFile(mainChart, chartWidth, chartHeight));
                 UI.getCurrent().push();
             });
+            upperRangeSlider.setVisible(!(activeData.size() == 1));
+            lowerRangeSlider.setVisible(!(activeData.size() == 1));
 
         } catch (Exception e) {
             e.printStackTrace();

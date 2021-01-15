@@ -156,7 +156,6 @@ public class DatasetProteinsSubViewComponent extends AbsoluteLayout implements R
         SearchableTable table = new SearchableTable("Proteins", "Accession or protein name", tableHeaders) {
             @Override
             public void itemSelected(Object itemId) {
-                System.out.println("at selected id " + itemId);
                 appManagmentBean.getUI_Manager().setSelectedProteinIndex((int) itemId);
 
             }

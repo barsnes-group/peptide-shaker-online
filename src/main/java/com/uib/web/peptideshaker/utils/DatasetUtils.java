@@ -843,8 +843,6 @@ public class DatasetUtils implements Serializable {
                         topValue2 = uniquePeptidesInteinsity;
                     }
                 }
-            } else {
-                System.out.println("no peptide for protein group " + proteinObject.getProteinGroupKey());
             }
         }
         proteinAllIntensityColorGenerator = new RangeColorGenerator(topValue);
