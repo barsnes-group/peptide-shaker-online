@@ -54,6 +54,7 @@ public class AppManagmentBean implements Serializable {
     private CoreUtils coreUtils;
     private ScheduledExecutorService scheduler;
     private Set<ScheduledFuture> scheduledFutureSet;
+    private boolean availableGalaxy=false;
 
     public SelectionManager getSelectionManager() {
         if (selectionManager == null) {
@@ -189,6 +190,14 @@ public class AppManagmentBean implements Serializable {
         scheduler = null;
         scheduledFutureSet = null;
 
+    }
+
+    public boolean isAvailableGalaxy() {
+        return availableGalaxy;
+    }
+
+    public void setAvailableGalaxy(boolean availableGalaxy) {
+        this.availableGalaxy = availableGalaxy;
     }
 
 }

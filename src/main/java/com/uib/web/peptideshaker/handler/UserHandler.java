@@ -7,7 +7,10 @@ import com.uib.web.peptideshaker.model.GalaxyFileModel;
 import com.uib.web.peptideshaker.model.VisualizationDatasetModel;
 import com.vaadin.server.VaadinSession;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,12 +64,25 @@ public class UserHandler implements Serializable {
     }
 
     public void setUserLoggedIn(String userAPIKey, String userId) {
-        appManagmentBean.getAppConfig().setUserFolderUri(userId);
-        this.loggedinUserAPIKey = userAPIKey;
-        this.loggedinUserId = userId;
-        this.filesToViewList = new TreeSet<>();
-        appManagmentBean.getGalaxyFacad().initialPeptideShakerUserHistory(loggedinUserAPIKey);
-        synchronizeWithGalaxyHistory();
+        if (appManagmentBean.isAvailableGalaxy()) {
+            appManagmentBean.getAppConfig().setUserFolderUri(userId);
+            this.loggedinUserAPIKey = userAPIKey;
+            this.loggedinUserId = userId;
+            this.filesToViewList = new TreeSet<>();
+            appManagmentBean.getGalaxyFacad().initialPeptideShakerUserHistory(loggedinUserAPIKey);
+            synchronizeWithGalaxyHistory();
+        } else {
+            userId = VaadinSession.getCurrent().getSession().getId();
+             appManagmentBean.getAppConfig().setUserFolderUri(userId);
+            this.loggedinUserAPIKey = userAPIKey;
+            this.loggedinUserId = userId;
+            this.filesToViewList = new TreeSet<>();            
+            this.filesMap = new LinkedHashMap<>();
+            this.collectionList = new ArrayList<>();
+            this.userInformationMap = new HashMap<>();
+            this.userInformationMap.put(CONSTANT.USERNAME, "Offine User");
+            this.userInformationMap.put(CONSTANT.STORAGE, CONSTANT.NO_INFORMATION);
+        }
         this.datasetSet = constructDatasets();
     }
 
@@ -328,7 +344,7 @@ public class UserHandler implements Serializable {
 
     }
 
-    public VisualizationDatasetModel getDataset(String datasetId){
+    public VisualizationDatasetModel getDataset(String datasetId) {
         for (VisualizationDatasetModel dataset : datasetSet) {
             if (dataset.getId().equalsIgnoreCase(datasetId)) {
                 return dataset;

@@ -28,9 +28,6 @@ public class AppController {
     /**
      * The Main data access layer that deal with the system files and data.
      */
-    private ModelLayer Model_Layer;
-    private Future uiExecutorFuture;
-    private boolean availableGalaxyServer;
     private final AppManagmentBean appManagmentBean;
 
     /**
@@ -44,34 +41,34 @@ public class AppController {
          */
         appManagmentBean.getNotificationFacade().showGalaxyConnectingProcess(CONSTANT.PUBLIC_USER_CAPTION);
         String userId = appManagmentBean.getGalaxyFacad().authenticate(appManagmentBean.getAppConfig().getTestUserAPIKey());
-        availableGalaxyServer = (userId != null);
-        if (availableGalaxyServer) {
+       
+//        if (appManagmentBean.isAvailableGalaxy()) {
             appManagmentBean.getUserHandler().setUserLoggedIn(appManagmentBean.getAppConfig().getTestUserAPIKey(), userId);
-        }
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
-//        modelFuture = executorService.submit(() -> {
-//            Model_Layer = new ModelLayer(authUserLogin) {
-//                @Override
-//                public void viewDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
-//                    try {
-//                        while (!presenterFuture.isDone()) {
-//                        }
-//                        Presenter_layer.viewDataset(peptideShakerVisualizationDataset);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                
-//                @Override
-//                public void updatePresenter(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
-//                    while (!presenterFuture.isDone()) {
-//                    }
-//                    Presenter_layer.updatePresenter(tempHistoryFilesMap, historyFilesMap, jobsInProgress);
-//                }
-//            };
-//        });
-        uiExecutorFuture = executorService.submit(() -> {
-            uiHandler = new UIHandler(availableGalaxyServer) {
+//        }
+//        ExecutorService executorService = Executors.newFixedThreadPool(2);
+////        modelFuture = executorService.submit(() -> {
+////            Model_Layer = new ModelLayer(authUserLogin) {
+////                @Override
+////                public void viewDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
+////                    try {
+////                        while (!presenterFuture.isDone()) {
+////                        }
+////                        Presenter_layer.viewDataset(peptideShakerVisualizationDataset);
+////                    } catch (Exception e) {
+////                        e.printStackTrace();
+////                    }
+////                }
+////                
+////                @Override
+////                public void updatePresenter(Map<String, GalaxyFileObject> tempHistoryFilesMap, Map<String, GalaxyFileObject> historyFilesMap, boolean jobsInProgress) {
+////                    while (!presenterFuture.isDone()) {
+////                    }
+////                    Presenter_layer.updatePresenter(tempHistoryFilesMap, historyFilesMap, jobsInProgress);
+////                }
+////            };
+////        });
+//        uiExecutorFuture = executorService.submit(() -> {
+            uiHandler = new UIHandler() {
                 @Override
                 public List<String> connectToGalaxyServer(String galaxyServerUrl, String userAPI, String userDataFolderUrl) {
 //                    while (!modelFuture.isDone()) {
@@ -155,14 +152,12 @@ public class AppController {
                 }
 
             };
-        });
+//        });
         this.updateALLUI();
         appManagmentBean.getNotificationFacade().hideGalaxyConnectingProcess();
     }
 
-    private void updateALLUI() {
-        while (!uiExecutorFuture.isDone()) {
-        }
+    private void updateALLUI() {       
         appManagmentBean.getUI_Manager().updateAll();
         
     }
@@ -172,18 +167,14 @@ public class AppController {
      *
      * @return main user interface container
      */
-    public UIContainer getApplicationUserInterface() {
-        while (!uiExecutorFuture.isDone()) {
-        }
+    public UIContainer getApplicationUserInterface() {        
         return uiHandler.getUiContainer();
     }
 
    
 
     public void retriveToShareDataset() {
-        while (!uiExecutorFuture.isDone()) {
-        }
-        if (availableGalaxyServer) {
+        if (appManagmentBean.isAvailableGalaxy()) {
             uiHandler.retriveToShareDataset();
         }
 

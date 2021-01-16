@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Yehia Mokhtar Farag
  */
-@Push(transport=Transport.LONG_POLLING)
+@Push(transport = Transport.LONG_POLLING)
 @Theme("webpeptideshakertheme")
 @JavaScript({"../../VAADIN/js/venn.js", "../../VAADIN/js/myD3library.js", "../../VAADIN/js/myD3component-connector.js", "../../VAADIN/js/d3.v5.min.js", "../../VAADIN/litemol/js/LiteMol-plugin.js", "../../VAADIN/litemol/js/mylitemol-connector.js", "../../VAADIN/litemol/js/mylitemollibrary.js", "../../VAADIN/litemol/js/LiteMol-example.js?lmversion=1518789385303", "https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.touch/1.1.0/jquery.touch.min.js", "../../VAADIN/js/mylibrary.js", "../../VAADIN/js/mycomponent-connector.js", "https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.touch/1.1.0/jquery.touch.min.js", "../../VAADIN/js/mylibrary2.js", "../../VAADIN/js/mycomponent-connector2.js", "../../VAADIN/js/jquery.mousewheel.js"})
 public class PeptidShakerEntryPoint extends UI {
@@ -47,7 +47,9 @@ public class PeptidShakerEntryPoint extends UI {
     protected void init(VaadinRequest vaadinRequest) {
         AppManagmentBean oldManager = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
         if (oldManager != null) {
-            oldManager.getUserHandler().clearHistory();
+            if (oldManager.getUserHandler() != null) {
+                oldManager.getUserHandler().clearHistory();
+            }
             VaadinSession.getCurrent().close();
             Page.getCurrent().reload();
             return;
@@ -85,6 +87,7 @@ public class PeptidShakerEntryPoint extends UI {
                 return;
             }
         } catch (IllegalArgumentException | NullPointerException e) {
+            e.printStackTrace();
             System.err.println("Error UI Class : " + e);
         }
 

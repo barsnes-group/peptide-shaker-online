@@ -37,16 +37,17 @@ public abstract class UIHandler {
      *
      * @param availableGalaxyServer galaxy server available online
      */
-    public UIHandler(boolean availableGalaxyServer) {
+    public UIHandler() {
         appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
-
-        this.uiContainer = new UIContainer(availableGalaxyServer);
+        this.uiContainer = new UIContainer();
         UI.getCurrent().setContent(uiContainer);
-        appManagmentBean.getUI_Manager().registerView(uiContainer.getWorkflowInvokingView());
+        if (appManagmentBean.isAvailableGalaxy()) {
+            appManagmentBean.getUI_Manager().registerView(uiContainer.getWorkflowInvokingView());
+        }
         appManagmentBean.getUI_Manager().registerView(uiContainer.getWelcomePageView());//     
         appManagmentBean.getUI_Manager().registerView(uiContainer.getFileSystemView());
         appManagmentBean.getUI_Manager().registerView(uiContainer.getResultsView());
-        appManagmentBean.getUI_Manager().viewLayout(FileSystemView.class.getName());
+//        appManagmentBean.getUI_Manager().viewLayout(FileSystemView.class.getName());
 
     }
 

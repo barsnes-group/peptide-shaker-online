@@ -9,6 +9,7 @@ import com.vaadin.server.VaadinSession;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import java.io.Serializable;
+import java.net.ConnectException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,12 +39,16 @@ public class GalaxyFacade implements Serializable {
     }
 
     public String authenticate(String userAPIKey) {
-
-        Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/users/?key=" + userAPIKey);
-        if (response.getStatus() == HttpStatus.SC_OK) {
-            JsonArray jsonArray = new JsonArray(response.readEntity(String.class));
-            this.galaxyJobs.clear();
-            return jsonArray.getJsonObject(0).getString(CONSTANT.ID);
+        try {
+            Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/users/?key=" + userAPIKey);
+            if (response.getStatus() == HttpStatus.SC_OK) {
+                JsonArray jsonArray = new JsonArray(response.readEntity(String.class));
+                this.galaxyJobs.clear();
+                return jsonArray.getJsonObject(0).getString(CONSTANT.ID);
+            }
+            appManagmentBean.setAvailableGalaxy(true);
+        } catch (Exception e) {
+           
         }
         return null;
     }
@@ -212,7 +217,7 @@ public class GalaxyFacade implements Serializable {
         Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/jobs/" + jobId + "?key=" + userAPIKey);
         GalaxyJobModel jobModel = new GalaxyJobModel();
         if (response.getStatus() == HttpStatus.SC_OK) {
-            
+
             JsonObject jsonObject = new JsonObject(response.readEntity(String.class));
             jobModel.setId(jobId);
             jobModel.setToolId(jsonObject.getString(CONSTANT.TOOL_ID));
@@ -297,23 +302,29 @@ public class GalaxyFacade implements Serializable {
     }
 
     public boolean isHistoryBusy(String userAPIKey) {
-        Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/histories?key=" + userAPIKey);
-        if (response.getStatus() != HttpStatus.SC_OK) {
-            appManagmentBean.getNotificationFacade().showErrorNotification("Error connecting to galaxy server");
-            return false;
-        }
-        JsonArray histories = new JsonArray(response.readEntity(String.class));
-        for (int i = 0; i < histories.size(); i++) {
-            response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/histories/" + histories.getJsonObject(i).getString(CONSTANT.ID) + "?key=" + userAPIKey);
+        try {
+            Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/histories?key=" + userAPIKey);
             if (response.getStatus() != HttpStatus.SC_OK) {
                 appManagmentBean.getNotificationFacade().showErrorNotification("Error connecting to galaxy server");
                 return false;
             }
-            JsonObject history = new JsonObject(response.readEntity(String.class)); 
-            if (!history.getString(CONSTANT.STATE).equals(CONSTANT.OK_STATUS)&&!(history.getString(CONSTANT.STATE).equals(CONSTANT.NEW_STATUS)&&history.getLong(CONSTANT.SIZE)==0)) {
-                return true;
-            }
 
+            JsonArray histories = new JsonArray(response.readEntity(String.class));
+            for (int i = 0; i < histories.size(); i++) {
+                response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/histories/" + histories.getJsonObject(i).getString(CONSTANT.ID) + "?key=" + userAPIKey);
+                if (response.getStatus() != HttpStatus.SC_OK) {
+                    appManagmentBean.getNotificationFacade().showErrorNotification("Error connecting to galaxy server");
+                    return false;
+                }
+                JsonObject history = new JsonObject(response.readEntity(String.class));
+                if (!history.getString(CONSTANT.STATE).equals(CONSTANT.OK_STATUS) && !(history.getString(CONSTANT.STATE).equals(CONSTANT.NEW_STATUS) && history.getLong(CONSTANT.SIZE) == 0)) {
+                    return true;
+                }
+
+            }
+        } catch (Exception ex) {
+            appManagmentBean.getNotificationFacade().showErrorNotification("Error connecting to galaxy server");
+            ex.printStackTrace();
         }
         return false;
     }

@@ -61,7 +61,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
      *
      * @param availableGalaxy galaxy server is available
      */
-    public WelcomePageView(boolean availableGalaxy) {
+    public WelcomePageView() {
         appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
         WelcomePageView.this.setSizeFull();
         WelcomePageView.this.addStyleName("welcomepagestyle");
@@ -81,7 +81,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         mainHeaderPanel.setMargin(new MarginInfo(false, false, false, false));
 
         galaxyLoginBtn = new GalaxyLoginPopup();
-        galaxyLoginBtn.setEnabled(availableGalaxy);
+        galaxyLoginBtn.setEnabled(appManagmentBean.isAvailableGalaxy());
 
         HorizontalLayout mainMiddlePanel = new HorizontalLayout();
         mainMiddlePanel.addStyleName("welcomepagebody");
@@ -270,6 +270,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         workflowViewButton.setData(WorkflowInvokingView.class.getName());
         workflowViewButton.updateIconResource(new ThemeResource("img/searchguiblue.png"));//img/workflow3.png
         workflowViewButton.addStyleName("searchguiicon");
+        workflowViewButton.setEnabled(appManagmentBean.isAvailableGalaxy());
         workflowViewButton.addLayoutClickListener(listener);
         viewBtnsContainer.addComponent(workflowViewButton, "left:0%;top:0%;");
         /**
@@ -296,7 +297,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         viewBtnsContainer.addComponent(resultsViewBtn, "left:50%;top:0%;");
         resultsViewBtn.addLayoutClickListener(listener);
         viewsControlButtonsLayout.addComponent(viewBtnsContainer);
-        if (availableGalaxy) {
+        if (appManagmentBean.isAvailableGalaxy()) {
             galaxyLoginBtn.setDescription("Login to Galaxy - API key required");
         } else {
             galaxyLoginBtn.setDescription("Galaxy server is not available");

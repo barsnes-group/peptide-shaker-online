@@ -76,7 +76,7 @@ public class UIContainer extends AbsoluteLayout {
      *
      * @param availableGalaxyServer galaxy server is available online
      */
-    public UIContainer(boolean availableGalaxyServer) {
+    public UIContainer() {
         UIContainer.this.setSizeFull();
 //        UIContainer.this.setMargin(new MarginInfo(true, true, true, true));
         UIContainer.this.addStyleName("mainapplicationframe");
@@ -122,65 +122,29 @@ public class UIContainer extends AbsoluteLayout {
         /**
          * landing page initialization.
          */
-        welcomePageView = new WelcomePageView(availableGalaxyServer);
+        welcomePageView = new WelcomePageView();
         UIContainer.this.addComponent(welcomePageView, "left:0px");
 
-//        
+        
         workflowInvokingView = new WorkflowInvokingView();
         UIContainer.this.addComponent(workflowInvokingView, "left:0px");
+        
         fileSystemView = new FileSystemView();
         UIContainer.this.addComponent(fileSystemView, "left:0px");
 //
         resultsView = new ResultsView(false);
         UIContainer.this.addComponent(resultsView, "left:0px");
-//
-//        this.uploadedProjectUtility = new UploadedProjectUtility() {
-//            @Override
-//            public void viewUploadedProjectDataset(PeptideShakerVisualizationDataset peptideShakerVisualizationDataset) {
-//                String apiKey = VaadinSession.getCurrent().getAttribute("ApiKey") + "";
-//                ((LinkedHashMap<String, GalaxyFileObject>) VaadinSession.getCurrent().getAttribute("uploaded_projects_" + apiKey)).put(peptideShakerVisualizationDataset.getProjectName(), peptideShakerVisualizationDataset);
-//                Map<String, GalaxyFileObject> historyFilesMap = new LinkedHashMap<>();
-//                historyFilesMap.put(peptideShakerVisualizationDataset.getProjectName(), peptideShakerVisualizationDataset);
-//                historyFilesMap.putAll(fileSystemView.getHistoryFilesMap());
-//                fileSystemView.updateData(historyFilesMap, fileSystemView.isJobInProgress(),peptideShakerVisualizationDataset.getGalaxyId());
-//                resultsView.setSelectedDataset(peptideShakerVisualizationDataset);
-////                viewLayout(resultsView.getViewId());
-//            }
-//
-//        };
+
 
     }
 
-    public void loginAsGuest() {
-//        welcomePageView.loginAsGuest();
-    }
 
     public void retriveToShareDataset() {
 //        welcomePageView.retriveToShareDataset();
 
     }
 
-//    public HorizontalLayout getMainComponentContainer() {
-//        return mainComponentContainer;
-//    }
-//
-//    public AbsoluteLayout getSubViewButtonsActionContainer() {
-//        return subViewButtonsActionContainer;
-//    }
-//
-//    public AbsoluteLayout getTopMiddleLayoutContainer() {
-//        return topMiddleLayoutContainer;
-//    }
-//
-//    public VerticalLayout getMiddleLayoutContainer() {
-//        return middleLayoutContainer;
-//    }
-//    public AbsoluteLayout getPresenterButtonsContainerLayout() {
-//        return new AbsoluteLayout();// presenterButtonsContainerLayout;
-//    }
-//    public Button getSignOutBtn() {
-//        return signOutBtn;
-//    }
+
     public ResultsView getResultsView() {
         return resultsView;
     }
