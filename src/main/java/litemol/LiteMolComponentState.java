@@ -2,6 +2,7 @@
 package litemol;
 
 import com.vaadin.shared.ui.JavaScriptComponentState;
+import io.vertx.core.json.JsonObject;
 
 /**
  * @author y-mok

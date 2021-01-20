@@ -2,16 +2,19 @@ package com.uib.web.peptideshaker;
 
 import com.uib.web.peptideshaker.listeners.VaadinSessionControlListener;
 import com.uib.web.peptideshaker.model.CONSTANT;
+import com.uib.web.peptideshaker.ui.views.subviews.proteinsview.Protein3DStructureView;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.*;
-import com.vaadin.shared.communication.PushMode;
 import com.vaadin.shared.ui.ui.Transport;
+import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.UI;
 import java.io.IOException;
 import java.util.ConcurrentModificationException;
+import java.util.HashSet;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.ServletConfig;
@@ -47,13 +50,38 @@ public class PeptidShakerEntryPoint extends UI {
     protected void init(VaadinRequest vaadinRequest) {
         AppManagmentBean oldManager = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
         if (oldManager != null) {
-            if (oldManager.getUserHandler() != null) {
+            if (oldManager.getUserHandler() != null && oldManager.isAvailableGalaxy()) {
                 oldManager.getUserHandler().clearHistory();
             }
             VaadinSession.getCurrent().close();
             Page.getCurrent().reload();
             return;
         }
+        if (false) {
+            AbsoluteLayout frame = new AbsoluteLayout();
+            frame.setWidth(500, Unit.PIXELS);
+            frame.setHeight(500, Unit.PIXELS);
+            this.setContent(frame);
+            AbsoluteLayout container = new AbsoluteLayout();
+            container.setStyleName("transitionallayout");
+            container.setWidth(500, Unit.PIXELS);
+            container.setHeight(500, Unit.PIXELS);
+            frame.addComponent(container);
+
+            Protein3DStructureView prot3dTest = new Protein3DStructureView();
+            String seq = "MKLSLVAAMLLLLSAARAEEEDKKEDVGTVVGIDLGTTYSCVGVFKNGRVEIIANDQGNRITPSYVAFTPEGERLIGDAAKNQLTSNPENTVFDAKRLIGRTWNDPSVQQDIKFLPFKVVEKKTKPYIQVDIGGGQTKTFAPEEISAMVLTKMKETAEAYLGKKVTHAVVTVPAYFNDAQRQATKDAGTIAGLNVMRIINEPTAAAIAYGLDKREGEKNILVFDLGGGTFDVSLLTIDNGVFEVVATNGDTHLGGEDFDQRVMEHFIKLYKKKTGKDVRKDNRAVQKLRREVEKAKRALSSQHQARIEIESFYEGEDFSETLTRAKFEELNMDLFRSTMKPVQKVLEDSDLKKSDIDEIVLVGGSTRIPKIQQLVKEFFNGKEPSRGINPDEAVAYGAAVQAGVLSGDQDTGDLVLLDVCPLTLGIETVGGVMTKLIPRNTVVPTKKSQIFSTASDNQPTVTIKVYEGERPLTKDNHLLGTFDLTGIPPAPRGVPQIEVTFEIDVNGILRVTAEDKGTGNKNKITITNDQNRLTPEEIERMVNDAEKFAEEDKKLKERIDTRNELESYAYSLKNQIGDKEKLGGKLSSEDKETMEKAVEEKIEWLESHQDADIEDFKAKKKELEEIVQPIISKLYGSAGPPPTGEEDTAEKDEL";
+
+            container.addComponent(prot3dTest);
+            prot3dTest.setSizeFull();
+            frame.addLayoutClickListener((LayoutEvents.LayoutClickEvent event) -> {
+                prot3dTest.updatePanel("P11021", seq, new HashSet<>());
+            });
+            prot3dTest.activate3DProteinView();
+           prot3dTest.setMode(2);
+
+            return;
+        }
+
         appManagmentBean = new AppManagmentBean();
         VaadinSession.getCurrent().setAttribute(CONSTANT.APP_MANAGMENT_BEAN, appManagmentBean);
 

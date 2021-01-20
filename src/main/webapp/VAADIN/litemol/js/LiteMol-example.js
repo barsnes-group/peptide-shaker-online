@@ -931,6 +931,7 @@ var LiteMol;
  */
 var LiteMolPluginInstance;
 (function (LiteMolPluginInstance) {
+    
     var CustomTheme;
     (function (CustomTheme) {
         var Core = LiteMol.Core;
@@ -1008,6 +1009,7 @@ var LiteMolPluginInstance;
 
         CustomTheme.applyTheme = applyTheme;
     })(CustomTheme = LiteMolPluginInstance.CustomTheme || (LiteMolPluginInstance.CustomTheme = {}));
+
 })(LiteMolPluginInstance || (LiteMolPluginInstance = {}));
 /*
  * Copyright (c) 2016 - now David Sehnal, licensed under Apache 2.0, See LICENSE file for more info.

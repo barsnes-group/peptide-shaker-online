@@ -23,6 +23,7 @@ public class ViewActionButtonsComponent extends AbsoluteLayout implements Layout
 
     private final Map<String, SmallSideBtn> buttonsMap;
     private AppManagmentBean appManagmentBean;
+    private final SmallSideBtn searchGUIPSWorkflowViewButton;
 
     public ViewActionButtonsComponent() {
 
@@ -30,7 +31,7 @@ public class ViewActionButtonsComponent extends AbsoluteLayout implements Layout
         ViewActionButtonsComponent.this.setWidth(102, Unit.PIXELS);
         ViewActionButtonsComponent.this.setHeight(100, Unit.PIXELS);
         ViewActionButtonsComponent.this.setStyleName("viewbuttonsactioncontainer");
-        SmallSideBtn searchGUIPSWorkflowViewButton = new SmallSideBtn("img/searchguiblue.png");//spectra2.pngimg/searchgui-medium-shadow-2.png
+        searchGUIPSWorkflowViewButton = new SmallSideBtn("img/searchguiblue.png");//spectra2.pngimg/searchgui-medium-shadow-2.png
         searchGUIPSWorkflowViewButton.setData(WorkflowInvokingView.class.getName());
         searchGUIPSWorkflowViewButton.setDescription("Search and process data (SearchGUI and PeptideShaker)");
         searchGUIPSWorkflowViewButton.addStyleName("smalltoolsbtn");
@@ -77,9 +78,15 @@ public class ViewActionButtonsComponent extends AbsoluteLayout implements Layout
     @Override
     public void layoutClick(LayoutEvents.LayoutClickEvent event) {
         String buttonId = ((SmallSideBtn) event.getComponent()).getData() + "";
-         if (appManagmentBean == null) {
+        if (appManagmentBean == null) {
             this.appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
+            if (!appManagmentBean.isAvailableGalaxy()) {
+                searchGUIPSWorkflowViewButton.setEnabled(false);
+                if(buttonId.equals(WorkflowInvokingView.class.getName()))
+                    return;
+            }
         }
+
         appManagmentBean.getUI_Manager().viewLayout(buttonId);
     }
 }

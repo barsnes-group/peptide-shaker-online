@@ -43,6 +43,7 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
     public ProteinPeptidesSubView() {
         this.appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
         ProteinPeptidesSubView.this.setSizeFull();
+        ProteinPeptidesSubView.this.setStyleName("transitionallayout");
 
         container = new AbsoluteLayout();
         container.setSizeFull();
@@ -99,7 +100,7 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
                 if (isProteform) {
                     return;
                 }
-                if (selectedItems.size() == 1) {
+                if (selectedItems.size() == 1 && protein!=null) {
 //                    ProteinGroupObject protein = this.getProteinNodes().get((String) selectedItems.iterator().next());
 //                    proteinPeptides = new LinkedHashMap<>();
 //                    this.getPeptidesNodes().values().stream().filter((peptide) -> (peptide.getProteinsSet().contains(protein.getAccession()))).forEachOrdered((peptide) -> {
@@ -247,6 +248,7 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
             appManagmentBean.getUI_Manager().setEncodedProteinButtonImage("null");
             return;
         }
+        protein3DStructureView.setMode(4);
         if (appManagmentBean.getUI_Manager().getSelectedProteinIndex() != lastSelectedProteinIndex) {
             lastSelectedProteinIndex = appManagmentBean.getUI_Manager().getSelectedProteinIndex();
             String selectedDatasetId = appManagmentBean.getUI_Manager().getSelectedDatasetId();
@@ -255,53 +257,14 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
             if (!dataset.getProteinsGraphDataMap().containsKey(selectedProteinObject.getAccession())) {
                 Object[] graphData = appManagmentBean.getDatasetUtils().initialiseProteinGraphData(selectedDatasetId, lastSelectedProteinIndex);
                 Map<String, ProteinGroupObject> proteinNodes = (Map<String, ProteinGroupObject>) graphData[1];
-                for (String accession : proteinNodes.keySet()) {
+                proteinNodes.keySet().forEach((accession) -> {                  
                     dataset.addProteinGraphData(accession, graphData);
-                }
+                });
             }
             Object[] graphData = dataset.getProteinsGraphDataMap().get(selectedProteinObject.getAccession());
             ProteinCoverageView.updateData(graphData, dataset.getDatasetType().equals(CONSTANT.QUANT_DATASET));
             appManagmentBean.getUI_Manager().setEncodedProteinButtonImage(graphsContainerComponent.updateGraphData(graphData, dataset.getDatasetType().equals(CONSTANT.QUANT_DATASET)));
-
-//            appManagmentBean.getUI_Manager().setEncodedProteinButtonImage("Kokowawa protein image");
-            //        edges.clear();
-//        if (peptideShakerVisualizationDataset == null || selectedProteinId == null || selectedProteinId.trim().equalsIgnoreCase("null") || peptideShakerVisualizationDataset.getProtein(selectedProteinId) == null) {
-//            graphComponent.updateGraphData(null, null, null, null, null, peptideShakerVisualizationDataset.isQuantDataset(), null);
-//            thumbURL = null;
-//            return thumbURL;
-//        }
-//        ProteinGroupObject protein = peptideShakerVisualizationDataset.getProtein(selectedProteinId);
-//        peptides.addAll(peptideShakerVisualizationDataset.getPeptides(selectedProteinId));
-//        Set<String> tunrelatedProt = new LinkedHashSet<>();
-//        maxPsms = 0;
-//        peptides.stream().map((peptide) -> {
-//            if (peptide.isModified() && peptide.getVariableModificationsAsString().contains("0") && peptide.getSequence().startsWith("NH2")) {
-//                peptide.setModifiedSequence(peptide.getModifiedSequence().replaceFirst("NH2", "pyro"));
-//            }
-//            peptidesNodes.put(peptide.getModifiedSequence(), peptide);
-//            maxPsms = Math.max(maxPsms, peptide.getPSMsNumber());
-//            return peptide;
-//        }).forEachOrdered((peptide) -> {
-//            ArrayList<String> tEd = new ArrayList<>();
-//            peptide.getProteinsSet().stream().map((acc) -> {
-//                tEd.add(acc);
-//                return acc;
-//            }).filter((acc) -> (!proteinNodes.containsKey(acc))).forEachOrdered((acc) -> {
-//                tunrelatedProt.add(acc);
-//            });
-//            edges.put(peptide.getModifiedSequence(), tEd);
-//        });
-//        tunrelatedProt.forEach((unrelated) -> {
-//            fillUnrelatedProteinsAndPeptides(unrelated, peptideShakerVisualizationDataset.getProtein(unrelated));
-//        });
-//        proteinNodes.putAll(unrelatedProt);
-//        peptidesNodes.putAll(unrelatedPeptides);
-//
-//        Map<String, ProteinGroupObject> tempProteinNodes = new LinkedHashMap<>(proteinNodes);
-//        tempProteinNodes.keySet().forEach((accession) -> {
-//            proteinNodes.replace(accession, peptideShakerVisualizationDataset.updateProteinInformation(tempProteinNodes.get(accession), accession));
-//        });
-        }
+        } 
 
     }
 

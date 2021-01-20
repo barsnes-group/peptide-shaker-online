@@ -18,6 +18,8 @@ import com.uib.web.peptideshaker.model.ProteinGroupObject;
 import com.uib.web.peptideshaker.model.VisualizationDatasetModel;
 import com.uib.web.peptideshaker.ui.components.RangeColorGenerator;
 import com.uib.web.peptideshaker.ui.views.FileSystemView;
+import com.uib.web.peptideshaker.ui.views.ResultsView;
+import com.uib.web.peptideshaker.ui.views.subviews.DatasetProteinsSubView;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
@@ -147,7 +149,6 @@ public class DatasetUtils implements Serializable {
      *
      * @param projectName
      * @param uploadedFileMap
-     * @param csf_pr_Accession_List
      * @return array of checked valid files
      */
     public VisualizationDatasetModel initialiseDatasetFromUploadedFiles(String projectName, Map<String, PluploadFile> uploadedFileMap) {
@@ -159,7 +160,6 @@ public class DatasetUtils implements Serializable {
         dataset.setStatus(CONSTANT.OK_STATUS);
         dataset.setCreatedTime(new Timestamp(System.currentTimeMillis()));
         dataset.setId(projectName + "_" + dataset.getCreatedTime());
-        Set<String> csf_pr_Accession_List;
         for (String key : uploadedFileMap.keySet()) {
             switch (key) {
                 case CONSTANT.FASTA_FILE_EXTENSION:
@@ -189,8 +189,8 @@ public class DatasetUtils implements Serializable {
 
         appManagmentBean.getUserHandler().addToDatasetMap(dataset);
         appManagmentBean.getUI_Manager().updateAll();
-        appManagmentBean.getUI_Manager().viewLayout(FileSystemView.class.getName());
-
+        appManagmentBean.getUI_Manager().setSelectedDatasetId(dataset.getId());
+        appManagmentBean.getUI_Manager().viewSubLayout(ResultsView.class.getName(), DatasetProteinsSubView.class.getName());
         return dataset;
 
     }
@@ -214,10 +214,6 @@ public class DatasetUtils implements Serializable {
 
                 fileName = dataset.getPsZipFile().getId() + "_PSMs_.txt";
                 File psmsFile = new File(appManagmentBean.getAppConfig().getUserFolderUri(), fileName);
-
-//
-//                fileName = dataset.getPsZipFile().getId() + "_proteoforms_.txt";
-//                File proteoformsFile = new File(appManagmentBean.getAppConfig().getUserFolderUri(), fileName);
                 try {
 
                     if (!proteinsFile.exists()) {
@@ -259,6 +255,17 @@ public class DatasetUtils implements Serializable {
             }
             break;
             case CONSTANT.USER_UPLOAD_SOURCE:
+                dataset.setProteinsMap(processGalaxyProteinsFile(new File(dataset.getProteinFileModel().getDownloadUrl())));
+                dataset.setPeptidesMap(processGalaxyPeptidesFile(new File(dataset.getPeptideFileModel().getDownloadUrl())));
+                dataset.setProteinSequenceMap(processFastaFile(new File(dataset.getFastaFileModel().getDownloadUrl())));
+                dataset.getProteinsMap().values().stream().map((protein) -> {
+                    String[] descArr = dataset.getProteinSequenceMap().get(protein.getAccession()).getDescription().split("\\s");
+                    protein.setDescription(descArr[0].replace("OS", "").trim());
+                    protein.setProteinEvidence(CONSTANT.PROTEIN_EVIDENCE[Integer.parseInt(descArr[descArr.length - 2].replace("PE=", "").trim())]);
+                    return protein;
+                }).forEachOrdered((protein) -> {
+                    protein.setSequence(dataset.getProteinSequenceMap().get(protein.getAccession()).getSequenceAsString());
+                });
                 break;
             case CONSTANT.PRIDE_SOURCE:
                 break;
@@ -268,22 +275,7 @@ public class DatasetUtils implements Serializable {
     }
 
     private Map<Integer, ProteinGroupObject> processGalaxyProteinsFile(File file) {
-
-//        proteinsMap = new LinkedHashMap<>();
-//            this.proteinInferenceMap = new LinkedHashMap<>();
-//            this.proteinInferenceMap.put("No Information", new LinkedHashSet<>());
-//            this.proteinValidationMap = new LinkedHashMap<>();
-//            this.proteinValidationMap.put("No Information", new LinkedHashSet<>());
-//            this.proteinValidationMap.put("Confident", new LinkedHashSet<>());
-//            this.proteinValidationMap.put("Doubtful", new LinkedHashSet<>());
-//            this.chromosomeMap = new LinkedHashMap<>();
-//            this.chromosomeMap.put(-2, new LinkedHashSet<>());
-//            this.proteinCoverageMap = new TreeMap<>();
-//            this.proteinPSMNumberMap = new TreeMap<>();
-//            this.protein_ProteinGroup_Map = new HashMap<>();
-//            this.accToGroupKeyMap = new HashMap<>();
         Map<Integer, ProteinGroupObject> proteinsMap = new LinkedHashMap<>();
-
         BufferedReader bufferedReader = null;
         try {
             bufferedReader = new BufferedReader(new FileReader(file), 1024 * 100);
@@ -385,14 +377,6 @@ public class DatasetUtils implements Serializable {
                 }
             }
         }
-//        proteinsMap.keySet().forEach((String key) -> {
-//            String[] accs;
-//            accs = key.split("-_-");
-//            ProteinGroupObject pgo = proteinsMap.get(key);
-//            for (String acc : accs) {
-//                accToGroupKeyMap.put(acc.trim(), pgo);
-//            }
-//        });
         return proteinsMap;
     }
 
@@ -736,22 +720,18 @@ public class DatasetUtils implements Serializable {
             for (ModificationMatch modification : peptide.getVariableModifications()) {
                 if (!modificationMap.containsKey(modification.getModification())) {
                     modificationMap.put(modification.getModification(), new LinkedHashSet<>());
-//                    compModificationMap.put(modification.getModification(), new LinkedHashSet<>());
                 }
                 for (String acc : peptide.getProteinsSet()) {
                     if (accessionToGroupMap.containsKey(acc)) {
                         modificationMap.get(modification.getModification()).addAll(accessionToGroupMap.get(acc));
-//                        compModificationMap.get(modification.getModification()).addAll(accessionToGroupMap.get(acc));
                         if (!modification.getModification().equals("No Modification")) {
                             modificationMap.get("No Modification").removeAll(accessionToGroupMap.get(acc));
-//                            compModificationMap.get("No Modification").removeAll(accessionToGroupMap.get(acc));
                         }
                     }
                 }
 
             }
         }
-//        dataset.setModificationMap(compModificationMap);
         ModificationMatrixModel matrixModel = appManagmentBean.getModificationMatrixUtilis().generateMatrixModel(modificationMap);
         modificationMap.clear();
         matrixModel.getColumns().keySet().forEach((key) -> {
@@ -765,7 +745,35 @@ public class DatasetUtils implements Serializable {
             modificationMap.put(key, new LinkedHashSet<>(matrixModel.getColumns().get(key)));
         });
         dataset.setModificationMap(modificationMap);
-        mapProteinsPeptidesPsms(dataset);
+        if (dataset.getDatasetSource().equals(CONSTANT.GALAXY_SOURCE)) {
+            mapProteinsPeptidesPsms(dataset);
+        } else if (dataset.getDatasetSource().equals(CONSTANT.USER_UPLOAD_SOURCE)) {
+            mapProteinsPeptides(dataset);
+        }
+
+    }
+
+    private void mapProteinsPeptides(VisualizationDatasetModel dataset) {
+
+        Map<String, List<PeptideObject>> peptideToProteinMap = new HashMap<>();
+        for (PeptideObject peptideObject : dataset.getPeptidesMap().values()) {
+            for (String key : peptideObject.getProteinGroupsSet()) {
+                if (!peptideToProteinMap.containsKey(key)) {
+                    peptideToProteinMap.put(key, new ArrayList<>());
+                }
+                peptideToProteinMap.get(key).add(peptideObject);
+            }
+
+        }
+        for (ProteinGroupObject proteinObject : dataset.getProteinsMap().values()) {
+            proteinObject.setAvailableOn_CSF_PR(csf_pr_Accession_List.contains(proteinObject.getAccession()));
+            List<PeptideObject> peptides = peptideToProteinMap.get(proteinObject.getProteinGroupKey());
+            if (peptides != null) {
+                for (PeptideObject peptide : peptides) {
+                    proteinObject.addPeptide(peptide.getIndex());//                    
+                }
+            }
+        }
 
     }
 
@@ -874,7 +882,7 @@ public class DatasetUtils implements Serializable {
         }
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-        Future fastafileFuture = executorService.submit(() -> {
+        executorService.submit(() -> {
             String fastaFileName = dataset.getPsZipFile().getId() + "_FASTA_.txt";
             File fastaFile = new File(appManagmentBean.getAppConfig().getUserFolderUri(), fastaFileName);
             if (!fastaFile.exists()) {
@@ -886,14 +894,14 @@ public class DatasetUtils implements Serializable {
             }
             appManagmentBean.getHttpClientUtil().downloadFileFromZipFolder(dataset.getPsZipFile().getDownloadUrl(), ".fasta", fastaFile);
             dataset.setProteinSequenceMap(processFastaFile(fastaFile));
-            for (ProteinGroupObject protein : dataset.getProteinsMap().values()) {
-
+            dataset.getProteinsMap().values().stream().map((protein) -> {
                 String[] descArr = dataset.getProteinSequenceMap().get(protein.getAccession()).getDescription().split("\\s");
                 protein.setDescription(descArr[0].replace("OS", "").trim());
                 protein.setProteinEvidence(CONSTANT.PROTEIN_EVIDENCE[Integer.parseInt(descArr[descArr.length - 2].replace("PE=", "").trim())]);
+                return protein;
+            }).forEachOrdered((protein) -> {
                 protein.setSequence(dataset.getProteinSequenceMap().get(protein.getAccession()).getSequenceAsString());
-
-            }
+            });
             String proteoformsFileName = dataset.getPsZipFile().getId() + "_proteoforms_.txt";
 
             File proteoformsFile = new File(appManagmentBean.getAppConfig().getUserFolderUri(), proteoformsFileName);
@@ -908,6 +916,7 @@ public class DatasetUtils implements Serializable {
 
         });
         executorService.shutdown();
+
 //        psmsMap.keySet().forEach((modSeq) -> {
 //            PeptideObject peptide = peptidesMap.get(modSeq);
 //            double quant = 0d;
@@ -1118,12 +1127,13 @@ public class DatasetUtils implements Serializable {
         if (proteinNodes.keySet().containsAll(selectedProteinObject.getProteinGroupSet())) {
             return;
         }
-        DigestionParameters digestionParameters = dataset.getIdentificationParametersObject().getSearchParameters().getDigestionParameters();
-        boolean enzymaticDigestion = (digestionParameters.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme);
+        boolean enzymaticDigestion = false;
+        if (dataset.getDatasetSource().equals(CONSTANT.GALAXY_SOURCE)) {
+            DigestionParameters digestionParameters = dataset.getIdentificationParametersObject().getSearchParameters().getDigestionParameters();
+            enzymaticDigestion = (digestionParameters.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme);
+        }
         Map<String, ProteinGroupObject> newAccessionList = new HashMap<>();
-
         for (String proteinAcc : selectedProteinObject.getProteinGroupSet()) {
-
             if (dataset.getAccessionToGroupMap().containsKey(proteinAcc)) {
                 for (int proteinGroupIndex : dataset.getAccessionToGroupMap().get(proteinAcc)) {
                     ProteinGroupObject oreginalProteinObject = dataset.getProteinsMap().get(proteinGroupIndex);
@@ -1153,17 +1163,24 @@ public class DatasetUtils implements Serializable {
                 proteinNodes.put(newProteinObject.getAccession(), newProteinObject);
                 newPeptides.add(peptide);
                 if (!newProteinObject.getRelatedPeptidesList().contains(peptide.getModifiedSequence()) && enzymaticDigestion) {
-
+                      if (enzymaticDigestion) {
                     newProteinObject.addPeptideType(peptide.getModifiedSequence(), isEnzymatic(newProteinObject.getSequence(), peptide.getSequence(), dataset.getIdentificationParametersObject().getSearchParameters().getDigestionParameters().getEnzymes(), dataset.getIdentificationParametersObject().getSequenceMatchingParameters()));
-                }
+                      }else{
+                       newProteinObject.addPeptideType(peptide.getModifiedSequence(), true);
+                      }
+                      }
             }
         }
         for (PeptideObject peptide : newPeptides) {
             for (String proteinGropAcc : peptide.getProteinsSet()) {
                 if (proteinNodes.containsKey(proteinGropAcc)) {
                     edges.get(peptide.getModifiedSequence()).add(proteinGropAcc);
-                    if (!proteinNodes.get(proteinGropAcc).getRelatedPeptidesList().contains(peptide.getModifiedSequence()) && enzymaticDigestion) {
-                        proteinNodes.get(proteinGropAcc).addPeptideType(peptide.getModifiedSequence(), isEnzymatic(proteinNodes.get(proteinGropAcc).getSequence(), peptide.getSequence(), dataset.getIdentificationParametersObject().getSearchParameters().getDigestionParameters().getEnzymes(), dataset.getIdentificationParametersObject().getSequenceMatchingParameters()));
+                    if (!proteinNodes.get(proteinGropAcc).getRelatedPeptidesList().contains(peptide.getModifiedSequence())) {
+                        if (enzymaticDigestion) {
+                            proteinNodes.get(proteinGropAcc).addPeptideType(peptide.getModifiedSequence(), isEnzymatic(proteinNodes.get(proteinGropAcc).getSequence(), peptide.getSequence(), dataset.getIdentificationParametersObject().getSearchParameters().getDigestionParameters().getEnzymes(), dataset.getIdentificationParametersObject().getSequenceMatchingParameters()));
+                        } else {
+                            proteinNodes.get(proteinGropAcc).addPeptideType(peptide.getModifiedSequence(), true);
+                        }
 
                     }
                     continue;
@@ -1190,8 +1207,13 @@ public class DatasetUtils implements Serializable {
                         edges.put(peptide.getModifiedSequence(), new HashSet<>());
                     }
                     edges.get(peptide.getModifiedSequence()).add(newProteinObject.getAccession());
-                    if (!newProteinObject.getRelatedPeptidesList().contains(peptide.getModifiedSequence()) && enzymaticDigestion) {
-                        newProteinObject.addPeptideType(peptide.getModifiedSequence(), isEnzymatic(newProteinObject.getSequence(), peptide.getSequence(), dataset.getIdentificationParametersObject().getSearchParameters().getDigestionParameters().getEnzymes(), dataset.getIdentificationParametersObject().getSequenceMatchingParameters()));
+                    if (!newProteinObject.getRelatedPeptidesList().contains(peptide.getModifiedSequence())) {
+                        if (enzymaticDigestion) {
+                            newProteinObject.addPeptideType(peptide.getModifiedSequence(), isEnzymatic(newProteinObject.getSequence(), peptide.getSequence(), dataset.getIdentificationParametersObject().getSearchParameters().getDigestionParameters().getEnzymes(), dataset.getIdentificationParametersObject().getSequenceMatchingParameters()));
+                        } else {
+                            newProteinObject.addPeptideType(peptide.getModifiedSequence(), true);
+                        }
+
                     }
                 }
 
@@ -1202,7 +1224,7 @@ public class DatasetUtils implements Serializable {
 
     /**
      * Returns the list of indexes where a peptide can be found in the protein
-     * sequence. 1 is the first amino acid.
+     * sequence. 0 is the first amino acid.
      *
      * @param peptideSequence the sequence of the peptide of interest
      * @param sequenceMatchingPreferences the sequence matching preferences
@@ -1211,7 +1233,13 @@ public class DatasetUtils implements Serializable {
      */
     private int[] getPeptideStart(String sequence, String peptideSequence, SequenceMatchingParameters sequenceMatchingPreferences) {
         AminoAcidPattern aminoAcidPattern = AminoAcidPattern.getAminoAcidPatternFromString(peptideSequence);
-        return aminoAcidPattern.getIndexes(sequence, sequenceMatchingPreferences);
+        ArrayList<Integer> result = new ArrayList<>(1);
+        int index = 0;
+        while ((index = aminoAcidPattern.firstIndex(sequence, sequenceMatchingPreferences, index)) >= 0) {
+            result.add(index);
+            index++;
+        }
+        return result.stream().mapToInt(a -> a).toArray();
     }
 
     /**
@@ -1235,7 +1263,6 @@ public class DatasetUtils implements Serializable {
         }
         for (Enzyme enzyme : enzymes) {
             for (int peptideStart : startIndexes) {
-                peptideStart = peptideStart - 1;
                 int peptideEnd = peptideStart + peptideSequence.length() - 1;
                 int nTermini = PeptideUtils.getNEnzymaticTermini(peptideStart, peptideEnd, proteinSequence, enzyme);
                 if (nTermini == 2) {
