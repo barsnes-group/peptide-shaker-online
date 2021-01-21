@@ -57,6 +57,8 @@ public class PeptidShakerEntryPoint extends UI {
             Page.getCurrent().reload();
             return;
         }
+        appManagmentBean = new AppManagmentBean();
+        VaadinSession.getCurrent().setAttribute(CONSTANT.APP_MANAGMENT_BEAN, appManagmentBean);
         if (false) {
             AbsoluteLayout frame = new AbsoluteLayout();
             frame.setWidth(500, Unit.PIXELS);
@@ -76,14 +78,9 @@ public class PeptidShakerEntryPoint extends UI {
             frame.addLayoutClickListener((LayoutEvents.LayoutClickEvent event) -> {
                 prot3dTest.updatePanel("P11021", seq, new HashSet<>());
             });
-            prot3dTest.activate3DProteinView();
-           prot3dTest.setMode(2);
 
             return;
         }
-
-        appManagmentBean = new AppManagmentBean();
-        VaadinSession.getCurrent().setAttribute(CONSTANT.APP_MANAGMENT_BEAN, appManagmentBean);
 
         try {
             UI.getCurrent().getConnectorTracker().cleanConnectorMap();

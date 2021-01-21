@@ -14,8 +14,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +28,6 @@ import org.glassfish.jersey.client.ClientProperties;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import static junit.framework.Assert.assertEquals;
-import static org.apache.poi.hssf.usermodel.HeaderFooter.file;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
@@ -83,6 +80,12 @@ public class HttpClientUtils implements Serializable {
 
     }
 
+    public Response doPost(String uri, String body) {
+        return getClient().target(uri)
+                .request(MediaType.APPLICATION_JSON).post(Entity.text(body));
+
+    }
+
     public Response doUploadPost(String uri, FormDataMultiPart multipart) {
 
         return getClient().target(uri).request().post(Entity.entity(multipart, MediaType.MULTIPART_FORM_DATA));
@@ -104,19 +107,9 @@ public class HttpClientUtils implements Serializable {
                     try (ReadableByteChannel rbc = Channels.newChannel(Zis)) {
                         fos = new FileOutputStream(entryToFilesMap.get(counter));
                         fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-//                        fos.close();
-//                        rbc.close();
-//                     
                     }
-                    System.out.println("at ---> entry --> " + entry.getName() + "  " + counter);
                     counter++;
 
-                }
-                if (counter > entryToFilesMap.size()) {
-//                    Zis.close();
-//                    fos.close();
-////                    rbc.close();
-//                    break;
                 }
                 entry = Zis.getNextEntry();
 
@@ -138,7 +131,7 @@ public class HttpClientUtils implements Serializable {
 
     }
 
-    public File downloadFileFromZipFolder(String uri, String  entryName, File file) {
+    public File downloadFileFromZipFolder(String uri, String entryName, File file) {
         FileOutputStream fos = null;
         try {
 

@@ -1,5 +1,6 @@
 package com.uib.web.peptideshaker.model.core.pdb;
 
+import io.vertx.core.json.JsonArray;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
 public class EntityData {
     private int entityId;
     private String sequence;
-    private List chainIds;
+    private JsonArray chainIds;
     private int start;
     private int end;
     private int length;
@@ -31,11 +32,11 @@ public class EntityData {
         this.sequence = sequence;
     }
 
-    public List getChainIds() {
+    public JsonArray getChainIds() {
         return chainIds;
     }
 
-    public void setChainIds(List chainIds) {
+    public void setChainIds(JsonArray chainIds) {
         this.chainIds = chainIds;
     }
 

@@ -1,15 +1,10 @@
 package com.uib.web.peptideshaker.ui.views.subviews.proteinsview.components;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.ui.VerticalLayout;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import litemol.LiteMolComponent;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 
 /**
  * This class provides an abstraction layer for LiteMOL 3D protein structure
@@ -19,7 +14,7 @@ import java.util.Map;
 public class LiteMOL3DComponent extends VerticalLayout {
 
     private final LiteMolComponent proteinStructurePanel;
-    private String pdbId="notReal";
+    private String pdbId = "notReal";
     private int litemolPluginInit = 0;
 
     public LiteMOL3DComponent() {
@@ -32,20 +27,33 @@ public class LiteMOL3DComponent extends VerticalLayout {
     }
 
     public void excuteQuery(String pdbId, int entity, String chainId, JsonObject proteinColor, JsonArray entriesSet) {
-        JsonObject body = new JsonObject();
+        JsonObject fullQuery = new JsonObject();
+        JsonObject values = new JsonObject();
+//        System.out.println("'{\"pdbId\":\"3iuc\",\"chainId\":\"A\",\"coloring\":{\"entries\":[{\"start_residue_number\":44,\"color\":{\"r\":255,\"b\":0,\"g\":0},\"end_residue_number\":404,\"struct_asym_id\":\"A\",\"entity_id\":\"1\"}],\"base\":{\"r\":255,\"b\":255,\"g\":255}}}';");
+        JsonArray queryEntriesSet = new JsonArray();
+        for (int i = 0; i < entriesSet.size(); i++) {
+            JsonObject peptide = entriesSet.getJsonObject(i);
+            JsonObject pepQuery = new JsonObject();
+            pepQuery.put("start_residue_number", peptide.getInteger("start_residue_number"));
+            pepQuery.put("color", peptide.getJsonObject("color"));
+            pepQuery.put("end_residue_number", peptide.getInteger("end_residue_number"));
+            pepQuery.put("struct_asym_id", peptide.getString("struct_asym_id"));
+            pepQuery.put("entity_id", peptide.getString("entity_id"));
+            queryEntriesSet.add(pepQuery);
+        }
 
+        values.put("pdbId", pdbId);
+        values.put("chainId", chainId);
         JsonObject coloring = new JsonObject();
+        coloring.put("entries", queryEntriesSet);
         coloring.put("base", proteinColor);
-        coloring.put("entries", entriesSet);
-        body.put("entity", entity);
-        body.put("pdbId", pdbId);
-        body.put("chainId", chainId);
-        body.put("coloring", coloring);
-        body.put("type", "query");
-        System.out.println("at new value "+(!pdbId.equalsIgnoreCase(this.pdbId)));
-        body.put("newid", (!pdbId.equalsIgnoreCase(LiteMOL3DComponent.this.pdbId)));
+        values.put("coloring", coloring);
+        values.put("entity", entity);
+        fullQuery.put("values", values);
+        fullQuery.put("type", "query");
+        fullQuery.put("newid", (!pdbId.equalsIgnoreCase(LiteMOL3DComponent.this.pdbId)));
         try {
-            proteinStructurePanel.setValue(body);
+            proteinStructurePanel.setValue(fullQuery);
             this.pdbId = pdbId;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -71,7 +79,7 @@ public class LiteMOL3DComponent extends VerticalLayout {
         }
     }
 
-    public void reset3DView() {
+    public void reset() {
         JsonObject body = new JsonObject();
         pdbId = null;
         body.put("type", "reset");

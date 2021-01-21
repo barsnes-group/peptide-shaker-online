@@ -77,7 +77,7 @@ public abstract class GraphComponent extends VerticalLayout {
     private final VerticalLayout lefTtopPanel;
     private final Map<Object, Node> nodesMap;
     private final Set<Edge> edgesMap;
-    private final OptionGroup proteinsControl;
+    private final OptionGroup proteinsModeControl;
     private final OptionGroup nodeControl;
     private final Set<Object> selectedProteins;
     private final Set<Object> selectedPeptides;
@@ -230,34 +230,33 @@ public abstract class GraphComponent extends VerticalLayout {
         lefTtopPanel.addStyleName("inframe");
 
         //init controls
-        proteinsControl = new OptionGroup();
-        proteinsControl.setMultiSelect(false);
-        proteinsControl.setStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
-        proteinsControl.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
-        proteinsControl.addStyleName("smallertext");
-        proteinsControl.addItem("Validation");
-        proteinsControl.addItem("Modifications");
-        proteinsControl.addItem("Protein Evidence");
-        proteinsControl.addItem("PSMNumber");
-        proteinsControl.setItemCaption("PSMNumber", "#PSMs");
-        proteinsControl.addItem("Intensity");
-        lefTtopPanel.addComponent(proteinsControl);
+        proteinsModeControl = new OptionGroup();
+        proteinsModeControl.setMultiSelect(false);
+        proteinsModeControl.setStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
+        proteinsModeControl.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
+        proteinsModeControl.addStyleName("smallertext");
+        proteinsModeControl.addItem("Validation");
+        proteinsModeControl.addItem("Modifications");
+        proteinsModeControl.addItem("Protein Evidence");
+        proteinsModeControl.addItem("PSMNumber");
+        proteinsModeControl.setItemCaption("PSMNumber", "#PSMs");
+        proteinsModeControl.addItem("Intensity");
+        lefTtopPanel.addComponent(proteinsModeControl);
         lefTtopPanel.addStyleName("lefttoppanelstyle");
+        proteinsModeControl.setValue("PSMNumber");
 
         proteinsControlListener = (Property.ValueChangeEvent event) -> {
-            if (proteinsControl.getValue() == null) {
+            if (proteinsModeControl.getValue() == null) {
                 return;
             }
-            informationLegend.updateLegend(proteinsControl.getValue() + "");
-            updateNodeColourType(proteinsControl.getValue() + "");
+            informationLegend.updateLegend(proteinsModeControl.getValue() + "");
+            updateNodeColourType(proteinsModeControl.getValue() + "");
             if (intensityColorScaleLayout != null) {
-                intensityColorScaleLayout.setVisible((proteinsControl.getValue() + "").equalsIgnoreCase("Intensity"));
+                intensityColorScaleLayout.setVisible((proteinsModeControl.getValue() + "").equalsIgnoreCase("Intensity"));
             }
-            psmColorScaleLayout.setVisible((proteinsControl.getValue() + "").equalsIgnoreCase("PSMNumber"));
-
-//            scaleContainer.setVisible((proteinsControl.getValue() + "").equalsIgnoreCase("PSMNumber") || (proteinsControl.getValue() + "").equalsIgnoreCase("Intensity"));
+            psmColorScaleLayout.setVisible((proteinsModeControl.getValue() + "").equalsIgnoreCase("PSMNumber"));
         };
-        proteinsControl.addValueChangeListener(proteinsControlListener);
+        proteinsModeControl.addValueChangeListener(proteinsControlListener);
 
         VerticalLayout leftBottomPanel = new VerticalLayout();
         leftBottomPanel.setSpacing(false);
@@ -423,7 +422,7 @@ public abstract class GraphComponent extends VerticalLayout {
                 graphsControl.setValue("Protein-Peptide");
                 return;
             }
-            lastSelected = proteinsControl.getValue();
+            lastSelected = proteinsModeControl.getValue();
             proteoformLayerContainer.setVisible(graphsControl.getValue().toString().equalsIgnoreCase("Proteoform"));
             proteinPeptideGraphWrapper.setVisible(!proteoformLayerContainer.isVisible());
             if (proteoformLayerContainer.isVisible()) {
@@ -439,7 +438,7 @@ public abstract class GraphComponent extends VerticalLayout {
                 });
                 selectedItem(selectedProteinsAction, selectedPeptidesAction, graphsControl.getValue().toString().equalsIgnoreCase("Proteoform"));
             } else {
-                proteinsControl.setValue(lastSelected);
+                proteinsModeControl.setValue(lastSelected);
                 updateProteinsMode("Protein-Peptide");
                 updateProteinsMode(lastSelected.toString());
             }
@@ -502,7 +501,7 @@ public abstract class GraphComponent extends VerticalLayout {
         this.edges = edges;
         setUpGraph();
         if (!quantDs) {
-            proteinsControl.removeItem("Intensity");
+            proteinsModeControl.removeItem("Intensity");
         }
         if (graph == null || graph.getVertices() == null) {
             System.out.println("at error o catch ");
@@ -662,7 +661,7 @@ public abstract class GraphComponent extends VerticalLayout {
             intensityColorScaleLayout.setVisible(false);
             informationLegend.updateIntensityLayout(intensityColorScale.getColorScale());
         }
-        proteinsControl.setValue("PSMNumber");
+        proteinsModeControl.setValue("PSMNumber");
 
     }
 
@@ -709,8 +708,8 @@ public abstract class GraphComponent extends VerticalLayout {
 
     public void updateMode() {
         if (lastSelectedModeType != null) {
-            proteinsControl.setValue(null);
-            proteinsControl.setValue(lastSelectedModeType);
+            proteinsModeControl.setValue(null);
+            proteinsModeControl.setValue(lastSelectedModeType);
             graphsControl.setValue("Protein-Peptide");
         }
     }

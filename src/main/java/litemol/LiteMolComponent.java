@@ -17,7 +17,6 @@ public class LiteMolComponent extends AbstractJavaScriptComponent {
 
     public LiteMolComponent() {
         LiteMolComponent.this.addFunction("onClick", (JsonArray arguments) -> {
-           
             getState().setValue(arguments.getObject(0).toString());
             listeners.forEach((listener) -> {
                 listener.valueChange();
@@ -25,7 +24,7 @@ public class LiteMolComponent extends AbstractJavaScriptComponent {
         });
 
         LiteMolComponent.this.addValueChangeListener(() -> {
-            JsonObject value = LiteMolComponent.this.getValue();
+            LiteMolComponent.this.getValue();
         });
     }
 
@@ -40,13 +39,6 @@ public class LiteMolComponent extends AbstractJavaScriptComponent {
 
     public void setValue(JsonObject value) {
         getState().setValue(value.encodePrettily());
-    }
-
-    public void setSize(int width, int height) {
-//        this.setWidth(width, Unit.PIXELS);
-//        this.setHeight(height, Unit.PIXELS);
-//        this.setValue(width + "," + height);
-
     }
 
     @Override

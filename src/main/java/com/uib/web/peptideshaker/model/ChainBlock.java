@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.model.core.pdb;
+package com.uib.web.peptideshaker.model;
 
 /**
  * This class contain the main information for the chain block required by PDB

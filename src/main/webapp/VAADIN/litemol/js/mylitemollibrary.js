@@ -10,7 +10,7 @@ mylitemollibrary.LiteMolComponent = function (element) {
     var hideWaterVar = true;
     var init = false;
     var latestValue = 'ToTestNotRealValue';
-    var jsonObject = JSON.parse('{"pdbId":"3iuc"}');
+    var jsonFullQuery = JSON.parse('{"pdbId":"3iuc"}');
     var parentElement = null;
     element.innerHTML = " <div id='actions'> </div>" +
             " <div id='interactions'></div>" +
@@ -38,24 +38,24 @@ mylitemollibrary.LiteMolComponent = function (element) {
             if ((typeof value === 'undefined')) {
                 return;
             }
-            jsonObject = JSON.parse(value);
-            document.getElementById('pdbid').value = '{"pdbId":"' + jsonObject.pdbId + '"}';
+            jsonFullQuery= JSON.parse(value);         
+            document.getElementById('pdbid').value  = JSON.stringify(jsonFullQuery.values, null, 2);
             locateParentElement();
-            if (parentElement === null || (jsonObject === null) || (jsonObject === undefined) || latestValue.localeCompare(value) === 0) {
+            if (parentElement === null || (jsonFullQuery === null) || (jsonFullQuery === undefined) || latestValue.localeCompare(value) === 0) {
                 return;
             }
             latestValue = value;
-            if (jsonObject.type.localeCompare("reset") === 0) {
+            if (jsonFullQuery.type.localeCompare("reset") === 0) {
                 reset();
-            } else if (jsonObject.type.localeCompare("query") === 0) {
+            } else if (jsonFullQuery.type.localeCompare("query") === 0) {
                 if (!init && isParentVisible()) {
                     init = true;
                     initplugin();
                 }
                 if (init) {
-                    excutequery(jsonObject.newid);
+                    excutequery(jsonFullQuery.newid);
                 }
-            } else if (jsonObject.type.localeCompare("update") === 0) {
+            } else if (jsonFullQuery.type.localeCompare("update") === 0) {
                 latestValue = "";
                 redraw();
             }
@@ -102,7 +102,7 @@ mylitemollibrary.LiteMolComponent = function (element) {
                 init = false;
                 return;
             }
-            document.getElementById('pdbid').value = '{"pdbId":"' + jsonObject.pdbId + '"}';
+            document.getElementById('pdbid').value =  JSON.stringify(jsonFullQuery.values, null, 2);
             controlBtns[0].click();
             controlBtns[5].click();
             finalizeStyle();
@@ -117,7 +117,7 @@ mylitemollibrary.LiteMolComponent = function (element) {
     };
     $(function () {
         try {
-            jsonObject = JSON.parse('{"pdbId":"3iuc"}');
+            jsonFullQuery = JSON.parse('{"pdbId":"3iuc"}');
             controlBtns = document.getElementsByTagName('h6');
             initplugin();
         } catch (exp) {
@@ -153,8 +153,8 @@ mylitemollibrary.LiteMolComponent = function (element) {
     };
     function excutequery() {
         try {
-            document.getElementById('pdbid').value = '{"pdbId":"' + jsonObject.pdbId + '"}';
-            if (jsonObject.newid === true) {
+            document.getElementById('pdbid').value = JSON.stringify(jsonFullQuery.values, null, 2);
+            if (jsonFullQuery.newid === true) {
                 reset();
                 finalizeStyle();
                 controlBtns[14].click();

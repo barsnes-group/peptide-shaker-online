@@ -6,13 +6,13 @@ import com.uib.web.peptideshaker.handler.UserHandler;
 import com.uib.web.peptideshaker.handler.WorkFlowHandler;
 import com.uib.web.peptideshaker.utils.ModificationMatrixUtilis;
 import com.uib.web.peptideshaker.uimanager.SelectionManager;
-import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager_old;
 import com.uib.web.peptideshaker.uimanager.UIManager;
 import com.uib.web.peptideshaker.utils.CoreUtils;
 import com.uib.web.peptideshaker.utils.DatabaseUtils;
 import com.uib.web.peptideshaker.utils.DatasetUtils;
 import com.uib.web.peptideshaker.utils.FilesUtils;
 import com.uib.web.peptideshaker.utils.HttpClientUtils;
+import com.uib.web.peptideshaker.utils.PDBUtils;
 import com.uib.web.peptideshaker.utils.URLUtils;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -54,7 +54,8 @@ public class AppManagmentBean implements Serializable {
     private CoreUtils coreUtils;
     private ScheduledExecutorService scheduler;
     private Set<ScheduledFuture> scheduledFutureSet;
-    private boolean availableGalaxy=false;
+    private boolean availableGalaxy = false;
+    private PDBUtils pdbUtils;
 
     public SelectionManager getSelectionManager() {
         if (selectionManager == null) {
@@ -200,4 +201,18 @@ public class AppManagmentBean implements Serializable {
         this.availableGalaxy = availableGalaxy;
     }
 
+    public Set<ScheduledFuture> getScheduledFutureSet() {
+        return scheduledFutureSet;
+    }
+
+    public void setScheduledFutureSet(Set<ScheduledFuture> scheduledFutureSet) {
+        this.scheduledFutureSet = scheduledFutureSet;
+    }
+
+    public PDBUtils getPdbUtils() {
+        if (pdbUtils == null) {
+            pdbUtils = new PDBUtils();
+        }
+        return pdbUtils;
+    }
 }

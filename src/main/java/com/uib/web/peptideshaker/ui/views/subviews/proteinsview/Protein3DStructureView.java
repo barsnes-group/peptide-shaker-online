@@ -2,15 +2,16 @@ package com.uib.web.peptideshaker.ui.views.subviews.proteinsview;
 
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
+import com.uib.web.peptideshaker.AppManagmentBean;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.PeptideObject;
-import com.uib.web.peptideshaker.model.core.pdb.ChainBlock;
-import com.uib.web.peptideshaker.model.core.pdb.PDBMatch;
-import com.uib.web.peptideshaker.model.core.pdb.PdbHandler;
+import com.uib.web.peptideshaker.model.ChainBlock;
+import com.uib.web.peptideshaker.model.PDBMatch;
 import com.uib.web.peptideshaker.ui.views.subviews.proteinsview.components.ChainCoverageComponent;
 import com.uib.web.peptideshaker.ui.views.subviews.proteinsview.components.LiteMOL3DComponent;
 import com.vaadin.data.Property;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.*;
 import io.vertx.core.json.JsonArray;
@@ -48,13 +49,13 @@ public class Protein3DStructureView extends AbsoluteLayout {
     private final Map<String, PeptideObject> proteinPeptidesMap;
     private final Map<String, List<ChainBlock>> pdbBlockMap;
     private final Label uniprotLabel;
-    private final PdbHandler pdbHandler = new PdbHandler();
+    
     /**
      * The post translational modifications factory.
      */
     private final ModificationFactory PTM = ModificationFactory.getInstance();
     private AbsoluteLayout chainCoverageLayout;
-    private int moleculeMode = 1;
+    private int moleculeMode = 4;
     private ChainCoverageComponent lastSelectedChainCoverage;
     private Object lastSelectedAccession;
     private String lastSelectedProteinSequence;
@@ -62,8 +63,10 @@ public class Protein3DStructureView extends AbsoluteLayout {
     private Collection<PeptideObject> proteinPeptides;
     private int proteinSequenceLength;
     private PDBMatch lastSelectedMatch;
+    private final AppManagmentBean appManagmentBean;
 
     public Protein3DStructureView() {
+         this.appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
         Protein3DStructureView.this.setSizeFull();
         Protein3DStructureView.this.setStyleName("proteinStructiorpanel");
 
@@ -114,7 +117,7 @@ public class Protein3DStructureView extends AbsoluteLayout {
                 chainCoverageLayout.removeAllComponents();
                 chainCoverageLayout.addComponent(lastSelectedChainCoverage.getChainCoverageWebComponent());
                 contsructQueries(pdbBlockMap.get(pdbChainsSelect.getValue() + ""));
-                selectPeptides(lastSelectedPeptideKey);
+                selectPeptide(lastSelectedPeptideKey);
 
             }
         });
@@ -144,7 +147,7 @@ public class Protein3DStructureView extends AbsoluteLayout {
             pdbChainsSelect.removeValueChangeListener(pdbChainsSelectlistener);
             pdbChainsSelect.removeAllItems();
 //            LiteMolPanel.setVisible(pdbMatchesSelect.getValue() != null);//
-            lastSelectedMatch = pdbHandler.updatePdbInformation(pdbMatchesSelect.getValue().toString(), lastSelectedProteinSequence, lastSelectedAccession);
+            lastSelectedMatch = appManagmentBean.getPdbUtils().updatePdbInformation(pdbMatchesSelect.getValue().toString(), lastSelectedProteinSequence, lastSelectedAccession);
             pdbBlockMap.clear();
             lastSelectedChainCoverage = reCalculateChainRange(lastSelectedMatch.getChains(), proteinSequenceLength);
             pdbChainsSelect.addItem("All");
@@ -187,25 +190,15 @@ public class Protein3DStructureView extends AbsoluteLayout {
     }
 
     public void reset() {
-        liteMOL3DComponent.reset3DView();
-//        pdbMatchesSelect.setVisible(true);
-//        pdbChainsSelect.setVisible(t);
-//        chainCoverageLayout.setVisible(false);
-//        uniprotLabel.setVisible(true);
+        liteMOL3DComponent.reset();
         lastSelectedPeptideKey = null;
-    }
-
-    public void activate3DProteinView() {
-//        boolean activate = liteMOL3DComponent.activate3DProteinView();
-//        if (!activate) {
-//            reset();
-//            return;
-//        }
-//
-//        pdbMatchesSelect.setVisible(true);
-//        pdbChainsSelect.setVisible(true);
-//        chainCoverageLayout.setVisible(true);
-//        uniprotLabel.setVisible(true);
+        pdbMatchesSelect.removeValueChangeListener(pdbMatchSelectlistener);
+        pdbMatchesSelect.removeAllItems();
+        this.lastSelectedAccession = null;
+        this.lastSelectedProteinSequence = null;
+        this.uniprotLabel.setValue("UniProt: ");
+        pdbChainsSelect.removeValueChangeListener(pdbChainsSelectlistener);
+        pdbChainsSelect.removeAllItems();
     }
 
     public void redrawCanvas() {
@@ -234,7 +227,7 @@ public class Protein3DStructureView extends AbsoluteLayout {
         pdbBlockMap.clear();
         String accession = accessionObject.toString();
         proteinSequenceLength = proteinSequence.length();
-        Map<String, PDBMatch> pdbMachSet = pdbHandler.getData(accession);
+        Map<String, PDBMatch> pdbMachSet = appManagmentBean.getPdbUtils().getData(accession);
         if (pdbMachSet != null && !pdbMachSet.isEmpty()) {
             pdbMachSet.keySet().forEach((str) -> {
                 pdbMatchesSelect.addItem(str);
@@ -248,9 +241,6 @@ public class Protein3DStructureView extends AbsoluteLayout {
                 reset();
                 return;
             }
-//            pdbMatchesSelect.setVisible(true);
-//            pdbChainsSelect.setVisible(pdbMatchesSelect.isVisible());
-//            chainCoverageLayout.setVisible(pdbMatchesSelect.isVisible());
             pdbMatchesSelect.addValueChangeListener(pdbMatchSelectlistener);
             String pdbMachSelectValue = pdbMatchesSelect.getItemIds().toArray()[0] + "";
             pdbMatchesSelect.setValue(pdbMachSelectValue);
@@ -273,7 +263,7 @@ public class Protein3DStructureView extends AbsoluteLayout {
 
     }
 
-    private void selectPeptides(String peptideKey) {
+    public void selectPeptide(String peptideKey) {
         lastSelectedPeptideKey = peptideKey;
         String chainId = (pdbChainsSelect.getValue() + "");
         JsonArray entriesSet = new JsonArray();
@@ -314,7 +304,6 @@ public class Protein3DStructureView extends AbsoluteLayout {
                         if (peptideKey == null || peptideKey.contains("null") || !key.equals(peptideKey)) {
                             peptide.put("color", initColorMap(defaultUnselectedColor));
                         } else {
-                            System.out.println("at peptide key " + (peptideKey != null) + " " + key.equals(peptideKey) + "   " + defaultSelectedColor);
                             peptide.put("color", initColorMap(defaultSelectedColor));
                         }
                         entriesSet.add(peptide);
@@ -389,7 +378,7 @@ public class Protein3DStructureView extends AbsoluteLayout {
 
                 Map<String, Color> peptideOverlappingMap = new HashMap<>();
                 peptidesQueryMap.fieldNames().forEach((key) -> {
-                    JsonArray arr = peptidesQueryMap.getJsonArray(peptideKey);
+                    JsonArray arr = peptidesQueryMap.getJsonArray(key);
                     for (int i = 0; i < arr.size(); i++) {
                         JsonObject peptide = arr.getJsonObject(i);
                         if ((chainId.contains("All") || chainId.equalsIgnoreCase(peptide.getString("struct_asym_id")))) {
@@ -410,8 +399,7 @@ public class Protein3DStructureView extends AbsoluteLayout {
                                     modificationNames.add(mach.toString());
                                 }
                                 if (modificationNames.size() == 1) {
-                                    c = new Color(PTM.getDefaultColor(modificationNames.iterator().next()));
-
+                                    c = new Color(PTM.getColor(varModifications.getString(0)));
                                 }
 
                                 if (peptideKey == null || peptideKey.contains("null")) {
@@ -602,16 +590,6 @@ public class Protein3DStructureView extends AbsoluteLayout {
 
     }
 
-    public void selectPeptide(String peptideKey) {
-        if (pdbMatchesSelect.isVisible()) {
-            if (peptideKey != null) {
-                selectPeptides(peptideKey);
-            } else {
-                selectPeptides(null);
-            }
-        }
-    }
-
     private void contsructQueries(List<ChainBlock> selectedBlocks) {
         peptidesQueryMap.clear();
         this.proteinPeptidesMap.clear();
@@ -663,8 +641,8 @@ public class Protein3DStructureView extends AbsoluteLayout {
             for (ModificationMatch mach : modifications) {
                 modificationsAsJson.add(mach.getModification());
             }
-           
-        } 
+
+        }
         sequenceMap.put("modifications", modificationsAsJson);
         sequenceMap.put("sequence", sequence);
         sequenceMap.put("psm", psmNumberColor);
@@ -681,16 +659,16 @@ public class Protein3DStructureView extends AbsoluteLayout {
         return colorMap;
     }
 
-    private HashMap<String, String> initColorMap(String[] color) {
-        HashMap<String, String> colorMap = new HashMap<>();
+    private JsonObject initColorMap(String[] color) {
+        JsonObject colorMap = new JsonObject();
         colorMap.put("h", color[0]);
         colorMap.put("s", color[1]);
         colorMap.put("l", color[2]);
         return colorMap;
     }
 
-    private HashMap<String, Integer> initColorMap(Color color) {
-        HashMap<String, Integer> colorMap = new HashMap<>();
+    private JsonObject initColorMap(Color color) {
+        JsonObject colorMap = new JsonObject();
         colorMap.put("r", color.getRed());
         colorMap.put("g", color.getGreen());
         colorMap.put("b", color.getBlue());
@@ -698,10 +676,11 @@ public class Protein3DStructureView extends AbsoluteLayout {
     }
 
     public void setMode(int moleculeMode) {
-        this.moleculeMode = moleculeMode;
-        if (lastSelectedPeptideKey != null) {
-            selectPeptide(lastSelectedPeptideKey);
+        if (this.moleculeMode == moleculeMode) {
+            return;
         }
+        this.moleculeMode = moleculeMode;
+        selectPeptide(lastSelectedPeptideKey);
     }
 
     public AbsoluteLayout getChainCoverageLayout() {

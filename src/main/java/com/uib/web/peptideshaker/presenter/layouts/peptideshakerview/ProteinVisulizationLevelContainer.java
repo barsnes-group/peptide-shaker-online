@@ -298,10 +298,10 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
     public void reset3DProteinView() {
     }
 
-    public void activate3DProteinView() {
-        protein3DStructurePanel.activate3DProteinView();
-        graphsContainerComponent.updateMode();
-    }
+//    public void activate3DProteinView() {
+////        protein3DStructurePanel.activate3DProteinView();
+////        graphsContainerComponent.updateMode();
+//    }
 
     public int showNext() {
         filterComponentsMap.values().stream().map((view) -> {

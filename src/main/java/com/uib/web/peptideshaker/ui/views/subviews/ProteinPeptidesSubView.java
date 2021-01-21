@@ -95,45 +95,18 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
                     protein = null;
                     headerLabel.setValue("Protein Overview ");
                 }
-
                 ProteinCoverageView.setSelectedItems(selectedItems, selectedChildsItems);
                 if (isProteform) {
                     return;
                 }
-                if (selectedItems.size() == 1 && protein!=null) {
-//                    ProteinGroupObject protein = this.getProteinNodes().get((String) selectedItems.iterator().next());
-//                    proteinPeptides = new LinkedHashMap<>();
-//                    this.getPeptidesNodes().values().stream().filter((peptide) -> (peptide.getProteinsSet().contains(protein.getAccession()))).forEachOrdered((peptide) -> {
-//                        proteinPeptides.put(peptide.getModifiedSequence(), peptide);
-//                    });
-//                    if (protein3DStructurePanel.getLastSelectedAccession() != null && !protein3DStructurePanel.getLastSelectedAccession().toString().equalsIgnoreCase(protein.getAccession())) {
-//                        initialized3D = false;
-//                    }
-                    protein3DStructureView.activate3DProteinView();
+                if (selectedItems.size() == 1 && protein != null) {
                     protein3DStructureView.updatePanel(protein.getAccession(), protein.getSequence(), selectedChildsItems.values());
-//
                 } else {
                     protein3DStructureView.reset();
                 }
-//
                 if (selectedChildsItems.size() == 1) {
                     String peptideId = selectedChildsItems.keySet().iterator().next();
-//                    Object proteinId = selectedItems.iterator().next();
-//                    peptideSelection(peptideId, proteinId);
                     protein3DStructureView.selectPeptide(peptideId);
-
-                } else {
-//
-//                    if (initialized3D && selectedItems.size() == 1) {
-//                        Object proteinId = selectedItems.toArray()[0];
-//                        peptideSelection(null, proteinId);
-//                        protein3DStructurePanel.selectPeptide(null + "");
-//
-//                    } else {
-//                        peptideSelection(null, null);
-//                        initialized3D = true;
-//                    }
-//
                 }
 
             }
@@ -146,7 +119,7 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
                     case "Validation":
                         mode = 2;
                         break;
-                    case "Modification":
+                    case "Modifications":
                         mode = 3;
                         break;
                     case "Proteoform":
@@ -174,7 +147,6 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
         ProteinCoverageView = new ProteinCoverageView(protein3DStructureView.getChainCoverageLayout()) {
             @Override
             public void selectPeptide(Object proteinId, Object peptideId) {
-//                peptideSelection(peptideId, proteinId);
                 protein3DStructureView.selectPeptide(peptideId + "");
                 graphsContainerComponent.selectPeptide(proteinId, peptideId);
             }
@@ -257,14 +229,14 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
             if (!dataset.getProteinsGraphDataMap().containsKey(selectedProteinObject.getAccession())) {
                 Object[] graphData = appManagmentBean.getDatasetUtils().initialiseProteinGraphData(selectedDatasetId, lastSelectedProteinIndex);
                 Map<String, ProteinGroupObject> proteinNodes = (Map<String, ProteinGroupObject>) graphData[1];
-                proteinNodes.keySet().forEach((accession) -> {                  
+                proteinNodes.keySet().forEach((accession) -> {
                     dataset.addProteinGraphData(accession, graphData);
                 });
             }
             Object[] graphData = dataset.getProteinsGraphDataMap().get(selectedProteinObject.getAccession());
             ProteinCoverageView.updateData(graphData, dataset.getDatasetType().equals(CONSTANT.QUANT_DATASET));
             appManagmentBean.getUI_Manager().setEncodedProteinButtonImage(graphsContainerComponent.updateGraphData(graphData, dataset.getDatasetType().equals(CONSTANT.QUANT_DATASET)));
-        } 
+        }
 
     }
 
