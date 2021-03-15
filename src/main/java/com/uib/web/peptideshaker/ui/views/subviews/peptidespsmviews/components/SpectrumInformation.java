@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.uib.web.peptideshaker.presenter.pscomponents;
+package com.uib.web.peptideshaker.ui.views.subviews.peptidespsmviews.components;
 
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
 import com.compomics.util.experiment.io.biology.protein.SequenceProvider;

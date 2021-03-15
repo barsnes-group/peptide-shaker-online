@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage;
+package com.uib.web.peptideshaker.ui.views.subviews.proteinsview.components;
 
 import com.vaadin.ui.AbsoluteLayout;
 

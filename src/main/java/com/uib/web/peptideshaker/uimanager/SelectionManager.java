@@ -344,7 +344,7 @@ public class SelectionManager implements Serializable {
         filterEventsMap.clear();
         registeredDatasetFiltersMap.keySet().forEach((filterId) -> {
             FilterUpdatingEvent event = selectedDataset.getDatasetFilterEventsMap().get(filterId);
-            if (!(event == null)) {
+            if ((event != null)) {
                 FilterUpdatingEvent updatedEvent = new FilterUpdatingEvent();
                 Map<Comparable, Set<Integer>> selectionMap = new LinkedHashMap<>();
                 event.getSelectionMap().keySet().forEach((key) -> {
@@ -357,6 +357,7 @@ public class SelectionManager implements Serializable {
             }
         });
         for (String filterId : suspendedFilters) {
+            System.out.println("at filter to suspend "+filterId);
             registeredDatasetFiltersMap.get(filterId).suspendFilter(true);
             registeredDatasetFiltersMap.remove(filterId);
         }

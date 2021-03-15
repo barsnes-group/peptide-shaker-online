@@ -663,24 +663,24 @@ public class WorkFlowDataInputComponent extends Panel {
             searchEnginesList.keySet().forEach((paramId) -> {
                 selectedSearchEngines.put(paramId.replace("-", "").replace("+", "").trim(), searchEngines.getSelectedValue().contains(paramId));
             });
-             Set<GalaxyFileModel> usedList;
+            Set<GalaxyFileModel> usedList;
             if (!_rawFileList.isEmpty()) {
                 usedList = _rawFileList;
             } else if (!_mgfFileList.isEmpty()) {
-                usedList=_mgfFileList;
+                usedList = _mgfFileList;
             } else {
-                usedList=_mzMLFileList;
-            } 
-            try{
-            VisualizationDatasetModel  dataset = appManagmentBean.getWorkFlowHandler().executeWorkFlow(projectName, fastaFilesMap.get(fastFileId), serachParamFilesMap.get(searchSettingsFileList.getSelectedValue()), usedList, selectedSearchEngines);
-            if (dataset != null) {
-                appManagmentBean.getUserHandler().addToDatasetMap(dataset);
-                appManagmentBean.getUI_Manager().updateAll();
-                appManagmentBean.getUI_Manager().viewLayout(FileSystemView.class.getName());
-                appManagmentBean.getUserHandler().forceBusyHistory();
-                reset();
+                usedList = _mzMLFileList;
             }
-            }catch(Exception e){
+            try {
+                VisualizationDatasetModel dataset = appManagmentBean.getWorkFlowHandler().executeWorkFlow(projectName, fastaFilesMap.get(fastFileId), serachParamFilesMap.get(searchSettingsFileList.getSelectedValue()), usedList, selectedSearchEngines);
+                if (dataset != null) {
+                    appManagmentBean.getUserHandler().addToDatasetMap(dataset);
+                    appManagmentBean.getUI_Manager().updateAll();
+                    appManagmentBean.getUI_Manager().viewLayout(FileSystemView.class.getName());
+                    appManagmentBean.getUserHandler().forceBusyHistory();
+                    reset();
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
@@ -878,7 +878,7 @@ public class WorkFlowDataInputComponent extends Panel {
         });
         searchSettingsFileIdToNameMap.put("Add new", "Add new");
         searchSettingsFileList.updateList(searchSettingsFileIdToNameMap);
-        if (!searchSettingsFileIdToNameMap.isEmpty()) {
+        if (searchSettingsFileIdToNameMap.size() > 1) {
             searchSettingsFileList.setSelected(searchSettingsFileIdToNameMap.keySet().iterator().next());
         }
         searchSettingsFileList.setItemIcon("Add new", VaadinIcons.FILE_ADD);

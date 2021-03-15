@@ -140,12 +140,12 @@ public class WorkFlowHandler {
         String inputListId = buildList(spectrumFileSet);
         //upload the workflow
         String workflowId = prepareAndUploadWorkFlow(projectName, searchEngineSet, quant);
-        //execute workflow
+//        execute workflow
         JsonObject body = prepareWorkFlowInvoking(fastaFile, searchParam, inputListId, quant);
         Response response = appManagmentBean.getGalaxyFacad().invokeWorkFlow(workflowId, body);
         boolean status = response.getStatus() == HttpResponseStatus.OK.code();
         JsonArray jsonArrayResp = new JsonArray(response.readEntity(String.class));
-        //delete workflow
+//        delete workflow
         appManagmentBean.getGalaxyFacad().deleteWorkFlow(workflowId);
         if (status) {
             VisualizationDatasetModel tempDataset = appManagmentBean.getDatasetUtils().getOnProgressDataset(datasetType);
@@ -168,11 +168,13 @@ public class WorkFlowHandler {
         body.put(CONSTANT.TOOL_ID, CONSTANT.BUILD_LIST_TOOL_ID);
         body.put(CONSTANT.TOOL_VERSION, CONSTANT.BUILD_LIST_TOOL_ID);
         JsonObject inputs = new JsonObject();
+        JsonObject outputs = new JsonObject();
         int counter = 0;
         for (GalaxyFileModel file : fileSet) {
             JsonArray values = new JsonArray();
             JsonObject _values = new JsonObject();
             _values.put(CONSTANT.ID, file.getId());
+            _values.put(CONSTANT.NAME, file.getName());
             _values.put("src", "hda");
             _values.put("keep", Boolean.FALSE);
             _values.put(CONSTANT.HISTORY_ID, file.getHistoryId());
@@ -181,9 +183,18 @@ public class WorkFlowHandler {
             input.put("values", values);
             input.put("batch", Boolean.FALSE);
             inputs.put("datasets_" + counter + "|input", input);
+            JsonArray values2 = new JsonArray();
+            JsonObject _values2 = new JsonObject();
+            _values2.put(CONSTANT.NAME, file.getName());
+            values2.add(_values2);
+            JsonObject output = new JsonObject();
+            output.put("values", values2);
+            output.put("batch", Boolean.FALSE);
+            outputs.put("datasets_" + counter + "|output", output);
             counter++;
         }
         body.put(CONSTANT.INPUTS, inputs);
+        body.put(CONSTANT.OUTPUTS, outputs);
 
         Response response = appManagmentBean.getGalaxyFacad().buildList(body);
         JsonObject jsonObject = new JsonObject(response.readEntity(String.class));

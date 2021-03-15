@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage;
+package com.uib.web.peptideshaker.ui.components.items;
 
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;

@@ -22,7 +22,7 @@ import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.TableHeaderConstatnts;
 import com.uib.web.peptideshaker.utils.ModificationMatrixUtilis;
 import com.uib.web.peptideshaker.ui.components.RangeColorGenerator;
-import com.uib.web.peptideshaker.presenter.pscomponents.SpectrumInformation;
+import com.uib.web.peptideshaker.ui.views.subviews.peptidespsmviews.components.SpectrumInformation;
 import graphmatcher.NetworkGraphEdge;
 import graphmatcher.NetworkGraphNode;
 import org.apache.commons.collections15.map.LinkedMap;
@@ -1849,7 +1849,6 @@ public abstract class PeptideShakerVisualizationDataset extends GalaxyFileObject
         return quantDataset;
 
     }
-
     /**
      * Update the protein with Reactom pathway information
      *

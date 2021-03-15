@@ -32,7 +32,7 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
     private final ProteinsGraphsContainerView graphsContainerComponent;
     private final ResultsViewSelectionManager_old Selection_Manager;
     private final SubViewSideButton proteinoverviewBtn;
-    private final ProteinCoverageView proteinCoverageContainer;
+//    private final ProteinCoverageView proteinCoverageContainer;
     private final Protein3DStructureView protein3DStructurePanel;
     private final Map<Integer, Component> filterComponentsMap;
     private Map<String, PeptideObject> proteinPeptides;
@@ -109,7 +109,7 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
 
                     return;
                 }
-                proteinCoverageContainer.setSelectedItems(selectedItems, selectedChildsItems);
+//                proteinCoverageContainer.setSelectedItems(selectedItems, selectedChildsItems);
                 if (isProteform) {
                     return;
                 }
@@ -152,7 +152,7 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
 
             @Override
             public void updateProteinsMode(String modeType) {
-                proteinCoverageContainer.updateProteinsMode(modeType);
+//                proteinCoverageContainer.updateProteinsMode(modeType);
                 int mode = 1;
                 switch (modeType) {
                     case "Validation":
@@ -186,23 +186,23 @@ public class ProteinVisulizationLevelContainer extends HorizontalLayout implemen
 
         Selection_Manager.RegistrProteinInformationComponent(ProteinVisulizationLevelContainer.this);
 
-        proteinCoverageContainer = new ProteinCoverageView(protein3DStructurePanel.getChainCoverageLayout()) {
-            @Override
-            public void selectPeptide(Object proteinId, Object peptideId) {
-                specificPeptideSelection = true;
-                peptideSelection(peptideId, proteinId);
-                protein3DStructurePanel.selectPeptide(peptideId + "");
-                graphsContainerComponent.selectPeptide(proteinId, peptideId);
-            }
-        };
-        proteinCoverageContainer.setSizeFull();
-        subContainer.addComponent(proteinCoverageContainer);
-        proteinCoverageContainer.addStyleName("proteincoveragecontainerstyle");
+//        proteinCoverageContainer = new ProteinCoverageView(protein3DStructurePanel.getChainCoverageLayout()) {
+////            @Override
+//            public void selectPeptide(Object proteinId, Object peptideId) {
+//                specificPeptideSelection = true;
+//                peptideSelection(peptideId, proteinId);
+//                protein3DStructurePanel.selectPeptide(peptideId + "");
+//                graphsContainerComponent.selectPeptide(proteinId, peptideId);
+//            }
+//        };
+//        proteinCoverageContainer.setSizeFull();
+//        subContainer.addComponent(proteinCoverageContainer);
+//        proteinCoverageContainer.addStyleName("proteincoveragecontainerstyle");
 
         this.filterComponentsMap = new HashMap<>();
         this.filterComponentsMap.put(1, this.graphsContainerComponent);
         this.filterComponentsMap.put(2, this.protein3DStructurePanel);
-        this.filterComponentsMap.put(3, this.proteinCoverageContainer);
+//        this.filterComponentsMap.put(3, this.proteinCoverageContainer);
 
         HorizontalLayout paggingBtnsContainer = new HorizontalLayout();
         paggingBtnsContainer.setWidth(100, Unit.PERCENTAGE);

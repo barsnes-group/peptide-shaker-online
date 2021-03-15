@@ -6,8 +6,8 @@ import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideSha
 import com.uib.web.peptideshaker.model.FilterUpdatingEvent;
 import com.uib.web.peptideshaker.ui.components.items.SubViewSideButton;
 import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.PSMViewComponent;
-import com.uib.web.peptideshaker.presenter.pscomponents.SpectrumInformation;
+import com.uib.web.peptideshaker.ui.views.subviews.peptidespsmviews.PSMContainerView;
+import com.uib.web.peptideshaker.ui.views.subviews.peptidespsmviews.components.SpectrumInformation;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -28,7 +28,7 @@ public class PeptideVisulizationLevelContainer extends HorizontalLayout implemen
     private final Label headerLabel;
     private final ResultsViewSelectionManager_old Selection_Manager;
     private final SubViewSideButton psmViewBtn;
-    private final PSMViewComponent psmViewComponent;
+//    private final PSMContainerView psmViewComponent;
     private PeptideShakerVisualizationDataset peptideShakerVisualizationDataset;
 
     /**
@@ -95,15 +95,15 @@ public class PeptideVisulizationLevelContainer extends HorizontalLayout implemen
         middleContainer.setSpacing(true);
         container.addComponent(middleContainer, "left:0px ; top:30px");
 
-        psmViewComponent = new PSMViewComponent() {
-            @Override
-            public Map<Object, SpectrumInformation> getSpectrumInformationMap(List<PSMObject> psms) {
-                return peptideShakerVisualizationDataset.getSelectedSpectrumData(psms, Selection_Manager.getSelectedPeptide());
-            }
-
-        };
-        psmViewComponent.setThumbImage(this.psmViewBtn.getBtnThumbIconImage());
-        middleContainer.addComponent(psmViewComponent);
+//        psmViewComponent = new PSMContainerView() {
+//            @Override
+//            public Map<Object, SpectrumInformation> getSpectrumInformationMap(List<PSMObject> psms) {
+//                return peptideShakerVisualizationDataset.getSelectedSpectrumData(psms, Selection_Manager.getSelectedPeptide());
+//            }
+//
+//        };
+//        psmViewComponent.setThumbImage(this.psmViewBtn.getBtnThumbIconImage());
+//        middleContainer.addComponent(psmViewComponent);
         Selection_Manager.RegistrProteinInformationComponent(PeptideVisulizationLevelContainer.this);
 
 //        Button.ClickListener viewControlListener = (Button.ClickEvent event) -> {
@@ -181,7 +181,7 @@ public class PeptideVisulizationLevelContainer extends HorizontalLayout implemen
                     }
                 }
 
-                this.psmViewComponent.updateView(peptideShakerVisualizationDataset.getPSM(Selection_Manager.getSelectedPeptide().getModifiedSequence()), psmTooltip, Selection_Manager.getSelectedPeptide().getModifiedSequence().length(), peptideShakerVisualizationDataset.isQuantDataset());
+//                this.psmViewComponent.updateView(peptideShakerVisualizationDataset.getPSM(Selection_Manager.getSelectedPeptide().getModifiedSequence()), psmTooltip, Selection_Manager.getSelectedPeptide().getModifiedSequence().length(), peptideShakerVisualizationDataset.isQuantDataset());
             } else {
                 headerLabel.setValue("Peptide Spectrum Matches");
                 this.psmViewBtn.updateIconByResource(null);

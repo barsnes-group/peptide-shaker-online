@@ -1,13 +1,10 @@
 package com.uib.web.peptideshaker.ui.views;
 
-import com.uib.web.peptideshaker.ui.components.UserUploadFilesComponent;
 import com.uib.web.peptideshaker.AppManagmentBean;
-import com.uib.web.peptideshaker.uimanager.ResultsViewSelectionManager_old;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PeptideShakerVisualizationDataset;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
 import com.uib.web.peptideshaker.ui.components.items.SubViewSideButton;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.*;
 import com.uib.web.peptideshaker.ui.views.subviews.DatasetProteinsSubView;
 import com.uib.web.peptideshaker.ui.views.subviews.PeptidePsmsSubView;
 import com.uib.web.peptideshaker.ui.views.subviews.PrideSubView;
@@ -19,11 +16,8 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.*;
-import pl.exsio.plupload.PluploadFile;
 
 import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.*;
 
 /**
  * This class represent PeptideShaker view presenter which is responsible for
@@ -33,18 +27,6 @@ import java.util.concurrent.*;
  */
 public class ResultsView extends AbsoluteLayout implements ViewableFrame {
 
-    /**
-     * The small side button (normal size screen).
-     */
-//    private final ButtonWithLabel mainPresenterBtn;
-    /**
-     * The small side button (normal size screen).
-     */
-//    private final SmallSideBtn smallPresenterBtn;
-    /**
-     * The central selection manager .
-     */
-    private ResultsViewSelectionManager_old Selection_Manager;
     /**
      * The main left side buttons container in big screen mode.
      */
@@ -56,31 +38,11 @@ public class ResultsView extends AbsoluteLayout implements ViewableFrame {
     private ProteinPeptidesSubView proteinPeptidesSubView;
     private DatasetProteinsSubView datasetProteinsSubView;
 
-    private Future dataprocessFuture;
-    /**
-     * The first presenter layout (Dataset-protein level visualisation) .
-     */
-    private DatasetVisulizationLevelContainer datasetVisulizationLevelContainer;
-    /**
-     * The second presenter layout (Protein-peptides level visualisation) .
-     */
-    private ProteinVisulizationLevelContainer proteinsVisulizationLevelContainer;
-    /**
-     * The third presenter layout (Peptide-PSM level visualisation) .
-     */
-    private PeptideVisulizationLevelContainer peptideVisulizationLevelContainer;
-    /**
-     * Reference index to the last selected sup-view.
-     */
-    private int lastSelectedBtn = 1;
     /**
      * The view is in maximised mode.
      */
-    private boolean maximisedMode;
     private SubViewSideButton datasetProteinsOverviewBtn;
     private SubViewSideButton uploadOwnDataBtn;
-    private UserUploadFilesComponent userUploadDataLayoutContainer;
-    private PeptideShakerVisualizationDataset peptideShakerVisualizationDataset;
     private boolean allJobsAreDone = false;
 
     private final AppManagmentBean appManagmentBean;
@@ -120,14 +82,14 @@ public class ResultsView extends AbsoluteLayout implements ViewableFrame {
         };
 
         int buttonIndex = 1;
-        SubViewSideButton prideDataButton = new SubViewSideButton("pride_data", buttonIndex++);
-        prideDataButton.setDescription("Load datasets from PRIDE");
-        prideDataButton.updateIconByResource(new ThemeResource("img/PRIDE_logo.png"));
-        prideDataButton.addStyleName("prideimg");
-        prideDataButton.setData(PrideSubView.class.getName());
-        prideDataButton.addLayoutClickListener(listener);
-        leftSideButtonsContainer.addComponent(prideDataButton);
-        leftSideButtonsContainer.setComponentAlignment(prideDataButton, Alignment.TOP_CENTER);
+//        SubViewSideButton prideDataButton = new SubViewSideButton("pride_data", buttonIndex++);
+//        prideDataButton.setDescription("Load datasets from PRIDE");
+//        prideDataButton.updateIconByResource(new ThemeResource("img/PRIDE_logo.png"));
+//        prideDataButton.addStyleName("prideimg");
+//        prideDataButton.setData(PrideSubView.class.getName());
+//        prideDataButton.addLayoutClickListener(listener);
+//        leftSideButtonsContainer.addComponent(prideDataButton);
+//        leftSideButtonsContainer.setComponentAlignment(prideDataButton, Alignment.TOP_CENTER);
 
         uploadOwnDataBtn = new SubViewSideButton("upload-project", buttonIndex++);
         uploadOwnDataBtn.setDescription("Upload project files");
@@ -237,10 +199,9 @@ public class ResultsView extends AbsoluteLayout implements ViewableFrame {
         subviewContainerContent.setSizeFull();
         subviewContainerFrame.addComponent(subviewContainerContent, "left:10px;right:10px;top:10px;bottom:10px;");
 
-        PrideSubView prideSubView = new PrideSubView();
-        subviewContainerContent.addComponent(prideSubView);
-        appManagmentBean.getUI_Manager().registerSubView(this.getViewId(), prideSubView);
-
+//        PrideSubView prideSubView = new PrideSubView();
+//        subviewContainerContent.addComponent(prideSubView);
+//        appManagmentBean.getUI_Manager().registerSubView(this.getViewId(), prideSubView);
         UserUploadDataSubView userUploadDataSubView = new UserUploadDataSubView();
         subviewContainerContent.addComponent(userUploadDataSubView);
         appManagmentBean.getUI_Manager().registerSubView(this.getViewId(), userUploadDataSubView);
@@ -258,6 +219,7 @@ public class ResultsView extends AbsoluteLayout implements ViewableFrame {
         appManagmentBean.getUI_Manager().registerSubView(this.getViewId(), peptidePsmsSubView);
 
         appManagmentBean.getUI_Manager().viewSubLayout(this.getViewId(), userUploadDataSubView.getViewId());
+
 //        subviewContainerLayout.addComponent(userUploadDataLayoutContainer);
 //        subviewContainerLayout.addComponent(datasetVisulizationLevelContainer);
 //        subviewContainerLayout.addComponent(proteinsVisulizationLevelContainer);
@@ -471,9 +433,10 @@ public class ResultsView extends AbsoluteLayout implements ViewableFrame {
     @Override
     public void update() {
         try {
-
-            if (appManagmentBean.getUI_Manager().getSelectedDatasetId() != null) {
-                datasetProteinsOverviewBtn.removeStyleName("inactive");        
+            if (appManagmentBean.getUI_Manager().isToUpdatePeptidePSm()) {
+                peptidePsmoverviewBtn.updateIconByResource(new ExternalResource(appManagmentBean.getUI_Manager().getEncodedPeptideButtonImage()));
+            } else if (appManagmentBean.getUI_Manager().getSelectedDatasetId() != null) {
+                datasetProteinsOverviewBtn.removeStyleName("inactive");
                 if (appManagmentBean.getUI_Manager().getSelectedProteinIndex() != -1) {
                     proteinPeptidesOverviewBtn.setVisible(true);
                     proteinPeptidesOverviewBtn.updateIconByResource(new ExternalResource(appManagmentBean.getUI_Manager().getEncodedProteinButtonImage()));
@@ -482,10 +445,11 @@ public class ResultsView extends AbsoluteLayout implements ViewableFrame {
                 }
                 if (appManagmentBean.getUI_Manager().getSelectedPeptideIndex() != -1) {
                     peptidePsmoverviewBtn.setVisible(true);
-                    peptidePsmoverviewBtn.updateIconByResource(new ExternalResource(appManagmentBean.getUI_Manager().getEncodedPeptideButtonImage()));
+
                 } else {
                     peptidePsmoverviewBtn.setVisible(false);
                 }
+
             } else {
                 datasetProteinsOverviewBtn.addStyleName("inactive");
                 peptidePsmoverviewBtn.setVisible(false);

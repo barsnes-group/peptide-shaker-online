@@ -145,8 +145,8 @@ public class UserHandler implements Serializable {
                                                 }
                                             } else if (collectionModel.getElementsExtension().equals(CONSTANT.TABULAR_FILE_EXTENSION)) {
                                                 collectionModel.getElements().get(0).getGalaxyJob().getInputFileIds().stream().filter((id) -> (tempdataset.getPsZipFile().getGalaxyJob().getOutputFileIds().contains(id))).map((String _item) -> {
-                                                    if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().equals(CONSTANT.CONVERT_CHARACTERS_TOOL_ID)) {
-                                                        tempdataset.setMgfList(collectionModel);
+                                                    if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().equals(CONSTANT.CONVERT_CHARACTERS_TOOL_ID)) {                                                       
+                                                        tempdataset.setMgfList(collectionModel);     
                                                     } else if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().contains(CONSTANT.MOFF_TOOL_ID)) {
                                                         if (collectionModel.getElements().get(0).getStatus().equals(CONSTANT.OK_STATUS)) {
                                                             tempdataset.setMoffList(collectionModel);

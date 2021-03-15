@@ -6,6 +6,7 @@ import com.uib.web.peptideshaker.ui.views.subviews.proteinsview.components.Graph
 import com.uib.web.peptideshaker.ui.components.RangeColorGenerator;
 import com.vaadin.ui.VerticalLayout;
 import graphmatcher.NetworkGraphComponent;
+import graphmatcher.NetworkGraphEdge;
 
 import java.util.*;
 
@@ -28,7 +29,7 @@ public abstract class ProteinsGraphsContainerView extends VerticalLayout {
             public void selectedItem(Map<String,ProteinGroupObject> selectedItems, Map<String,PeptideObject> selectedChildsItems, boolean updateProteform) {
                 ProteinsGraphsContainerView.this.selectedItem(selectedItems, selectedChildsItems, false);//
                 if (updateProteform) {
-//                    ProteinsGraphsContainerView.this.updateProteoformGraphData(selectedItems);
+                    ProteinsGraphsContainerView.this.updateProteoformGraphData(selectedItems);
                 }
             }
 
@@ -61,7 +62,6 @@ public abstract class ProteinsGraphsContainerView extends VerticalLayout {
 
     public void selectPeptide(Object proteinId, Object peptideId) {
         if (peptideId == null) {
-
             graphComponent.selectParentItem(proteinId);
         } else {
             graphComponent.selectChildItem(proteinId, peptideId);
@@ -75,29 +75,13 @@ public abstract class ProteinsGraphsContainerView extends VerticalLayout {
 
     }
 
-    private void updateProteoformGraphData(Set<Object> proteinsIds) {
-//
-//        if (proteinsPathwayNewtorkGraph == null) {
-//            return;
-//        }
-//        Map<String, ProteinGroupObject> proteoformProteinNodes = new LinkedHashMap<>();
-//        ProteinGroupObject protein;
-//
-//        for (Object protId : proteinsIds) {
-//            if (!proteinNodes.containsKey(protId.toString())) {
-//                protein = peptideShakerVisualizationDataset.getProtein(protId.toString());
-//            } else {
-//                protein = proteinNodes.get(protId.toString());
-//            }
-//
-//            if (protein != null && protein.getValidation().contains("Confident")) {
-//                proteoformProteinNodes.put(protein.getAccession(), protein);
-//            }
-//        }
-//
-//        Set<NetworkGraphEdge> pathwayEdges = peptideShakerVisualizationDataset.updateProteinPathwayInformation(proteoformProteinNodes);
-//        proteinsPathwayNewtorkGraph.updateGraphData(proteoformProteinNodes.keySet(), pathwayEdges);
-//        graphComponent.setEnablePathway(proteinsPathwayNewtorkGraph.isEnabled());
+    private void updateProteoformGraphData(Map<String,ProteinGroupObject> selectedItems) {
+
+        if (proteinsPathwayNewtorkGraph == null) {
+            return;
+        }
+        proteinsPathwayNewtorkGraph.updateGraphData(selectedItems);
+        graphComponent.setEnablePathway(proteinsPathwayNewtorkGraph.isEnabled());
 
     }
 

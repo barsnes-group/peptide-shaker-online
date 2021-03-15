@@ -134,7 +134,7 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
 
            
         };
-        ModificationsFilter.this.addComponent(vennDiagram, "left:0px;top:0px;");
+//        ModificationsFilter.this.addComponent(vennDiagram, "left:0px;top:0px;");
 
         Button minimiseExpandBtn = new Button();
         minimiseExpandBtn.setStyleName(ValoTheme.BUTTON_ICON_ONLY);
@@ -284,11 +284,11 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
             }
         });
         matrixDiagram.updateFilter(columns, rows, modificationColorMap, event.getSeletionCategories());
-        vennDiagram.updateFilter(columns, rows, modificationColorMap, event.getSeletionCategories());
+//        vennDiagram.updateFilter(columns, rows, modificationColorMap, event.getSeletionCategories());
         populateModificationOptionGroup(modificationColorMap);
 
-//        matrixDiagram.setVisible(true);
-//        modificationFilterPanel.setVisible(true);
+        matrixDiagram.setVisible(true);
+        modificationFilterPanel.setVisible(true);
         setMainAppliedFilter(event.getSeletionCategories() != null && !event.getSeletionCategories().isEmpty());
     }
     

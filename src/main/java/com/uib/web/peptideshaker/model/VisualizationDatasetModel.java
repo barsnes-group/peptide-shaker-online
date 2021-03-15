@@ -1,9 +1,11 @@
 package com.uib.web.peptideshaker.model;
 
 import com.compomics.util.experiment.biology.proteins.Protein;
+import com.compomics.util.experiment.io.mass_spectrometry.mgf.MgfIndex;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PSMObject;
 import com.uib.web.peptideshaker.ui.components.RangeColorGenerator;
+import graphmatcher.NetworkGraphNode;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,6 +53,24 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
     private final Map<String, FilterUpdatingEvent> datasetFilterEventsMap;
     private final Map<String, Object[]> proteinsGraphDataMap;
     private  RangeColorGenerator peptideIntinsityColorScale;
+    private Map<String, Set<String>> peptidesPsmMap;    
+    private Map<String, Map<String, NetworkGraphNode>>  proteoformsMap;
+      /**
+     * MGF index file map (.cui) files.
+     */
+    private final Map<String, MgfIndex> importedMgfIndexObjectMap;
+    
+    
+    
+    
+
+    public Map<String, Map<String, NetworkGraphNode>> getProteoformsMap() {
+        return proteoformsMap;
+    }
+
+    public void setProteoformsMap(Map<String, Map<String, NetworkGraphNode>> proteoformsMap) {
+        this.proteoformsMap = proteoformsMap;
+    }
 
     public Map<String, FilterUpdatingEvent> getDatasetFilterEventsMap() {
         return datasetFilterEventsMap;
@@ -59,6 +79,7 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
     public VisualizationDatasetModel() {
         this.datasetFilterEventsMap = new LinkedHashMap<>();
         this.proteinsGraphDataMap = new HashMap<>();
+        this.importedMgfIndexObjectMap=new HashMap<>();
 
     }
 
@@ -513,6 +534,18 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
 
     public void setPeptideIntinsityColorScale(RangeColorGenerator peptideIntinsityColorScale) {
         this.peptideIntinsityColorScale = peptideIntinsityColorScale;
+    }
+
+    public Map<String, Set<String>> getPeptidesPsmMap() {
+        return peptidesPsmMap;
+    }
+
+    public void setPeptidesPsmMap(Map<String, Set<String>> peptidesPsmMap) {
+        this.peptidesPsmMap = peptidesPsmMap;
+    }
+
+    public Map<String, MgfIndex> getImportedMgfIndexObjectMap() {
+        return importedMgfIndexObjectMap;
     }
 
 }

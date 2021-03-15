@@ -1,5 +1,6 @@
-package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage;
+package com.uib.web.peptideshaker.ui.views.subviews.proteinsview.components;
 
+import com.uib.web.peptideshaker.ui.components.items.PeptideLayout;
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.shared.ui.label.ContentMode;

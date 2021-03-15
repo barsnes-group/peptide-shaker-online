@@ -5,7 +5,7 @@ import com.ejt.vaadin.sizereporter.SizeReporter;
 import com.uib.web.peptideshaker.model.PeptideObject;
 import com.uib.web.peptideshaker.model.ProteinGroupObject;
 import com.uib.web.peptideshaker.ui.components.items.ActionLabel;
-import com.uib.web.peptideshaker.presenter.core.ColorLabelWithPopupTooltip;
+import com.uib.web.peptideshaker.ui.components.items.ColorLabelWithPopupTooltip;
 import com.uib.web.peptideshaker.ui.components.RangeColorGenerator;
 import com.uib.web.peptideshaker.ui.views.subviews.proteinsview.components.ProteinCoverageComponent;
 import com.vaadin.event.LayoutEvents;
@@ -37,6 +37,7 @@ public abstract class ProteinCoverageView extends VerticalLayout {
     private double intensityWidth = 120.0;
     private int lastCapturedWidth;
     private Map<String, ProteinGroupObject> proteinNodes;
+    private String selectedPeptideId;
 
     public ProteinCoverageView(AbsoluteLayout chainCoverageLayout) {
         ProteinCoverageView.this.setSizeFull();
@@ -92,7 +93,7 @@ public abstract class ProteinCoverageView extends VerticalLayout {
 
     }
 
-    public void setSelectedItems(Map<String,ProteinGroupObject>  selectedProteinsItems,Map<String,PeptideObject> selectedPeptidesItems) {
+    public void setSelectedItems(Map<String, ProteinGroupObject> selectedProteinsItems, Map<String, PeptideObject> selectedPeptidesItems) {
         if (tableData.isEmpty() || !tableData.keySet().containsAll(selectedProteinsItems.keySet())) {
             return;
         }
@@ -103,7 +104,9 @@ public abstract class ProteinCoverageView extends VerticalLayout {
             this.proteinCoverageTable.addItem(tableData.get(id), id);
             return id;
         }).map((id) -> ((ProteinCoverageComponent) tableData.get(id)[4])).map((pcov) -> {
-            pcov.selectSubComponents(selectedPeptidesItems.keySet());
+            if (selectedPeptidesItems != null) {
+                pcov.selectSubComponents(selectedPeptidesItems.keySet());
+            }
             return pcov;
         }).filter((pcov) -> (selectedProteinsItems.size() == 1)).map((pcov) -> {
             if (chainCoverageLayout != null && chainCoverageLayout.isAttached()) {
@@ -140,14 +143,10 @@ public abstract class ProteinCoverageView extends VerticalLayout {
 
     }
 
+    public void updateData(Object[] graphData, boolean quantDataset) {
 
-    public void updateData(Object[] graphData,boolean quantDataset) {
-        
 //        Set<Object> defaultSelectedProteinsItems, Set<Object> defaultSelectedPeptidesItems
 //        graphComponent.updateGraphData((ProteinGroupObject) graphData[0], (Map<String, ProteinGroupObject>) graphData[1], (Map<String, PeptideObject>) graphData[2], (HashMap<String, Set<String>>) graphData[3], (RangeColorGenerator) graphData[4], (RangeColorGenerator) graphData[5] == null, (RangeColorGenerator) graphData[5]);
-        
-        
-        
         tableData.clear();
         rowIndex = 1;
         this.proteinNodes = (Map<String, ProteinGroupObject>) graphData[1];
@@ -168,11 +167,15 @@ public abstract class ProteinCoverageView extends VerticalLayout {
         proteinNodes.values().forEach((protein) -> {
             ProteinCoverageComponent proteinLayout = new ProteinCoverageComponent(protein, (Map<String, PeptideObject>) graphData[2], (RangeColorGenerator) graphData[4]) {
                 @Override
-                public void selectPeptide(Object proteinId, Object peptideId) {
-                    ProteinCoverageView.this.selectPeptide(proteinId, peptideId);
+                public void selectPeptide(Map<String, ProteinGroupObject> selectedItems, Map<String, PeptideObject> selectedChildsItems, boolean isProteform) {
+                    ProteinCoverageView.this.selectPeptide(selectedItems, selectedChildsItems, isProteform);
+                    selectedPeptideId = null;
+                    if (selectedChildsItems != null && selectedChildsItems.size() == 1) {
+                        selectedPeptideId = selectedChildsItems.keySet().iterator().next();
+                    }
                     tableData.keySet().forEach((id) -> {
-                        if (id.equals(proteinId)) {
-                            ((ProteinCoverageComponent) tableData.get(id)[4]).selectPeptides(peptideId);
+                        if (selectedItems.containsKey(id)) {
+                            ((ProteinCoverageComponent) tableData.get(id)[4]).selectPeptides(selectedPeptideId);
                         } else {
                             ((ProteinCoverageComponent) tableData.get(id)[4]).selectPeptides("");
                         }
@@ -180,11 +183,11 @@ public abstract class ProteinCoverageView extends VerticalLayout {
                 }
 
             };
-            ActionLabel info = new ActionLabel(VaadinIcons.INFO, "Click to view protein information") {
-                @Override
-                public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                }
-            };
+//            ActionLabel info = new ActionLabel(VaadinIcons.INFO, "Click to view protein information") {
+//                @Override
+//                public void layoutClick(LayoutEvents.LayoutClickEvent event) {
+//                }
+//            };
             ColorLabelWithPopupTooltip intinsity = new ColorLabelWithPopupTooltip(protein.getAllPeptidesIntensity(), protein.getAllPeptideIintensityColor(), protein.getPercentageAllPeptidesIntensity());
 
             Link proteinAccLink = new Link(protein.getAccession(), new ExternalResource("http://www.uniprot.org/uniprot/" + protein.getAccession()));
@@ -199,6 +202,6 @@ public abstract class ProteinCoverageView extends VerticalLayout {
         return "<div class='tooltip'>" + caption + "<span class='tooltiptext'>" + tooltip + "</span></div>";
     }
 
-    public abstract void selectPeptide(Object proteinId, Object peptideId);
+    public abstract void selectPeptide(Map<String, ProteinGroupObject> selectedProteins, Map<String, PeptideObject> selectedPeptides, boolean isProteform);
 
 }

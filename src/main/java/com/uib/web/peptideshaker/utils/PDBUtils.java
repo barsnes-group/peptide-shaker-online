@@ -8,9 +8,9 @@ import com.uib.web.peptideshaker.model.core.pdb.EntityData;
 import com.vaadin.server.VaadinSession;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.ws.rs.core.Response;
@@ -19,9 +19,9 @@ import javax.ws.rs.core.Response;
  * Maps UniProt protein accession numbers to PDB file IDs updated to suit the
  * web environment.
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
-public class PDBUtils {
+public class PDBUtils implements Serializable{
 
     /**
      * Protein to PDB matches map.
@@ -30,7 +30,6 @@ public class PDBUtils {
     /**
      * EBI web service for PDB data.
      */
-//    private final EBIRestService EBI_Rest_Service;
     private final Map<String, PDBMatch> pdbMachesMap;
     private final AppManagmentBean appManagmentBean;
 
@@ -40,7 +39,6 @@ public class PDBUtils {
     public PDBUtils() {
         this.appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
         this.proteinToPDBMap = new LinkedHashMap<>();
-//        this.EBI_Rest_Service = new EBIRestService();
         this.pdbMachesMap = new LinkedHashMap<>();
     }
 
@@ -115,12 +113,12 @@ public class PDBUtils {
 
             }
             JsonObject data = new JsonObject(response.readEntity(String.class));
-            for (String pdbId : pdbMatches.keySet()) {
+            pdbMatches.keySet().forEach((pdbId) -> {
                 String title = data.getJsonArray(pdbId.toLowerCase()).getJsonObject(0).getString("title");
                 pdbMatches.get(pdbId).setDescription(title);
-            }
+            });
         } catch (Exception ex) {
-            ex.printStackTrace();
+             System.out.println("at Error "+PDBUtils.class.getName()+"   "+ex);
         }
         return pdbMatches;
     }
@@ -189,7 +187,7 @@ public class PDBUtils {
             }
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            System.out.println("at Error "+PDBUtils.class.getName()+"   "+ex);
         }
         return pdbMatch;
     }
@@ -226,14 +224,14 @@ public class PDBUtils {
                 response = appManagmentBean.getHttpClientUtil().doGet(url);
             } else {
                 JsonObject json = new JsonObject();
-                for (String accessios : uniprotAccessionSet) {
+                uniprotAccessionSet.forEach((accessios) -> {
                     json.put(accessios, new JsonArray());
-                }
+                });
                 response = appManagmentBean.getHttpClientUtil().doPost(url, json);
 
             }
             JsonObject data = new JsonObject(response.readEntity(String.class));
-            for (String acc : uniprotAccessionSet) {
+            uniprotAccessionSet.forEach((acc) -> {
                 Map<String, PDBMatch> map = new LinkedHashMap<>();
                 if (data.containsKey(acc)) {
                     JsonArray subDataArr = data.getJsonArray(acc);
@@ -246,10 +244,10 @@ public class PDBUtils {
 
                 }
                 pdbMap.put(acc, map);
-            }
+            });
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            System.out.println("at Error "+PDBUtils.class.getName()+"   "+ex);
         }
         return pdbMap;
     }

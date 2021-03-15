@@ -3,6 +3,8 @@ package com.uib.web.peptideshaker.utils;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.core.LinkUtil;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -127,6 +129,15 @@ public class URLUtils {
 
 //        rand.nextBytes(salt);
         return Base64.encodeBase64String(salt) + Base64.encodeBase64String(linkToShare.getBytes());
+    }
+    
+    public String encodeURL(String url){
+        try {
+            return URLEncoder.encode(url, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            System.out.println("Error encode url "+URLUtils.class.getName()+"  "+ex);
+           return url;
+        }
     }
 
 }

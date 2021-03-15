@@ -2,6 +2,7 @@ package com.uib.web.peptideshaker;
 
 import com.uib.web.peptideshaker.listeners.VaadinSessionControlListener;
 import com.uib.web.peptideshaker.model.CONSTANT;
+import com.uib.web.peptideshaker.model.PRIDECompactProjectModel;
 import com.uib.web.peptideshaker.ui.views.subviews.proteinsview.Protein3DStructureView;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.Push;
@@ -15,6 +16,7 @@ import com.vaadin.ui.UI;
 import java.io.IOException;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
+import java.util.Map;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.ServletConfig;
@@ -59,6 +61,9 @@ public class PeptidShakerEntryPoint extends UI {
         }
         appManagmentBean = new AppManagmentBean();
         VaadinSession.getCurrent().setAttribute(CONSTANT.APP_MANAGMENT_BEAN, appManagmentBean);
+        /**
+         * Test 3d structure*
+         */
         if (false) {
             AbsoluteLayout frame = new AbsoluteLayout();
             frame.setWidth(500, Unit.PIXELS);
@@ -79,6 +84,17 @@ public class PeptidShakerEntryPoint extends UI {
                 prot3dTest.updatePanel("P11021", seq, new HashSet<>());
             });
 
+            return;
+        }
+        /**
+         * Test Pride database API *
+         */
+        if (false) {
+            Map<String, PRIDECompactProjectModel> projects = appManagmentBean.getPRIDEUtils().searchPRIDEProjects("CSF,Alzheimer",1);
+            int index = 1;
+            for (PRIDECompactProjectModel project : projects.values()) {
+                System.out.println("at " + (index++) + " --- " + project.getAccession() + " --- " + project.getTitle());
+            }
             return;
         }
 
@@ -126,12 +142,24 @@ public class PeptidShakerEntryPoint extends UI {
         if (requestToShare.endsWith(".error")) {
 //            webPeptideShakerApp.loginAsGuest();
             appManagmentBean.getNotificationFacade().showErrorNotification("Not valid sharing link");
-        } else if (!requestToShare.contains("toShare;")) {
-//            webPeptideShakerApp.loginAsGuest();
-        } else if (requestToShare.contains("toShare;")) {
-//            webPeptideShakerApp.retriveToShareDataset();
-        }
+        } 
+//        else if (!requestToShare.contains("toShare;")) {
+////            webPeptideShakerApp.loginAsGuest();
+//        } else if (requestToShare.contains("toShare;")) {
+////            webPeptideShakerApp.retriveToShareDataset();
+//        }
 //        notificationFacade.showGalaxyConnectingProcess("Guest User <i>(public data)</i>");
+
+ /**
+         * for testing
+         *
+         * @todo: delete
+         **
+         */
+////        appManagmentBean.getDatasetUtils().runUploadedFilesDemo();
+        /**
+         * **
+         */
 
     }
 

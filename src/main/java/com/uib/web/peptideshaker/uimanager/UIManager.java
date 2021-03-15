@@ -184,17 +184,30 @@ public class UIManager implements Serializable {
     public String getEncodedProteinButtonImage() {
         return encodedProteinButtonImage;
     }
+    
+    private void updatePeptidePsmButtonImage(){
+    visualizationMap.get(ResultsView.class.getName()).update();
+    toUpdatePeptidePSm=false;
+    }
 
     public void setEncodedProteinButtonImage(String encodedProteinButtonImage) {
         this.encodedProteinButtonImage = encodedProteinButtonImage;
     }
 
     public String getEncodedPeptideButtonImage() {
+        
         return encodedPeptideButtonImage;
     }
 
+    private boolean toUpdatePeptidePSm;
     public void setEncodedPeptideButtonImage(String encodedPeptideButtonImage) {
+        this.toUpdatePeptidePSm = true;
         this.encodedPeptideButtonImage = encodedPeptideButtonImage;
+        updatePeptidePsmButtonImage();
+    }
+
+    public boolean isToUpdatePeptidePSm() {
+        return toUpdatePeptidePSm;
     }
 
 }

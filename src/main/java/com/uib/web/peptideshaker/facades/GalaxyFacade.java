@@ -1,5 +1,8 @@
 package com.uib.web.peptideshaker.facades;
 
+import com.compomics.util.experiment.mass_spectrometry.spectra.Peak;
+import com.compomics.util.experiment.mass_spectrometry.spectra.Precursor;
+import com.compomics.util.experiment.mass_spectrometry.spectra.Spectrum;
 import com.uib.web.peptideshaker.AppManagmentBean;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.GalaxyCollectionModel;
@@ -8,8 +11,10 @@ import com.uib.web.peptideshaker.model.GalaxyJobModel;
 import com.vaadin.server.VaadinSession;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import java.io.BufferedReader;
 import java.io.Serializable;
-import java.net.ConnectException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,11 +49,12 @@ public class GalaxyFacade implements Serializable {
             if (response.getStatus() == HttpStatus.SC_OK) {
                 JsonArray jsonArray = new JsonArray(response.readEntity(String.class));
                 this.galaxyJobs.clear();
+                appManagmentBean.setAvailableGalaxy(true);
                 return jsonArray.getJsonObject(0).getString(CONSTANT.ID);
             }
-            appManagmentBean.setAvailableGalaxy(true);
+
         } catch (Exception e) {
-           
+            e.printStackTrace();
         }
         return null;
     }
@@ -177,9 +183,26 @@ public class GalaxyFacade implements Serializable {
             } else if (!galaxyJobs.containsKey(collection.getGalaxyJobId())) {
                 GalaxyJobModel jobModel = fillJobDetails(collection.getGalaxyJobId(), userAPIKey);
                 galaxyJobs.put(collection.getGalaxyJobId(), jobModel);
+
             }
             collection.setGalaxyJob(galaxyJobs.get(collection.getGalaxyJobId()));
+
         });
+        /**
+         * update indexed mgf file names
+         */
+        for (GalaxyCollectionModel collectionModel : collectionList) {
+            if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().equals(CONSTANT.CONVERT_CHARACTERS_TOOL_ID)) {
+                for (GalaxyFileModel file : collectionModel.getElements()) {
+                    String name = getFileName(userAPIKey, file.getGalaxyJob().getInputFileIds().iterator().next());
+                    if (name != null) {
+                        file.setName(name);
+                    }
+                }
+
+            }
+
+        }
         return new Object[]{collectionList, filesMap};
     }
 
@@ -194,7 +217,19 @@ public class GalaxyFacade implements Serializable {
                 galaxyJobs.put(jsonObject.getString(CONSTANT.CREATING_JOB_ID), null);
             }
             file.setGalaxyJobId(jsonObject.getString(CONSTANT.CREATING_JOB_ID));
+
         }
+
+    }
+
+    private String getFileName(String userAPIKey, String fileId) {
+        Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/datasets/" + fileId + "?key=" + userAPIKey);
+        if (response.getStatus() == HttpStatus.SC_OK) {
+            JsonObject jsonObject = new JsonObject(response.readEntity(String.class));
+            return jsonObject.getString(CONSTANT.NAME);
+
+        }
+        return null;
 
     }
 
@@ -328,4 +363,198 @@ public class GalaxyFacade implements Serializable {
         }
         return false;
     }
+
+    /**
+     * Get MSn spectrum object using HTML request to Galaxy server (byte serving
+     * support).
+     *
+     * @param startIndex the spectra index on the MGF file
+     * @param historyId the Galaxy Server History ID that contain the MGF file
+     * @param fileId The ID of the MGF file on Galaxy Server
+     * @param MGFFileName The MGF file name
+     * @return MSnSpectrum spectrum object
+     */
+    public Spectrum streamSpectrum(long startIndex, String historyId, String fileId, String MGFFileName, int charge, String userAPIKey) {
+        String locationBuilder = (appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/histories/" + historyId + "/contents/" + fileId + "/display?key=" + userAPIKey);
+        double precursorMz = 0, precursorIntensity = 0, rt = -1.0, rt1 = -1, rt2 = -1;
+        int[] precursorCharges = null;
+        String scanNumber = "", spectrumTitle = "";
+        HashMap<Double, Peak> spectrum = new HashMap<>();
+        String line;
+        boolean insideSpectrum = false;
+        ArrayList<Double> mzList = new ArrayList<>(0);
+        ArrayList<Double> intensityList = new ArrayList<>(0);
+        try (BufferedReader bin = appManagmentBean.getHttpClientUtil().byteServingStreamFile(locationBuilder, startIndex + "", "")) {
+            while ((line = bin.readLine()) != null) {
+                String[] spectrumData = line.split("\n");
+                for (String str : spectrumData) {
+                    line = str;
+                    // fix for lines ending with \r
+                    if (line.endsWith("\r")) {
+                        line = line.replace("\r", "");
+                    }
+
+                    if (line.startsWith("BEGIN")) {
+                        insideSpectrum = true;
+                        mzList = new ArrayList<>();
+                        intensityList = new ArrayList<>();
+                    } else if (line.startsWith("TITLE")) {
+                        insideSpectrum = true;
+                        spectrumTitle = line.substring(line.indexOf('=') + 1);
+                        try {
+                            spectrumTitle = URLDecoder.decode(spectrumTitle, "utf-8");
+                        } catch (UnsupportedEncodingException e) {
+                            System.out.println("Error: 113 :An exception was thrown when trying to decode an mgf title: " + spectrumTitle + "  " + e);
+                        }
+                    } else if (line.startsWith("CHARGE")) {
+                        precursorCharges = parseCharges(line);
+                    } else if (line.startsWith("PEPMASS")) {
+                        String temp = line.substring(line.indexOf("=") + 1);
+                        String[] values = temp.split("\\s");
+                        precursorMz = Double.parseDouble(values[0]);
+                        if (values.length > 1) {
+                            precursorIntensity = Double.parseDouble(values[1]);
+                        } else {
+                            precursorIntensity = 0.0;
+                        }
+                    } else if (line.startsWith("RTINSECONDS")) {
+                        try {
+                            String rtInput = line.substring(line.indexOf('=') + 1);
+                            String[] rtWindow = rtInput.split("-");
+                            if (rtWindow.length == 1) {
+                                String tempRt = rtWindow[0];
+                                // possible fix for values like RTINSECONDS=PT121.250000S
+                                if (tempRt.startsWith("PT") && tempRt.endsWith("S")) {
+                                    tempRt = tempRt.substring(2, tempRt.length() - 1);
+                                }
+                                rt = new Double(tempRt);
+                            } else if (rtWindow.length == 2) {
+                                rt1 = new Double(rtWindow[0]);
+                                rt2 = new Double(rtWindow[1]);
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("An exception was thrown when trying to decode the retention time: " + spectrumTitle);
+                            e.printStackTrace();
+                            // ignore exception, RT will not be parsed
+                        }
+                    } else if (line.startsWith("TOLU")) {
+                        // peptide tolerance unit not implemented
+                    } else if (line.startsWith("TOL")) {
+                        // peptide tolerance not implemented
+                    } else if (line.startsWith("SEQ")) {
+                        // sequence qualifier not implemented
+                    } else if (line.startsWith("COMP")) {
+                        // composition qualifier not implemented
+                    } else if (line.startsWith("ETAG")) {
+                        // error tolerant search sequence tag not implemented
+                    } else if (line.startsWith("TAG")) {
+                        // sequence tag not implemented
+                    } else if (line.startsWith("SCANS")) {
+                        try {
+                            scanNumber = line.substring(line.indexOf('=') + 1);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            throw new IllegalArgumentException("Cannot parse scan number.");
+                        }
+                    } else if (line.startsWith("INSTRUMENT")) {
+                        // ion series not implemented
+                    } else if (line.startsWith("END")) {
+
+                        if (precursorCharges == null) {
+                            precursorCharges = new int[]{charge};
+                        }
+                        Precursor precursor;
+                        if (rt1 != -1 && rt2 != -1) {
+                            precursor = new Precursor(precursorMz, precursorIntensity, precursorCharges, rt1, rt2);
+                        } else {
+                            precursor = new Precursor(rt, precursorMz, precursorIntensity, precursorCharges);
+                        }
+
+                        double[] mzArray = mzList.stream()
+                                .mapToDouble(
+                                        a -> a
+                                )
+                                .toArray();
+                        double[] intensityArray = intensityList.stream()
+                                .mapToDouble(
+                                        a -> a
+                                )
+                                .toArray();
+                        bin.close();
+                        return new Spectrum(precursor, mzArray, intensityArray);
+
+                    } else if (insideSpectrum && !line.equals("")) {
+                        try {
+                            String values[] = line.split("\\s+");
+                            double mz = Double.parseDouble(values[0]);
+                            mzList.add(mz);
+                            double intensity = Double.parseDouble(values[1]);
+                            intensityList.add(intensity);
+                        } catch (Exception e1) {
+                            // ignore comments and all other lines
+                        }
+                    }
+
+                }
+
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        System.out.println("Error: 214 : null spectrum is returned");
+        return null;
+    }
+
+    /**
+     * Parses the charge line of an MGF files.
+     *
+     * @param chargeLine the charge line
+     * @return the possible charges found
+     * @throws IllegalArgumentException
+     */
+    private int[] parseCharges(String chargeLine) {
+
+        ArrayList<Integer> result = new ArrayList<>(1);
+        String tempLine = chargeLine.substring(chargeLine.indexOf("=") + 1);
+        String[] chargesAnd = tempLine.split(" and ");
+        ArrayList<String> chargesAsString = new ArrayList<>();
+
+        for (String charge : chargesAnd) {
+            for (String charge2 : charge.split(",")) {
+                chargesAsString.add(charge2.trim());
+            }
+        }
+        for (String chargeAsString : chargesAsString) {
+
+            chargeAsString = chargeAsString.trim();
+
+            if (!chargeAsString.isEmpty()) {
+                try {
+                    if (chargeAsString.endsWith("+")) {
+                        int value = Integer.parseInt(chargeAsString.substring(0, chargeAsString.length() - 1));
+                        result.add(value);
+                    } else if (chargeAsString.endsWith("-")) {
+                        int value = Integer.parseInt(chargeAsString.substring(0, chargeAsString.length() - 1));
+                        result.add(value);
+                    } else if (!chargeAsString.equalsIgnoreCase("Mr")) {
+                        int value = Integer.parseInt(chargeAsString);
+                        result.add(value);
+                    }
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                    throw new IllegalArgumentException("\'" + chargeAsString + "\' could not be processed as a valid precursor charge!");
+                }
+            }
+        }
+        // if empty, add a default charge of 1
+        if (result.isEmpty()) {
+            result.add(1);
+        }
+
+        return result.stream()
+                .mapToInt(a -> a)
+                .toArray();
+    }
+
 }

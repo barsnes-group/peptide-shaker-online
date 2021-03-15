@@ -16,7 +16,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -199,5 +202,88 @@ public class DatabaseUtils {
         }
 
         return csf_pr_acc_list;
+    }
+    
+    
+    /**
+     * Get the edges information for selected accession list
+     *
+     * @param proteinAcc protein accession list
+     * @return set of edge data
+     */
+    public Set<String[]> getPathwayEdges(Set<String> proteinAcc) {
+        Set<String[]> edges = new LinkedHashSet<>();
+        try {
+
+            if (!dbEnabled) {
+                return edges;
+            }
+           if (conn == null || conn.isClosed()) {
+                Class.forName(appManagmentBean.getAppConfig().getDbDriver()).newInstance();
+                conn = DriverManager.getConnection(appManagmentBean.getAppConfig().getDbURL() + appManagmentBean.getAppConfig().getDbName() + CONSTANT.SERVER_TIMEZONE, appManagmentBean.getAppConfig().getDbUserName(), appManagmentBean.getAppConfig().getDbPassword());
+
+            }
+
+            for (String acc : proteinAcc) {
+                System.out.println("at acc is "+acc);
+                if (acc.trim().equalsIgnoreCase("")) {
+                    continue;
+                }
+                String selectstatment = "SELECT `edge_index` FROM `accessionindex`  where `uniprot_acc`=? ;";
+                PreparedStatement selectNameStat = conn.prepareStatement(selectstatment);
+                selectNameStat.setString(1, acc);
+                ResultSet rs = selectNameStat.executeQuery();
+                Set<Integer> indexes = new HashSet<>();
+                while (rs.next()) {
+                    indexes.add(rs.getInt("edge_index"));
+                }
+                selectNameStat.close();
+                rs.close();
+                System.out.println("at step I "+indexes.size());
+                List<Integer> list = new ArrayList<>(indexes);
+                int step = Math.min(15, list.size() - 1);
+                int start = 0;
+//                while (true) {
+//                    Set<Integer> subSet = new LinkedHashSet<>(list.subList(start, step));
+//                    start = step + 1;
+//                    if (start == list.size()) {
+//                        break;
+//                    }
+//                    step = Math.min(step + 15, list.size() - 1);
+//                    selectstatment = "SELECT * FROM `edges`  where ";
+//                    for (Integer i : subSet) {
+//                        selectstatment = selectstatment + "`edge_index`=? or ";
+//                    }
+//                    selectstatment = selectstatment.substring(0, selectstatment.length() - 4) + ";";
+//                    selectNameStat = conn.prepareStatement(selectstatment);
+//                    int indexer = 1;
+//                    for (Integer i : subSet) {
+//                        selectNameStat.setInt(indexer++, i);
+//                    }
+//                    rs = selectNameStat.executeQuery();
+//                    while (rs.next()) {
+//                        String protI = rs.getString(2).trim();
+//                        String protII = rs.getString(3).trim();
+//                        edges.add(new String[]{protI, protII});
+//                    }
+
+//                }
+
+            }
+            edges.stream().map((arr) -> {
+                if (!arr[0].contains(";")) {
+                    arr[0] = arr[0] + ";";
+                }
+                return arr;
+            }).filter((arr) -> (!arr[1].contains(";"))).forEachOrdered((arr) -> {
+                arr[1] = arr[1] + ";";
+            });
+            return edges;
+
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | SQLException e) {
+            dbEnabled = false;
+            System.out.println(e.getLocalizedMessage());
+        }
+        return edges;
     }
 }

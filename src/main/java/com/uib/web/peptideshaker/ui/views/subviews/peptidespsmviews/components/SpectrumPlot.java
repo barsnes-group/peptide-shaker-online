@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.presenter.pscomponents;
+package com.uib.web.peptideshaker.ui.views.subviews.peptidespsmviews.components;
 
 import com.compomics.util.experiment.biology.aminoacids.AminoAcid;
 import com.compomics.util.experiment.biology.aminoacids.sequence.AminoAcidPattern;
@@ -29,11 +29,15 @@ import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.ComponentResizeListener;
 import com.ejt.vaadin.sizereporter.SizeReporter;
 import com.itextpdf.text.pdf.codec.Base64;
+import com.uib.web.peptideshaker.AppManagmentBean;
+import com.uib.web.peptideshaker.model.CONSTANT;
+import com.uib.web.peptideshaker.presenter.pscomponents.WebSpectrumPanel;
 import com.vaadin.data.Property;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.server.StreamResource;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.slider.SliderOrientation;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.MenuBar;
@@ -84,6 +88,11 @@ public class SpectrumPlot extends AbsoluteLayout {
     private final MenuItem deNovoItem;
     private final MenuItem settingsItem;
     private final ComponentResizeListener compResizeListener;
+    private String encodedThumbImgUrl;
+
+    public String getEncodedThumbImgUrl() {
+        return encodedThumbImgUrl;
+    }
     /**
      * Time to wait
      */
@@ -92,7 +101,6 @@ public class SpectrumPlot extends AbsoluteLayout {
      * The spectrum annotator.
      */
     private final PeptideSpectrumAnnotator spectrumAnnotator = new PeptideSpectrumAnnotator();
-    private Image plotThumbImage;
     private SelectioncanvasComponent selectionCanvas;
     private WebSpectrumPanel spectrumPanel;
     private boolean disableSizeReporter = false;
@@ -111,9 +119,10 @@ public class SpectrumPlot extends AbsoluteLayout {
     private double fragmentIonAccuracy;
     private SpectrumMatch spectrumMatch;
     private Thread selectedSpectrumThread;
+    private final AppManagmentBean appManagmentBean;
 
     public SpectrumPlot() {
-//        SpectrumPlot.this.setStyleName("splotframe");
+        this.appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
         SpectrumPlot.this.setSizeFull();
         SpectrumPlot.this.setStyleName("spectrumplotstyle");
         ions = new LinkedHashMap<>();
@@ -343,11 +352,6 @@ public class SpectrumPlot extends AbsoluteLayout {
 
     public void setDisableSizeReporter(boolean disableSizeReporter) {
         this.disableSizeReporter = disableSizeReporter;
-    }
-
-    public void setPlotThumbImage(Image plotThumbImage) {
-        this.plotThumbImage = plotThumbImage;
-        this.plotThumbImage.addStyleName("nopadding");
     }
 
     private void updateImage(JPanel jpanel) {
@@ -668,20 +672,20 @@ public class SpectrumPlot extends AbsoluteLayout {
             levelSlider.addValueChangeListener(listener);
             annotationAccuracySlider.addValueChangeListener(listener);
             updateAnnotationPreferences();
-            if (plotThumbImage != null) {
-                spectrumPanel.setMiniature(true);
-                spectrumPanel.setSize(100, 100);
-                spectrumPanel.setPeakWidth(2f);
-                spectrumPanel.setBackgroundPeakWidth(0.5f);
-                spectrumPanel.setMaxPadding(10);
-                plotThumbImage.setSource(new ExternalResource(drawImage(spectrumPanel, true)));
-                spectrumPanel.setMiniature(false);
-                spectrumPanel.setPeakWidth(1f);
-                spectrumPanel.setBackgroundPeakWidth(1f);
-                spectrumPanel.setMaxPadding(50);
-            }
+            spectrumPanel.setMiniature(true);
+            spectrumPanel.setSize(100, 100);
+            spectrumPanel.setPeakWidth(2f);
+            spectrumPanel.setBackgroundPeakWidth(0.5f);
+            spectrumPanel.setMaxPadding(10);
+            encodedThumbImgUrl = drawImage(spectrumPanel, true);
+            spectrumPanel.setMiniature(false);
+            spectrumPanel.setPeakWidth(1f);
+            spectrumPanel.setBackgroundPeakWidth(1f);
+            spectrumPanel.setMaxPadding(50);
+
             UI.getCurrent().access(this::reDraw);
             mainSizeReporter.addResizeListener(compResizeListener);
+            appManagmentBean.getUI_Manager().setEncodedPeptideButtonImage(encodedThumbImgUrl);
         });
         selectedSpectrumThread.start();
         try {

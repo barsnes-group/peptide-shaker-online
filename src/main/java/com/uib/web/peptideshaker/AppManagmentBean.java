@@ -13,6 +13,7 @@ import com.uib.web.peptideshaker.utils.DatasetUtils;
 import com.uib.web.peptideshaker.utils.FilesUtils;
 import com.uib.web.peptideshaker.utils.HttpClientUtils;
 import com.uib.web.peptideshaker.utils.PDBUtils;
+import com.uib.web.peptideshaker.utils.PRIDEUtils;
 import com.uib.web.peptideshaker.utils.URLUtils;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -40,6 +41,7 @@ public class AppManagmentBean implements Serializable {
 
     private UIManager UI_Manager;
     private SelectionManager selectionManager;
+    private PRIDEUtils PRIDEUtils;
 
     private Config appConfig;
     private GalaxyFacade galaxyFacad;
@@ -84,6 +86,7 @@ public class AppManagmentBean implements Serializable {
         }
         return workFlowHandler;
     }
+    
 
     public DatabaseUtils getDatabaseUtils() {
         if (databaseUtils == null) {
@@ -214,5 +217,12 @@ public class AppManagmentBean implements Serializable {
             pdbUtils = new PDBUtils();
         }
         return pdbUtils;
+    }
+
+    public PRIDEUtils getPRIDEUtils() {
+         if (PRIDEUtils == null) {
+            PRIDEUtils = new PRIDEUtils();
+        }
+        return PRIDEUtils;
     }
 }

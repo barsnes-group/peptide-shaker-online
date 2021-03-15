@@ -59,7 +59,6 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
     /**
      * Constructor to initialise the layout.
      *
-     * @param availableGalaxy galaxy server is available
      */
     public WelcomePageView() {
         appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
@@ -125,15 +124,15 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         Label usedMemory = initLeftSideInfoLabel(VaadinIcons.CLOUD_O.getHtml() + " Storage ", "<i>Not Available</i>");
         userOverviewLayout.addComponent(usedMemory);
 
-        Label searchGUI = initLeftSideInfoLabel("<img src='VAADIN/themes/webpeptideshakertheme/img/sgiconHRNSgray21.png' alt style='width: auto;height:15px;margin-left:-2px;    margin-right: 4px;'>" + " SearchGUI ", "<i class='nrightsidediv'>" + VaadinSession.getCurrent().getAttribute("searchGUIversion") + "</i>");
+        Label searchGUI = initLeftSideInfoLabel("<img src='VAADIN/themes/webpeptideshakertheme/img/sgiconHRNSgray21.png' alt style='width: auto;height:15px;margin-left:-2px;    margin-right: 4px;'>" + " SearchGUI ", "<i class='nrightsidediv'>" + appManagmentBean.getAppConfig().getSearchGUIversion() + "</i>");
         searchGUI.setValue(searchGUI.getValue().replace("<div style='white-space: nowrap;width: 65px;height: 20px;", "<div class='psversstyle' style='white-space: nowrap;width: 65px;height: 20px;"));
         userOverviewLayout.addComponent(searchGUI);
 
-        Label peptideShaker = initLeftSideInfoLabel("<img src='VAADIN/themes/webpeptideshakertheme/img/psiconHRNSgray21.png' alt style='width: auto;height:15px;margin-left:-2px;    margin-right: 4px;'>" + " PeptideShaker ", "<i class='nrightsidediv'>" + VaadinSession.getCurrent().getAttribute("psVersion") + "</i>");
+        Label peptideShaker = initLeftSideInfoLabel("<img src='VAADIN/themes/webpeptideshakertheme/img/psiconHRNSgray21.png' alt style='width: auto;height:15px;margin-left:-2px;    margin-right: 4px;'>" + " PeptideShaker ", "<i class='nrightsidediv'>" + appManagmentBean.getAppConfig().getPsVersion() + "</i>");
         peptideShaker.setValue(peptideShaker.getValue().replace("<div style='white-space: nowrap;width: 65px;height: 20px;", "<div class='psversstyle' style='white-space: nowrap;width: 65px;height: 20px;"));
         userOverviewLayout.addComponent(peptideShaker);
 
-        Label moff = initLeftSideInfoLabel("<img src='VAADIN/themes/webpeptideshakertheme/img/mofficon21.png' alt style='width: auto;height:15px;margin-left:-2px;    margin-right: 4px;'>" + " moff ", "<i class='nrightsidediv'>" + VaadinSession.getCurrent().getAttribute("moffvirsion") + "</i>");
+        Label moff = initLeftSideInfoLabel("<img src='VAADIN/themes/webpeptideshakertheme/img/mofficon21.png' alt style='width: auto;height:15px;margin-left:-2px;    margin-right: 4px;'>" + " moff ", "<i class='nrightsidediv'>" + appManagmentBean.getAppConfig().getMoffVersion() + "</i>");
         moff.setValue(moff.getValue().replace("<div style='white-space: nowrap;width: 65px;height: 20px;", "<div class='psversstyle' style='white-space: nowrap;width: 65px;height: 20px;"));
         userOverviewLayout.addComponent(moff);
 
@@ -243,7 +242,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         busyConnectinWindow.center();
         this.busyConnectinWindow.setWindowMode(WindowMode.NORMAL);
         busyConnectinWindow.addStyleName("hidewindow");
-        if ((boolean) VaadinSession.getCurrent().getAttribute("mobilescreenstyle")) {
+        if (appManagmentBean.getAppConfig().isMobileDeviceStyle()) {
             userOverviewPanel.setIcon(VaadinIcons.ANGLE_RIGHT);
             userOverviewPanel.addLayoutClickListener((LayoutEvents.LayoutClickEvent event) -> {
                 if (userOverviewPanel.getStyleName().contains("hidecontent")) {

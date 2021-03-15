@@ -1,5 +1,6 @@
-package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage;
+package com.uib.web.peptideshaker.ui.views.subviews.proteinsview.components;
 
+import com.uib.web.peptideshaker.ui.components.items.HighlightPeptide;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.ThemeResource;

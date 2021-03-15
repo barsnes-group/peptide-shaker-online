@@ -1,31 +1,38 @@
-package com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components;
+package com.uib.web.peptideshaker.ui.views.subviews.peptidespsmviews;
 
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.SizeReporter;
+import com.uib.web.peptideshaker.AppManagmentBean;
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PSMObject;
-import com.uib.web.peptideshaker.presenter.core.ColorLabelWithPopupTooltip;
-import com.uib.web.peptideshaker.presenter.core.SparkLineLabel;
-import com.uib.web.peptideshaker.presenter.core.ValidationLabel;
-import com.uib.web.peptideshaker.presenter.pscomponents.SecondarySpectraChartsGenerator;
-import com.uib.web.peptideshaker.presenter.pscomponents.SpectrumInformation;
-import com.uib.web.peptideshaker.presenter.pscomponents.SpectrumPlot;
+import com.uib.web.peptideshaker.model.CONSTANT;
+import com.uib.web.peptideshaker.model.PeptideObject;
+import com.uib.web.peptideshaker.model.VisualizationDatasetModel;
+import com.uib.web.peptideshaker.ui.components.items.ColorLabelWithPopupTooltip;
+import com.uib.web.peptideshaker.ui.components.items.SparkLineLabel;
+import com.uib.web.peptideshaker.ui.components.items.ValidationLabel;
+import com.uib.web.peptideshaker.ui.views.subviews.peptidespsmviews.components.SecondarySpectraChartsGenerator;
+import com.uib.web.peptideshaker.ui.views.subviews.peptidespsmviews.components.SpectrumInformation;
+import com.uib.web.peptideshaker.ui.views.subviews.peptidespsmviews.components.SpectrumPlot;
 import com.vaadin.data.Property;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Yehia Farag
  */
-public abstract class PSMViewComponent extends VerticalLayout {
+public class PSMContainerView extends VerticalLayout {
 
     private final Table psmOverviewTable;
     private final AbsoluteLayout psmTableWrapper;
@@ -40,14 +47,19 @@ public abstract class PSMViewComponent extends VerticalLayout {
     private int currentFilterView = 0;
     private int fragWidth;
     private Map<Object, SpectrumInformation> spectrumInformationMap;
-    public PSMViewComponent() {
-        PSMViewComponent.this.setSizeFull();
-        PSMViewComponent.this.setSpacing(true);
+    private final AppManagmentBean appManagmentBean;
+    private  String psmTooltip ;
+    private  String mainPeptideTooltip;
+
+    public PSMContainerView() {
+        this.appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
+        PSMContainerView.this.setSizeFull();
+        PSMContainerView.this.setSpacing(true);
 
         final AbsoluteLayout splitpanel = new AbsoluteLayout();
         splitpanel.setSizeFull();
 
-        PSMViewComponent.this.addComponent(splitpanel);
+        PSMContainerView.this.addComponent(splitpanel);
 
         psmTableWrapper = new AbsoluteLayout();
         psmTableWrapper.setSizeFull();
@@ -181,7 +193,7 @@ public abstract class PSMViewComponent extends VerticalLayout {
         nextBtn.addClickListener((Button.ClickEvent event) -> {
             filterViewIndex.setValue(" (" + this.showNext() + "/2) ");
         });
-        filterViewIndex.setValue(" (" + PSMViewComponent.this.showNext() + "/2) ");
+        filterViewIndex.setValue(" (" + PSMContainerView.this.showNext() + "/2) ");
 
 //       
 //        resizeControlBtn.resize(2);
@@ -207,12 +219,26 @@ public abstract class PSMViewComponent extends VerticalLayout {
 
     }
 
-    public void updateView(List<PSMObject> psms, String tooltip, int peptideLength, boolean quantDataset) {
+    public void updateView() {
         this.psmOverviewTable.removeValueChangeListener(psmlistener);
         this.psmOverviewTable.removeAllItems();
+        VisualizationDatasetModel selectedDataset = appManagmentBean.getUserHandler().getDataset(appManagmentBean.getUI_Manager().getSelectedDatasetId());
+        PeptideObject selectedPeptide = selectedDataset.getPeptidesMap().get(appManagmentBean.getUI_Manager().getSelectedPeptideIndex());
+        mainPeptideTooltip = "";
+        for (String str : selectedPeptide.getTooltip().split("</br>")) {
+            if (str.contains("#PSMs:")) {
+                mainPeptideTooltip = selectedPeptide.getTooltip().replace(str + "</br>", "");
+                break;
+            }
+        }
+        Set<String> psmKeys = selectedDataset.getPeptidesPsmMap().get(selectedPeptide.getModifiedSequence());
+        List<PSMObject> psms = new ArrayList<>();
+        psmKeys.forEach((str) -> {
+            psms.add(selectedDataset.getPsmsMap().get(str));
+        });
         index = 1;
         fragWidth = (-1 * Integer.MAX_VALUE);
-        if (!quantDataset) {
+        if (selectedDataset.getDatasetType().equals(CONSTANT.ID_DATASET)) {
             psmOverviewTable.setColumnWidth("sequenceFrag", psmOverviewTable.getColumnWidth("sequenceFrag") + 120);
             psmOverviewTable.setColumnCollapsingAllowed(true);
             psmOverviewTable.setColumnCollapsible("Intensity", true);
@@ -220,7 +246,7 @@ public abstract class PSMViewComponent extends VerticalLayout {
             intensityColumnWidth = 0;
         }
 
-        spectrumInformationMap = getSpectrumInformationMap(psms);
+        spectrumInformationMap = appManagmentBean.getDatasetUtils().getSelectedSpectrumData(psms,selectedPeptide,selectedDataset,appManagmentBean.getUserHandler().getLoggedinUserAPIKey());
 
         if (spectrumInformationMap == null) {
             return;
@@ -229,12 +255,12 @@ public abstract class PSMViewComponent extends VerticalLayout {
             return psm;
         }).forEachOrdered((psm) -> {
             fragWidth = Math.max(fragWidth, psm.getSequence().length() * 17 + 100);
-            String psmTooltip = "";
-            for (String str : tooltip.split("</br>")) {
-                if (str.contains("Intensity:") && psm.getIntensity() == -10000.0)
-                    psmTooltip = tooltip.replace(str, "");
-                else if (str.contains("Intensity:")) {
-                    psmTooltip = tooltip.replace(str, "Intensity: " + psm.getIntensity());
+             psmTooltip = "";
+            for (String str : mainPeptideTooltip.split("</br>")) {
+                if (str.contains("Intensity:") && psm.getIntensity() == -10000.0) {
+                    psmTooltip = mainPeptideTooltip.replace(str, "");
+                } else if (str.contains("Intensity:")) {
+                    psmTooltip = mainPeptideTooltip.replace(str, "Intensity: " + psm.getIntensity());
                     break;
                 }
             }
@@ -285,13 +311,8 @@ public abstract class PSMViewComponent extends VerticalLayout {
         psmOverviewTable.setValue(psmOverviewTable.firstItemId());
         psmOverviewTable.commit();
 
-    }
-
-    public abstract Map<Object, SpectrumInformation> getSpectrumInformationMap(List<PSMObject> psms);
-
-    public void setThumbImage(Image thumbImage) {
-        spectrumPlot.setPlotThumbImage(thumbImage);
-    }
+    }      
+  
 
     private String generateCaptionWithTooltio(String caption, String tooltip) {
         return "<div class='tooltip'>" + caption + "<span class='tooltiptext'>" + tooltip + "</span></div>";

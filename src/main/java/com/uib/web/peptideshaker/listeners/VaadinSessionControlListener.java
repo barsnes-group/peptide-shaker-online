@@ -35,7 +35,9 @@ public class VaadinSessionControlListener {
         public void sessionDestroy(SessionDestroyEvent event) {
             AppManagmentBean appManagmentBean = (AppManagmentBean) event.getSession().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
             if (appManagmentBean != null) {
-                appManagmentBean.getUserHandler().clearHistory();
+                if (appManagmentBean.isAvailableGalaxy()) {
+                    appManagmentBean.getUserHandler().clearHistory();
+                }
                 appManagmentBean.reset();
             }
 

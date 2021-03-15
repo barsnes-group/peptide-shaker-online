@@ -38,6 +38,17 @@ public class Config implements Serializable {
     private String quant_workflow_invoking_file_path;
     private String id_workflow_invoking_file_path;
     private String csfprLink;
+     private String working_folder_path;
+     
+     
+     private   String psVersion ;
+     private    String searchGUIversion ;
+     private   String moffVersion ;
+    private    String thermoRawFileConverterVersion ;
+
+    public String getWorking_folder_path() {
+        return working_folder_path;
+    }
 
     public String getCsfprLink() {
         return csfprLink;
@@ -133,18 +144,19 @@ public class Config implements Serializable {
         basePath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
         defaultSearchParamPath = basePath + "/VAADIN/SEARCHGUI_IdentificationParameters.json";
         quant_workflow_file_path=basePath +"/VAADIN/Galaxy-Workflow-Full-Pipeline-Workflow-Quant-Multiple-Input.ga";
+        working_folder_path= basePath +"/VAADIN/";
         id_workflow_file_path=basePath +"/VAADIN/Galaxy-Workflow-Full-Pipeline-Workflow-Id-Multiple-Input.ga";
         quant_workflow_invoking_file_path= basePath +"/VAADIN/Multi-Quant-Invoking.json";
         id_workflow_invoking_file_path= basePath +"/VAADIN/Multi-Id-Invoking.json";
         String appName = (scx.getInitParameter("appName"));
         VaadinSession.getCurrent().setAttribute("appName", appName);
 //        VaadinSession.getCurrent().setAttribute("csfprLink", csfprLink);
-        String psVersion = (scx.getInitParameter("psvirsion"));
-        String searchGUIversion = (scx.getInitParameter("searchguivirsion"));
-        String moffVersion = (scx.getInitParameter("moffvirsion"));
-        VaadinSession.getCurrent().setAttribute("psVersion", psVersion);
-        VaadinSession.getCurrent().setAttribute("searchGUIversion", searchGUIversion);
-        VaadinSession.getCurrent().setAttribute("moffvirsion", moffVersion);
+         psVersion = (scx.getInitParameter("psvirsion"));
+         searchGUIversion = (scx.getInitParameter("searchguivirsion"));
+         moffVersion = (scx.getInitParameter("moffvirsion"));
+         thermoRawFileConverterVersion = (scx.getInitParameter("thermorawfileconverterversion"));        
+        
+       
         maximumAllowedUsers = Integer.parseUnsignedInt(scx.getInitParameter("maxusernumb") + "");
 
         VaadinSession.getCurrent().setAttribute("mobilescreenstyle", (mobileDeviceStyle));
@@ -204,6 +216,22 @@ public class Config implements Serializable {
 
     public String getId_workflow_invoking_file_path() {
         return id_workflow_invoking_file_path;
+    }
+
+    public String getPsVersion() {
+        return psVersion;
+    }
+
+    public String getMoffVersion() {
+        return moffVersion;
+    }
+
+    public String getThermoRawFileConverterVersion() {
+        return thermoRawFileConverterVersion;
+    }
+
+    public String getSearchGUIversion() {
+        return searchGUIversion;
     }
 
 }

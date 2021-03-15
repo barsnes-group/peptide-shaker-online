@@ -292,15 +292,15 @@ public class DatasetFiltersComponent extends HorizontalLayout {
 //        psmNumberFilter.initializeFilterData(dataset.getValidatedPsmsMap());
 //        coverageFilter.initializeFilterData(dataset.getValidatedCoverageMap());
         if (dataset.getDatasetType().equals(CONSTANT.ID_DATASET)) {
-            Label noquant = new Label("<center> No quant data available </center>", ContentMode.HTML);
-            noquant.setSizeFull();
-            noquant.setStyleName("noquantlabel");
-            intensityAllPeptidesRange.addComponent(noquant);
+//            Label noquant = new Label("<center> No quant data available </center>", ContentMode.HTML);
+//            noquant.setSizeFull();
+//            noquant.setStyleName("noquantlabel");
+//            intensityAllPeptidesRange.addComponent(noquant);
             intensityUniquePeptidesRange.suspendFilter(true);
             intensityAllPeptidesRange.suspendFilter(true);
 
         } else {
-//            intensityAllPeptidesRange.initializeFilterData(dataset.getAllPeptideIntensityMap());
+//            intensityAllPeptidesRange.(dataset.getAllPeptideIntensityMap());
 //            intensityUniquePeptidesRange.initializeFilterData(dataset.getUniquePeptideIntensityMap());
 
         }

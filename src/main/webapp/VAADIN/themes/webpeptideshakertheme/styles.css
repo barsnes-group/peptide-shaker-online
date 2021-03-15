@@ -22358,3 +22358,41 @@ div.v-layout.v-horizontal.v-widget {
 	border-color: orange !important;
 	border-right-color: white !important;
 }
+
+.webpeptideshakertheme .v-absolutelayout-wrapper-searchfieldwithcaption {
+	margin-top: 5px !important;
+}
+
+.webpeptideshakertheme .v-label-uploadeddsinfo.v-label-longtext p {
+	word-wrap: break-word;
+	text-overflow: visible;
+	overflow: visible;
+	max-height: 100% !important;
+	white-space: normal;
+	text-align: justify;
+}
+
+.webpeptideshakertheme .v-table .v-icon-info_circle_o {
+	text-align: center !important;
+	width: 100% !important;
+	font-size: 15px !important;
+}
+
+.webpeptideshakertheme .v-table .v-selected .v-icon-info_circle_o {
+	color: white;
+}
+
+.webpeptideshakertheme .v-slot-loadpridebutton {
+	max-height: 20px;
+	background-color: whitesmoke;
+	position: relative;
+	margin-top: -2px;
+}
+
+.webpeptideshakertheme .v-button-loadpridebutton {
+	position: relative;
+	min-width: 120px;
+	margin-left: 100%;
+	left: -130px;
+	margin-top: -10px;
+}

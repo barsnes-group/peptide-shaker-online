@@ -254,4 +254,26 @@ public class HttpClientUtils implements Serializable {
         return null;
     }
 
+    public BufferedReader byteServingStreamFile(String fileurl, String startIndex, String endEndex) {
+        try {
+
+            URL streamableFileUrl = new URL(fileurl);
+            URLConnection urlConn = streamableFileUrl.openConnection();
+            urlConn.setConnectTimeout(30000);
+            urlConn.addRequestProperty("Connection", "keep-alive");
+            urlConn.addRequestProperty("Accept", "application/json, text/javascript, */*; q=0.01");
+            urlConn.addRequestProperty("Accept-Range", "bytes");
+            urlConn.addRequestProperty("Range", "bytes=" + startIndex + "-" + endEndex);//+(startIndex+1000)
+            InputStream in = urlConn.getInputStream();
+            InputStreamReader r = new InputStreamReader(in, "UTF-8");
+            BufferedReader br = new BufferedReader(r);
+            return br;
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(HttpClientUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(HttpClientUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
 }

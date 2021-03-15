@@ -7,17 +7,16 @@ import com.uib.web.peptideshaker.AppManagmentBean;
 import com.uib.web.peptideshaker.model.ProteinGroupObject;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.FilterUpdatingEvent;
-import com.uib.web.peptideshaker.model.Selection;
 import com.uib.web.peptideshaker.model.VisualizationDatasetModel;
 import com.uib.web.peptideshaker.model.core.AlphanumComparator;
-import com.uib.web.peptideshaker.presenter.core.CSFPRLabel;
+import com.uib.web.peptideshaker.ui.components.items.CSFPRLabel;
 import com.uib.web.peptideshaker.ui.components.ClosablePopup;
 import com.uib.web.peptideshaker.ui.components.items.ProteinInferenceColorLabel;
-import com.uib.web.peptideshaker.presenter.core.ColorLabelWithPopupTooltip;
-import com.uib.web.peptideshaker.presenter.core.SearchableTable;
-import com.uib.web.peptideshaker.presenter.core.SparkLineLabel;
-import com.uib.web.peptideshaker.presenter.core.TableColumnHeader;
-import com.uib.web.peptideshaker.presenter.core.ValidationLabel;
+import com.uib.web.peptideshaker.ui.components.items.ColorLabelWithPopupTooltip;
+import com.uib.web.peptideshaker.ui.components.SearchableTable;
+import com.uib.web.peptideshaker.ui.components.items.SparkLineLabel;
+import com.uib.web.peptideshaker.ui.components.items.TableColumnHeader;
+import com.uib.web.peptideshaker.ui.components.items.ValidationLabel;
 import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -153,7 +152,7 @@ public class DatasetProteinsSubViewComponent extends AbsoluteLayout implements R
         TableColumnHeader header16 = new TableColumnHeader("validation", ValidationLabel.class, null, generateCaptionWithTooltio("", "Protein validation"), null, Table.Align.CENTER);
         TableColumnHeader[] tableHeaders = new TableColumnHeader[]{header1, header2, header4, header5, header6, header3, header7, header8, header9, header10, header11, header12, header13, header14, header15, header16};
 
-        SearchableTable table = new SearchableTable("Proteins", "Accession or protein name", tableHeaders) {
+        SearchableTable table = new SearchableTable("Proteins", "Accession or protein name", tableHeaders,true) {
             @Override
             public void itemSelected(Object itemId) {
                 appManagmentBean.getUI_Manager().setSelectedProteinIndex((int) itemId);
@@ -449,7 +448,7 @@ public class DatasetProteinsSubViewComponent extends AbsoluteLayout implements R
 
             }
             this.proteinTableContainer.activateValueChangeListener();
-            this.proteinTableContainer.updateLabel(dataset.getProteinsMap().size());
+            this.proteinTableContainer.updateLabelCounter(dataset.getProteinsMap().size());
             this.proteinTableContainer.updateIndexes();
             this.proteinTableContainer.activateValueChangeListener();
         } catch (Exception e) {

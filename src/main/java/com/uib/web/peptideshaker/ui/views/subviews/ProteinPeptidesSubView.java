@@ -87,27 +87,8 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
         graphsContainerComponent = new ProteinsGraphsContainerView() {
             @Override
             public void selectedItem(Map<String, ProteinGroupObject> selectedItems, Map<String, PeptideObject> selectedChildsItems, boolean isProteform) {
-                ProteinGroupObject protein;
-                if (selectedItems.size() == 1) {
-                    protein = selectedItems.values().iterator().next();
-                    headerLabel.setValue("Protein Overview (" + protein.getDescription() + ")");
-                } else {
-                    protein = null;
-                    headerLabel.setValue("Protein Overview ");
-                }
-                ProteinCoverageView.setSelectedItems(selectedItems, selectedChildsItems);
-                if (isProteform) {
-                    return;
-                }
-                if (selectedItems.size() == 1 && protein != null) {
-                    protein3DStructureView.updatePanel(protein.getAccession(), protein.getSequence(), selectedChildsItems.values());
-                } else {
-                    protein3DStructureView.reset();
-                }
-                if (selectedChildsItems.size() == 1) {
-                    String peptideId = selectedChildsItems.keySet().iterator().next();
-                    protein3DStructureView.selectPeptide(peptideId);
-                }
+
+                ProteinPeptidesSubView.this.selectPeptide(selectedItems, selectedChildsItems, isProteform);
 
             }
 
@@ -146,10 +127,10 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
         protein3DStructureView.addStyleName("protein3dcontainerstyle");
         ProteinCoverageView = new ProteinCoverageView(protein3DStructureView.getChainCoverageLayout()) {
             @Override
-            public void selectPeptide(Object proteinId, Object peptideId) {
-                protein3DStructureView.selectPeptide(peptideId + "");
-                graphsContainerComponent.selectPeptide(proteinId, peptideId);
+            public void selectPeptide(Map<String, ProteinGroupObject> selectedProteins, Map<String, PeptideObject> selectedPeptides, boolean isProteform) {
+                ProteinPeptidesSubView.this.selectPeptide(selectedProteins, selectedPeptides, isProteform);
             }
+
         };
         ProteinCoverageView.setSizeFull();
         subContainer.addComponent(ProteinCoverageView);
@@ -236,6 +217,46 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
             Object[] graphData = dataset.getProteinsGraphDataMap().get(selectedProteinObject.getAccession());
             ProteinCoverageView.updateData(graphData, dataset.getDatasetType().equals(CONSTANT.QUANT_DATASET));
             appManagmentBean.getUI_Manager().setEncodedProteinButtonImage(graphsContainerComponent.updateGraphData(graphData, dataset.getDatasetType().equals(CONSTANT.QUANT_DATASET)));
+        }
+
+    }
+
+    private void selectPeptide(Map<String, ProteinGroupObject> selectedItems, Map<String, PeptideObject> selectedChildsItems, boolean isProteform) {
+        ProteinGroupObject protein;
+        if (selectedItems.size() == 1) {
+            protein = selectedItems.values().iterator().next();
+            headerLabel.setValue("Protein Overview (" + protein.getDescription() + ")");
+        } else {
+            protein = null;
+            headerLabel.setValue("Protein Overview ");
+        }
+        ProteinCoverageView.setSelectedItems(selectedItems, selectedChildsItems);
+        if (isProteform) {
+            return;
+        }
+        if (selectedItems.size() == 1 && protein != null) {
+            if (selectedChildsItems != null) {
+                protein3DStructureView.updatePanel(protein.getAccession(), protein.getSequence(), selectedChildsItems.values());
+            } else {
+//                protein3DStructureView.updatePanel(protein.getAccession(), protein.getSequence(), null);
+            }
+        } else {
+            protein3DStructureView.reset();
+        }
+        String peptideId = null;
+        if (selectedChildsItems != null && selectedChildsItems.size() == 1) {
+            peptideId = selectedChildsItems.keySet().iterator().next();
+            protein3DStructureView.selectPeptide(peptideId);
+        }
+        if (selectedItems.size() == 1) {
+            Object proteinId = selectedItems.keySet().toArray()[0];
+            graphsContainerComponent.selectPeptide(proteinId, peptideId);
+        }
+        if (peptideId != null) {
+            System.out.println("at peptide id " + peptideId + selectedChildsItems.get(peptideId).getIndex());
+            appManagmentBean.getUI_Manager().setSelectedPeptideIndex(selectedChildsItems.get(peptideId).getIndex());
+        } else {
+            appManagmentBean.getUI_Manager().setSelectedPeptideIndex(-1);
         }
 
     }

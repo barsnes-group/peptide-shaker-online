@@ -6,6 +6,7 @@ import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyFile
 import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.GalaxyTransferableFile;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.ui.UIContainer;
+import com.uib.web.peptideshaker.ui.views.WelcomePageView;
 import com.vaadin.server.VaadinSession;
 import pl.exsio.plupload.PluploadFile;
 
@@ -13,9 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 /**
  * This class represents the main landing Online PeptideShaker application
@@ -41,9 +39,9 @@ public class AppController {
          */
         appManagmentBean.getNotificationFacade().showGalaxyConnectingProcess(CONSTANT.PUBLIC_USER_CAPTION);
         String userId = appManagmentBean.getGalaxyFacad().authenticate(appManagmentBean.getAppConfig().getTestUserAPIKey());
-       
+
 //        if (appManagmentBean.isAvailableGalaxy()) {
-            appManagmentBean.getUserHandler().setUserLoggedIn(appManagmentBean.getAppConfig().getTestUserAPIKey(), userId);
+        appManagmentBean.getUserHandler().setUserLoggedIn(appManagmentBean.getAppConfig().getTestUserAPIKey(), userId);
 //        }
 //        ExecutorService executorService = Executors.newFixedThreadPool(2);
 ////        modelFuture = executorService.submit(() -> {
@@ -68,9 +66,9 @@ public class AppController {
 ////            };
 ////        });
 //        uiExecutorFuture = executorService.submit(() -> {
-            uiHandler = new UIHandler() {
-                @Override
-                public List<String> connectToGalaxyServer(String galaxyServerUrl, String userAPI, String userDataFolderUrl) {
+        uiHandler = new UIHandler() {
+            @Override
+            public List<String> connectToGalaxyServer(String galaxyServerUrl, String userAPI, String userDataFolderUrl) {
 //                    while (!modelFuture.isDone()) {
 //                    }
 
@@ -79,87 +77,91 @@ public class AppController {
 //                        return null;
 //                    }
 //                    return Model_Layer.getUserOverViewList();
-                    return new ArrayList<>();
-                }
+                return new ArrayList<>();
+            }
 
-                @Override
-                public void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl) {
+            @Override
+            public void viewToShareDataset(String galaxyServerUrl, String userDataFolderUrl) {
 //                    while (!modelFuture.isDone()) {
 //                    }
 //                    Model_Layer.viewToShareDataset(galaxyServerUrl, userDataFolderUrl);
-                }
+            }
 
-                @Override
-                public List<String> getUserOverviewData() {
+            @Override
+            public List<String> getUserOverviewData() {
 
 //                    while (!modelFuture.isDone()) {
 //                    }
 //                    if (Model_Layer != null) {
 //                        return Model_Layer.getUserOverViewList();
 //                    }
-                    return null;
-                }
+                return null;
+            }
 
-                @Override
-                public void execute_SearchGUI_PeptideShaker_WorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> inputFilesIdsList, Set<String> searchEnginesList, IdentificationParameters searchParameters, boolean quant) {
+            @Override
+            public void execute_SearchGUI_PeptideShaker_WorkFlow(String projectName, String fastaFileId, String searchParameterFileId, Set<String> inputFilesIdsList, Set<String> searchEnginesList, IdentificationParameters searchParameters, boolean quant) {
 //                    while (!modelFuture.isDone()) {
 //                    }
 //                    Model_Layer.execute_SearchGUI_PeptideShaker_WorkFlow(projectName, fastaFileId, searchParameterFileId, inputFilesIdsList, searchEnginesList, searchParameters, quant);
 
-                }
+            }
 
-                @Override
-                public Map<String, GalaxyTransferableFile> saveSearchGUIParameters(IdentificationParameters searchParameters, boolean isNew) {
+            @Override
+            public Map<String, GalaxyTransferableFile> saveSearchGUIParameters(IdentificationParameters searchParameters, boolean isNew) {
 //                    while (!modelFuture.isDone()) {
 //                    }
 //                    return Model_Layer.saveSearchGUIParameters(searchParameters, isNew);
-                    return null;
-                }
+                return null;
+            }
 
-                @Override
-                public boolean uploadToGalaxy(PluploadFile[] toUploadFiles) {
+            @Override
+            public boolean uploadToGalaxy(PluploadFile[] toUploadFiles) {
 //                    while (!modelFuture.isDone()) {
 //                    }
 
-                    /**
-                     * upload file to galaxy server
-                     */
-                    boolean success = false;// Model_Layer.uploadDataFiles(toUploadFiles);
-                    return success;
-                }
+                /**
+                 * upload file to galaxy server
+                 */
+                boolean success = false;// Model_Layer.uploadDataFiles(toUploadFiles);
+                return success;
+            }
 
-                @Override
-                public void deleteDataset(GalaxyFileObject fileObject) {
+            @Override
+            public void deleteDataset(GalaxyFileObject fileObject) {
 //                    while (!modelFuture.isDone()) {
 //                    }
 //                    Model_Layer.deleteDataset(fileObject);
-                }
+            }
 
-                @Override
-                public Set<String> getCsf_pr_Accession_List() {
+            @Override
+            public Set<String> getCsf_pr_Accession_List() {
 //                    while (!modelFuture.isDone()) {
 //                    }
 //                    return Model_Layer.getCsf_pr_Accession_List();
-                    return null;
-                }
+                return null;
+            }
 
-                @Override
-                public int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey) {
+            @Override
+            public int insertDatsetLinkToShare(String dsDetails, String dsUniqueKey) {
 //                    while (!modelFuture.isDone()) {
 //                    }
 //                    return Model_Layer.insertDatasetSharingLink(dsDetails, dsUniqueKey);
-                    return 1;
-                }
+                return 1;
+            }
 
-            };
+        };
 //        });
         this.updateALLUI();
+        appManagmentBean.getUI_Manager().viewLayout(WelcomePageView.class.getName());
+//        appManagmentBean.getUI_Manager().viewSubLayout(ResultsView.class.getName(), PrideSubView.class.getName());
         appManagmentBean.getNotificationFacade().hideGalaxyConnectingProcess();
+
+       
     }
 
-    private void updateALLUI() {       
+    private void updateALLUI() {
         appManagmentBean.getUI_Manager().updateAll();
-        
+
     }
 
     /**
@@ -167,11 +169,9 @@ public class AppController {
      *
      * @return main user interface container
      */
-    public UIContainer getApplicationUserInterface() {        
+    public UIContainer getApplicationUserInterface() {
         return uiHandler.getUiContainer();
     }
-
-   
 
     public void retriveToShareDataset() {
         if (appManagmentBean.isAvailableGalaxy()) {

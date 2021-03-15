@@ -4,11 +4,8 @@ import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.PeptideObject;
 import com.uib.web.peptideshaker.model.ProteinGroupObject;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage.HighlightPeptide;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage.PeptideLayout;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage.ProteinCoverageLayout;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage.ProteoformLayout;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage.ProteoformModificationLayout;
+import com.uib.web.peptideshaker.ui.components.items.HighlightPeptide;
+import com.uib.web.peptideshaker.ui.components.items.PeptideLayout;
 import com.uib.web.peptideshaker.ui.components.RangeColorGenerator;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.ui.AbsoluteLayout;
@@ -40,8 +37,10 @@ public abstract class ProteinCoverageComponent extends AbsoluteLayout {
     private int layoutHeightProteoform;
     private boolean proteoformInit;
     private boolean suspendListener;
+    private final Map<String, PeptideObject> peptidesNodes;
 
     public ProteinCoverageComponent(ProteinGroupObject protein, Map<String, PeptideObject> peptidesNodes, RangeColorGenerator colorScale) {
+        this.peptidesNodes = peptidesNodes;
         ProteinCoverageComponent.this.setWidth(100, Unit.PERCENTAGE);
         HashMap<String, String> styles = new HashMap<>();
         styles.put(CONSTANT.VALIDATION_CONFIDENT, "greenbackground");
@@ -94,12 +93,14 @@ public abstract class ProteinCoverageComponent extends AbsoluteLayout {
                 super.setVisible(v);
             }
         };
-
+        proteoformCoverage = new AbsoluteLayout();
         proteinCoverageLayout = new ProteinCoverageLayout(styles.get(protein.getValidation()), styles.get(protein.getProteinEvidence()));
         peptideDistMap = new TreeSet<>(Collections.reverseOrder());
         proteinCoverageLayout.addLayoutClickListener((LayoutEvents.LayoutClickEvent event) -> {
             resetHeighlightedProteoforms();
-            selectPeptide(protein.getAccession(), null);
+            Map<String, ProteinGroupObject> selectedItems = new HashMap<>();
+            selectedItems.put(protein.getAccession(), protein);
+            selectPeptide(selectedItems, null, proteoformCoverage.isVisible());
         });
 
         peptideDistributionLayout = new AbsoluteLayout();
@@ -109,27 +110,38 @@ public abstract class ProteinCoverageComponent extends AbsoluteLayout {
 
         LayoutEvents.LayoutClickListener peptidesListener = (LayoutEvents.LayoutClickEvent event) -> {
 
-            if (suspendListener)
+            if (suspendListener) {
                 return;
+            }
             suspendListener = true;
             Component clickedComp = event.getClickedComponent();
             if (clickedComp == null) {
                 return;
             }
-            if ((clickedComp.getStyleName().contains("proteoformcoverage") || clickedComp.getStyleName().contains("proteoformmodstyle") || (clickedComp.getStyleName().contains("peptidelayout") && (clickedComp instanceof VerticalLayout)))) {
 
+            Map<String, ProteinGroupObject> selectedItems = new HashMap<>();
+            Map<String, PeptideObject> selectedChildsItems = new HashMap<>();
+
+            if ((clickedComp.getStyleName().contains("proteoformcoverage") || clickedComp.getStyleName().contains("proteoformmodstyle") || (clickedComp.getStyleName().contains("peptidelayout") && (clickedComp instanceof VerticalLayout)))) {
+                System.out.println("at --->> click on proteioform layout maybe??");
             } else if (clickedComp.getStyleName().contains("peptidelayout")) {
                 PeptideLayout genPeptid = (PeptideLayout) clickedComp;
-                selectPeptide(protein.getAccession(), genPeptid.getPeptideId());
+                selectedItems.put(protein.getAccession(), protein);
+                selectedChildsItems.put(genPeptid.getPeptideId() + "", peptidesNodes.get(genPeptid.getPeptideId() + ""));
+                selectPeptide(selectedItems, selectedChildsItems, proteoformCoverage.isVisible());
 //                resetHeighlightedProteoforms();
             } else if (clickedComp instanceof Label) {
                 Object data = ((Label) clickedComp).getData();
                 if (data != null) {
-                    selectPeptide(protein.getAccession(), ((Label) clickedComp).getData());
+                    selectedItems.put(protein.getAccession(), protein);
+                    selectedChildsItems.put(((Label) clickedComp).getData() + "", peptidesNodes.get(((Label) clickedComp).getData() + ""));
+                    selectPeptide(selectedItems, selectedChildsItems, proteoformCoverage.isVisible());
 //                    resetHeighlightedProteoforms();
                 }
             } else if (clickedComp instanceof VerticalLayout) {
-                selectPeptide(protein.getAccession(), ((VerticalLayout) clickedComp).getData());
+                selectedItems.put(protein.getAccession(), protein);
+                selectedChildsItems.put(((VerticalLayout) clickedComp).getData() + "", peptidesNodes.get(((VerticalLayout) clickedComp).getData() + ""));
+                selectPeptide(selectedItems, selectedChildsItems, proteoformCoverage.isVisible());
 //                resetHeighlightedProteoforms();
 
             }
@@ -229,7 +241,6 @@ public abstract class ProteinCoverageComponent extends AbsoluteLayout {
         ProteinCoverageComponent.this.setHeight(layoutHeight, Unit.PIXELS);
         layoutHeightProteoform = layoutHeight;
 
-        proteoformCoverage = new AbsoluteLayout();
         proteoformCoverage.setWidth(100, Unit.PERCENTAGE);
         proteoformCoverage.setHeight(100, Unit.PERCENTAGE);
         proteoformCoverage.setVisible(false);
@@ -290,7 +301,7 @@ public abstract class ProteinCoverageComponent extends AbsoluteLayout {
 
     }
 
-    public abstract void selectPeptide(Object proteinId, Object peptideId);
+    public abstract void selectPeptide(Map<String, ProteinGroupObject> selectedItems, Map<String, PeptideObject> selectedChildsItems, boolean isProteform);
 
     public void updateStylingMode(String style) {
         proteinCoverageLayout.updateStylingMode(style);
@@ -413,7 +424,11 @@ public abstract class ProteinCoverageComponent extends AbsoluteLayout {
         resetHeighlightedProteoforms();
         PeptideLayout genPeptid = proteoformModification.select();
         if (genPeptid != null) {
-            selectPeptide(mainProteinObject.getAccession(), genPeptid.getPeptideId());
+            Map<String, ProteinGroupObject> selectedItems = new HashMap<>();
+            Map<String, PeptideObject> selectedChildsItems = new HashMap<>();
+            selectedItems.put(mainProteinObject.getAccession(), mainProteinObject);
+            selectedChildsItems.put(genPeptid.getPeptideId() + "", peptidesNodes.get(genPeptid.getPeptideId()));
+            selectPeptide(selectedItems, selectedChildsItems, proteoformCoverage.isVisible());
         }
     }
 

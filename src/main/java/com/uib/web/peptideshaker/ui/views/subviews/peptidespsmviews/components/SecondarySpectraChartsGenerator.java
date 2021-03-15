@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.presenter.pscomponents;
+package com.uib.web.peptideshaker.ui.views.subviews.peptidespsmviews.components;
 
 import com.compomics.util.experiment.biology.proteins.Peptide;
 import com.compomics.util.experiment.identification.matches.IonMatch;
