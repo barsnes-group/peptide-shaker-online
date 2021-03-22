@@ -951,7 +951,6 @@ public class ProteinGroupObject extends Protein {
     public void setProteoformUpdated(boolean proteoformUpdated) {
         this.proteoformUpdated = proteoformUpdated;
         for (NetworkGraphNode node : proteoformsNodes.values()) {
-            System.out.println("edge "+node.getNodeId()+"  "+parentNode.getNodeId());
             NetworkGraphEdge edge = new NetworkGraphEdge(parentNode, node, true);
             parentNode.addEdge(edge);
             node.addEdge(edge);

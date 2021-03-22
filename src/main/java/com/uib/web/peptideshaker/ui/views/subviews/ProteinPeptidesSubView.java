@@ -87,15 +87,14 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
         graphsContainerComponent = new ProteinsGraphsContainerView() {
             @Override
             public void selectedItem(Map<String, ProteinGroupObject> selectedItems, Map<String, PeptideObject> selectedChildsItems, boolean isProteform) {
-
                 ProteinPeptidesSubView.this.selectPeptide(selectedItems, selectedChildsItems, isProteform);
-
             }
 
             @Override
             public void updateProteinsMode(String modeType) {
                 ProteinCoverageView.updateProteinsMode(modeType);
                 int mode = 1;
+                
                 switch (modeType) {
                     case "Validation":
                         mode = 2;

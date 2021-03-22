@@ -347,7 +347,6 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
     }
 
     public void updateGraphData(Map<String,ProteinGroupObject> selectedItems) {//Map<String, Map<String, Node>> graphNodes
-        System.out.println("at update proteoformas data ");
         this.canvas.removeAllComponents();
         this.selectedNodes.clear();
         this.graphNodes.clear();
@@ -358,7 +357,6 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
         graphEdges.forEach((edge) -> {
             NetworkGraphNode n1 = edge.getN1();
             NetworkGraphNode n2 = edge.getN2();
-            System.out.println("at edge "+n1.getNodeId()+" ------------- "+n2.getNodeId());
             if (!graphNodes.containsKey(n1.getAccession())) {
                 this.graphNodes.put(n1.getAccession(), new LinkedHashMap<>());
             }

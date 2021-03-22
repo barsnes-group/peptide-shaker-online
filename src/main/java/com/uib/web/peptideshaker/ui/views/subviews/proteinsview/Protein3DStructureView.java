@@ -12,6 +12,7 @@ import com.uib.web.peptideshaker.ui.views.subviews.proteinsview.components.LiteM
 import com.vaadin.data.Property;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.*;
 import io.vertx.core.json.JsonArray;
@@ -49,7 +50,7 @@ public class Protein3DStructureView extends AbsoluteLayout {
     private final Map<String, PeptideObject> proteinPeptidesMap;
     private final Map<String, List<ChainBlock>> pdbBlockMap;
     private final Label uniprotLabel;
-    
+
     /**
      * The post translational modifications factory.
      */
@@ -64,9 +65,10 @@ public class Protein3DStructureView extends AbsoluteLayout {
     private int proteinSequenceLength;
     private PDBMatch lastSelectedMatch;
     private final AppManagmentBean appManagmentBean;
+    private final Label infoLabel;
 
     public Protein3DStructureView() {
-         this.appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
+        this.appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
         Protein3DStructureView.this.setSizeFull();
         Protein3DStructureView.this.setStyleName("proteinStructiorpanel");
 
@@ -122,14 +124,7 @@ public class Protein3DStructureView extends AbsoluteLayout {
             }
         });
         pdbChainsSelect.addValueChangeListener(pdbChainsSelectlistener);
-        pdbMatchesSelect = new ComboBox("PDB:") {
-            @Override
-            public void setVisible(boolean visible) {
-//                uniprotLabel.setVisible(visible);
-//                super.setVisible(visible);
-            }
-
-        };
+        pdbMatchesSelect = new ComboBox("PDB:");
         pdbMatchesSelect.setTextInputAllowed(false);
         pdbMatchesSelect.addStyleName("select3dMenue");
         pdbMatchesSelect.setNullSelectionAllowed(false);
@@ -186,6 +181,9 @@ public class Protein3DStructureView extends AbsoluteLayout {
 
         });
         pdbMatchesSelect.addValueChangeListener(pdbMatchSelectlistener);
+        this.infoLabel = new Label("<p style='color: gray; font-weight: 200; width: 100% !important;text-align: center;'>Select single protein to visualize proteoforms and protein 3D structure</p>", ContentMode.HTML);
+        infoLabel.setStyleName("highzindex");
+        Protein3DStructureView.this.addComponent(infoLabel, "left: 0px; bottom:25px");
 
     }
 
@@ -199,6 +197,9 @@ public class Protein3DStructureView extends AbsoluteLayout {
         this.uniprotLabel.setValue("UniProt: ");
         pdbChainsSelect.removeValueChangeListener(pdbChainsSelectlistener);
         pdbChainsSelect.removeAllItems();
+        pdbChainsSelect.setVisible(false);
+        pdbMatchesSelect.setVisible(false);
+        infoLabel.setVisible(true);
     }
 
     public void redrawCanvas() {
@@ -210,6 +211,9 @@ public class Protein3DStructureView extends AbsoluteLayout {
     }
 
     public void updatePanel(Object accession, String proteinSequence, Collection<PeptideObject> proteinPeptides) {
+        pdbChainsSelect.setVisible(true);
+        pdbMatchesSelect.setVisible(true);
+        infoLabel.setVisible(false);
         this.lastSelectedAccession = accession;
         this.lastSelectedProteinSequence = proteinSequence;
         this.uniprotLabel.setValue("UniProt: " + lastSelectedAccession);

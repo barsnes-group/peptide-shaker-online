@@ -1412,12 +1412,12 @@ public class DatasetUtils implements Serializable {
 
     public Set<NetworkGraphEdge> getProteoformsNetworkEdges(VisualizationDatasetModel dataset, Map<String, ProteinGroupObject> selectedItems) {
         Set<NetworkGraphEdge> edges = new HashSet<>();
+        Map<String, NetworkGraphNode> tNodes = new HashMap<>();
         for (String proteinAcc : selectedItems.keySet()) {
             if (selectedItems.get(proteinAcc).isProteoformUpdated()) {
                 continue;
             }
             Map<String, NetworkGraphNode> accMap = dataset.getProteoformsMap().get(proteinAcc);
-            System.out.println("at accMap size" + proteinAcc + " --- " + accMap);
             NetworkGraphNode parentNode = new NetworkGraphNode(proteinAcc, true, true) {
                 @Override
                 public void selected(String id) {
@@ -1437,14 +1437,15 @@ public class DatasetUtils implements Serializable {
                 singleNode.setType(3);
                 singleNode.setParentNode(parentNode);
                 selectedItems.get(proteinAcc).addProteoformNode(singleNode);
+                  tNodes.put(singleNode.getNodeId(), singleNode);
             } else {
 //            if (accMap != null) {
                 accMap.values().stream().map((n) -> {
-                    System.out.println("at n " + n.getNodeId());
                     n.setParentNode(parentNode);
                     return n;
                 }).forEachOrdered((n) -> {
                     selectedItems.get(proteinAcc).addProteoformNode(n);
+                      tNodes.put(n.getNodeId(), n);
                 });
 
             }
@@ -1452,57 +1453,21 @@ public class DatasetUtils implements Serializable {
             selectedItems.get(proteinAcc).setProteoformUpdated(true);
 
         }
+        selectedItems.values().forEach((protein) -> {
+            edges.addAll(protein.getLocalEdges());
+        });
 
-//        dataset.getProteoformsMap().values().stream().filter((protein) -> !(protein.isProteoformUpdated())).forEachOrdered((protein) -> {
-//            Map<String, NetworkGraphNode> subNodes;
-//            try {
-//                if (uploadedProject) {
-//                    subNodes = null;
-//                } else {
-//                    subNodes = processPathwayMatcherFilesTask.call().get(protein.getAccession());
-//                }
-//
-//                NetworkGraphNode parentNode = new NetworkGraphNode(protein.getAccession(), true, true) {
-//                    @Override
-//                    public void selected(String id) {
-//                        System.out.println("at selected parent node  id " + id);
-//                    }
-//
-//                };
-//                if (subNodes == null) {
-//                    NetworkGraphNode singleNode = new NetworkGraphNode(protein.getAccession() + ";", true, false) {
-//                        @Override
-//                        public void selected(String id) {
-//                            System.out.println("at selected single id " + id);
-//                        }
-//
-//                    };
-//                    singleNode.setType(3);
-//                    singleNode.setParentNode(parentNode);
-//                    protein.addProteoformNode(singleNode);
-//                } else {
-//                    subNodes.values().stream().map((n) -> {
-//                        n.setParentNode(parentNode);
-//                        return n;
-//                    }).forEachOrdered((n) -> {
-//                        protein.addProteoformNode(n);
-//                    });
-//
-//                }
-//
-//                protein.setParentNode(parentNode);
-//                protein.setProteoformUpdated(true);
-//            } catch (Exception ex) {
-//                System.out.println("Error : line 2941 " + ex);
-//            }
-//        });
         //get all edges
         Set<String[]> edgesData = appManagmentBean.getDatabaseUtils().getPathwayEdges(selectedItems.keySet());
 //        Set<NetworkGraphEdge> edges = new HashSet<>();
-        Map<String, NetworkGraphNode> tNodes = new HashMap<>();
+        
         edgesData.stream().map((String[] arr) -> {
-            ProteinGroupObject p1 = selectedItems.get(arr[0].split(";")[0].split("-")[0]);
-            ProteinGroupObject p2 = selectedItems.get(arr[1].split(";")[0].split("-")[0]);
+            arr[0] = arr[0] + ";";
+            arr[1] = arr[1] + ";";
+            ProteinGroupObject p1 = selectedItems.get(arr[0]);
+            ProteinGroupObject p2 = selectedItems.get(arr[1]);
+//            if(p1==null || p2 ==null)
+
             NetworkGraphNode n1;
             NetworkGraphNode n2;
             n2 = null;
@@ -1526,7 +1491,6 @@ public class DatasetUtils implements Serializable {
                 }
             } else if (tNodes.containsKey(arr[0])) {
                 n1 = tNodes.get(arr[0]);
-
             } else {
                 n1 = p1.getProteoformsNodes().get(arr[0]);
             }
@@ -1568,9 +1532,7 @@ public class DatasetUtils implements Serializable {
         }).forEachOrdered((edge) -> {
             edges.add(edge);
         });
-        selectedItems.values().forEach((protein) -> {
-            edges.addAll(protein.getLocalEdges());
-        });
+
         return edges;
     }
 

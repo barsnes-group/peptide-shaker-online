@@ -357,7 +357,6 @@ public class SelectionManager implements Serializable {
             }
         });
         for (String filterId : suspendedFilters) {
-            System.out.println("at filter to suspend "+filterId);
             registeredDatasetFiltersMap.get(filterId).suspendFilter(true);
             registeredDatasetFiltersMap.remove(filterId);
         }

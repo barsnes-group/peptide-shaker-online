@@ -4,6 +4,7 @@ import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.SizeReporter;
 import com.itextpdf.text.pdf.codec.Base64;
+import com.uib.web.peptideshaker.AppManagmentBean;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.PeptideObject;
 import com.uib.web.peptideshaker.model.ProteinGroupObject;
@@ -21,6 +22,7 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
@@ -112,8 +114,10 @@ public abstract class GraphComponent extends VerticalLayout {
     private VerticalLayout intensityColorScaleLayout;
     private NetworkGraphComponent proteinsPathwayNewtorkGraph;
     private String lastSelectedModeType = null;
+    private final AppManagmentBean appManagmentBean;
 
     public GraphComponent() {
+        this.appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
         GraphComponent.this.setMargin(new MarginInfo(false, false, false, false));
         this.dashLineStroke = new BasicStroke(0.5f, // Width
                 BasicStroke.CAP_SQUARE, // End cap
@@ -418,15 +422,16 @@ public abstract class GraphComponent extends VerticalLayout {
         mainContainer.addComponent(middleBottomPanel, "right: 170px; bottom: " + -12 + "px");
         graphsControl.setValue("Protein-Peptide");
         Property.ValueChangeListener graphsControlListener = (Property.ValueChangeEvent event) -> {
-            if (proteoformLayerContainer.getComponentCount() == 0) {
+            if (proteoformLayerContainer.getComponentCount() == 0 || selectedProteins.size() > 1) {
                 graphsControl.setValue("Protein-Peptide");
+                this.appManagmentBean.getNotificationFacade().showInfoNotification("Proteoforms are not available or multiple proteins are selected");
                 return;
             }
             lastSelected = proteinsModeControl.getValue();
             proteoformLayerContainer.setVisible(graphsControl.getValue().toString().equalsIgnoreCase("Proteoform"));
             proteinPeptideGraphWrapper.setVisible(!proteoformLayerContainer.isVisible());
             if (proteoformLayerContainer.isVisible()) {
-                updateProteinsMode("Proteoform");
+
                 Map<String, PeptideObject> selectedPeptidesAction = new HashMap<>();
                 Map<String, ProteinGroupObject> selectedProteinsAction = new HashMap<>();
                 this.selectedProteins.forEach((item) -> {
@@ -437,9 +442,10 @@ public abstract class GraphComponent extends VerticalLayout {
                     selectedPeptidesAction.put(item.toString(), peptidesNodes.get(item.toString()));
                 });
                 selectedItem(selectedProteinsAction, selectedPeptidesAction, graphsControl.getValue().toString().equalsIgnoreCase("Proteoform"));
+                updateProteinsMode("Proteoform");
             } else {
                 proteinsModeControl.setValue(lastSelected);
-                updateProteinsMode("Protein-Peptide");
+//                updateProteinsMode("Protein-Peptide");
                 updateProteinsMode(lastSelected.toString());
             }
         };
@@ -982,6 +988,7 @@ public abstract class GraphComponent extends VerticalLayout {
         }
         drawEdges();
         graphInfo.setValue("#Proteins: <font style='float:right;padding-left: 3px;'>" + selectedProteins.size() + "</font><br/>#Peptides: <font style='float:right;padding-left: 3px;'>" + selectedPeptides.size() + "</font>");
+        graphsControl.setItemEnabled("Proteoform", selectedProteins.size() == 1);
     }
 
     public Set<Object> getSelectedProteins() {

@@ -3,6 +3,8 @@ package com.uib.web.peptideshaker.utils;
 import com.uib.web.peptideshaker.AppManagmentBean;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.vaadin.server.VaadinSession;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -203,8 +205,7 @@ public class DatabaseUtils {
 
         return csf_pr_acc_list;
     }
-    
-    
+
     /**
      * Get the edges information for selected accession list
      *
@@ -218,66 +219,50 @@ public class DatabaseUtils {
             if (!dbEnabled) {
                 return edges;
             }
-           if (conn == null || conn.isClosed()) {
+            if (conn == null || conn.isClosed()) {
                 Class.forName(appManagmentBean.getAppConfig().getDbDriver()).newInstance();
                 conn = DriverManager.getConnection(appManagmentBean.getAppConfig().getDbURL() + appManagmentBean.getAppConfig().getDbName() + CONSTANT.SERVER_TIMEZONE, appManagmentBean.getAppConfig().getDbUserName(), appManagmentBean.getAppConfig().getDbPassword());
 
             }
-
-            for (String acc : proteinAcc) {
-                System.out.println("at acc is "+acc);
-                if (acc.trim().equalsIgnoreCase("")) {
-                    continue;
-                }
-                String selectstatment = "SELECT `edge_index` FROM `accessionindex`  where `uniprot_acc`=? ;";
-                PreparedStatement selectNameStat = conn.prepareStatement(selectstatment);
-                selectNameStat.setString(1, acc);
-                ResultSet rs = selectNameStat.executeQuery();
-                Set<Integer> indexes = new HashSet<>();
-                while (rs.next()) {
-                    indexes.add(rs.getInt("edge_index"));
-                }
-                selectNameStat.close();
-                rs.close();
-                System.out.println("at step I "+indexes.size());
-                List<Integer> list = new ArrayList<>(indexes);
-                int step = Math.min(15, list.size() - 1);
-                int start = 0;
-//                while (true) {
-//                    Set<Integer> subSet = new LinkedHashSet<>(list.subList(start, step));
-//                    start = step + 1;
-//                    if (start == list.size()) {
-//                        break;
-//                    }
-//                    step = Math.min(step + 15, list.size() - 1);
-//                    selectstatment = "SELECT * FROM `edges`  where ";
-//                    for (Integer i : subSet) {
-//                        selectstatment = selectstatment + "`edge_index`=? or ";
-//                    }
-//                    selectstatment = selectstatment.substring(0, selectstatment.length() - 4) + ";";
-//                    selectNameStat = conn.prepareStatement(selectstatment);
-//                    int indexer = 1;
-//                    for (Integer i : subSet) {
-//                        selectNameStat.setInt(indexer++, i);
-//                    }
-//                    rs = selectNameStat.executeQuery();
-//                    while (rs.next()) {
-//                        String protI = rs.getString(2).trim();
-//                        String protII = rs.getString(3).trim();
-//                        edges.add(new String[]{protI, protII});
-//                    }
-
-//                }
-
+            String selectstatment = "SELECT * FROM `accession_json_index`  where ";
+            String value = "";
+            for (String accssion : proteinAcc) {
+                value += " or `uniprot_acc`=?";
             }
-            edges.stream().map((arr) -> {
-                if (!arr[0].contains(";")) {
-                    arr[0] = arr[0] + ";";
+            value = value.replaceFirst(" or ", "") + ";";
+            PreparedStatement selectNameStat = conn.prepareStatement(selectstatment + value);
+            int index = 1;
+            for (String accssion : proteinAcc) {
+                selectNameStat.setString(index++, accssion);
+            }
+            ResultSet rs = selectNameStat.executeQuery();
+            JsonObject jsonMap = new JsonObject();
+            while (rs.next()) {
+                jsonMap.put(rs.getString("uniprot_acc"), new JsonArray(rs.getString("index_as_json")));
+            }
+            selectstatment = "SELECT * FROM `updated_edge`  where ";
+            value = "";
+            for (String acc : jsonMap.fieldNames()) {
+                JsonArray arr = jsonMap.getJsonArray(acc);
+                for (int i = 0; i < arr.size(); i++) {
+                    value += " or `id`=?";
                 }
-                return arr;
-            }).filter((arr) -> (!arr[1].contains(";"))).forEachOrdered((arr) -> {
-                arr[1] = arr[1] + ";";
-            });
+            }
+            value = value.replaceFirst(" or ", "") + ";";
+            selectNameStat = conn.prepareStatement(selectstatment + value);
+            index = 1;
+            for (String acc : jsonMap.fieldNames()) {
+                JsonArray arr = jsonMap.getJsonArray(acc);
+                for (int i = 0; i < arr.size(); i++) {
+                    selectNameStat.setInt(index++, arr.getInteger(i));
+                }
+            }
+            rs = selectNameStat.executeQuery();
+            while (rs.next()) {
+                String compI = rs.getString("compI").trim();
+                String compII = rs.getString("compII").trim();
+                edges.add(new String[]{compI, compII});
+            }
             return edges;
 
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | SQLException e) {

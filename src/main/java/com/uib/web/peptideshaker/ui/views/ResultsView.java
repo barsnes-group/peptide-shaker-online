@@ -435,7 +435,8 @@ public class ResultsView extends AbsoluteLayout implements ViewableFrame {
         try {
             if (appManagmentBean.getUI_Manager().isToUpdatePeptidePSm()) {
                 peptidePsmoverviewBtn.updateIconByResource(new ExternalResource(appManagmentBean.getUI_Manager().getEncodedPeptideButtonImage()));
-            } else if (appManagmentBean.getUI_Manager().getSelectedDatasetId() != null) {
+            } 
+            if (appManagmentBean.getUI_Manager().getSelectedDatasetId() != null) {
                 datasetProteinsOverviewBtn.removeStyleName("inactive");
                 if (appManagmentBean.getUI_Manager().getSelectedProteinIndex() != -1) {
                     proteinPeptidesOverviewBtn.setVisible(true);
