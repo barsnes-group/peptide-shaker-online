@@ -212,7 +212,7 @@ public class DatabaseUtils {
      * @param proteinAcc protein accession list
      * @return set of edge data
      */
-    public Set<String[]> getPathwayEdges(Set<String> proteinAcc) {
+    public Set<String[]> getPathwayEdges(String[] proteinAcc) {
         Set<String[]> edges = new LinkedHashSet<>();
         try {
 

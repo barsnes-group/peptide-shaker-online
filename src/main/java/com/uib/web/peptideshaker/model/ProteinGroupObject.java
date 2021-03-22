@@ -17,6 +17,15 @@ public class ProteinGroupObject extends Protein {
     private final Set<Integer> peptidesSet;
     private final Map<String, NetworkGraphNode> proteoformsNodes;
     private final Set<NetworkGraphEdge> localEdges;
+    private Set<NetworkGraphEdge> fullEdgesSet;
+
+    public Set<NetworkGraphEdge> getFullEdgesSet() {
+        return fullEdgesSet;
+    }
+
+    public void setFullEdgesSet(Set<NetworkGraphEdge> fullEdgesSet) {
+        this.fullEdgesSet = fullEdgesSet;
+    }
     /**
      * Set of secondary accessions related to the main accession protein.
      */

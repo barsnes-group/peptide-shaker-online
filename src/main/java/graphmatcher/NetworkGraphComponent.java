@@ -85,6 +85,7 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
     private int liveWidth = 1000;
     private int liveHeight = 500;
     private Image edgesImage;
+    private String lastSelectedProteinAcc = "";
     /**
      * The graph.
      */
@@ -346,11 +347,20 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
         return informationLegend;
     }
 
-    public void updateGraphData(Map<String,ProteinGroupObject> selectedItems) {//Map<String, Map<String, Node>> graphNodes
+    public void updateGraphData(Map<String, ProteinGroupObject> selectedItems) {//Map<String, Map<String, Node>> graphNodes
+        if (selectedItems.size() == 1 && selectedItems.containsKey(lastSelectedProteinAcc)) {
+            return;
+        }
+       
         this.canvas.removeAllComponents();
         this.selectedNodes.clear();
         this.graphNodes.clear();
-        this.graphEdges = appManagmentBean.getDatasetUtils().getProteoformsNetworkEdges(appManagmentBean.getUserHandler().getDataset(appManagmentBean.getUI_Manager().getSelectedDatasetId()), selectedItems);
+        if (selectedItems.size() != 1) { 
+            this.lastSelectedProteinAcc="";
+            return;
+        }
+        lastSelectedProteinAcc = selectedItems.keySet().iterator().next();
+        this.graphEdges = appManagmentBean.getDatasetUtils().getProteoformsNetworkEdges(appManagmentBean.getUserHandler().getDataset(appManagmentBean.getUI_Manager().getSelectedDatasetId()), lastSelectedProteinAcc, selectedItems.get(lastSelectedProteinAcc));
         this.activeGraphEdges.clear();
         this.activeGraphNodes.clear();
 //        
