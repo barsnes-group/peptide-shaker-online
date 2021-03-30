@@ -40,11 +40,7 @@ public class Config implements Serializable {
     private String csfprLink;
      private String working_folder_path;
      
-     
-     private   String psVersion ;
-     private    String searchGUIversion ;
-     private   String moffVersion ;
-    private    String thermoRawFileConverterVersion ;
+
 
     public String getWorking_folder_path() {
         return working_folder_path;
@@ -151,10 +147,6 @@ public class Config implements Serializable {
         String appName = (scx.getInitParameter("appName"));
         VaadinSession.getCurrent().setAttribute("appName", appName);
 //        VaadinSession.getCurrent().setAttribute("csfprLink", csfprLink);
-         psVersion = (scx.getInitParameter("psvirsion"));
-         searchGUIversion = (scx.getInitParameter("searchguivirsion"));
-         moffVersion = (scx.getInitParameter("moffvirsion"));
-         thermoRawFileConverterVersion = (scx.getInitParameter("thermorawfileconverterversion"));        
         
        
         maximumAllowedUsers = Integer.parseUnsignedInt(scx.getInitParameter("maxusernumb") + "");
@@ -218,20 +210,6 @@ public class Config implements Serializable {
         return id_workflow_invoking_file_path;
     }
 
-    public String getPsVersion() {
-        return psVersion;
-    }
-
-    public String getMoffVersion() {
-        return moffVersion;
-    }
-
-    public String getThermoRawFileConverterVersion() {
-        return thermoRawFileConverterVersion;
-    }
-
-    public String getSearchGUIversion() {
-        return searchGUIversion;
-    }
+   
 
 }

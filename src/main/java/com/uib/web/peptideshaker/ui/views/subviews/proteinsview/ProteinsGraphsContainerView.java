@@ -99,5 +99,8 @@ public abstract class ProteinsGraphsContainerView extends VerticalLayout {
     public void updateMode() {
         this.graphComponent.updateMode();
     }
+    public Map<String, PeptideObject> getPeptidesNodes() {
+        return graphComponent.getPeptidesNodes();
+    }
 
 }

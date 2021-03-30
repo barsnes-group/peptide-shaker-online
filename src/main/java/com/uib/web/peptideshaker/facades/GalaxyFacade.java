@@ -98,7 +98,7 @@ public class GalaxyFacade implements Serializable {
         return userDetailsMap;
     }
 
-    public Object[] getUserData(String userAPIKey) {
+    public Object[] getStoredData(String userAPIKey) {
         List<GalaxyCollectionModel> collectionList = new ArrayList<>();
         Map<String, GalaxyFileModel> filesMap = new LinkedHashMap<>();
         galaxyJobs.clear();

@@ -216,8 +216,8 @@ public class Protein3DStructureView extends AbsoluteLayout {
         infoLabel.setVisible(false);
         this.lastSelectedAccession = accession;
         this.lastSelectedProteinSequence = proteinSequence;
-        this.uniprotLabel.setValue("UniProt: " + lastSelectedAccession);
         this.proteinPeptides = proteinPeptides;
+        this.uniprotLabel.setValue("UniProt: " + lastSelectedAccession);
         loadData(lastSelectedAccession, lastSelectedProteinSequence, true);
 
     }

@@ -488,6 +488,10 @@ public abstract class GraphComponent extends VerticalLayout {
 
     }
 
+    public Map<String, PeptideObject> getPeptidesNodes() {
+        return peptidesNodes;
+    }
+
     public void updateGraphData(ProteinGroupObject selectedProtein, Map<String, ProteinGroupObject> proteinNodes, Map<String, PeptideObject> peptidesNodes, HashMap<String, Set<String>> edges, RangeColorGenerator psmColorScale, boolean quantDs, RangeColorGenerator intensityColorScale) {
 
         uniqueOnly = nodeControl.getValue().equals("Unique Only");

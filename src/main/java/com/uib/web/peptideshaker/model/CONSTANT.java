@@ -76,18 +76,22 @@ public class CONSTANT {
     public static final String DESEDE_ENCRYPTION_SCHEME = "DESede";
     public static final String UNICODE_FORMAT = "UTF8";
     public static final String OUTPUTS = "outputs";
+    
+    
+    
     public static final String MOFF_TOOL_ID = "toolshed.g2.bx.psu.edu/repos/galaxyp/proteomics_moff/proteomics_moff/2.0.3.0";
     public static final String MOFF_TOOL_Version = "2.0.3.0";
     public static final String CONVERT_CHARACTERS_TOOL_ID = "Convert characters1";
     public static final String THERMO_RAW_CONVERTOR_TOOL_ID = "toolshed.g2.bx.psu.edu/repos/galaxyp/thermo_raw_file_converter/thermo_raw_file_converter/1.2.3+galaxy0";
     public static final String THERMO_RAW_CONVERTOR_TOOL_VERSION = "1.2.3+galaxy0";
-
-    public static final String SEARCHGUI_TOOL_ID = "toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/search_gui/4.0.12+galaxy0";
-    public static final String SEARCHGUI_TOOL_VERSION = "4.0.12+galaxy0";
+    public static final String SEARCHGUI_TOOL_VERSION = "4.0.22+galaxy0";
+    public static final String SEARCHGUI_TOOL_ID = "toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/search_gui/"+SEARCHGUI_TOOL_VERSION;
+   
     public static final String BUILD_LIST_TOOL_ID = "__BUILD_LIST__";
     public static final String BUILD_LIST_TOOL_VERSION = "1.0.0";
-    public static final String PEPTIDESHAKER_TOOL_ID = "toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/peptide_shaker/2.0.9+galaxy0";
-    public static final String PEPTIDESHAKER_TOOL_VERSION = "2.0.9+galaxy0";
+    public static final String PEPTIDESHAKER_TOOL_VERSION = "2.0.15+galaxy0";
+    public static final String PEPTIDESHAKER_TOOL_ID = "toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/peptide_shaker/"+PEPTIDESHAKER_TOOL_VERSION;
+    
     public static final String SERVER_TIMEZONE = "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 
     public static final String[] EXTRA_COLOURS = new String[]{

@@ -9091,7 +9091,7 @@
         height:100px !important;
     }
 
-    .useruploaddatasubviewstyle .v-horizontallayout-uploadbigbtn, .pridesubviewstyle  .v-horizontallayout-prideimg , .datasetproteinssubviewstyle .v-horizontallayout-dsoverviewbtn{
+    .useruploaddatasubviewstyle .v-horizontallayout-uploadbigbtn, .pridesubviewstyle  .v-horizontallayout-prideimg , .datasetproteinssubviewstyle .v-horizontallayout-dsoverviewbtn, .proteinpeptidessubviewstyle .v-horizontallayout-proteinoverviewbtn,  .peptidepsmssubviewstyle .v-horizontallayout-psmoverviewbtn{
         border-color: orange !important;
         border-right-color:white !important;
     }
@@ -9137,6 +9137,9 @@
     .v-absolutelayout-wrapper-highzindex{
         z-index:5 !important;
     }
+    .v-ui.uicontainer.resultsviewstyle.proteinpeptidessubviewstyle.v-scrollable{
+	overflow:visible !important;
+}
 
 
 }

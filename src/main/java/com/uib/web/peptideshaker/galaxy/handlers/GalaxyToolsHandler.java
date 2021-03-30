@@ -531,8 +531,8 @@ public abstract class GalaxyToolsHandler {
             for (PluploadFile file : toUploadFiles) {
                 File tFile = (File) file.getUploadedFile();
                 final ToolsClient.FileUploadRequest request = new ToolsClient.FileUploadRequest(workHistoryId, tFile);
-                if (file.getName().endsWith(".thermo.raw")) {
-                    request.setFileType("thermo.raw");
+                if (file.getName().endsWith(".raw")) {
+                    request.setFileType(".raw");
                 }
 
                 request.setDatasetName(file.getName());

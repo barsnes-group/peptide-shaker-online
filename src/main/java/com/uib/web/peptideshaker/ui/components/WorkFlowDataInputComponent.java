@@ -148,7 +148,7 @@ public class WorkFlowDataInputComponent extends Panel {
         titleLabel.setStyleName("frametitle");
         titleLabel.addStyleName("maintitleheader");
         container.addComponent(titleLabel, "left:40px;top:13px");
-        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Analyze Data (create new projects)</h1>Users can upload their data files (FASTA files, Spectrum input files) and process their data using SearchGUI and visualize the result dataset.</br>Currently the supported Spectrum input files are (MGF and mzML) for identification datastes and (therm.raw) files for quantification datasets.", "", 400, 155);
+        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Analyze Data (create new projects)</h1>Users can upload their data files (FASTA files, Spectrum input files) and process their data using SearchGUI and visualize the result dataset.</br>Currently the supported Spectrum input files are (MGF and mzML) for identification datastes and (.raw) files for quantification datasets.", "", 400, 155);
         container.addComponent(helpBtn, "left:143px;top:0px");
 
         AbsoluteLayout mainContainerLayout = new AbsoluteLayout();
@@ -250,11 +250,11 @@ public class WorkFlowDataInputComponent extends Panel {
                 String fileExtension;
                 String fileName = uploadedFiles[0].getName();
 
-                if (fileName.toLowerCase().endsWith(".mgf")) {
+                if (fileName.toLowerCase().endsWith(CONSTANT.MGF_FILE_EXTENSION)) {
                     fileExtension = CONSTANT.MGF_FILE_EXTENSION;
-                } else if (fileName.toLowerCase().endsWith(".mzml")) {
+                } else if (fileName.toLowerCase().endsWith(CONSTANT.mzML_FILE_EXTENSION)) {
                     fileExtension = CONSTANT.mzML_FILE_EXTENSION;
-                } else if (fileName.toLowerCase().endsWith(".thermo.raw")) {
+                } else if (fileName.toLowerCase().endsWith(".raw")) {
                     fileExtension = CONSTANT.THERMO_RAW_FILE_EXTENSION;
                 } else {
                     return;
@@ -281,9 +281,9 @@ public class WorkFlowDataInputComponent extends Panel {
 
             }
         };
-        mgf_raw_dataUploader.addUploaderFilter("mgf");
-        mgf_raw_dataUploader.addUploaderFilter("thermo.raw");
-        mgf_raw_dataUploader.addUploaderFilter("mzml");
+        mgf_raw_dataUploader.addUploaderFilter(CONSTANT.MGF_FILE_EXTENSION);
+        mgf_raw_dataUploader.addUploaderFilter("raw");
+        mgf_raw_dataUploader.addUploaderFilter(CONSTANT.mzML_FILE_EXTENSION);
         inputDataFilesContainer.addComponent(mgf_raw_dataUploader, "right:5px;top:-40px");
 
         rawDataListLayout = new VerticalLayout();

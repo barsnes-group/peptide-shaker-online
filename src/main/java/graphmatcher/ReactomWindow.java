@@ -17,6 +17,7 @@ import com.vaadin.ui.Window;
  * @author Yehia Farag
  */
 public class ReactomWindow extends Window {
+
     private final BrowserFrame frame;
 
     public ReactomWindow() {
@@ -38,14 +39,10 @@ public class ReactomWindow extends Window {
     @Override
     public void close() {
         this.setVisible(false);
-
     }
 
     public void visulaizeProtein(String protAccession) {
         frame.setSource(new ThemeResource("reactom/reactomcontainer.html?id=" + protAccession.substring(0, protAccession.length() - 1)));
         ReactomWindow.this.setVisible(true);
-
     }
-
-
 }

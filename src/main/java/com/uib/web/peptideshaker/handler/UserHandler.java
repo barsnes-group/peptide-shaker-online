@@ -91,9 +91,9 @@ public class UserHandler implements Serializable {
         filesToViewList.clear();
         this.userInformationMap = appManagmentBean.getGalaxyFacad().getUserInformation(loggedinUserAPIKey, loggedinUserId);
         //initial user history       
-        Object[] userData = appManagmentBean.getGalaxyFacad().getUserData(loggedinUserAPIKey);
-        this.collectionList = (List<GalaxyCollectionModel>) userData[0];
-        this.filesMap = (Map<String, GalaxyFileModel>) userData[1];
+        Object[] storedData = appManagmentBean.getGalaxyFacad().getStoredData(loggedinUserAPIKey);
+        this.collectionList = (List<GalaxyCollectionModel>) storedData[0];
+        this.filesMap = (Map<String, GalaxyFileModel>) storedData[1];
         filesToViewList.addAll(filesMap.values());
         return busyHistory;
     }
