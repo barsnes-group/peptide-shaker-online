@@ -56,11 +56,6 @@ public abstract class ProteoformModificationLayout extends VerticalLayout implem
 
     public abstract void selected(ProteoformModificationLayout proteoformModificationLayout);
     public PeptideLayout select() {
-//        System.out.println("at selected proteioformpeptide to highlight ");
-//        for (PeptideLayout peptide : correspondingPeptidesSet) {
-////            peptide.addStyleName("heighlightcorrespondingpeptide");
-//        }
-//        this.addStyleName("heighlightcorrespondingpeptide");
         if (correspondingPeptidesSet.size() == 1) {
             return correspondingPeptidesSet.iterator().next();
         }

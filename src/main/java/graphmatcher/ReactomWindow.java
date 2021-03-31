@@ -42,6 +42,7 @@ public class ReactomWindow extends Window {
     }
 
     public void visulaizeProtein(String protAccession) {
+        System.out.println("at protein acc "+protAccession);
         frame.setSource(new ThemeResource("reactom/reactomcontainer.html?id=" + protAccession.substring(0, protAccession.length() - 1)));
         ReactomWindow.this.setVisible(true);
     }

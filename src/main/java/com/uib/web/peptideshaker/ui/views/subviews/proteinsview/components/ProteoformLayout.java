@@ -26,11 +26,12 @@ public abstract class ProteoformLayout extends AbsoluteLayout implements LayoutE
 
     private final String proteoformKey;
     private final Set<ProteoformModificationLayout> includedModifications;
-    ReactomWindow w = new ReactomWindow();
+    private final ReactomWindow localReactomWindow;
 
     public ProteoformLayout(int index, int topLocation, Color finalBackgroundColor, String proteoformKey, boolean availableOnReactome) {
         ProteoformLayout.this.setWidth(100, Unit.PERCENTAGE);
         ProteoformLayout.this.setHeight(15, Unit.PIXELS);
+        this.localReactomWindow = new ReactomWindow();
         this.includedModifications = new LinkedHashSet<>();
         this.proteoformKey = proteoformKey;
         String fontColor = "white";
@@ -86,7 +87,7 @@ public abstract class ProteoformLayout extends AbsoluteLayout implements LayoutE
         Component c = event.getClickedComponent();
         if (c != null && (c instanceof Image)) {
             if (c.isEnabled()) {
-                w.visulaizeProtein(proteoformKey);
+                localReactomWindow.visulaizeProtein(proteoformKey);
             }
         } else {
             selectProteoform(this);
