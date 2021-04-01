@@ -61,6 +61,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 /**
@@ -80,7 +81,7 @@ public class SpectrumPlot extends AbsoluteLayout {
     private final MenuBar.Command annotationsItemsCommand;
     private final MenuItem ionsItem;
     private final MenuItem otherItem;
-    private final MenuItem lossItem;
+    private final MenuItem lossItems;
     private final MenuItem chargeItem;
     private final LinkedHashMap<String, Integer> ions;
     private final LinkedHashMap<String, IonType> others;
@@ -107,10 +108,6 @@ public class SpectrumPlot extends AbsoluteLayout {
     private int updatedComponentWidth;
     private int updatedComponentHeight;
     private SequenceProvider sequenceProvider;
-    /**
-     * Waiting timer
-     */
-    private javax.swing.Timer waitingTimer;
     private IdentificationParameters identificationParameters;
     private SpecificAnnotationParameters specificAnnotationParameters;
     private boolean defaultAnnotationInUse;
@@ -138,32 +135,11 @@ public class SpectrumPlot extends AbsoluteLayout {
         others.put("Immonium", IonType.IMMONIUM_ION);
         others.put("Related", IonType.RELATED_ION);
         others.put("Reporter", IonType.REPORTER_ION);
-//                   
-//        SpectrumPlot.this.setWidth(1000, Unit.PIXELS);
-//        SpectrumPlot.this.setHeight(500, Unit.PIXELS);
-//        SpectrumPlot.this.setStyleName(ValoTheme.LAYOUT_WELL);
-        plot = new Image() {
-            @Override
-            public void setSource(Resource source) {
-                if (this.getStyleName().contains("imgII")) {
-                    this.removeStyleName("imgII");
-                    this.addStyleName("imgI");
-                } else {
-                    this.removeStyleName("imgI");
-                    this.addStyleName("imgII");
-
-                }
-                super.setSource(source); //To change body of generated methods, choose Tools | Templates.
-            }
-
-        };
+        plot = new Image();
         plot.setSizeFull();
         plot.addStyleName("psmplotstyle");
+        plot.addStyleName("imgI");
         SpectrumPlot.this.addComponent(plot, "left:0px;top:0px;bottom:40px;");
-//        selectionCanvas = initSelectionCanvas(1000,500);
-//        
-//
-//        SpectrumPlot.this.addComponent(selectionCanvas, "left:0px;bottom:40px");
         selectionCanvasContainer = new VerticalLayout();
         SpectrumPlot.this.addComponent(selectionCanvasContainer, "left:0px;top:0px; bottom:40px");
 
@@ -203,7 +179,7 @@ public class SpectrumPlot extends AbsoluteLayout {
         ionsItem = menue.addItem("<div class='tinydot'></div>" + VaadinIcons.DOT_CIRCLE.getHtml() + "Ions", null, null);
         otherItem = menue.addItem("<div class='otinydot'></div>" + VaadinIcons.DOT_CIRCLE.getHtml() + "Other", null, null);
 
-        lossItem = menue.addItem(VaadinIcons.MINUS_CIRCLE_O.getHtml() + "Loss", null, null);//"<div class='lossin'>"+VaadinIcons.MINUS_CIRCLE_O.getHtml()+"</div><div class='lossout'>"+VaadinIcons.BAR_CHART.getHtml() +"</div>
+        lossItems = menue.addItem(VaadinIcons.MINUS_CIRCLE_O.getHtml() + "Loss", null, null);//"<div class='lossin'>"+VaadinIcons.MINUS_CIRCLE_O.getHtml()+"</div><div class='lossout'>"+VaadinIcons.BAR_CHART.getHtml() +"</div>
 
         chargeItem = menue.addItem("Charge", VaadinIcons.PLUS, null);
         resetAnnoItem = menue.addItem("Reset Annotations", VaadinIcons.RETWEET, (MenuItem selectedItem) -> {
@@ -211,14 +187,17 @@ public class SpectrumPlot extends AbsoluteLayout {
             selectedItem.setEnabled(false);
             resetAnnotations();
             updateAnnotationPreferences();
+             updateImage(spectrumPanel);
         });
         annotationsItemsCommand = (MenuItem selectedItem) -> {
             defaultAnnotationInUse = false;
             if (selectedItem.getText().equalsIgnoreCase("Adapt")) {
-                MenuItem H2OItem = lossItem.getChildren().get(0);
-                H2OItem.setEnabled(!selectedItem.isChecked());
-                MenuItem NH3Item = lossItem.getChildren().get(1);
-                NH3Item.setEnabled(!selectedItem.isChecked());
+                HashSet<String> lossesNames = IonFactory.getNeutralLosses(identificationParameters.getSearchParameters().getModificationParameters());
+                int k = 0;
+                for (String lossName : lossesNames) {
+                    MenuItem lossItem = lossItems.getChildren().get(k++);
+                    lossItem.setEnabled(true);
+                }
             }
             updateAnnotationPreferences();
             resetAnnoItem.setEnabled(true);
@@ -226,19 +205,6 @@ public class SpectrumPlot extends AbsoluteLayout {
         };
         initIonsItem(ionsItem, annotationsItemsCommand);
         initOtherItem(otherItem, annotationsItemsCommand);
-
-        MenuItem H2OItem = lossItem.addItem("H2O", annotationsItemsCommand);
-        H2OItem.setEnabled(false);
-        H2OItem.setCheckable(true);
-        H2OItem.setChecked(true);
-        MenuItem NH3Item = lossItem.addItem("NH3", annotationsItemsCommand);
-        NH3Item.setEnabled(false);
-        NH3Item.setCheckable(true);
-        NH3Item.setChecked(true);
-        MenuItem adaptItem = lossItem.addItem("Adapt", annotationsItemsCommand);
-        adaptItem.setCheckable(true);
-        adaptItem.setChecked(true);
-        lossItem.addSeparatorBefore(adaptItem);
 
         deNovoItem = menue.addItem("De Novo", VaadinIcons.BAR_CHART_H, null);
         MenuBar.Command deNovoItemItemsCommand = (MenuItem selectedItem) -> {
@@ -296,19 +262,7 @@ public class SpectrumPlot extends AbsoluteLayout {
             }
             updatedComponentWidth = event.getWidth();
             updatedComponentHeight = event.getHeight();
-
-//            if (this.waitingTimer == null && identificationParameters != null) {
-//                /* Start waiting for DELAY to elapse. */
-//update this with excuter
-//                this.waitingTimer = new Timer(DELAY, (ActionEvent ae) -> {
             UI.getCurrent().access(this::reDraw);
-//                });
-//                this.waitingTimer.setRepeats(false);
-//                this.waitingTimer.start();
-//            } else if (waitingTimer != null) {
-//                /* Event came too soon, swallow it by resetting the timer.. */
-//                this.waitingTimer.restart();
-//            }
 
         };
         mainSizeReporter.addResizeListener(compResizeListener);
@@ -392,6 +346,16 @@ public class SpectrumPlot extends AbsoluteLayout {
     }
 
     private void resetAnnotations() {
+        resetAnnoItem.setEnabled(false);
+
+        HashSet<String> lossesNames = IonFactory.getNeutralLosses(identificationParameters.getSearchParameters().getModificationParameters());
+        int k = 0;
+        for (String lossName : lossesNames) {
+            MenuItem lossItem = lossItems.getChildren().get(k++);
+            lossItem.setChecked(true);
+            lossItem.setEnabled(false);
+
+        }
         ionsItem.getChildren().forEach((mi) -> {
             mi.setChecked(false);
         });
@@ -404,14 +368,8 @@ public class SpectrumPlot extends AbsoluteLayout {
         otherItem.getChildren().forEach((mi) -> {
             mi.setChecked(true);
         });
-        MenuItem H2OItem = lossItem.getChildren().get(0);
-        H2OItem.setChecked(true);
-        H2OItem.setEnabled(false);
-        MenuItem NH3Item = lossItem.getChildren().get(1);
-        NH3Item.setChecked(true);
-        NH3Item.setEnabled(false);
 
-        MenuItem adaptItem = lossItem.getChildren().get(3);
+        MenuItem adaptItem = lossItems.getChildren().get(k);
         adaptItem.setChecked(true);
         adaptItem.setEnabled(true);
 
@@ -536,17 +494,16 @@ public class SpectrumPlot extends AbsoluteLayout {
                 }
             });
 
-            MenuItem adaptItem = lossItem.getChildren().get(3);
+            
+            
+            
+            MenuItem adaptItem = lossItems.getChildren().get(lossItems.getSize()-1);
+            specificAnnotationParameters.setNeutralLossesAuto(adaptItem.isChecked());
             if (!adaptItem.isChecked()) {
-                specificAnnotationParameters.setNeutralLossesAuto(false);
                 specificAnnotationParameters.clearNeutralLosses();
-                lossItem.getChildren().forEach((mi) -> {
+                lossItems.getChildren().forEach((mi) -> {
                     if (mi.isChecked()) {
-                        if (mi.getText().equalsIgnoreCase("NH3")) {
-                            specificAnnotationParameters.addNeutralLoss(NeutralLoss.NH3);
-                        } else if (mi.getText().equalsIgnoreCase("H2O")) {
-                            specificAnnotationParameters.addNeutralLoss(NeutralLoss.H2O);
-                        }
+                        specificAnnotationParameters.addNeutralLoss(NeutralLoss.getNeutralLoss(mi.getText()));
                     }
                 });
 
@@ -647,7 +604,6 @@ public class SpectrumPlot extends AbsoluteLayout {
             spectrumPanel.setSpectrumPeakColor(Color.RED);
             spectrumPanel.setSpectrumProfileModeLineColor(Color.RED);
             spectrumPanel.rescale(0.0, spectrumPanel.getMaxXAxisValue());
-//            this.defaultAnnotationInUse = true;
             chargeItem.removeChildren();
             int precursorCharge = 1;
             int currentCharge = spectrumMatch.getBestPeptideAssumption().getIdentificationCharge();
@@ -662,6 +618,21 @@ public class SpectrumPlot extends AbsoluteLayout {
                 item.setCheckable(true);
                 item.setChecked(true);
             }
+            lossItems.removeChildren();
+            HashSet<String> lossesNames = IonFactory.getNeutralLosses(identificationParameters.getSearchParameters().getModificationParameters());
+            for (String lossName : lossesNames) {
+                MenuItem lossItem = lossItems.addItem(lossName, annotationsItemsCommand);
+                lossItem.setEnabled(false);
+                lossItem.setCheckable(true);
+                lossItem.setChecked(true);
+
+            }
+
+            MenuItem adaptItem = lossItems.addItem("Adapt", annotationsItemsCommand);
+            adaptItem.setCheckable(true);
+            adaptItem.setChecked(true);
+            lossItems.addSeparatorBefore(adaptItem);
+
             resetAnnotations();
             Property.ValueChangeListener listener = (Property.ValueChangeEvent event) -> {
                 updateAnnotationPreferences();
