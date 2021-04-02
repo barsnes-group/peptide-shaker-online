@@ -154,6 +154,7 @@ public class SecondarySpectraChartsGenerator {
         sequenceFragmentationChartComponent.setSource(new ExternalResource(drawImage(sequenceFragmentationPanel)));
         //            errorPlot = new MassErrorPlot(annotations, spectrumInformation.getSpectrum(), accuracy, spectrumInformation.getIdentificationParameters().getSearchParameters().getFragmentAccuracyType() == SearchParameters.MassAccuracyType.PPM);
 
+        System.out.println("annotations "+annotations.length+"  spectrumInformation.getSpectrum() "+"  "+ specificAnnotationParameters.getFragmentIonAccuracy()+"  "+spectrumInformation.getIdentificationParameters().getSearchParameters().getFragmentAccuracyType());
         // create the miniature mass error plot
         errorPlot = new MassErrorPlot(annotations, spectrumInformation.getSpectrum(),
                 specificAnnotationParameters.getFragmentIonAccuracy(),

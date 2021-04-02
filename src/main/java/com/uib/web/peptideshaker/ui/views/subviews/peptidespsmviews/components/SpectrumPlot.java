@@ -183,11 +183,11 @@ public class SpectrumPlot extends AbsoluteLayout {
 
         chargeItem = menue.addItem("Charge", VaadinIcons.PLUS, null);
         resetAnnoItem = menue.addItem("Reset Annotations", VaadinIcons.RETWEET, (MenuItem selectedItem) -> {
-            defaultAnnotationInUse = true;
+            defaultAnnotationInUse = false;
             selectedItem.setEnabled(false);
             resetAnnotations();
             updateAnnotationPreferences();
-             updateImage(spectrumPanel);
+            updateImage(spectrumPanel);
         });
         annotationsItemsCommand = (MenuItem selectedItem) -> {
             defaultAnnotationInUse = false;
@@ -376,6 +376,8 @@ public class SpectrumPlot extends AbsoluteLayout {
         chargeItem.getChildren().forEach((mi) -> {
             mi.setChecked(true);
         });
+//        annotationAccuracySlider.setValue(100.0);
+//        levelSlider.setValue(75.0);
 
     }
 
@@ -453,14 +455,15 @@ public class SpectrumPlot extends AbsoluteLayout {
         annotationAccuracySlider.setDescription("Annotation accuracy : " + accuracy + " Da");
         PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption();
         currentPeptide = peptideAssumption.getPeptide();
+
         AnnotationParameters annotationParameters = identificationParameters.getAnnotationParameters();
         annotationParameters.setIntensityLimit(levelSlider.getValue() / 100.0);
         annotationParameters.setFragmentIonAccuracy(accuracy);
-        specificAnnotationParameters = new SpecificAnnotationParameters();
+//        specificAnnotationParameters = new SpecificAnnotationParameters();
         ModificationParameters modificationParameters = identificationParameters.getSearchParameters().getModificationParameters();
         SequenceMatchingParameters modificationSequenceMatchingParameters = identificationParameters.getModificationLocalizationParameters().getSequenceMatchingParameters();
-        identificationParameters.setAnnotationParameters(annotationParameters);
-
+//        identificationParameters.setAnnotationParameters(annotationParameters);
+//
         specificAnnotationParameters = annotationParameters.getSpecificAnnotationParameters(
                 spectrumMatch.getSpectrumFile(),
                 spectrumMatch.getSpectrumTitle(),
@@ -469,7 +472,7 @@ public class SpectrumPlot extends AbsoluteLayout {
                 sequenceProvider,
                 modificationSequenceMatchingParameters,
                 spectrumAnnotator
-        );
+        ).clone();
 
         if (!defaultAnnotationInUse) {
             specificAnnotationParameters.getIonTypes().get(IonType.PEPTIDE_FRAGMENT_ION).clear();
@@ -481,6 +484,7 @@ public class SpectrumPlot extends AbsoluteLayout {
                     specificAnnotationParameters.addIonType(IonType.TAG_FRAGMENT_ION, ions.get(mi.getText()));
                 }
             });
+
             otherItem.getChildren().forEach((mi) -> {
                 if (mi.isChecked()) {
                     if (mi.getText().equalsIgnoreCase("Reporter")) {
@@ -494,10 +498,7 @@ public class SpectrumPlot extends AbsoluteLayout {
                 }
             });
 
-            
-            
-            
-            MenuItem adaptItem = lossItems.getChildren().get(lossItems.getSize()-1);
+            MenuItem adaptItem = lossItems.getChildren().get(lossItems.getSize() - 1);
             specificAnnotationParameters.setNeutralLossesAuto(adaptItem.isChecked());
             if (!adaptItem.isChecked()) {
                 specificAnnotationParameters.clearNeutralLosses();
@@ -514,7 +515,7 @@ public class SpectrumPlot extends AbsoluteLayout {
                 specificAnnotationParameters.addSelectedCharge(Integer.parseInt(charge.getText().replace("+", "").trim()));
             });
         }
-        // The following preferences are kept for all spectra
+//         The following preferences are kept for all spectra
         annotationParameters.setShowForwardIonDeNovoTags(deNovoItem.getChildren().get(0).isChecked());
         annotationParameters.setShowRewindIonDeNovoTags(deNovoItem.getChildren().get(1).isChecked());
         if (deNovoItem.getChildren().get(3).isChecked()) {
@@ -569,6 +570,12 @@ public class SpectrumPlot extends AbsoluteLayout {
 
     public void selectedSpectrum(Spectrum currentSpectrum, SequenceProvider sequenceProvider, String charge, double fragmentIonAccuracy, IdentificationParameters identificationParameters, SpectrumMatch spectrumMatch) {
         mainSizeReporter.removeResizeListener(compResizeListener);
+        deNovoItem.setEnabled(false);
+        deNovoItem.getChildren().get(0).setChecked(false);
+        deNovoItem.getChildren().get(1).setChecked(false);
+        deNovoItem.getChildren().get(3).setChecked(true);
+        deNovoItem.getChildren().get(4).setChecked(false);
+        deNovoItem.setEnabled(true);
         this.identificationParameters = identificationParameters;
         this.currentSpectrum = currentSpectrum;
         this.fragmentIonAccuracy = fragmentIonAccuracy;
