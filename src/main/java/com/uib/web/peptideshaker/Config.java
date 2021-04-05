@@ -143,11 +143,7 @@ public class Config implements Serializable {
         working_folder_path= basePath +"/VAADIN/";
         id_workflow_file_path=basePath +"/VAADIN/Galaxy-Workflow-Full-Pipeline-Workflow-Id-Multiple-Input.ga";
         quant_workflow_invoking_file_path= basePath +"/VAADIN/Multi-Quant-Invoking.json";
-        id_workflow_invoking_file_path= basePath +"/VAADIN/Multi-Id-Invoking.json";
-        String appName = (scx.getInitParameter("appName"));
-        VaadinSession.getCurrent().setAttribute("appName", appName);
-//        VaadinSession.getCurrent().setAttribute("csfprLink", csfprLink);
-        
+        id_workflow_invoking_file_path= basePath +"/VAADIN/Multi-Id-Invoking.json";        
        
         maximumAllowedUsers = Integer.parseUnsignedInt(scx.getInitParameter("maxusernumb") + "");
 
@@ -164,6 +160,7 @@ public class Config implements Serializable {
         if (brwserApp.contains("Mobile")) {
             mobileDeviceStyle = true;
             UI.getCurrent().addStyleName("mobilestyle");
+             UI.getCurrent().addStyleName("averagescreenstyle");
         } else if ((screenWidth < 1349 && screenWidth >= 1000) && (screenHeigh < 742 && screenHeigh >= 500)) {
             UI.getCurrent().addStyleName("averagescreenstyle");
 

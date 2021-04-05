@@ -39,8 +39,10 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
     private final ProteinCoverageView ProteinCoverageView;
     private final Protein3DStructureView protein3DStructureView;
     private final Label headerLabel;
+    private final HorizontalLayout middleContainer;
 
     private final Map<Integer, Component> filterComponentsMap;
+     private int currentFilterView = 0;
 
     public ProteinPeptidesSubView() {
         this.appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
@@ -79,7 +81,7 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
         subContainer.setSpacing(true);
         container.addComponent(subContainer, "left:0px; top:30px; bottom:15px;");
 
-        HorizontalLayout middleContainer = new HorizontalLayout();
+        middleContainer = new HorizontalLayout();
         middleContainer.addStyleName("extendwidthstyle");
         middleContainer.setHeight(100, Unit.PERCENTAGE);
         middleContainer.setWidth(100, Unit.PERCENTAGE);
@@ -162,17 +164,65 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
         btnContainer.addComponent(filterViewIndex);
 
         beforeBtn.addClickListener((Button.ClickEvent event) -> {
-//            filterViewIndex.setValue(" (" + this.showBefore() + "/3) ");
+            filterViewIndex.setValue(" (" + this.showBefore() + "/3) ");
         });
         Button nextBtn = new Button(VaadinIcons.CARET_RIGHT);
         nextBtn.setStyleName(ValoTheme.BUTTON_ICON_ONLY);
         btnContainer.addComponent(nextBtn);
         nextBtn.addClickListener((Button.ClickEvent event) -> {
-//            filterViewIndex.setValue(" (" + this.showNext() + "/3) ");
+            filterViewIndex.setValue(" (" + this.showNext() + "/3) ");
         });
-//        filterViewIndex.setValue(" (" + ProteinVisulizationLevelContainer.this.showNext() + "/3) ");
+        filterViewIndex.setValue(" (" + this.showNext() + "/3) ");
     }
 
+    public int showNext() {
+        filterComponentsMap.values().stream().map((view) -> {
+            view.addStyleName("hidedsfilter");
+            return view;
+        }).forEachOrdered((view) -> {
+            view.removeStyleName("viewdsfilter");
+        });
+        currentFilterView++;
+        if (currentFilterView > 3) {
+            currentFilterView = 1;
+        }
+        if (currentFilterView == 3) {
+            middleContainer.addStyleName("hidedsfilter");
+        } else {
+            middleContainer.removeStyleName("hidedsfilter");
+        }
+
+        filterComponentsMap.get(currentFilterView).addStyleName("viewdsfilter");
+        filterComponentsMap.get(currentFilterView).removeStyleName("hidedsfilter");
+
+        return currentFilterView;
+    }
+
+    public int showBefore() {
+        filterComponentsMap.values().stream().map((view) -> {
+            view.addStyleName("hidedsfilter");
+            return view;
+        }).forEachOrdered((view) -> {
+            view.removeStyleName("viewdsfilter");
+        });
+        currentFilterView--;
+        if (currentFilterView < 1) {
+            currentFilterView = 3;
+        }
+        if (currentFilterView == 3) {
+            middleContainer.addStyleName("hidedsfilter");
+        } else {
+            middleContainer.removeStyleName("hidedsfilter");
+        }
+        filterComponentsMap.get(currentFilterView).addStyleName("viewdsfilter");
+        filterComponentsMap.get(currentFilterView).removeStyleName("hidedsfilter");
+
+        if (currentFilterView == 2) {
+            protein3DStructureView.redrawCanvas();
+        }
+
+        return currentFilterView;
+    }
     @Override
     public String getViewId() {
         return ProteinPeptidesSubView.class.getName();

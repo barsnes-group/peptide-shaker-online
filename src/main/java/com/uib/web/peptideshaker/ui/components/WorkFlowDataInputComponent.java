@@ -207,9 +207,9 @@ public class WorkFlowDataInputComponent extends Panel {
 
         rawMgfController.setHeight(26, Unit.PERCENTAGE);
         rawMgfController.setHtmlContentAllowed(true);
-        rawMgfController.setItemCaption("rawFiles", "Raw File(s)");
-        rawMgfController.setItemCaption("mgfFiles", "MGF File(s)");
-        rawMgfController.setItemCaption("mzMLFiles", "mzML File(s)");
+        rawMgfController.setItemCaption("rawFiles", "Raw");
+        rawMgfController.setItemCaption("mgfFiles", "MGF");
+        rawMgfController.setItemCaption("mzMLFiles", "mzML");
         spectrumFileContainer.addComponent(rawMgfController, "left:15px;top:15px;right:150px");
         rawMgfController.addValueChangeListener((Property.ValueChangeEvent event) -> {
             String selectedValue = rawMgfController.getValue().toString();

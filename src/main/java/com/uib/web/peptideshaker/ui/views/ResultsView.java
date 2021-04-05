@@ -71,6 +71,7 @@ public class ResultsView extends AbsoluteLayout implements ViewableFrame {
         leftSideButtonsContainer.setWidth(100, Unit.PIXELS);
         leftSideButtonsContainer.setHeightUndefined();
         leftSideButtonsContainer.setSpacing(true);
+        leftSideButtonsContainer.addStyleName("leftsidebuttonscontainer");
         this.addComponent(leftSideButtonsContainer, "top:120px;left:4px");
 
         /**

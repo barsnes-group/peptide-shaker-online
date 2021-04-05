@@ -5431,7 +5431,7 @@
     }
 
     .mobilestyle .actionbuttoncontainer .v-absolutelayout {
-        margin-top: -80px;
+        /*margin-top: -80px;*/
     }
 
     .mobilestyle .v-slot-actionbuttoncontainer .reducewidth {
@@ -5573,10 +5573,6 @@
     .mobilestyle .uploaderlayout {
         display: none;
     }
-    .mobilestyle .v-absolutelayout-wrapper-dataoverviewsmallbtn {
-        top: 45px !important;
-        left: 0px !important;
-    }
 
     .mobilestyle .v-absolutelayout-wrapper-resultsmallbtn {
         top: 90px !important;
@@ -5584,10 +5580,7 @@
 
     }
 
-    .mobilestyle .v-absolutelayout-wrapper-smalltoolsbtn {
-        top: 135px !important;
-        left: 0px !important;
-    }
+
     .mobilestyle.portraitmode .uploaderlayout {
         display: block !important;
     }
@@ -6293,8 +6286,8 @@
         top: -65% !important;
     }
     .mobilestyle .v-slot-extendwidthstyle {
-        height: 85% !important;
-        max-height: 85% !important;
+        height: 96% !important;
+        max-height: 96% !important;
     }
     .mobilestyle .v-slot-proteincoveragetablecontainer.v-slot-proteincoveragecontainerstyle {
 
@@ -7475,7 +7468,7 @@
         top: -55px !important;
     }
     .mobilestyle .actionbuttoncontainer .v-slot-disableasenable .v-verticallayout-disableasenable {
-        height: 370px !important;
+        height: 325px !important;
     }
 
 
@@ -7650,9 +7643,8 @@
     }
     .lowresolutionstyle .v-slot-useroverviewpanelstyle {
         min-width: 500px !important;
-        min-height: 300px;
         font-size: 20px;
-        min-height: 330px !important;
+        min-height: 375px !important;
     }
     .lowresolutionstyle .v-slot-leftsidelabel {
         min-width: 500px;
@@ -7853,14 +7845,14 @@
         background: transparent !important;
     }
     .mobilestyle .datainputsubcontainer {
-        background-color: white;
-        margin-top: -197px !important;
-        margin-left: -249px !important;
-        left: 50% !important;
-        top: 50% !important;
-        position: relative !important;
-        border: 1px solid lightgrey;
-        border-radius: 5px;
+        /*        background-color: white;
+                margin-top: -197px !important;
+                margin-left: -249px !important;
+                left: 50% !important;
+                top: 50% !important;
+                position: relative !important;
+                border: 1px solid lightgrey;
+                border-radius: 5px;*/
     }
     .mobilestyle .v-slot-graphframeframe, .mobilestyle .v-slot-inframetable {
         margin-left: 17px;
@@ -7878,8 +7870,8 @@
 
     }
     .mobilestyle .searchguiinputcontainer.v-absolutelayout-datainputsubcontainer {
-        margin-left: 0px !important;
-        margin-top: -210px !important;
+        /*        margin-left: 0px !important;
+                margin-top: -210px !important;*/
     }
 
 
@@ -7985,7 +7977,7 @@
     }
 
     .averagescreenstyle .bigmenubtn .v-icon {
-        line-height: 33px;
+        line-height: 27px;
     }
 
     .averagescreenstyle .uploadbigbtn .v-label div .v-icon-arrow_circle_up_o {
@@ -8003,7 +7995,7 @@
         color: #1a78b0;
     }
     .averagescreenstyle .v-slot-bigmenubtn .glubimg .v-image {
-        padding: 5px !important;
+        padding: 0px !important;
     }
     .averagescreenstyle .v-horizontallayout-bigmenubtn.searchguiicon .v-image {
         padding: 5px !important;
@@ -8556,10 +8548,10 @@
 
     }
     .mobilestyle .datainputsubcontainer {
-
-        margin-top: -197px !important;
-        margin-left: 0px !important;
-        left: 0px !important;
+        background-color: white;
+        margin-top: -210px !important;
+        margin-left: -380px !important;
+        left: 50% !important;
         top: 50% !important;
         position: relative !important;
         border: 1px solid lightgrey;
@@ -8574,7 +8566,7 @@
         margin-right: 10px !important
     }
     .mobilestyle .v-absolutelayout-wrapper-searchguiinputcontainer.v-absolutelayout-wrapper-datainputsubcontainer {
-        top: 15px !important;
+        top: -4px !important;
         left: 15px !important;
         margin-left: 0px !important;
     }
@@ -8904,6 +8896,9 @@
     }
     .modificationlistpanel.v-panel-modificationlistpanel {
         padding-top: 0px !important;
+        background-color:white;
+        z-index:5 !important;
+        position:absolute !important;
     }
     .modificationlistpanel .v-panel-captionwrap {
 
@@ -9138,10 +9133,253 @@
         z-index:5 !important;
     }
     .v-ui.uicontainer.resultsviewstyle.proteinpeptidessubviewstyle.v-scrollable{
-	overflow:visible !important;
-}
+        overflow:visible !important;
+    }
+    .averagescreenstyle .v-absolutelayout-viewbuttonsactioncontainer{
+        max-width:55px;
+        min-height: 190px;
+    }
+    .averagescreenstyle .v-absolutelayout-wrapper-resultsmallbtn.v-absolutelayout-wrapper-presenterbtn{
+        top: 98px !important;
+        left: 9px !important;
+    }
+    .averagescreenstyle .v-absolutelayout-wrapper-homepagepresenterbtn.v-absolutelayout-wrapper-presenterbtn{
+        top: 142px !important;
+        left: 9px !important;
+    }
+    .averagescreenstyle .v-absolutelayout-wrapper-singlebtn {
+        top: 215px !important;
+        left: -21px !important;
+    }
+
+    .averagescreenstyle .v-absolutelayout-wrapper-integratedframe{
+        left: 43px !important;
+        /* z-index:2 !important; */
+    }
+    .averagescreenstyle .v-absolutelayout-wrapper-leftsidebuttonscontainer{
+        top:215px !important;
+        left:-21px !important;
+    }
+    .averagescreenstyle .v-absolutelayout-wrapper-leftsidebuttonscontainer .v-image{
+        margin-top:-10px;
+        min-width:45px;
+        margin-left:-7px
+    }
+    .averagescreenstyle .v-absolutelayout-wrapper-leftsidebuttonscontainer  .v-spacing{
+        max-height:2px
+    }
+    .averagescreenstyle .v-absolutelayout-wrapper-leftsidebuttonscontainer .v-horizontallayout-bigmenubtn:hover, .averagescreenstyle .v-absolutelayout-wrapper-leftsidebuttonscontainer .v-horizontallayout-bigmenubtn .v-image:hover{
+        background-color:whitesmoke;
+    }
+    .averagescreenstyle .v-verticallayout-singlebtn .searchguiicon{
+        left:23px !important;
+        top:-6px;
+        padding:4px !important;
+    }
+    .averagescreenstyle .v-verticallayout-singlebtn .searchguiicon .v-image:hover{
+        background-color:white !important;
+    }
+    .averagescreenstyle.mobilestyle  .useroverviewpanelstyle {
+        min-height: 375px !important;
+    }
+    .mobilestyle.averagescreenstyle .v-absolutelayout-viewbuttonsactioncontainer {
+        width: 80px;
+        max-width:81px;
+        min-height: 294px;
+    }
+    .mobilestyle.averagescreenstyle .v-absolutelayout-presenterbtn.v-absolutelayout-smalltoolsbtn.v-absolutelayout-searchguiicon{
+        min-width:60px !important;
+        min-height:60px !important;
+        padding:5px !important;
 
 
+
+    }
+    .mobilestyle.averagescreenstyle .v-absolutelayout-presenterbtn.v-absolutelayout-smalltoolsbtn.v-absolutelayout-dataoverviewsmallbtn{
+        min-width:60px !important;
+        min-height:60px !important;
+
+
+    }
+    .mobilestyle.averagescreenstyle .v-absolutelayout-wrapper-presenterbtn.v-absolutelayout-wrapper-glubimg.v-absolutelayout-wrapper-dataoverviewsmallbtn{	
+        top:80px !important;
+        width:60px !important;
+        height:60px !important;
+
+    }
+    .mobilestyle.averagescreenstyle .v-absolutelayout-presenterbtn.glubimg.v-absolutelayout-glubimg.v-absolutelayout-dataoverviewsmallbtn{
+        padding:5px;
+        min-width:60px !important;
+        min-height:60px !important;
+
+    }
+    .mobilestyle.averagescreenstyle .v-absolutelayout-wrapper-presenterbtn.v-absolutelayout-wrapper-resultsmallbtn{
+
+        top:150px !important;
+        min-width:60px !important;
+        min-height:60px !important;
+    }
+    .mobilestyle.averagescreenstyle .v-absolutelayout-presenterbtn.v-absolutelayout-resultsmallbtn{
+
+        padding:5px;
+        min-width:60px !important;
+        min-height:60px !important;
+    }
+    .mobilestyle.averagescreenstyle .v-absolutelayout-wrapper-presenterbtn.v-absolutelayout-wrapper-homepagepresenterbtn{
+        top:220px !important;
+        min-width:60px !important;
+        min-height:60px !important;
+    }
+    .mobilestyle.averagescreenstyle .v-absolutelayout-presenterbtn.homepagepresenterbtn.v-absolutelayout-homepagepresenterbtn {
+        font-size:30px !important;
+        min-width:60px !important;
+        min-height:60px !important;
+    }
+    .mobilestyle.averagescreenstyle .v-absolutelayout-presenterbtn.homepagepresenterbtn.v-absolutelayout-homepagepresenterbtn .v-icon.v-icon-home_o{
+        font-size:35px !important;
+        line-height:55px !important; 
+    }
+    .mobilestyle.averagescreenstyle .v-absolutelayout-wrapper-integratedframe {
+        left: 78px !important;
+        right:20px !important;
+    }
+
+    .mobilestyle.averagescreenstyle .v-absolutelayout-wrapper-leftsidebuttonscontainer {
+        top:auto !important;
+        bottom:9px !important;
+        left: 1px !important;
+        height:225px !important;
+        width:100px !important;
+        z-index:3 !important
+    }
+    .mobilestyle.averagescreenstyle .v-slot-uploadbigbtn, .mobilestyle.averagescreenstyle  .v-slot-dsoverviewbtn {
+        min-width:91px !important;
+        max-width: 91px !important;
+        max-height: 50px !important;
+        min-height:50px !important;
+        z-index:20 !important;
+        background: white!important;
+    }
+    .mobilestyle.averagescreenstyle .uploadbigbtn .v-label .v-icon-file_text_o {
+        font-size: 30px !important;
+        width: 100% !important;
+        left:-10px !important;
+    }
+
+    .mobilestyle.averagescreenstyle .uploadbigbtn .v-label div .v-icon-arrow_circle_up_o {
+        line-height: 20px !important;
+        top: -30px !important;
+        font-size: 15px !important;
+        left: 33px !important;
+        height: 20px !important;
+        width: 20px !important;
+    }
+    .mobilestyle.averagescreenstyle .v-horizontallayout-uploadbigbtn {
+        min-width:91px !important;
+        min-height:50px !important;
+        width: 74px !important;
+        height: 50px !important;
+        left:-5px  !important;
+    }
+
+    .mobilestyle.averagescreenstyle .v-absolutelayout-wrapper-leftsidebuttonscontainer .v-horizontallayout-bigmenubtn:hover, .mobilestyle.averagescreenstyle .v-absolutelayout-wrapper-leftsidebuttonscontainer .v-horizontallayout-bigmenubtn .v-image:hover {
+        background-color: white !important;
+    }
+
+    .averagescreenstyle.mobilestyle .v-horizontallayout-uploadbigbtn, .averagescreenstyle.mobilestyle .v-horizontallayout-dsoverviewbtn,.averagescreenstyle.mobilestyle .v-horizontallayout-proteinoverviewbtn,.averagescreenstyle.mobilestyle .v-horizontallayout-psmoverviewbtn {
+        border-width:3px !important;
+        border-right-width:1px !important; 
+        border-top-right-radius:0px !important;
+        border-bottom-right-radius:0px !important;
+    }
+
+    .mobilestyle.averagescreenstyle .v-horizontallayout-dsoverviewbtn {
+        position:relative !important;
+        left: 0px !important;
+        top: 0px !important;
+        z-index:3 !important;
+    }
+    .mobilestyle.averagescreenstyle .v-horizontallayout-bigmenubtn.v-horizontallayout-dsoverviewbtn {
+        min-width:91px !important;
+        min-height:50px !important;
+        width: 91px !important;
+        height: 50px !important;
+        left:-5px !important;
+    }
+    .mobilestyle.averagescreenstyle .v-absolutelayout-wrapper-leftsidebuttonscontainer .v-image {
+        width:auto !important;
+        max-height:40px;
+        margin:0px !important;
+    }
+
+
+    .mobilestyle.averagescreenstyle .v-horizontallayout-proteinoverviewbtn {
+        position:relative !important;
+        left: 0px !important;
+        top: 0px !important;
+        z-index:3 !important;
+    }
+    .mobilestyle.averagescreenstyle .v-horizontallayout-bigmenubtn.v-horizontallayout-proteinoverviewbtn {
+        min-width:91px !important;
+        min-height:50px !important;
+        width: 91px !important;
+        height: 50px !important;
+        left:-5px !important;
+    }
+
+
+    .mobilestyle.averagescreenstyle .v-horizontallayout-psmoverviewbtn {
+        position:relative !important;
+        left: 0px !important;
+        top: 0px !important;
+        z-index:3 !important;
+    }
+    .mobilestyle.averagescreenstyle .v-horizontallayout-bigmenubtn.v-horizontallayout-psmoverviewbtn {
+        min-width:91px !important;
+        min-height:50px !important;
+        width: 91px !important;
+        height: 50px !important;
+        left:-5px !important;
+    }
+    .mobilestyle.averagescreenstyle .v-absolutelayout-margintop-198.v-absolutelayout-datainputsubcontainer{
+        margin-left:-249px !important;
+    }
+    .mobilestyle.averagescreenstyle .bigmenubtn :hover {
+        background-color: white !important;
+    }
+
+    .mobilestyle.averagescreenstyle .v-absolutelayout-selectablenode{
+        margin-left: -6px;
+        min-width:20px;
+    }
+    .mobilestyle.averagescreenstyle .v-absolutelayout-wrapper-datasetproteinstablestyle {
+        top: 10px !important;
+        bottom: 20px !important;
+    }
+    .mobilestyle.averagescreenstyle .v-slot-hidedsfilter{
+        top:-1000px !important;
+    }
+    .mobilestyle.averagescreenstyle .lm-plugin .lm-layout-region{
+        background-color:transparent !important;
+    }
+
+    .mobilestyle.averagescreenstyle  .psmchartcontainerstyle .v-menubar-menuitem-caption span{
+        max-width:17px !important;
+        min-width:17px;
+        text-overflow:hidden !important;
+        overflow:hidden !important;
+        font-size:17px
+    }
+    .mobilestyle.averagescreenstyle .psmchartcontainerstyle .v-slot-popupasmenueitem {
+        min-width:17px !important;
+        font-size:17px !important;
+    }
+    .mobilestyle.averagescreenstyle .psmchartcontainerstyle .v-slot-popupasmenueitem .v-icon-sliders{
+        font-size:17px !important;
+    }
+    .mobilestyle.averagescreenstyle  .v-verticallayout-inframetable.v-verticallayout-psmchartcontainerstyle.v-verticallayout-viewdsfilter {
+        border-bottom: none;
+    } 
 }
 
 
