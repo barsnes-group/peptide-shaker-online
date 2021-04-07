@@ -32,14 +32,28 @@ public class WorkFlowHandler {
     private final AppManagmentBean appManagmentBean;
     private final DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.ss");
 
+    /**
+     *
+     */
     public WorkFlowHandler() {
         appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
     }
 
+    /**
+     * get default search parameter object
+     *
+     * @return IdentificationParameters
+     */
     public IdentificationParameters getDefaultIdentificationParameters() {
         return this.getIdentificationParameters(appManagmentBean.getAppConfig().getDefaultSearchParamPath());
     }
 
+    /**
+     * get dataset search parameter object
+     *
+     * @param path
+     * @return IdentificationParameters
+     */
     public IdentificationParameters getIdentificationParameters(String path) {
         try {
             File file = new File(path);
@@ -50,6 +64,12 @@ public class WorkFlowHandler {
         return null;
     }
 
+    /**
+     * Download and load IdentificationParameters from galaxy
+     *
+     * @param galaxyfile
+     * @return
+     */
     public IdentificationParameters retriveIdentificationParametersFileFromGalaxy(GalaxyFileModel galaxyfile) {
         String fileName = galaxyfile.getId() + "_SEARCHGUI_IdentificationParameters.par";
         File file = new File(appManagmentBean.getAppConfig().getUserFolderUri(), fileName);
@@ -68,6 +88,12 @@ public class WorkFlowHandler {
         return null;
     }
 
+    /**
+     * save IdentificationParameters as file on galaxy server
+     *
+     * @param searchParameters
+     * @return file information
+     */
     public GalaxyFileModel saveSearchParametersFile(IdentificationParameters searchParameters) {
 
         try {
@@ -91,6 +117,14 @@ public class WorkFlowHandler {
         return null;
     }
 
+    /**
+     * Upload file to galaxy server
+     *
+     * @param file
+     * @param name
+     * @param extension
+     * @return uploaded file information
+     */
     public GalaxyFileModel uploadFile(File file, String name, String extension) {
 
         GalaxyFileModel tempGalaxyFile = new GalaxyFileModel();
@@ -123,11 +157,21 @@ public class WorkFlowHandler {
         } catch (ParseException ex) {
             System.out.println("Error 5: GalaxyFacad - " + ex);
         }
-        tempGalaxyFile.setDownloadUrl(appManagmentBean.getAppConfig().getGalaxyServerUrl() + dataset.getString(CONSTANT.URL) + "/display?key=" + appManagmentBean.getUserHandler().getLoggedinUserAPIKey());
+        tempGalaxyFile.setDownloadUrl(appManagmentBean.getAppConfig().getGalaxyServerUrl() + dataset.getString(CONSTANT.URL) + "/display?key=" + appManagmentBean.getUserHandler().getUserAPIKey());
 
         return tempGalaxyFile;
     }
 
+    /**
+     * Run workflow
+     *
+     * @param projectName
+     * @param fastaFile
+     * @param searchParam
+     * @param spectrumFileSet
+     * @param searchEngineSet
+     * @return
+     */
     public VisualizationDatasetModel executeWorkFlow(String projectName, GalaxyFileModel fastaFile, GalaxyFileModel searchParam, Set<GalaxyFileModel> spectrumFileSet, Map<String, Boolean> searchEngineSet) {
 
         boolean quant = false;

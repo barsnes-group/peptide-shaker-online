@@ -47,7 +47,7 @@ public class PeptidShakerEntryPoint extends UI {
         AppManagmentBean oldManager = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
         if (oldManager != null) {
             if (oldManager.getUserHandler() != null && oldManager.isAvailableGalaxy()) {
-                oldManager.getUserHandler().clearHistory();
+                oldManager.getUserHandler().cleanGalaxyHistory();
             }
             VaadinSession.getCurrent().close();
             Page.getCurrent().reload();
@@ -106,12 +106,12 @@ public class PeptidShakerEntryPoint extends UI {
         if (webPeptideShakerApp == null) {
             return;
         }
-        if (portrait) {
-            webPeptideShakerApp.getApplicationUserInterface().addStyleName("portraitmode");
-            appManagmentBean.getNotificationFacade().hideLandscapeModeNotification();
-        } else {
-            webPeptideShakerApp.getApplicationUserInterface().removeStyleName("portraitmode");
-        }
+//        if (portrait) {
+//            webPeptideShakerApp.getApplicationUserInterface().addStyleName("portraitmode");
+//            appManagmentBean.getNotificationFacade().hideLandscapeModeNotification();
+//        } else {
+//            webPeptideShakerApp.getApplicationUserInterface().removeStyleName("portraitmode");
+//        }
         if (mobileDeviceStyle && portrait) {
             appManagmentBean.getNotificationFacade().showLandscapeModeNotification();
         } else {

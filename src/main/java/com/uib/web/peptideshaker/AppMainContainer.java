@@ -1,10 +1,10 @@
 package com.uib.web.peptideshaker;
 
-import com.uib.web.peptideshaker.handler.UIHandler;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.ui.UIContainer;
 import com.uib.web.peptideshaker.ui.views.WelcomePageView;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.ui.UI;
 
 /**
  * This class represents the main landing Online PeptideShaker application
@@ -13,7 +13,6 @@ import com.vaadin.server.VaadinSession;
  */
 public class AppMainContainer {
 
-    private final UIHandler uiHandler;
     /**
      * The Main data access layer that deal with the system files and data.
      */
@@ -32,7 +31,15 @@ public class AppMainContainer {
         String userId = appManagmentBean.getGalaxyFacad().authenticate(appManagmentBean.getAppConfig().getTestUserAPIKey());
         appManagmentBean.getUserHandler().setUserLoggedIn(appManagmentBean.getAppConfig().getTestUserAPIKey(), userId);
 
-        uiHandler = new UIHandler();
+        UIContainer uiContainer = new UIContainer();
+        UI.getCurrent().setContent(uiContainer);
+        if (appManagmentBean.isAvailableGalaxy()) {
+            appManagmentBean.getUI_Manager().registerView(uiContainer.getWorkflowInvokingView());
+        }
+        appManagmentBean.getUI_Manager().registerView(uiContainer.getWelcomePageView());
+        appManagmentBean.getUI_Manager().registerView(uiContainer.getFileSystemView());
+        appManagmentBean.getUI_Manager().registerView(uiContainer.getResultsView());
+        
         this.updateALLUI();
         appManagmentBean.getUI_Manager().viewLayout(WelcomePageView.class.getName());
         appManagmentBean.getNotificationFacade().hideGalaxyConnectingProcess();
@@ -44,14 +51,14 @@ public class AppMainContainer {
 
     }
 
-    /**
-     * Get the main User Interface layer
-     *
-     * @return main user interface container
-     */
-    public UIContainer getApplicationUserInterface() {
-        return uiHandler.getUiContainer();
-    }
+//    /**
+//     * Get the main User Interface layer
+//     *
+//     * @return main user interface container
+//     */
+//    public UIContainer getApplicationUserInterface() {
+//        return uiHandler.getUiContainer();
+//    }
 
     
 

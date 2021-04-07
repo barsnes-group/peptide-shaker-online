@@ -246,7 +246,7 @@ public class PSMContainerView extends VerticalLayout {
             intensityColumnWidth = 0;
         }
 
-        spectrumInformationMap = appManagmentBean.getDatasetUtils().getSelectedSpectrumData(psms,selectedPeptide,selectedDataset,appManagmentBean.getUserHandler().getLoggedinUserAPIKey());
+        spectrumInformationMap = appManagmentBean.getDatasetUtils().getSelectedSpectrumData(psms,selectedPeptide,selectedDataset,appManagmentBean.getUserHandler().getUserAPIKey());
 
         if (spectrumInformationMap == null) {
             return;

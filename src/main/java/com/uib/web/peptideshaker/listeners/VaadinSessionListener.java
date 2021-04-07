@@ -24,16 +24,26 @@ public class VaadinSessionListener implements HttpSessionListener {
 
     @Override
     public void sessionCreated(HttpSessionEvent hse) {
+        System.out.println("at session created ");
     }
 
     @Override
     public void sessionDestroyed(HttpSessionEvent hse) {
-
         if (VaadinSession.getCurrent() != null) {
             AppManagmentBean appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
-            appManagmentBean.getUserHandler().clearHistory();
+            appManagmentBean.getUserHandler().cleanGalaxyHistory();   
+            File temp_folder = new File(appManagmentBean.getAppConfig().getLocalFileSystemFolderPath());
+            if (temp_folder.exists()) {
+                for (File tFile : temp_folder.listFiles()) {
+                    try {
+                        deletFile(tFile);
+                    } catch (IOException ex) {
+                        System.out.println("at error " + VaadinContextListener.class.getName() + "  line 35 " + ex);
+                    }
+                }
+            }  
             appManagmentBean.reset();
-            VaadinSession.getCurrent().close();
+            VaadinSession.getCurrent().close(); 
         }
     }
 

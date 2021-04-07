@@ -361,7 +361,7 @@ public class GalaxyFacade implements Serializable {
      * @return Response
      */
     public Response uploadFile(FormDataMultiPart multipart) {
-        return appManagmentBean.getHttpClientUtil().doUploadPost(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/tools/?key=" + appManagmentBean.getUserHandler().getLoggedinUserAPIKey(), multipart);
+        return appManagmentBean.getHttpClientUtil().doUploadPost(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/tools/?key=" + appManagmentBean.getUserHandler().getUserAPIKey(), multipart);
 
     }
 
@@ -372,7 +372,7 @@ public class GalaxyFacade implements Serializable {
      * @return Response
      */
     public Response uploadWorkFlow(JsonObject body) {
-        return appManagmentBean.getHttpClientUtil().doPost(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/workflows/?key=" + appManagmentBean.getUserHandler().getLoggedinUserAPIKey(), body);
+        return appManagmentBean.getHttpClientUtil().doPost(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/workflows/?key=" + appManagmentBean.getUserHandler().getUserAPIKey(), body);
 
     }
 
@@ -383,7 +383,7 @@ public class GalaxyFacade implements Serializable {
      * @return Response
      */
     public Response deleteWorkFlow(String workflowid) {
-        return appManagmentBean.getHttpClientUtil().doDelete(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/workflows/" + workflowid + "?key=" + appManagmentBean.getUserHandler().getLoggedinUserAPIKey());
+        return appManagmentBean.getHttpClientUtil().doDelete(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/workflows/" + workflowid + "?key=" + appManagmentBean.getUserHandler().getUserAPIKey());
 
     }
 
@@ -394,7 +394,7 @@ public class GalaxyFacade implements Serializable {
      * @return Response
      */
     public Response buildList(JsonObject body) {
-        return appManagmentBean.getHttpClientUtil().doPost(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/tools/?key=" + appManagmentBean.getUserHandler().getLoggedinUserAPIKey(), body);
+        return appManagmentBean.getHttpClientUtil().doPost(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/tools/?key=" + appManagmentBean.getUserHandler().getUserAPIKey(), body);
 
     }
 
@@ -406,7 +406,7 @@ public class GalaxyFacade implements Serializable {
      * @return Response
      */
     public Response invokeWorkFlow(String workflowId, JsonObject body) {
-        return appManagmentBean.getHttpClientUtil().doPost(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/workflows/" + workflowId + "/invocations?key=" + appManagmentBean.getUserHandler().getLoggedinUserAPIKey(), body);
+        return appManagmentBean.getHttpClientUtil().doPost(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/workflows/" + workflowId + "/invocations?key=" + appManagmentBean.getUserHandler().getUserAPIKey(), body);
 
     }
 

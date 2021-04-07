@@ -20,6 +20,16 @@ import javax.servlet.ServletContext;
  */
 public class Config implements Serializable {
 
+    /**
+     * get path to functional folder
+     *
+     * @return url path
+     *
+     */
+    public String getLocalFileSystemFolderPath() {
+        return localFileSystemFolderPath;
+    }
+
     private boolean mobileDeviceStyle;
     private boolean smallDeviceStyle;
     private boolean portraitScreenMode;

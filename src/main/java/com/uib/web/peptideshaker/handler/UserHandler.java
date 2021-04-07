@@ -17,10 +17,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 /**
- * this class responsible for handling user login security
+ * this class responsible for handling user functions and data
  *
  * @author Yehia Farag
  */
@@ -35,7 +34,14 @@ public class UserHandler implements Serializable {
     private Set<GalaxyFileModel> filesToViewList;
     private Set<VisualizationDatasetModel> datasetSet;
     private final Set<String> datasetNames;
+    private boolean toFollowUpBusyHistory;
+    private ScheduledFuture toFollowUpBusyHistoryFuture;
 
+    /**
+     * Add file to use files list
+     *
+     * @param file
+     */
     public void addToFilesMap(GalaxyFileModel file) {
         filesMap.put(file.getId(), file);
         filesToViewList.add(file);
@@ -43,6 +49,11 @@ public class UserHandler implements Serializable {
 
     }
 
+    /**
+     * add dataset to the current available datasets
+     *
+     * @param dataset
+     */
     public void addToDatasetMap(VisualizationDatasetModel dataset) {
         datasetSet.add(dataset);
         this.datasetNames.add(dataset.getName().trim().toLowerCase());
@@ -50,19 +61,38 @@ public class UserHandler implements Serializable {
 
     }
 
+    /**
+     * get user's file map
+     *
+     * @return files map
+     */
     public Map<String, GalaxyFileModel> getFilesMap() {
         return filesMap;
     }
 
+    /**
+     * Get collection of the available user datasets
+     *
+     * @return set of datasets
+     */
     public Set<VisualizationDatasetModel> getDatasetSet() {
         return datasetSet;
     }
 
+    /**
+     *
+     */
     public UserHandler() {
         appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
         this.datasetNames = new HashSet<>();
     }
 
+    /**
+     * set current login user
+     *
+     * @param userAPIKey
+     * @param userId
+     */
     public void setUserLoggedIn(String userAPIKey, String userId) {
         if (appManagmentBean.isAvailableGalaxy()) {
             appManagmentBean.getAppConfig().setUserFolderUri(userId);
@@ -73,10 +103,10 @@ public class UserHandler implements Serializable {
             synchronizeWithGalaxyHistory();
         } else {
             userId = VaadinSession.getCurrent().getSession().getId();
-             appManagmentBean.getAppConfig().setUserFolderUri(userId);
+            appManagmentBean.getAppConfig().setUserFolderUri(userId);
             this.loggedinUserAPIKey = userAPIKey;
             this.loggedinUserId = userId;
-            this.filesToViewList = new TreeSet<>();            
+            this.filesToViewList = new TreeSet<>();
             this.filesMap = new LinkedHashMap<>();
             this.collectionList = new ArrayList<>();
             this.userInformationMap = new HashMap<>();
@@ -101,85 +131,82 @@ public class UserHandler implements Serializable {
     private Set<VisualizationDatasetModel> constructDatasets() {
         this.datasetNames.clear();
         Set<VisualizationDatasetModel> tempDatasetSet = new TreeSet<>();
-        filesMap.values().stream().filter((stepIFile) -> (stepIFile.getExtension().equals(CONSTANT.SEARCH_GUI_FILE_EXTENSION))).map(new Function<GalaxyFileModel, VisualizationDatasetModel>() {
-            @Override
-            public VisualizationDatasetModel apply(GalaxyFileModel searchGUIFile) {
-                VisualizationDatasetModel dataset;
-                if (searchGUIFile.getStatus().equals(CONSTANT.OK_STATUS)) {
-                    VisualizationDatasetModel tempdataset = new VisualizationDatasetModel();
-                    tempdataset.setDatasetSource(CONSTANT.GALAXY_SOURCE);
-                    tempdataset.setName(searchGUIFile.getName());
-                    tempdataset.setDatasetType(CONSTANT.ID_DATASET);
-                    tempdataset.setSearchGUIZipFile(searchGUIFile);
-                    tempdataset.setCreatedTime(searchGUIFile.getCreatedDate());
-                    tempdataset.setSearchEngines(searchGUIFile.getFileOverview().split("DB:")[0].trim());
-                    tempdataset.setFastaFileName(searchGUIFile.getFileOverview().split("DB:")[1].split("sequences:")[0].trim());
-                    for (String mgfId : searchGUIFile.getGalaxyJob().getInputFileIds()) {
-                        if (appManagmentBean.getGalaxyFacad().trackBackDatasetTool(mgfId, loggedinUserAPIKey).contains("thermo_raw_file_converter")) {
-                            tempdataset.setDatasetType(CONSTANT.QUANT_DATASET);
-                            break;
-                        }
+        filesMap.values().stream().filter((stepIFile) -> (stepIFile.getExtension().equals(CONSTANT.SEARCH_GUI_FILE_EXTENSION))).map((GalaxyFileModel searchGUIFile) -> {
+            VisualizationDatasetModel dataset;
+            if (searchGUIFile.getStatus().equals(CONSTANT.OK_STATUS)) {
+                VisualizationDatasetModel tempdataset = new VisualizationDatasetModel();
+                tempdataset.setDatasetSource(CONSTANT.GALAXY_SOURCE);
+                tempdataset.setName(searchGUIFile.getName());
+                tempdataset.setDatasetType(CONSTANT.ID_DATASET);
+                tempdataset.setSearchGUIZipFile(searchGUIFile);
+                tempdataset.setCreatedTime(searchGUIFile.getCreatedDate());
+                tempdataset.setSearchEngines(searchGUIFile.getFileOverview().split("DB:")[0].trim());
+                tempdataset.setFastaFileName(searchGUIFile.getFileOverview().split("DB:")[1].split("sequences:")[0].trim());
+                for (String mgfId : searchGUIFile.getGalaxyJob().getInputFileIds()) {
+                    if (appManagmentBean.getGalaxyFacad().trackBackDatasetTool(mgfId, loggedinUserAPIKey).contains("thermo_raw_file_converter")) {
+                        tempdataset.setDatasetType(CONSTANT.QUANT_DATASET);
+                        break;
                     }
-                    filesToViewList.remove(searchGUIFile);
-                    for (GalaxyFileModel stepIIFile : filesMap.values()) {
-                        if (!stepIIFile.isVisible() || !stepIIFile.getStatus().equals(CONSTANT.OK_STATUS)) {
-                            filesToViewList.remove(stepIIFile);
-                        }
-                        if (stepIIFile.getGalaxyJob().getInputFileIds().contains(searchGUIFile.getId())) {
-                            switch (stepIIFile.getExtension()) {
-                                case CONSTANT.ZIP_FILE_EXTENSION:
-                                    if (stepIIFile.getStatus().equals(CONSTANT.OK_STATUS)) {
-                                        tempdataset.setPsZipFile(stepIIFile);
-                                        filesToViewList.remove(stepIIFile);
-                                        tempdataset.setDownloadUrl(stepIIFile.getDownloadUrl());
-                                        //init search param identification object
-                                        tempdataset.setIdentificationParametersObject(appManagmentBean.getDatasetUtils().initIdentificationParametersObject(tempdataset.getId(), tempdataset.getSearchGUIZipFile().getDownloadUrl()));
-                                        //add mgf files and indexes 
-                                        for (GalaxyCollectionModel collectionModel : collectionList) {
-                                            if (collectionModel.getGalaxyJob() != null && collectionModel.getGalaxyJob().getInputFileIds().contains(searchGUIFile.getId())) {
-                                                if (collectionModel.getElementsExtension().equals(CONSTANT.CUI_FILE_EXTENSION)) {
-                                                    tempdataset.setMgfIndexList(collectionModel);
-                                                    collectionModel.getElements().forEach((element) -> {
-                                                        filesToViewList.remove(element);
-                                                    });
-                                                }
-                                            } else if (collectionModel.getElementsExtension().equals(CONSTANT.TABULAR_FILE_EXTENSION)) {
-                                                collectionModel.getElements().get(0).getGalaxyJob().getInputFileIds().stream().filter((id) -> (tempdataset.getPsZipFile().getGalaxyJob().getOutputFileIds().contains(id))).map((String _item) -> {
-                                                    if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().equals(CONSTANT.CONVERT_CHARACTERS_TOOL_ID)) {                                                       
-                                                        tempdataset.setMgfList(collectionModel);     
-                                                    } else if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().contains(CONSTANT.MOFF_TOOL_ID)) {
-                                                        if (collectionModel.getElements().get(0).getStatus().equals(CONSTANT.OK_STATUS)) {
-                                                            tempdataset.setMoffList(collectionModel);
-                                                        } else {
-                                                            tempdataset.setStatus(CONSTANT.RUNNING_STATUS);
-                                                        }
-
-                                                    }
-                                                    return _item;
-                                                }).forEachOrdered((_item) -> {
-                                                    collectionModel.getElements().forEach((element) -> {
-                                                        filesToViewList.remove(element);
-                                                    });
+                }
+                filesToViewList.remove(searchGUIFile);
+                for (GalaxyFileModel stepIIFile : filesMap.values()) {
+                    if (!stepIIFile.isVisible() || !stepIIFile.getStatus().equals(CONSTANT.OK_STATUS)) {
+                        filesToViewList.remove(stepIIFile);
+                    }
+                    if (stepIIFile.getGalaxyJob().getInputFileIds().contains(searchGUIFile.getId())) {
+                        switch (stepIIFile.getExtension()) {
+                            case CONSTANT.ZIP_FILE_EXTENSION:
+                                if (stepIIFile.getStatus().equals(CONSTANT.OK_STATUS)) {
+                                    tempdataset.setPsZipFile(stepIIFile);
+                                    filesToViewList.remove(stepIIFile);
+                                    tempdataset.setDownloadUrl(stepIIFile.getDownloadUrl());
+                                    //init search param identification object
+                                    tempdataset.setIdentificationParametersObject(appManagmentBean.getDatasetUtils().initIdentificationParametersObject(tempdataset.getId(), tempdataset.getSearchGUIZipFile().getDownloadUrl()));
+                                    //add mgf files and indexes
+                                    for (GalaxyCollectionModel collectionModel : collectionList) {
+                                        if (collectionModel.getGalaxyJob() != null && collectionModel.getGalaxyJob().getInputFileIds().contains(searchGUIFile.getId())) {
+                                            if (collectionModel.getElementsExtension().equals(CONSTANT.CUI_FILE_EXTENSION)) {
+                                                tempdataset.setMgfIndexList(collectionModel);
+                                                collectionModel.getElements().forEach((element) -> {
+                                                    filesToViewList.remove(element);
                                                 });
                                             }
+                                        } else if (collectionModel.getElementsExtension().equals(CONSTANT.TABULAR_FILE_EXTENSION)) {
+                                            collectionModel.getElements().get(0).getGalaxyJob().getInputFileIds().stream().filter((id) -> (tempdataset.getPsZipFile().getGalaxyJob().getOutputFileIds().contains(id))).map((String _item) -> {
+                                                if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().equals(CONSTANT.CONVERT_CHARACTERS_TOOL_ID)) {
+                                                    tempdataset.setMgfList(collectionModel);
+                                                } else if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().contains(CONSTANT.MOFF_TOOL_ID)) {
+                                                    if (collectionModel.getElements().get(0).getStatus().equals(CONSTANT.OK_STATUS)) {
+                                                        tempdataset.setMoffList(collectionModel);
+                                                    } else {
+                                                        tempdataset.setStatus(CONSTANT.RUNNING_STATUS);
+                                                    }
+                                                    
+                                                }
+                                                return _item;
+                                            }).forEachOrdered((_item) -> {
+                                                collectionModel.getElements().forEach((element) -> {
+                                                    filesToViewList.remove(element);
+                                                });
+                                            });
                                         }
-
-                                    } else {
-                                        tempdataset.setStatus(CONSTANT.RUNNING_STATUS);
                                     }
-                                    break;
-                            }
-
+                                    
+                                } else {
+                                    tempdataset.setStatus(CONSTANT.RUNNING_STATUS);
+                                }
+                                break;
                         }
+                        
                     }
-                    dataset = tempdataset;
-                } else {
-                    dataset = appManagmentBean.getDatasetUtils().getOnProgressDataset(CONSTANT.ID_DATASET);
-                    dataset.setName(searchGUIFile.getName());
                 }
-
-                return dataset;
+                dataset = tempdataset;
+            } else {
+                dataset = appManagmentBean.getDatasetUtils().getOnProgressDataset(CONSTANT.ID_DATASET);
+                dataset.setName(searchGUIFile.getName());
             }
+            
+            return dataset;
         }).forEachOrdered((dataset) -> {
             // init sharing link
             if (dataset.getStatus().equals(CONSTANT.OK_STATUS)) {
@@ -195,30 +222,38 @@ public class UserHandler implements Serializable {
         return tempDatasetSet;
     }
 
+    /**
+     * Get user statues information
+     *
+     * @return map of user information
+     */
     public Map<String, String> getUserInformation() {
         return userInformationMap;
     }
 
-    public void getUserStoredData() {
-
-    }
-
+    /**
+     * get users files to view / hide the other datasets files
+     *
+     * @return files to view
+     */
     public Set<GalaxyFileModel> getFilesToViewList() {
         return filesToViewList;
     }
 
-    public void signout() {
-        signinAsPublicUser();
-    }
-
-    public void signinAsPublicUser() {
-
-    }
-
-    public String getLoggedinUserAPIKey() {
+    /**
+     * get user galaxy api key
+     *
+     * @return galaxy api key
+     */
+    public String getUserAPIKey() {
         return loggedinUserAPIKey;
     }
 
+    /**
+     * Delete dataset from galaxy server
+     *
+     * @param dataset
+     */
     public void deleteDataset(VisualizationDatasetModel dataset) {
         boolean success = true;
         boolean deleted = appManagmentBean.getGalaxyFacad().deleteFile(dataset.getSearchGUIZipFile(), loggedinUserAPIKey);
@@ -253,6 +288,11 @@ public class UserHandler implements Serializable {
         }
     }
 
+    /**
+     * Delete file from galaxy server
+     *
+     * @param file
+     */
     public void deleteFile(GalaxyFileModel file) {
         boolean deleted = appManagmentBean.getGalaxyFacad().deleteFile(file, loggedinUserAPIKey);
         if (deleted) {
@@ -267,50 +307,56 @@ public class UserHandler implements Serializable {
         }
     }
 
-    public void clearHistory() {
+    /**
+     * remove unneeded files on galaxy server
+     */
+    public void cleanGalaxyHistory() {
         boolean busyHistory = appManagmentBean.getGalaxyFacad().isHistoryBusy(loggedinUserAPIKey);
         if (busyHistory) {
             return;
         }
         Set<Object> galaxyItemsToDelete = new HashSet<>();
-        for (GalaxyCollectionModel collectionModel : collectionList) {
-            if (!collectionModel.getHistoryId().equals(appManagmentBean.getAppConfig().getMainGalaxyHistoryId())) {
-                continue;
-            }
-            if (collectionModel.getElementsExtension().equals(CONSTANT.mzML_FILE_EXTENSION) || collectionModel.getElementsExtension().equals(CONSTANT.THERMO_RAW_FILE_EXTENSION) || (collectionModel.getElementsExtension().equals(CONSTANT.MGF_FILE_EXTENSION) || collectionModel.getElementsExtension().equals(CONSTANT.TXT_FILE_EXTENSION))) {
-                galaxyItemsToDelete.add(collectionModel);
-            }
-        }
-        for (GalaxyFileModel fileModel : filesMap.values()) {
-            if (!fileModel.getHistoryId().equals(appManagmentBean.getAppConfig().getMainGalaxyHistoryId())) {
-                continue;
-            }
-            if (fileModel.getGalaxyJob().getToolId().equals(CONSTANT.PEPTIDESHAKER_TOOL_ID) && (fileModel.getExtension().equals(CONSTANT.TXT_FILE_EXTENSION) || fileModel.getExtension().equals(CONSTANT.TABULAR_FILE_EXTENSION))) {
-                galaxyItemsToDelete.add(fileModel);
-            }
-        }
+        collectionList.stream().filter((collectionModel) -> !(!collectionModel.getHistoryId().equals(appManagmentBean.getAppConfig().getMainGalaxyHistoryId()))).filter((collectionModel) -> (collectionModel.getElementsExtension().equals(CONSTANT.mzML_FILE_EXTENSION) || collectionModel.getElementsExtension().equals(CONSTANT.THERMO_RAW_FILE_EXTENSION) || (collectionModel.getElementsExtension().equals(CONSTANT.MGF_FILE_EXTENSION) || collectionModel.getElementsExtension().equals(CONSTANT.TXT_FILE_EXTENSION)))).forEachOrdered((collectionModel) -> {
+            galaxyItemsToDelete.add(collectionModel);
+        });
+        filesMap.values().stream().filter((fileModel) -> !(!fileModel.getHistoryId().equals(appManagmentBean.getAppConfig().getMainGalaxyHistoryId()))).filter((fileModel) -> (fileModel.getGalaxyJob().getToolId().equals(CONSTANT.PEPTIDESHAKER_TOOL_ID) && (fileModel.getExtension().equals(CONSTANT.TXT_FILE_EXTENSION) || fileModel.getExtension().equals(CONSTANT.TABULAR_FILE_EXTENSION)))).forEachOrdered((fileModel) -> {
+            galaxyItemsToDelete.add(fileModel);
+        });
         if (!galaxyItemsToDelete.isEmpty()) {
-            for (Object object : galaxyItemsToDelete) {
+            galaxyItemsToDelete.forEach((object) -> {
                 if (object instanceof GalaxyCollectionModel) {
                     appManagmentBean.getGalaxyFacad().deleteCollection((GalaxyCollectionModel) object, loggedinUserAPIKey);
                 } else {
                     appManagmentBean.getGalaxyFacad().deleteFile((GalaxyFileModel) object, loggedinUserAPIKey);
                 }
-            }
+            });
         }
 
     }
 
+    /**
+     * Get list of available datasets names
+     *
+     * @return
+     */
     public Set<String> getDatasetNames() {
         return datasetNames;
     }
 
+    /**
+     * Sync data with online peptide-shaker and galaxy server
+     */
     public void syncAndUpdateUserData() {
         this.synchronizeWithGalaxyHistory();
         this.datasetSet = this.constructDatasets();
 
     }
 
+    /**
+     * Check jobs still running
+     *
+     * @return job running
+     */
     public boolean checkBusyHistory() {
         boolean busyHistory = appManagmentBean.getGalaxyFacad().isHistoryBusy(loggedinUserAPIKey);
         if (busyHistory) {
@@ -320,9 +366,10 @@ public class UserHandler implements Serializable {
 
     }
 
-    private boolean toFollowUpBusyHistory;
-    private ScheduledFuture toFollowUpBusyHistoryFuture;
-
+    /**
+     * Force job busy notification "overcome the delay in notification between
+     * galaxy server and web peptideshaker"
+     */
     public void forceBusyHistory() {
         toFollowUpBusyHistory = true;
         appManagmentBean.getUI_Manager().setOngoingJob(true);
@@ -344,6 +391,12 @@ public class UserHandler implements Serializable {
 
     }
 
+    /**
+     * get Dataset object
+     *
+     * @param datasetId
+     * @return dataset object
+     */
     public VisualizationDatasetModel getDataset(String datasetId) {
         for (VisualizationDatasetModel dataset : datasetSet) {
             if (dataset.getId().equalsIgnoreCase(datasetId)) {
