@@ -142,13 +142,11 @@ public class PRIDEUtils implements Serializable {
                                 new GenericFastaHeaderParser<>(),
                                 new ProteinSequenceCreator(AminoAcidCompoundSet.getAminoAcidCompoundSet()));
                 LinkedHashMap<String, ProteinSequence> sequenceMap = fastaReader.process();                
-                System.out.println(">>><<<<<<<<<<<>>>>>>>>>>>>>>---sequenceMap " + sequenceMap.size() + "  " + proteinsToMap.size());
             }
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        appManagmentBean.getNotificationFacade().hideBusyProcess();
         return proteinsToMap;
 
     }

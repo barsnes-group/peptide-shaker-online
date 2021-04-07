@@ -23,6 +23,9 @@ public class NotificationsFacade implements Serializable {
     private GalaxyConnectingModal GalaxyConnectingModal;
     private ConfirmationDialog confirmationDialog;
 
+    /**
+     *
+     */
     public NotificationsFacade() {
         landscapeModeNotificationWindow = new Window();
         notification = new Label("Use the device in landscape mode <center><i>(recommended)</i></center>", ContentMode.HTML);
@@ -39,6 +42,9 @@ public class NotificationsFacade implements Serializable {
 
     }
 
+    /**
+     * Notify users to use the mobile device in landscape mode.
+     */
     public void showLandscapeModeNotification() {
         if (!UI.getCurrent().getWindows().contains(landscapeModeNotificationWindow)) {
             UI.getCurrent().addWindow(landscapeModeNotificationWindow);
@@ -46,26 +52,54 @@ public class NotificationsFacade implements Serializable {
         landscapeModeNotificationWindow.setVisible(true);
     }
 
+    /**
+     * Hide landscape notification
+     */
     public void hideLandscapeModeNotification() {
         landscapeModeNotificationWindow.setVisible(false);
     }
 
+    /**
+     * Show notification message
+     *
+     * @param message
+     */
     public void showInfoNotification(String message) {
         Notification.show("Information", message, Notification.Type.TRAY_NOTIFICATION);
     }
 
+    /**
+     * Show error message
+     *
+     * @param message
+     */
     public void showErrorNotification(String message) {
         Notification.show("Error", message, Notification.Type.TRAY_NOTIFICATION);
     }
 
+    /**
+     * break execution to show message (alert message)
+     *
+     * @param message
+     */
     public void showAlertNotification(String message) {
         com.vaadin.ui.JavaScript.getCurrent().execute("alert('" + message + "')");
     }
 
+    /**
+     * Confirmation alert notification
+     *
+     * @param message
+     * @param clickListener
+     */
     public void confirmAlertNotification(String message, Button.ClickListener clickListener) {
         confirmationDialog.showConfirmationMessage(message, clickListener);
     }
 
+    /**
+     *Show galaxy connecting notification
+     * @param caption message 
+     */
     public void showGalaxyConnectingProcess(String caption) {
         if (GalaxyConnectingModal == null) {
             GalaxyConnectingModal = new GalaxyConnectingModal();
@@ -75,13 +109,11 @@ public class NotificationsFacade implements Serializable {
         GalaxyConnectingModal.setVisible(true);
     }
 
+    /**
+     *hide galaxy connecting notification.
+     */
     public void hideGalaxyConnectingProcess() {
         GalaxyConnectingModal.setVisible(false);
     }
 
-    public void showBusyProcess() {
-    }
-
-    public void hideBusyProcess() {
-    }
 }

@@ -35,14 +35,22 @@ import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 public class GalaxyFacade implements Serializable {
 
     private final AppManagmentBean appManagmentBean;
-
     private final Map<String, GalaxyJobModel> galaxyJobs;
 
+    /**
+     *
+     */
     public GalaxyFacade() {
         appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
         this.galaxyJobs = new HashMap<>();
     }
 
+    /**
+     * authenticate user on galaxy server
+     *
+     * @param userAPIKey
+     * @return user name in case of successful login
+     */
     public String authenticate(String userAPIKey) {
         try {
             Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/users/?key=" + userAPIKey);
@@ -54,11 +62,16 @@ public class GalaxyFacade implements Serializable {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("at Error " + GalaxyFacade.class.getName() + "  line: 65 " + e);
         }
         return null;
     }
 
+    /**
+     * Create functional user history on galaxy server
+     *
+     * @param userAPIKey
+     */
     public void initialPeptideShakerUserHistory(String userAPIKey) {
 
         Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/histories/?key=" + userAPIKey);
@@ -87,6 +100,13 @@ public class GalaxyFacade implements Serializable {
         }
     }
 
+    /**
+     * Get user information
+     *
+     * @param userAPIKey
+     * @param userId
+     * @return map of user information
+     */
     public Map<String, String> getUserInformation(String userAPIKey, String userId) {
         Map<String, String> userDetailsMap = new HashMap<>();
         Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/users/" + userId + "?key=" + userAPIKey);
@@ -98,6 +118,12 @@ public class GalaxyFacade implements Serializable {
         return userDetailsMap;
     }
 
+    /**
+     * Get user stored data (files and lists)
+     *
+     * @param userAPIKey
+     * @return array of data 1 list of files, 2 list of collections
+     */
     public Object[] getStoredData(String userAPIKey) {
         List<GalaxyCollectionModel> collectionList = new ArrayList<>();
         Map<String, GalaxyFileModel> filesMap = new LinkedHashMap<>();
@@ -191,18 +217,14 @@ public class GalaxyFacade implements Serializable {
         /**
          * update indexed mgf file names
          */
-        for (GalaxyCollectionModel collectionModel : collectionList) {
-            if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().equals(CONSTANT.CONVERT_CHARACTERS_TOOL_ID)) {
-                for (GalaxyFileModel file : collectionModel.getElements()) {
-                    String name = getFileName(userAPIKey, file.getGalaxyJob().getInputFileIds().iterator().next());
-                    if (name != null) {
-                        file.setName(name);
-                    }
+        collectionList.stream().filter((collectionModel) -> (collectionModel.getElements().get(0).getGalaxyJob().getToolId().equals(CONSTANT.CONVERT_CHARACTERS_TOOL_ID))).forEachOrdered((collectionModel) -> {
+            collectionModel.getElements().forEach((file) -> {
+                String name = getFileName(userAPIKey, file.getGalaxyJob().getInputFileIds().iterator().next());
+                if (name != null) {
+                    file.setName(name);
                 }
-
-            }
-
-        }
+            });
+        });
         return new Object[]{collectionList, filesMap};
     }
 
@@ -270,6 +292,13 @@ public class GalaxyFacade implements Serializable {
         return jobModel;
     }
 
+    /**
+     * find the tool id used to produce the dataset
+     *
+     * @param datasetId
+     * @param userAPIKey
+     * @return tool id
+     */
     public String trackBackDatasetTool(String datasetId, String userAPIKey) {
         Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/datasets/" + datasetId + "?key=" + userAPIKey);
         if (response.getStatus() == HttpStatus.SC_OK) {
@@ -283,6 +312,13 @@ public class GalaxyFacade implements Serializable {
         return null;
     }
 
+    /**
+     * delete list of files on galaxy server
+     *
+     * @param collection
+     * @param userAPIKey
+     * @return deleted
+     */
     public boolean deleteCollection(GalaxyCollectionModel collection, String userAPIKey) {
 
         boolean success = true;
@@ -301,6 +337,13 @@ public class GalaxyFacade implements Serializable {
         return success;
     }
 
+    /**
+     * Delete file from galaxy server
+     *
+     * @param file
+     * @param userAPIKey
+     * @return deleted
+     */
     public boolean deleteFile(GalaxyFileModel file, String userAPIKey) {
 
         JsonObject body = new JsonObject();
@@ -311,31 +354,68 @@ public class GalaxyFacade implements Serializable {
 
     }
 
+    /**
+     * Upload file to galaxy server
+     *
+     * @param multipart
+     * @return Response
+     */
     public Response uploadFile(FormDataMultiPart multipart) {
         return appManagmentBean.getHttpClientUtil().doUploadPost(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/tools/?key=" + appManagmentBean.getUserHandler().getLoggedinUserAPIKey(), multipart);
 
     }
 
+    /**
+     * Upload workflow as json text to galaxy server
+     *
+     * @param body
+     * @return Response
+     */
     public Response uploadWorkFlow(JsonObject body) {
         return appManagmentBean.getHttpClientUtil().doPost(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/workflows/?key=" + appManagmentBean.getUserHandler().getLoggedinUserAPIKey(), body);
 
     }
 
+    /**
+     * Delete workflow
+     *
+     * @param workflowid
+     * @return Response
+     */
     public Response deleteWorkFlow(String workflowid) {
         return appManagmentBean.getHttpClientUtil().doDelete(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/workflows/" + workflowid + "?key=" + appManagmentBean.getUserHandler().getLoggedinUserAPIKey());
 
     }
 
+    /**
+     * build list of input files on galaxy server
+     *
+     * @param body
+     * @return Response
+     */
     public Response buildList(JsonObject body) {
         return appManagmentBean.getHttpClientUtil().doPost(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/tools/?key=" + appManagmentBean.getUserHandler().getLoggedinUserAPIKey(), body);
 
     }
 
+    /**
+     * Invoke workflow on galaxy server
+     *
+     * @param workflowId
+     * @param body
+     * @return Response
+     */
     public Response invokeWorkFlow(String workflowId, JsonObject body) {
         return appManagmentBean.getHttpClientUtil().doPost(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/workflows/" + workflowId + "/invocations?key=" + appManagmentBean.getUserHandler().getLoggedinUserAPIKey(), body);
 
     }
 
+    /**
+     * Check if there is a job still running
+     *
+     * @param userAPIKey
+     * @return job is running
+     */
     public boolean isHistoryBusy(String userAPIKey) {
         try {
             Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/histories?key=" + userAPIKey);
@@ -359,7 +439,7 @@ public class GalaxyFacade implements Serializable {
             }
         } catch (Exception ex) {
             appManagmentBean.getNotificationFacade().showErrorNotification("Error connecting to galaxy server");
-            ex.printStackTrace();
+            System.out.println("at Error " + GalaxyFacade.class.getName() + "  line: 431 " + ex);
         }
         return false;
     }
@@ -372,6 +452,8 @@ public class GalaxyFacade implements Serializable {
      * @param historyId the Galaxy Server History ID that contain the MGF file
      * @param fileId The ID of the MGF file on Galaxy Server
      * @param MGFFileName The MGF file name
+     * @param charge
+     * @param userAPIKey
      * @return MSnSpectrum spectrum object
      */
     public Spectrum streamSpectrum(long startIndex, String historyId, String fileId, String MGFFileName, int charge, String userAPIKey) {
@@ -434,7 +516,7 @@ public class GalaxyFacade implements Serializable {
                             }
                         } catch (NumberFormatException e) {
                             System.out.println("An exception was thrown when trying to decode the retention time: " + spectrumTitle);
-                            e.printStackTrace();
+                            System.out.println("at Error " + GalaxyFacade.class.getName() + "  line: 508 " + e);
                             // ignore exception, RT will not be parsed
                         }
                     } else if (line.startsWith("TOLU")) {
@@ -453,7 +535,7 @@ public class GalaxyFacade implements Serializable {
                         try {
                             scanNumber = line.substring(line.indexOf('=') + 1);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            System.out.println("at Error " + GalaxyFacade.class.getName() + "  line: 527 " + e);
                             throw new IllegalArgumentException("Cannot parse scan number.");
                         }
                     } else if (line.startsWith("INSTRUMENT")) {
@@ -490,7 +572,8 @@ public class GalaxyFacade implements Serializable {
                             mzList.add(mz);
                             double intensity = Double.parseDouble(values[1]);
                             intensityList.add(intensity);
-                        } catch (Exception e1) {
+                        } catch (NumberFormatException e1) {
+                            System.out.println("at Error " + GalaxyFacade.class.getName() + "  line: 565 " + e1);
                             // ignore comments and all other lines
                         }
                     }
@@ -500,7 +583,7 @@ public class GalaxyFacade implements Serializable {
             }
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            System.out.println("at Error " + GalaxyFacade.class.getName() + "  line: 575 " + ex);
         }
         System.out.println("Error: 214 : null spectrum is returned");
         return null;
@@ -525,28 +608,22 @@ public class GalaxyFacade implements Serializable {
                 chargesAsString.add(charge2.trim());
             }
         }
-        for (String chargeAsString : chargesAsString) {
-
-            chargeAsString = chargeAsString.trim();
-
-            if (!chargeAsString.isEmpty()) {
-                try {
-                    if (chargeAsString.endsWith("+")) {
-                        int value = Integer.parseInt(chargeAsString.substring(0, chargeAsString.length() - 1));
-                        result.add(value);
-                    } else if (chargeAsString.endsWith("-")) {
-                        int value = Integer.parseInt(chargeAsString.substring(0, chargeAsString.length() - 1));
-                        result.add(value);
-                    } else if (!chargeAsString.equalsIgnoreCase("Mr")) {
-                        int value = Integer.parseInt(chargeAsString);
-                        result.add(value);
-                    }
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                    throw new IllegalArgumentException("\'" + chargeAsString + "\' could not be processed as a valid precursor charge!");
+        chargesAsString.stream().map((chargeAsString) -> chargeAsString.trim()).filter((chargeAsString) -> (!chargeAsString.isEmpty())).forEachOrdered((chargeAsString) -> {
+            try {
+                if (chargeAsString.endsWith("+")) {
+                    int value = Integer.parseInt(chargeAsString.substring(0, chargeAsString.length() - 1));
+                    result.add(value);
+                } else if (chargeAsString.endsWith("-")) {
+                    int value = Integer.parseInt(chargeAsString.substring(0, chargeAsString.length() - 1));
+                    result.add(value);
+                } else if (!chargeAsString.equalsIgnoreCase("Mr")) {
+                    result.add(Integer.parseInt(chargeAsString));
                 }
+            } catch (NumberFormatException e) {
+                System.out.println("at Error " + GalaxyFacade.class.getName() + "  line: 613 " + e);
+                throw new IllegalArgumentException("\'" + chargeAsString + "\' could not be processed as a valid precursor charge!");
             }
-        }
+        });
         // if empty, add a default charge of 1
         if (result.isEmpty()) {
             result.add(1);
