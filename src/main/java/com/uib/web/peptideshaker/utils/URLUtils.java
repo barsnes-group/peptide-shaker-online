@@ -1,9 +1,7 @@
 package com.uib.web.peptideshaker.utils;
 
 import com.uib.web.peptideshaker.model.CONSTANT;
-import com.uib.web.peptideshaker.model.core.LinkUtil;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -47,7 +45,6 @@ public class URLUtils {
             try {
                 skf = SecretKeyFactory.getInstance(myEncryptionScheme);
             } catch (NoSuchAlgorithmException ex) {
-                Logger.getLogger(LinkUtil.class.getName()).log(Level.SEVERE, null, ex);
             }
             cipher = Cipher.getInstance(myEncryptionScheme);
             try {

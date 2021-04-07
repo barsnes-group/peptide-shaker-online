@@ -8,7 +8,7 @@ import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.ModificationMatrixModel;
 import com.uib.web.peptideshaker.model.Selection;
 import com.uib.web.peptideshaker.utils.ModificationMatrixUtilis;
-import com.uib.web.peptideshaker.presenter.core.HBarWithLabel;
+import com.uib.web.peptideshaker.ui.components.items.HBarWithLabel;
 import com.uib.web.peptideshaker.ui.components.items.SelectableNode;
 import com.uib.web.peptideshaker.ui.components.items.SparkLine;
 import com.uib.web.peptideshaker.uimanager.SelectionManager;

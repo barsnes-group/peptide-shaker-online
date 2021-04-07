@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.model.core;
+package com.uib.web.peptideshaker.model;
 
 /*
  * The Alphanum Algorithm is an improved sorting algorithm for strings

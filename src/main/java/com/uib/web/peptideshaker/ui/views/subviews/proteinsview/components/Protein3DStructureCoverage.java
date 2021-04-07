@@ -1,5 +1,6 @@
-package com.uib.web.peptideshaker.presenter.core;
+package com.uib.web.peptideshaker.ui.views.subviews.proteinsview.components;
 
+import com.vaadin.server.Sizeable;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -22,21 +23,21 @@ public class Protein3DStructureCoverage extends AbsoluteLayout {
      */
     public Protein3DStructureCoverage() {
         Protein3DStructureCoverage.this.setStyleName("protein3dstructurecoverage");
-        Protein3DStructureCoverage.this.setWidth(100, Unit.PERCENTAGE);
-        Protein3DStructureCoverage.this.setHeight(30, Unit.PIXELS);
+        Protein3DStructureCoverage.this.setWidth(100, Sizeable.Unit.PERCENTAGE);
+        Protein3DStructureCoverage.this.setHeight(30, Sizeable.Unit.PIXELS);
         this.leftLabel = new Label("3D");
-        leftLabel.setWidth(23, Unit.PIXELS);
-        leftLabel.setHeight(100, Unit.PERCENTAGE);
+        leftLabel.setWidth(23, Sizeable.Unit.PIXELS);
+        leftLabel.setHeight(100, Sizeable.Unit.PERCENTAGE);
         Protein3DStructureCoverage.this.addComponent(leftLabel);
         this.rightLabel = new Label("");
-        rightLabel.setHeight(100, Unit.PERCENTAGE);
-        rightLabel.setWidth(23, Unit.PIXELS);
+        rightLabel.setHeight(100, Sizeable.Unit.PERCENTAGE);
+        rightLabel.setWidth(23, Sizeable.Unit.PIXELS);
         Protein3DStructureCoverage.this.addComponent(rightLabel, "right:0px;top:0px ");
         this.coverageContainer = new AbsoluteLayout();
         Protein3DStructureCoverage.this.addComponent(coverageContainer, "left:25px;right:25px;top:0px ");
         this.middleLine = new VerticalLayout();
-        this.middleLine.setWidth(100, Unit.PERCENTAGE);
-        this.middleLine.setHeight(2, Unit.PIXELS);
+        this.middleLine.setWidth(100, Sizeable.Unit.PERCENTAGE);
+        this.middleLine.setHeight(2, Sizeable.Unit.PIXELS);
         this.middleLine.setStyleName("graymiddleline");
         this.coverageContainer.addComponent(middleLine, "left:0px;top:50%");
 
@@ -70,9 +71,9 @@ public class Protein3DStructureCoverage extends AbsoluteLayout {
      */
     public void addCoverageComponent(double left, Double width, boolean highlight) {
         VerticalLayout coverageComponent = new VerticalLayout();
-        coverageComponent.setHeight(100, Unit.PERCENTAGE);
+        coverageComponent.setHeight(100, Sizeable.Unit.PERCENTAGE);
         width = (width * 100) / (100.0 - left);
-        coverageComponent.setWidth(width.floatValue(), Unit.PERCENTAGE);
+        coverageComponent.setWidth(width.floatValue(), Sizeable.Unit.PERCENTAGE);
         coverageComponent.addStyleName("coveragecompoenent");
         if (highlight) {
             coverageComponent.addStyleName("heighlightcoverage");

@@ -1,7 +1,7 @@
 package com.uib.web.peptideshaker.ui.views.subviews;
 
 import com.uib.web.peptideshaker.AppManagmentBean;
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PSMObject;
+import com.uib.web.peptideshaker.model.PSMObject;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.PeptideObject;
 import com.uib.web.peptideshaker.ui.views.subviews.peptidespsmviews.PSMContainerView;

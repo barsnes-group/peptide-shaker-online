@@ -4,7 +4,7 @@ import com.uib.web.peptideshaker.AppManagmentBean;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.ChainBlock;
 import com.uib.web.peptideshaker.model.PDBMatch;
-import com.uib.web.peptideshaker.model.core.pdb.EntityData;
+import com.uib.web.peptideshaker.model.EntityData;
 import com.vaadin.server.VaadinSession;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;

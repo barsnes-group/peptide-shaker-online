@@ -5,7 +5,7 @@
  */
 package com.uib.web.peptideshaker.ui.components;
 
-import com.uib.web.peptideshaker.presenter.core.CloseButton;
+import com.uib.web.peptideshaker.ui.components.items.CloseButton;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.ui.*;
 

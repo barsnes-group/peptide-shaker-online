@@ -2,21 +2,15 @@ package com.uib.web.peptideshaker;
 
 import com.uib.web.peptideshaker.listeners.VaadinSessionControlListener;
 import com.uib.web.peptideshaker.model.CONSTANT;
-import com.uib.web.peptideshaker.model.PRIDECompactProjectModel;
-import com.uib.web.peptideshaker.ui.views.subviews.proteinsview.Protein3DStructureView;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.*;
 import com.vaadin.shared.ui.ui.Transport;
-import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.UI;
 import java.io.IOException;
 import java.util.ConcurrentModificationException;
-import java.util.HashSet;
-import java.util.Map;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.ServletConfig;
@@ -40,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 @JavaScript({"../../VAADIN/js/venn.js", "../../VAADIN/js/myD3library.js", "../../VAADIN/js/myD3component-connector.js", "../../VAADIN/js/d3.v5.min.js", "../../VAADIN/litemol/js/LiteMol-plugin.js", "../../VAADIN/litemol/js/mylitemol-connector.js", "../../VAADIN/litemol/js/mylitemollibrary.js", "../../VAADIN/litemol/js/LiteMol-example.js?lmversion=1518789385303", "https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.touch/1.1.0/jquery.touch.min.js", "../../VAADIN/js/mylibrary.js", "../../VAADIN/js/mycomponent-connector.js", "https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.touch/1.1.0/jquery.touch.min.js", "../../VAADIN/js/mylibrary2.js", "../../VAADIN/js/mycomponent-connector2.js", "../../VAADIN/js/jquery.mousewheel.js"})
 public class PeptidShakerEntryPoint extends UI {
 
-    private AppController webPeptideShakerApp;
+    private AppMainContainer webPeptideShakerApp;
     private AppManagmentBean appManagmentBean;
 
     /**
@@ -61,57 +55,17 @@ public class PeptidShakerEntryPoint extends UI {
         }
         appManagmentBean = new AppManagmentBean();
         VaadinSession.getCurrent().setAttribute(CONSTANT.APP_MANAGMENT_BEAN, appManagmentBean);
-        /**
-         * Test 3d structure*
-         */
-        if (false) {
-            AbsoluteLayout frame = new AbsoluteLayout();
-            frame.setWidth(500, Unit.PIXELS);
-            frame.setHeight(500, Unit.PIXELS);
-            this.setContent(frame);
-            AbsoluteLayout container = new AbsoluteLayout();
-            container.setStyleName("transitionallayout");
-            container.setWidth(500, Unit.PIXELS);
-            container.setHeight(500, Unit.PIXELS);
-            frame.addComponent(container);
-
-            Protein3DStructureView prot3dTest = new Protein3DStructureView();
-            String seq = "MKLSLVAAMLLLLSAARAEEEDKKEDVGTVVGIDLGTTYSCVGVFKNGRVEIIANDQGNRITPSYVAFTPEGERLIGDAAKNQLTSNPENTVFDAKRLIGRTWNDPSVQQDIKFLPFKVVEKKTKPYIQVDIGGGQTKTFAPEEISAMVLTKMKETAEAYLGKKVTHAVVTVPAYFNDAQRQATKDAGTIAGLNVMRIINEPTAAAIAYGLDKREGEKNILVFDLGGGTFDVSLLTIDNGVFEVVATNGDTHLGGEDFDQRVMEHFIKLYKKKTGKDVRKDNRAVQKLRREVEKAKRALSSQHQARIEIESFYEGEDFSETLTRAKFEELNMDLFRSTMKPVQKVLEDSDLKKSDIDEIVLVGGSTRIPKIQQLVKEFFNGKEPSRGINPDEAVAYGAAVQAGVLSGDQDTGDLVLLDVCPLTLGIETVGGVMTKLIPRNTVVPTKKSQIFSTASDNQPTVTIKVYEGERPLTKDNHLLGTFDLTGIPPAPRGVPQIEVTFEIDVNGILRVTAEDKGTGNKNKITITNDQNRLTPEEIERMVNDAEKFAEEDKKLKERIDTRNELESYAYSLKNQIGDKEKLGGKLSSEDKETMEKAVEEKIEWLESHQDADIEDFKAKKKELEEIVQPIISKLYGSAGPPPTGEEDTAEKDEL";
-
-            container.addComponent(prot3dTest);
-            prot3dTest.setSizeFull();
-            frame.addLayoutClickListener((LayoutEvents.LayoutClickEvent event) -> {
-                prot3dTest.updatePanel("P11021", seq, new HashSet<>());
-            });
-
-            return;
-        }
-        /**
-         * Test Pride database API *
-         */
-        if (false) {
-            Map<String, PRIDECompactProjectModel> projects = appManagmentBean.getPRIDEUtils().searchPRIDEProjects("CSF,Alzheimer",1);
-            int index = 1;
-            for (PRIDECompactProjectModel project : projects.values()) {
-                System.out.println("at " + (index++) + " --- " + project.getAccession() + " --- " + project.getTitle());
-            }
-            return;
-        }
 
         try {
             UI.getCurrent().getConnectorTracker().cleanConnectorMap();
-
             PeptidShakerEntryPoint.this.addStyleName("uicontainer");
             PeptidShakerEntryPoint.this.setSizeFull();
-
             if (VaadinSessionControlListener.getActiveSessions() < appManagmentBean.getAppConfig().getMaximumAllowedUsers()) {
                 VaadinSession.getCurrent().getSession().setMaxInactiveInterval(60 * 15);
-
-                webPeptideShakerApp = new AppController();
-
+                webPeptideShakerApp = new AppMainContainer();
                 /**
                  * On resize the browser re-arrange all the created pop-up
-                 * windows to the page center.
+                 * windows to the page centre.
                  */
                 Page.getCurrent().addBrowserWindowResizeListener((Page.BrowserWindowResizeEvent event) -> {
                     appManagmentBean.getAppConfig().setPortraitScreenMode(Page.getCurrent().getBrowserWindowWidth() < Page.getCurrent().getBrowserWindowHeight());
@@ -128,39 +82,18 @@ public class PeptidShakerEntryPoint extends UI {
                 return;
             }
         } catch (IllegalArgumentException | NullPointerException e) {
-            e.printStackTrace();
-            System.err.println("Error UI Class : " + e);
+            System.out.println("at error " + PeptidShakerEntryPoint.class.getName() + " line: 85 " + e);
         }
 
         VaadinSession.getCurrent().setErrorHandler((com.vaadin.server.ErrorEvent event) -> {
-            event.getThrowable().printStackTrace();
-            System.out.println("Error handler: " + event.getThrowable().getCause());
+           System.out.println("at error " + PeptidShakerEntryPoint.class.getName() + " line: 89 " + event.getThrowable().getCause());
         });
 
         //if there is capacity check the routes        
         String requestToShare = Page.getCurrent().getLocation().toString();
         if (requestToShare.endsWith(".error")) {
-//            webPeptideShakerApp.loginAsGuest();
             appManagmentBean.getNotificationFacade().showErrorNotification("Not valid sharing link");
-        } 
-//        else if (!requestToShare.contains("toShare;")) {
-////            webPeptideShakerApp.loginAsGuest();
-//        } else if (requestToShare.contains("toShare;")) {
-////            webPeptideShakerApp.retriveToShareDataset();
-//        }
-//        notificationFacade.showGalaxyConnectingProcess("Guest User <i>(public data)</i>");
-
- /**
-         * for testing
-         *
-         * @todo: delete
-         **
-         */
-////        appManagmentBean.getDatasetUtils().runUploadedFilesDemo();
-        /**
-         * **
-         */
-
+        }
     }
 
     /**
@@ -191,7 +124,6 @@ public class PeptidShakerEntryPoint extends UI {
      */
     @WebServlet(urlPatterns = "/*", name = "PeptidShakerServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = PeptidShakerEntryPoint.class, productionMode = true, resourceCacheTime = 0)
-//, resourceCacheTime = 1
     public static class PeptidShakerServlet extends VaadinServlet {
 
         @Override
@@ -199,7 +131,7 @@ public class PeptidShakerEntryPoint extends UI {
             try {
                 super.service(request, response); //To change body of generated methods, choose Tools | Templates.
             } catch (ConcurrentModificationException | IOException | ServletException e) {
-                System.out.println("exception 3 " + e);
+                System.out.println("at error " + PeptidShakerEntryPoint.class.getName() + " line: 144 " + e);
             }
 
         }
@@ -210,7 +142,7 @@ public class PeptidShakerEntryPoint extends UI {
             try {
                 super.init(servletConfig);
             } catch (ServletException e) {
-                System.out.println("exception 1");
+                System.out.println("at error " + PeptidShakerEntryPoint.class.getName() + " line: 153 " + e);
             }
             /**
              * VaadinSessionListener
@@ -225,23 +157,8 @@ public class PeptidShakerEntryPoint extends UI {
             try {
                 super.servletInitialized();
             } catch (ServletException e) {
-                System.out.println("exception 2");
+                System.out.println("at error " + PeptidShakerEntryPoint.class.getName() + " line: 171 " + e);
             }
-
-//           
-//            getService().addSessionInitListener((SessionInitEvent event) -> {
-//                event.getSession().addBootstrapListener(new BootstrapListener() {
-//
-//                    @Override
-//                    public void modifyBootstrapPage(BootstrapPageResponse response) {
-//                        response.getDocument().head().prependElement("meta").attr("name", "'viewport'").attr("content", "'initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,width=device-width,user-scalable=no'").attr("Set-Cookie", "'cross-site-cookie=name; SameSite=None; Secure'");
-//                        response.setHeader("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9,application/javascript");
-//                    }
-//
-//                    @Override
-//                    public void modifyBootstrapFragment(BootstrapFragmentResponse response) {
-//                    }
-//                });
 //            });
         }
     }

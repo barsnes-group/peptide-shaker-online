@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.model.core.pdb;
+package com.uib.web.peptideshaker.model;
 
 import io.vertx.core.json.JsonArray;
 import java.util.List;

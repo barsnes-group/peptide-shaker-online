@@ -31,18 +31,9 @@ import java.util.concurrent.ScheduledFuture;
 public class AppManagmentBean implements Serializable {
 
     private ModificationMatrixUtilis modificationMatrixUtilis;
-
-    public ModificationMatrixUtilis getModificationMatrixUtilis() {
-        if (modificationMatrixUtilis == null) {
-            modificationMatrixUtilis = new ModificationMatrixUtilis();
-        }
-        return modificationMatrixUtilis;
-    }
-
     private UIManager UI_Manager;
     private SelectionManager selectionManager;
     private PRIDEUtils PRIDEUtils;
-
     private Config appConfig;
     private GalaxyFacade galaxyFacad;
     private NotificationsFacade notificationFacade;
@@ -59,6 +50,23 @@ public class AppManagmentBean implements Serializable {
     private boolean availableGalaxy = false;
     private PDBUtils pdbUtils;
 
+    /**
+     * get DivaMatrixLayoutChartFilter utilities
+     *
+     * @return ModificationMatrixUtilis object
+     */
+    public ModificationMatrixUtilis getModificationMatrixUtilis() {
+        if (modificationMatrixUtilis == null) {
+            modificationMatrixUtilis = new ModificationMatrixUtilis();
+        }
+        return modificationMatrixUtilis;
+    }
+
+    /**
+     * get presenter selection manager
+     *
+     * @return SelectionManager object
+     */
     public SelectionManager getSelectionManager() {
         if (selectionManager == null) {
             selectionManager = new SelectionManager();
@@ -66,6 +74,11 @@ public class AppManagmentBean implements Serializable {
         return selectionManager;
     }
 
+    /**
+     * Get visualisation dataset utilities
+     *
+     * @return DatasetUtils object
+     */
     public DatasetUtils getDatasetUtils() {
         if (datasetUtils == null) {
             datasetUtils = new DatasetUtils();
@@ -73,6 +86,11 @@ public class AppManagmentBean implements Serializable {
         return datasetUtils;
     }
 
+    /**
+     * get utilities responsible for handling files on the system
+     *
+     * @return FilesUtils object
+     */
     public FilesUtils getFilesUtils() {
         if (filesUtils == null) {
             filesUtils = new FilesUtils();
@@ -80,14 +98,24 @@ public class AppManagmentBean implements Serializable {
         return filesUtils;
     }
 
+    /**
+     * get galaxy work-flow handler that is responsible for handling all work
+     * flows (search, analyse and uploads data)
+     *
+     * @return WorkFlowHandler object
+     */
     public WorkFlowHandler getWorkFlowHandler() {
         if (workFlowHandler == null) {
             workFlowHandler = new WorkFlowHandler();
         }
         return workFlowHandler;
     }
-    
 
+    /**
+     * Get database utilities
+     *
+     * @return DatabaseUtils object
+     */
     public DatabaseUtils getDatabaseUtils() {
         if (databaseUtils == null) {
             databaseUtils = new DatabaseUtils();
@@ -95,6 +123,12 @@ public class AppManagmentBean implements Serializable {
         return databaseUtils;
     }
 
+    /**
+     * Give access the the notification facade that is responsible for all
+     * system notifications and alerts
+     *
+     * @return NotificationsFacade object
+     */
     public NotificationsFacade getNotificationFacade() {
         if (notificationFacade == null) {
             notificationFacade = new NotificationsFacade();
@@ -102,6 +136,12 @@ public class AppManagmentBean implements Serializable {
         return notificationFacade;
     }
 
+    /**
+     * get utilities responsible for handling "http" calls from the web-server
+     * to other web services
+     *
+     * @return HttpClientUtils object
+     */
     public HttpClientUtils getHttpClientUtil() {
         if (httpClientUtil == null) {
             httpClientUtil = new HttpClientUtils();
@@ -109,6 +149,11 @@ public class AppManagmentBean implements Serializable {
         return httpClientUtil;
     }
 
+    /**
+     * Managing all interaction with galaxy server
+     *
+     * @return GalaxyFacade object
+     */
     public GalaxyFacade getGalaxyFacad() {
         if (galaxyFacad == null) {
             galaxyFacad = new GalaxyFacade();
@@ -116,6 +161,12 @@ public class AppManagmentBean implements Serializable {
         return galaxyFacad;
     }
 
+    /**
+     * User handler responsible for handling current login user data and
+     * information
+     *
+     * @return UserHandlerobject
+     */
     public UserHandler getUserHandler() {
         if (userHandler == null) {
             userHandler = new UserHandler();
@@ -123,10 +174,11 @@ public class AppManagmentBean implements Serializable {
         return userHandler;
     }
 
-    public AppManagmentBean() {
-
-    }
-
+    /**
+     * get the main application configuration
+     *
+     * @return Config object
+     */
     public Config getAppConfig() {
         if (appConfig == null) {
             appConfig = new Config();
@@ -134,6 +186,12 @@ public class AppManagmentBean implements Serializable {
         return appConfig;
     }
 
+    /**
+     * Give access to the main layout of the application and main view
+     * controller manager
+     *
+     * @return UIManager object
+     */
     public UIManager getUI_Manager() {
         if (UI_Manager == null) {
             UI_Manager = new UIManager();
@@ -141,6 +199,11 @@ public class AppManagmentBean implements Serializable {
         return UI_Manager;
     }
 
+    /**
+     * give access to the url utilities include encoding and decoding
+     *
+     * @return URLUtils object
+     */
     public URLUtils getURLUtils() {
         if (URLUtils == null) {
             URLUtils = new URLUtils();
@@ -148,6 +211,12 @@ public class AppManagmentBean implements Serializable {
         return URLUtils;
     }
 
+    /**
+     * give access for general and common utilities that can be shared between
+     * different classes
+     *
+     * @return CoreUtils object
+     */
     public CoreUtils getCoreUtils() {
         if (coreUtils == null) {
             coreUtils = new CoreUtils();
@@ -155,6 +224,11 @@ public class AppManagmentBean implements Serializable {
         return coreUtils;
     }
 
+    /**
+     * give access to the main Scheduler service for the system
+     *
+     * @return ScheduledExecutorService object
+     */
     public ScheduledExecutorService getScheduler() {
         if (scheduler == null) {
             scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -162,6 +236,12 @@ public class AppManagmentBean implements Serializable {
         return scheduler;
     }
 
+    /**
+     * Allow to add ScheduledFuture objects to store temporarly and allow the
+     * system to clean and destroy them after the session expired
+     *
+     * @param future object of ScheduledFuture type
+     */
     public void addScheduledFuture(ScheduledFuture future) {
         if (scheduledFutureSet == null) {
             scheduledFutureSet = new HashSet<>();
@@ -169,6 +249,9 @@ public class AppManagmentBean implements Serializable {
         scheduledFutureSet.add(future);
     }
 
+    /**
+     * Reset the system upon login or logout or when session is expired.
+     */
     public void reset() {
         UI_Manager = null;
         appConfig = null;
@@ -196,22 +279,38 @@ public class AppManagmentBean implements Serializable {
 
     }
 
+    /**
+     * Is galaxy server available online
+     *
+     * @return boolean object galaxy server is available
+     */
     public boolean isAvailableGalaxy() {
         return availableGalaxy;
     }
 
+    /**
+     * set galaxy server available online
+     *
+     * @param availableGalaxy boolean object
+     */
     public void setAvailableGalaxy(boolean availableGalaxy) {
         this.availableGalaxy = availableGalaxy;
     }
 
+    /**
+     * Get all invoked ScheduledFuture objects
+     *
+     * @return
+     */
     public Set<ScheduledFuture> getScheduledFutureSet() {
         return scheduledFutureSet;
     }
 
-    public void setScheduledFutureSet(Set<ScheduledFuture> scheduledFutureSet) {
-        this.scheduledFutureSet = scheduledFutureSet;
-    }
-
+    /**
+     * PDB utilities provide utilities for protein 3d visualization
+     *
+     * @return PDBUtils object
+     */
     public PDBUtils getPdbUtils() {
         if (pdbUtils == null) {
             pdbUtils = new PDBUtils();
@@ -219,8 +318,13 @@ public class AppManagmentBean implements Serializable {
         return pdbUtils;
     }
 
+    /**
+     * PRIDEUtils utilities provide utilities for PRIDE database
+     *
+     * @return PRIDEUtils object
+     */
     public PRIDEUtils getPRIDEUtils() {
-         if (PRIDEUtils == null) {
+        if (PRIDEUtils == null) {
             PRIDEUtils = new PRIDEUtils();
         }
         return PRIDEUtils;

@@ -31,7 +31,6 @@ import com.ejt.vaadin.sizereporter.SizeReporter;
 import com.itextpdf.text.pdf.codec.Base64;
 import com.uib.web.peptideshaker.AppManagmentBean;
 import com.uib.web.peptideshaker.model.CONSTANT;
-import com.uib.web.peptideshaker.presenter.pscomponents.WebSpectrumPanel;
 import com.vaadin.data.Property;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
@@ -593,10 +592,6 @@ public class SpectrumPlot extends AbsoluteLayout {
                     currentSpectrum.mz, currentSpectrum.intensity,
                     precursor.mz, Charge.toString(spectrumMatch.getBestPeptideAssumption().getIdentificationCharge()),
                     "", 40, false, false, false, 2, false);
-
-//                    
-//                    new WebSpectrumPanel(currentSpectrum.getOrderedMzValues(), currentSpectrum.getIntensityValuesNormalizedAsArray(), 500, "2",
-//                    "", 40, false, false, false, 2, false);
             spectrumPanel.setBorder(null);
             int w = mainSizeReporter.getWidth() - 52;
             int h = mainSizeReporter.getHeight() - 92;

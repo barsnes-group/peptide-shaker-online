@@ -1,7 +1,6 @@
 package com.uib.web.peptideshaker.ui.views.subviews.proteinsview.components;
 
 import com.itextpdf.text.pdf.codec.Base64;
-import com.uib.web.peptideshaker.presenter.core.Protein3DStructureCoverage;
 import org.jfree.chart.encoders.ImageEncoder;
 import org.jfree.chart.encoders.ImageEncoderFactory;
 import org.jfree.chart.encoders.ImageFormat;

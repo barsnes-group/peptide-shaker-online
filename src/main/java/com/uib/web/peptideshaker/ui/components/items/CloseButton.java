@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.presenter.core;
+package com.uib.web.peptideshaker.ui.components.items;
 
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.ui.VerticalLayout;

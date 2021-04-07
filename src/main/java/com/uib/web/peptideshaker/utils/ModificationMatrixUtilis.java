@@ -2,7 +2,7 @@ package com.uib.web.peptideshaker.utils;
 
 import com.google.common.collect.Sets;
 import com.uib.web.peptideshaker.model.ModificationMatrixModel;
-import com.uib.web.peptideshaker.model.core.AlphanumComparator;
+import com.uib.web.peptideshaker.model.AlphanumComparator;
 
 import java.util.*;
 

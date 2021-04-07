@@ -8,7 +8,7 @@ import com.uib.web.peptideshaker.model.ProteinGroupObject;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.FilterUpdatingEvent;
 import com.uib.web.peptideshaker.model.VisualizationDatasetModel;
-import com.uib.web.peptideshaker.model.core.AlphanumComparator;
+import com.uib.web.peptideshaker.model.AlphanumComparator;
 import com.uib.web.peptideshaker.ui.components.items.CSFPRLabel;
 import com.uib.web.peptideshaker.ui.components.ClosablePopup;
 import com.uib.web.peptideshaker.ui.components.items.ProteinInferenceColorLabel;

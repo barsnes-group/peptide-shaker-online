@@ -3,7 +3,6 @@ package com.uib.web.peptideshaker.model;
 import com.compomics.util.experiment.biology.proteins.Protein;
 import com.compomics.util.experiment.io.mass_spectrometry.mgf.MgfIndex;
 import com.compomics.util.parameters.identification.IdentificationParameters;
-import com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects.PSMObject;
 import com.uib.web.peptideshaker.ui.components.RangeColorGenerator;
 import graphmatcher.NetworkGraphNode;
 import java.io.Serializable;

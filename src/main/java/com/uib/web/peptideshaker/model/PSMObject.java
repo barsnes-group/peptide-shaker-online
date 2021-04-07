@@ -1,4 +1,4 @@
-package com.uib.web.peptideshaker.galaxy.utilities.history.dataobjects;
+package com.uib.web.peptideshaker.model;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
