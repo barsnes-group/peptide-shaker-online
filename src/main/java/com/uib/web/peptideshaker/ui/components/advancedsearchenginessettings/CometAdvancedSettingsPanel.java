@@ -20,7 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * @author y-mok
+ * @author Yehia Mokhtar Farag
  */
 public class CometAdvancedSettingsPanel extends PopupWindow {
 
@@ -46,6 +46,9 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
 
     private IdentificationParameters webSearchParameters;
 
+    /**
+     *
+     */
     public CometAdvancedSettingsPanel() {
         super(VaadinIcons.COG.getHtml() + " Comet Advanced Settings");
 
@@ -239,6 +242,10 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
         container.addComponent(okBtn, "bottom:10px;right:96px");
     }
 
+    /**
+     *
+     * @param webSearchParameters
+     */
     public void updateGUI(IdentificationParameters webSearchParameters) {
         this.webSearchParameters = webSearchParameters;
 
@@ -248,8 +255,8 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
         removePrecursorPeak.setSelected(oldCometParameters.getRemovePrecursor() + "");
         removePrecursorPeakTolerance.setSelectedValue(oldCometParameters.getRemovePrecursorTolerance());
 
-        clearMZRange.setFirstSelectedValue(oldCometParameters.getLowerClearMzRange().doubleValue());
-        clearMZRange.setSecondSelectedValue(oldCometParameters.getUpperClearMzRange().doubleValue());
+        clearMZRange.setFirstSelectedValue(oldCometParameters.getLowerClearMzRange());
+        clearMZRange.setSecondSelectedValue(oldCometParameters.getUpperClearMzRange());
         enzymeType.setSelected(oldCometParameters.getEnzymeType());
         isotopeCorrection.setSelected(oldCometParameters.getIsotopeCorrection());
         precursorMass.setFirstSelectedValue(oldCometParameters.getMinPrecursorMass());
@@ -276,10 +283,17 @@ public class CometAdvancedSettingsPanel extends PopupWindow {
 
     }
 
+    /**
+     *
+     */
     @Override
     public void onClosePopup() {
     }
 
+    /**
+     *
+     * @param visible
+     */
     @Override
     public void setPopupVisible(boolean visible) {
         if (visible && webSearchParameters != null) {

@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * This class represents drop-down list component
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class MultiSelectOptionGroup extends HorizontalLayout implements LayoutEvents.LayoutClickListener {
 

@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * This class represents legend layout for graph and protein coverage
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class Legend extends VerticalLayout {
 

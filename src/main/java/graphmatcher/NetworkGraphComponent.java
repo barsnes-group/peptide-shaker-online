@@ -44,7 +44,7 @@ import java.util.*;
 /**
  * This class represents Graph layout component
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class NetworkGraphComponent extends VerticalLayout {
 
@@ -789,7 +789,7 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
      * This class is a wrapper for the dropped component that is used in the
      * Drag-Drop layout.
      *
-     * @author Yehia Farag
+     * @author Yehia Mokhtar Farag
      */
     protected class WrappedComponent extends DragAndDropWrapper {
 

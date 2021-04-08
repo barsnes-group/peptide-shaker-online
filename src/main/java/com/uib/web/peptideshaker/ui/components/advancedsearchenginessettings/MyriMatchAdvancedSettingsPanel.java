@@ -19,7 +19,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * @author y-mok
+ * @author Yehia Mokhtar Farag
  */
 public class MyriMatchAdvancedSettingsPanel extends PopupWindow {
 
@@ -41,6 +41,9 @@ public class MyriMatchAdvancedSettingsPanel extends PopupWindow {
 
     private IdentificationParameters webSearchParameters;
 
+    /**
+     *
+     */
     public MyriMatchAdvancedSettingsPanel() {
         super(VaadinIcons.COG.getHtml() + " MyriMatch Advanced Settings");
         AbsoluteLayout container = new AbsoluteLayout();
@@ -153,6 +156,10 @@ public class MyriMatchAdvancedSettingsPanel extends PopupWindow {
 
     }
 
+    /**
+     *
+     * @param webSearchParameters
+     */
     public void updateGUI(IdentificationParameters webSearchParameters) {
         this.webSearchParameters = webSearchParameters;
         MyriMatchParameters myriMatchParameters = (MyriMatchParameters) webSearchParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex());
@@ -184,19 +191,23 @@ public class MyriMatchAdvancedSettingsPanel extends PopupWindow {
 
     }
 
+    /**
+     *
+     */
     @Override
     public void onClosePopup() {
     }
 
+    /**
+     *
+     * @param visible
+     */
     @Override
     public void setPopupVisible(boolean visible) {
         if (visible && webSearchParameters != null) {
             updateGUI(webSearchParameters);
         }
-//        else if (webSearchParameters != null) {
-//            updateParameters();
-//        }
-        super.setPopupVisible(visible); //To change body of generated methods, choose Tools | Templates.
+        super.setPopupVisible(visible); 
     }
 
     private void updateParameters() {

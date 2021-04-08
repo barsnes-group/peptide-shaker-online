@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.uib.web.peptideshaker.ui.views.subviews.peptidespsmviews.components;
 
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
@@ -13,7 +9,7 @@ import com.compomics.util.parameters.identification.IdentificationParameters;
 /**
  * this class contain all the required information to load spectrum data
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class SpectrumInformation {
     private Spectrum spectrum;

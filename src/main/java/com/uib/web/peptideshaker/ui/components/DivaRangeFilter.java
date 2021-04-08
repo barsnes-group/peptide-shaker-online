@@ -6,7 +6,7 @@ import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.FilterUpdatingEvent;
 import com.uib.web.peptideshaker.model.Selection;
 import com.uib.web.peptideshaker.ui.components.items.FilterButton;
-import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
+import com.uib.web.peptideshaker.ui.interfaces.RegistrableFilter;
 import com.uib.web.peptideshaker.uimanager.SelectionManager;
 import com.vaadin.data.Property;
 import com.vaadin.event.LayoutEvents;
@@ -59,6 +59,12 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
     private int chartHeight;
     private double maxValue;
 
+    /**
+     *
+     * @param title
+     * @param filterId
+     * @param selectionManager
+     */
     public DivaRangeFilter(String title, String filterId, SelectionManager selectionManager) {
 
         DivaRangeFilter.this.setStyleName("rangefilter");
@@ -164,7 +170,6 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
     private void updateChartDataset() {
         XYPlot plot = ((XYPlot) mainChart.getPlot());
         XYSeriesCollection dataset = (XYSeriesCollection) plot.getDataset();
-//        dataset.removeAllSeries();
         final XYSeries series1 = new XYSeries("rangeData");
         for (int index = (int) lowerRangeSlider.getMin(); index <= (int) lowerRangeSlider.getMax(); index++) {
             if (activeData.containsKey(index)) {
@@ -309,7 +314,6 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
 
     @Override
     public void redrawChart() {
-//        applyFilter(lowerRangeSlider.getMin(), lowerRangeSlider.getMax());
     }
 
     /**
@@ -349,6 +353,10 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
 
     }
 
+    /**
+     *
+     * @param event
+     */
     @Override
     public void updateSelection(FilterUpdatingEvent event) {
         activeData.clear();
@@ -368,7 +376,7 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
                     activeData.get(compKey).addAll(event.getSelectionMap().get(compKey));
                 }
             });
-            if (event.getSeletionCategories() != null && event.getSeletionCategories().containsAll(activeData.keySet())) {
+            if (event.getSelectionCategories() != null && event.getSelectionCategories().containsAll(activeData.keySet())) {
                 reset();
                 return;
             }
@@ -389,8 +397,8 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
             chartTitle.setValue("<font>" + title + "</font> [" + (int) min + " " + "&#x2014;" + " " + (int) maxValue + "] " + sign);
             UI.getCurrent().accessSynchronously(() -> {
                 updateChartDataset();
-                if ((event.getSeletionCategories() != null && !event.getSeletionCategories().isEmpty())) {
-                    TreeSet<Comparable> sortedSet = new TreeSet<>(event.getSeletionCategories());
+                if ((event.getSelectionCategories() != null && !event.getSelectionCategories().isEmpty())) {
+                    TreeSet<Comparable> sortedSet = new TreeSet<>(event.getSelectionCategories());
                     double minValue = Double.parseDouble(sortedSet.first().toString());
                     double maxValue = Double.parseDouble(sortedSet.last().toString());
                     upperRangeSlider.setValue(maxValue);
@@ -427,6 +435,9 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
         selectionManager.setSelection(selection);
     }
 
+    /**
+     *
+     */
     public void forceRest() {
         if (this.getStyleName().contains("highlightfilter")) {
             reset();

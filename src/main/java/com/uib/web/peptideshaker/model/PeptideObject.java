@@ -14,7 +14,7 @@ import java.util.Set;
  * This class represents peptide object for Online PeptideShaker system the
  * class contains all the required information for visualising the peptide data
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class PeptideObject extends Peptide {
 
@@ -224,6 +224,11 @@ public class PeptideObject extends Peptide {
             proteinsSet.add(acc.replace(" ", ""));
         }
     }
+
+    /**
+     *
+     * @param psmKey
+     */
     public void addPSmKey(String psmKey){
         this.psmsSet.add(psmKey);
     }
@@ -457,11 +462,6 @@ public class PeptideObject extends Peptide {
      */
     public void setProteinGroups(String proteinGroups) {
         proteinGroupKey = proteinGroups.replace(" ", "").replace("(Confident)", "").replace("(Doubtful)", "").replace("(NotValidated)", "");
-//        proteinGroupKey = proteinGroupKey.replace("Not Validated", "").replace("(","").replace(")", "");
-//        proteinGroupKey = proteinGroupKey.replace(" ", "").replace(",", "-_-");
-//        for (String protGroup : proteinGroups.split(",")) {
-//            proteinGroupsSet.add(protGroup.replace(" ", ""));
-//        }
     }
 
     /**

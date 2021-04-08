@@ -9,7 +9,7 @@ import java.awt.*;
 /**
  * This class represents legend item can be use with any of the charts
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class LegendItem extends Label {
 

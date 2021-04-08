@@ -20,7 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * @author y-mok
+ * @author Yehia Mokhtar Farag
  */
 public class MsGFAdvancedSettingsPanel extends PopupWindow {
 
@@ -37,6 +37,9 @@ public class MsGFAdvancedSettingsPanel extends PopupWindow {
 
     private IdentificationParameters webSearchParameters;
 
+    /**
+     *
+     */
     public MsGFAdvancedSettingsPanel() {
         super(VaadinIcons.COG.getHtml() + " MS-GF+ Advanced Settings");
         AbsoluteLayout container = new AbsoluteLayout();
@@ -97,8 +100,7 @@ public class MsGFAdvancedSettingsPanel extends PopupWindow {
         /**
          * The MS-GF+ protocol ID: 0: Automatic, 1: Phosphorylation, 2: iTRAQ,
          * 3: iTRAQPhospho, 4: TMT, 5: Standard.
-         */
-        ;
+         */        
         values2.add(5 + "");
         protocol.updateData(values2);
         protocol.setItemCaption(0 + "", "Automatic");
@@ -163,6 +165,10 @@ public class MsGFAdvancedSettingsPanel extends PopupWindow {
 
     }
 
+    /**
+     *
+     * @param webSearchParameters
+     */
     public void updateGUI(IdentificationParameters webSearchParameters) {
         this.webSearchParameters = webSearchParameters;
         MsgfParameters msgfParameters = (MsgfParameters) webSearchParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.msgf.getIndex());
@@ -190,10 +196,17 @@ public class MsGFAdvancedSettingsPanel extends PopupWindow {
 
     }
 
+    /**
+     *
+     */
     @Override
     public void onClosePopup() {
     }
 
+    /**
+     *
+     * @param visible
+     */
     @Override
     public void setPopupVisible(boolean visible) {
         if (visible && webSearchParameters != null) {
@@ -201,7 +214,7 @@ public class MsGFAdvancedSettingsPanel extends PopupWindow {
         } else if (webSearchParameters != null) {
             updateParameters();
         }
-        super.setPopupVisible(visible); //To change body of generated methods, choose Tools | Templates.
+        super.setPopupVisible(visible); 
     }
 
     private void updateParameters() {

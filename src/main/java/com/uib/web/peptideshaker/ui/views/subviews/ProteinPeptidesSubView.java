@@ -8,7 +8,7 @@ import com.uib.web.peptideshaker.model.VisualizationDatasetModel;
 import com.uib.web.peptideshaker.ui.views.subviews.proteinsview.ProteinsGraphsContainerView;
 import com.uib.web.peptideshaker.ui.views.subviews.proteinsview.Protein3DStructureView;
 import com.uib.web.peptideshaker.ui.views.subviews.proteinsview.ProteinCoverageView;
-import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
+import com.uib.web.peptideshaker.ui.interfaces.ViewableFrame;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;

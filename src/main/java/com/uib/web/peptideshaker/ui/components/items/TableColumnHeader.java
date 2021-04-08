@@ -6,7 +6,7 @@ import com.vaadin.ui.Table;
 /**
  * This class include information required to initialize table headers
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class TableColumnHeader {
 

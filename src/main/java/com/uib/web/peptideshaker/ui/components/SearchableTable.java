@@ -2,7 +2,6 @@ package com.uib.web.peptideshaker.ui.components;
 
 import com.uib.web.peptideshaker.ui.components.items.TableColumnHeader;
 import com.uib.web.peptideshaker.ui.components.items.HorizontalLabelTextField;
-import com.uib.web.peptideshaker.ui.components.items.HorizontalLabelTextField;
 import com.vaadin.addon.tableexport.ExcelExport;
 import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
@@ -18,7 +17,7 @@ import java.util.*;
 /**
  * This class represents table that support search and selection
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class SearchableTable extends AbsoluteLayout implements Property.ValueChangeListener {
 
@@ -27,7 +26,6 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
     private final Map<String, String> tableSearchingMap;
     private final Table mainTable;
     private final HorizontalLayout serachComponent;
-//    private final Map<Comparable, Object[]> tableData;
     private Label searchResultsLabel;
     private boolean resetSearching = false;
     private Button searchBtn;
@@ -40,21 +38,20 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
      * @param title table title
      * @param defaultSearchingMessage default message in blank search field
      * @param tableHeaders array of table headers
+     * @param exportable
      */
-    public SearchableTable(String title, String defaultSearchingMessage, TableColumnHeader[] tableHeaders,boolean exportable) {
+    public SearchableTable(String title, String defaultSearchingMessage, TableColumnHeader[] tableHeaders, boolean exportable) {
         SearchableTable.this.setSizeFull();
         this.tableMainTitle = title;
         this.tableSearchingResults = new TreeMap<>();
         this.tableSearchingMap = new LinkedHashMap<>();
         this.mainTable = initTable(tableHeaders);
         SearchableTable.this.addComponent(mainTable, "top: 35px;left: 0px;");
-        serachComponent = initSearchComponentLayout(defaultSearchingMessage,exportable);
+        serachComponent = initSearchComponentLayout(defaultSearchingMessage, exportable);
         SearchableTable.this.addComponent(serachComponent, "top: 10px;right: 0px;");
-//        this.tableData = new LinkedHashMap<>();
     }
 
-    private HorizontalLayout initSearchComponentLayout(String defaultSearchingMessage,boolean exportable) {
-
+    private HorizontalLayout initSearchComponentLayout(String defaultSearchingMessage, boolean exportable) {
         HorizontalLayout searchContainer = new HorizontalLayout();
         searchContainer.setSpacing(false);
         searchContainer.setStyleName("searchtablecontainer");
@@ -76,8 +73,6 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
             csvExport.getColumnHeaderStyle().setWrapText(false);
             csvExport.setMimeType(ExcelExport.EXCEL_MIME_TYPE);
             csvExport.setDisplayTotals(false);
-//                csvExport.setExcelFormatOfProperty("Index", "0");
-
             csvExport.export();
             disableHtmlColumnHeader = false;
         });
@@ -182,10 +177,18 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
 
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isDisableHtmlColumnHeader() {
         return disableHtmlColumnHeader;
     }
 
+    /**
+     *
+     * @param disableHtmlColumnHeader
+     */
     public void setDisableHtmlColumnHeader(boolean disableHtmlColumnHeader) {
         this.disableHtmlColumnHeader = disableHtmlColumnHeader;
     }
@@ -223,7 +226,7 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
                     }
                     return header;
                 }
-                return super.getColumnHeader(propertyId); //To change body of generated methods, choose Tools | Templates.
+                return super.getColumnHeader(propertyId);
             }
 
         };
@@ -298,14 +301,6 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
         mainTable.setSortEnabled(false);
     }
 
-//    /**
-//     * Get table data items
-//     *
-//     * @return map of data items mapped to its id
-//     */
-//    public Map<Comparable, Object[]> getTableData() {
-//        return tableData;
-//    }
     /**
      * Get table object
      *
@@ -316,11 +311,10 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
     }
 
     /**
-     * Rest table information and data
+     * Rest table information and data.
      */
     public void resetTable() {
         this.tableSearchingMap.clear();
-//        this.tableData.clear();
         mainTable.removeValueChangeListener(SearchableTable.this);
         mainTable.removeAllItems();
     }
@@ -340,12 +334,10 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
             this.mainTable.addItem(value, dataKey);
         }
         this.tableSearchingMap.put(searchingKeyword.toLowerCase().replace(",", "_"), dataKey.toString());
-
-//        this.tableData.put(dataKey.toString().trim(), value);
     }
 
     /**
-     * Suspend value change listener
+     * Suspend value change listener.
      */
     public void deActivateValueChangeListener() {
         mainTable.removeValueChangeListener(SearchableTable.this);
@@ -360,27 +352,25 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
 
     /**
      * Update table label (title) with current available data in the table
+     *
+     * @param totalNumber
      */
     public void updateLabelCounter(int totalNumber) {
         mainTable.setCaption("<b>" + tableMainTitle + " (" + mainTable.getItemIds().size() + "/" + totalNumber + ")</b>");
-//        if (mainTable.getItemIds().size() == 1) {
-//            mainTable.select(mainTable.getCurrentPageFirstItemId());
-//        } else {
-//            mainTable.select(null);
-//            itemSelected(null);
-//        }
-    }
-     public void updateLabel(String updatedLabel) {
-         this.tableMainTitle = updatedLabel;
-        mainTable.setCaption("<b>" + tableMainTitle + " (" + mainTable.getItemIds().size() + "/" + mainTable.getItemIds().size()  + ")</b>");
-//        if (mainTable.getItemIds().size() == 1) {
-//            mainTable.select(mainTable.getCurrentPageFirstItemId());
-//        } else {
-//            mainTable.select(null);
-//            itemSelected(null);
-//        }
     }
 
+    /**
+     *
+     * @param updatedLabel
+     */
+    public void updateLabel(String updatedLabel) {
+        this.tableMainTitle = updatedLabel;
+        mainTable.setCaption("<b>" + tableMainTitle + " (" + mainTable.getItemIds().size() + "/" + mainTable.getItemIds().size() + ")</b>");
+    }
+
+    /**
+     *
+     */
     public void updateIndexes() {
         mainTable.setSortEnabled(true);
         mainTable.sort();
@@ -405,43 +395,6 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
      */
     public abstract void itemSelected(Object itemId);
 
-    /**
-     * Filter table (view only selected items )
-     *
-     * @param objectIds set of items(row ids)
-     */
-//    public void filterTable(Set<Integer> objectIds) {
-//        if ((objectIds == null || objectIds.isEmpty()) && this.mainTable.getItemIds().size() == tableData.size()) {
-//            return;
-//        }
-//        if (objectIds != null && objectIds.size() == mainTable.getItemIds().size()) {
-//            return;
-//        }
-//        mainTable.removeValueChangeListener(SearchableTable.this);
-//        mainTable.removeAllItems();
-//        if (objectIds != null && !objectIds.isEmpty()) {
-//            objectIds.forEach((data) -> {
-//                if (tableData.containsKey(data)) {
-//                    this.mainTable.addItem(tableData.get(data), data);
-//                }
-//            });
-//        } else if ((objectIds == null || objectIds.isEmpty()) && this.mainTable.getItemIds().size() != tableData.size()) {
-//            tableData.keySet().forEach((data) -> {
-//                this.mainTable.addItem(tableData.get(data), data);
-//            });
-//
-//        }
-//        mainTable.setCaption("<b>" + tableMainTitle + " (" + mainTable.getItemIds().size() + "/" + tableData.size() + ")</b>");
-//        mainTable.addValueChangeListener(SearchableTable.this);
-//        if (mainTable.getItemIds().size() == 1) {
-//            mainTable.select(mainTable.getCurrentPageFirstItemId());
-//        } else {
-//            mainTable.select(null);
-//            itemSelected(null);
-//        }
-//        searchBtn.click();
-//
-//    }
     /**
      * Add button to the table layout
      *

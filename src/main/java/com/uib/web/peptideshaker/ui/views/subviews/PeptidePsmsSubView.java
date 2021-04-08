@@ -6,7 +6,7 @@ import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.PeptideObject;
 import com.uib.web.peptideshaker.ui.views.subviews.peptidespsmviews.PSMContainerView;
 import com.uib.web.peptideshaker.ui.views.subviews.peptidespsmviews.components.SpectrumInformation;
-import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
+import com.uib.web.peptideshaker.ui.interfaces.ViewableFrame;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.HorizontalLayout;

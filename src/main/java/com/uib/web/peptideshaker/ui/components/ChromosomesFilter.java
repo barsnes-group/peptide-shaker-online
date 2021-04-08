@@ -4,7 +4,7 @@ import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.FilterUpdatingEvent;
 import com.uib.web.peptideshaker.model.Selection;
 import com.uib.web.peptideshaker.ui.components.items.FilterButton;
-import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
+import com.uib.web.peptideshaker.ui.interfaces.RegistrableFilter;
 import com.uib.web.peptideshaker.uimanager.SelectionManager;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -16,7 +16,7 @@ import java.util.*;
 /**
  * This class represents matrix layout filter
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class ChromosomesFilter extends AbsoluteLayout implements RegistrableFilter {
 
@@ -33,6 +33,12 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
     int activeChromosomes;
     private RangeColorGenerator colorGenerator;
 
+    /**
+     *
+     * @param title
+     * @param filterId
+     * @param selectionManager
+     */
     public ChromosomesFilter(String title, String filterId, SelectionManager selectionManager) {
 
         this.filterId = filterId;
@@ -205,6 +211,10 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
 
     }
 
+    /**
+     *
+     * @param updateEvent
+     */
     @Override
     public void updateSelection(FilterUpdatingEvent updateEvent) {
         try {
@@ -218,14 +228,14 @@ public abstract class ChromosomesFilter extends AbsoluteLayout implements Regist
                 }
             });
 
-            if (updateEvent.getSeletionCategories() != null && updateEvent.getSeletionCategories().containsAll(fullData.keySet())) {
+            if (updateEvent.getSelectionCategories() != null && updateEvent.getSelectionCategories().containsAll(fullData.keySet())) {
                 reset();
                 return;
             }
 
             localResetFilterData(fullData);
-            selectCategory(updateEvent.getSeletionCategories());
-            setMainAppliedFilter(updateEvent.getSeletionCategories() != null && !updateEvent.getSeletionCategories().isEmpty());
+            selectCategory(updateEvent.getSelectionCategories());
+            setMainAppliedFilter(updateEvent.getSelectionCategories() != null && !updateEvent.getSelectionCategories().isEmpty());
 
         } catch (Exception e) {
             e.printStackTrace();

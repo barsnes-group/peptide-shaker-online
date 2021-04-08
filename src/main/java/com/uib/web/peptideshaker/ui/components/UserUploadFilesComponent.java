@@ -14,7 +14,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
-import org.apache.commons.collections15.map.LinkedMap;
 import pl.exsio.plupload.PluploadFile;
 
 import java.io.File;
@@ -100,12 +99,6 @@ public class UserUploadFilesComponent extends HorizontalLayout {
 
         textFilesInputContainer = initializeProjectInputFilesLayout();
         subContainerLayout.addComponent(textFilesInputContainer, "left:25px;top:190px;right:25px");
-
-//        mzTabInputContainer = initializeMzTabLayout();
-//        subContainerLayout.addComponent(mzTabInputContainer, "left:25px;top:369px;right:25px");
-//
-//        mzIdentMLContainer = initializeMzIdentMLContainer();
-//        subContainerLayout.addComponent(mzIdentMLContainer, "left:25px;top:454px;right:25px");
         projectVisulizationButtonsContainer = initializeProjecVisulizationButtonsLayout();
         subContainerLayout.addComponent(projectVisulizationButtonsContainer, "left:25px;top:320px;right:25px");
 
@@ -149,17 +142,11 @@ public class UserUploadFilesComponent extends HorizontalLayout {
         initTextFilesInputContainer.setWidth(100, Unit.PERCENTAGE);
         initTextFilesInputContainer.setHeight(106, Unit.PIXELS);
         initTextFilesInputContainer.setStyleName("titleinborder");
-
-//        AbsoluteLayout fastaFileContainerLayout = this.initUploaderField("Fasta File", "fasta");
-//        initTextFilesInputContainer.addComponent(fastaFileContainerLayout, "left:15px;top:15px;right:15px");
         proteinFileContainerLayout = this.initUploaderField("Protein File", CONSTANT.PROTEIN_FILE_TYPE, "txt");
         initTextFilesInputContainer.addComponent(proteinFileContainerLayout, "left:15px;top:15px;right:15px");
 
         peptideFileContainerLayout = this.initUploaderField("Peptide File", CONSTANT.PEPTIDE_FILE_TYPE, "txt");
         initTextFilesInputContainer.addComponent(peptideFileContainerLayout, "left:15px;top:60px;right:15px");
-
-//        moffFileContainerLayout = this.initUploaderField("Moff File", "tabular");
-//        initTextFilesInputContainer.addComponent(moffFileContainerLayout, "left:15px;top:105px;right:15px");
         return initTextFilesInputContainer;
 
     }
@@ -312,7 +299,7 @@ public class UserUploadFilesComponent extends HorizontalLayout {
             peptideFileContainerLayout.addStyleName("errorstyle");
             appManagmentBean.getNotificationFacade().showErrorNotification("Check the input fields");
             return;
-        }        
+        }
         appManagmentBean.getDatasetUtils().initialiseDatasetFromUploadedFiles(projectNameField.getValue(), uploadedFileMap);
         clearForms();
     }

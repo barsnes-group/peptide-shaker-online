@@ -19,7 +19,7 @@ import java.util.*;
  * This class represents protein coverage layout that contain the distribution
  * of peptides on the protein
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class ProteinCoverageComponent extends AbsoluteLayout {
 

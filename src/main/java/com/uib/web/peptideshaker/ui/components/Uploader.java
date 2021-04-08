@@ -1,7 +1,6 @@
 package com.uib.web.peptideshaker.ui.components;
 
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Label;
@@ -20,7 +19,7 @@ import java.util.Set;
 /**
  * This class represents Uploading class with progress bar
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class Uploader extends AbsoluteLayout {
 
@@ -133,6 +132,10 @@ public abstract class Uploader extends AbsoluteLayout {
 
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isBusy() {
         return uploaderComponent.getStyleName().contains("hidebutton");
     }
@@ -141,7 +144,6 @@ public abstract class Uploader extends AbsoluteLayout {
      * Set upload is temporary disable
      *
      * @param busy upload in progress
-     * @param notifi show notification
      */
     public void setBusy(boolean busy) {
         UI.getCurrent().access(() -> {

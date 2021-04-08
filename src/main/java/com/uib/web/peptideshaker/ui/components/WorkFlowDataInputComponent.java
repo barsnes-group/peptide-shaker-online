@@ -22,7 +22,6 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import java.io.File;
 import pl.exsio.plupload.PluploadFile;
-
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -73,10 +72,6 @@ public class WorkFlowDataInputComponent extends Panel {
      */
     private Map<String, GalaxyFileModel> serachParamFilesMap;
     /**
-     * updated search parameters to perform the search at galaxy server.
-     */
-//    private SearchParameters _updatedSearchParameters;  
-    /**
      * selected search parameters to perform the search at galaxy server.
      */
     private IdentificationParameters _searchParameters;
@@ -93,7 +88,7 @@ public class WorkFlowDataInputComponent extends Panel {
     private AbsoluteLayout fastaFileContainer;
     private Button executeWorkFlowBtn;
     /**
-     * Execution button for the work-flow
+     * Execution button for the work-flow.
      */
     private AbsoluteLayout inputDataFilesContainer;
     private Uploader mgf_raw_dataUploader;
@@ -131,7 +126,7 @@ public class WorkFlowDataInputComponent extends Panel {
         WorkFlowDataInputComponent.this.setWidth(100, Unit.PERCENTAGE);
         WorkFlowDataInputComponent.this.setHeight(100, Unit.PERCENTAGE);
         /**
-         * MAIN LAYOUT CONFIGURATION
+         * MAIN LAYOUT CONFIGURATION.
          *
          */
         AbsoluteLayout container = new AbsoluteLayout();
@@ -162,7 +157,6 @@ public class WorkFlowDataInputComponent extends Panel {
         newProjectContainer.addStyleName("searchguiinputcontainer");
         newProjectContainer.addStyleName("datainputsubcontainer");
         mainContainerLayout.addComponent(newProjectContainer, "left: 15px;right: 15px;top:50%");
-
         /**
          * Search settings layout.
          */
@@ -170,7 +164,8 @@ public class WorkFlowDataInputComponent extends Panel {
         newProjectContainer.addComponent(searchParameterContainer, "left:25px;top:25px;right:50%");
 
         /**
-         * Search parameter form*
+         * Search parameter form.
+         *
          */
         _searchParameterForm = initialiseSearchParametersForm();
         _searchParameterFormContainer = initialiseSearchParameterFormContainer(_searchParameterForm);
@@ -450,9 +445,9 @@ public class WorkFlowDataInputComponent extends Panel {
     }
 
     /**
-     * Initialise fasta file dropdown list and FASTA file upload utility.
+     * Initialise FASTA file drop-down list and FASTA file upload utility.
      *
-     * @return drop-down list with uploader support
+     * @return drop-down list with upload support
      */
     private DropDownList initialiseFastaFileDropdownList() {
         fastaFileUploader = new Uploader(appManagmentBean.getAppConfig().getUserFolderUri()) {
@@ -681,7 +676,7 @@ public class WorkFlowDataInputComponent extends Panel {
                     reset();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                 System.out.println("at Error class: "+this.getClass().getName()+"  line: 679 "+e);
             }
         });
     }
@@ -740,7 +735,8 @@ public class WorkFlowDataInputComponent extends Panel {
     }
 
     /**
-     * update search parameters file drop down list*
+     * update search parameters file drop down list.
+     *
      */
     public void updateSpectrumPanel() {
         Set<GalaxyFileModel> mgfFileSet = new LinkedHashSet<>();
@@ -866,7 +862,8 @@ public class WorkFlowDataInputComponent extends Panel {
     }
 
     /**
-     * update search parameters file drop down list*
+     * update search parameters file drop down list.
+     *
      */
     public void updateSearchParamFileList() {
         this.serachParamFilesMap = new LinkedHashMap<>();
@@ -886,7 +883,7 @@ public class WorkFlowDataInputComponent extends Panel {
     }
 
     /**
-     * Update selection list for FASTA files
+     * Update selection list for FASTA files.
      */
     public void updateFastaFileList() {
         fastaFilesMap = new LinkedHashMap<>();
@@ -985,7 +982,7 @@ public class WorkFlowDataInputComponent extends Panel {
     }
 
     /**
-     * Reset all input form to default
+     * Reset all input form to default.
      */
     public void reset() {
         _rawFileList.clear();

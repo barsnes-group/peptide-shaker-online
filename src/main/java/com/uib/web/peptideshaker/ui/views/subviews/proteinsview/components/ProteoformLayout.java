@@ -20,7 +20,7 @@ import java.util.Set;
  * This class represents the proteins proteoform layout that link the proteoform
  * to the protein coverage and to the modified peptides
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class ProteoformLayout extends AbsoluteLayout implements LayoutEvents.LayoutClickListener {
 

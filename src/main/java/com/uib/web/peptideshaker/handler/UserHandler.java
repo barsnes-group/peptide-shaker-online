@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * this class responsible for handling user functions and data
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class UserHandler implements Serializable {
 

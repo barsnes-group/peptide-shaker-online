@@ -22,7 +22,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * @author y-mok
+ * @author Yehia Mokhtar Farag
  */
 public class AndromedaAdvancedSettingsPanel extends PopupWindow {
 
@@ -47,6 +47,9 @@ public class AndromedaAdvancedSettingsPanel extends PopupWindow {
 
     private IdentificationParameters webSearchParameters;
 
+    /**
+     *
+     */
     public AndromedaAdvancedSettingsPanel() {
         super(VaadinIcons.COG.getHtml() + " Andromeda Advanced Settings");
         AbsoluteLayout container = new AbsoluteLayout();
@@ -158,6 +161,10 @@ public class AndromedaAdvancedSettingsPanel extends PopupWindow {
 
     }
 
+    /**
+     *
+     * @param webSearchParameters
+     */
     public void updateGUI(IdentificationParameters webSearchParameters) {
         this.webSearchParameters = webSearchParameters;
         AndromedaParameters andromedaParameters = (AndromedaParameters) webSearchParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.andromeda.getIndex());
@@ -209,19 +216,23 @@ public class AndromedaAdvancedSettingsPanel extends PopupWindow {
         decoyMode.setSelected(andromedaParameters.getDecoyMode().name());
     }
 
+    /**
+     *
+     */
     @Override
     public void onClosePopup() {
     }
 
+    /**
+     *
+     * @param visible
+     */
     @Override
     public void setPopupVisible(boolean visible) {
         if (visible && webSearchParameters != null) {
             updateGUI(webSearchParameters);
         }
-//else if (webSearchParameters != null) {
-//            updateParameters();
-//        }
-        super.setPopupVisible(visible); //To change body of generated methods, choose Tools | Templates.
+        super.setPopupVisible(visible);
     }
 
     private void updateParameters() {

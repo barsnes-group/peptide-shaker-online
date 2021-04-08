@@ -67,7 +67,7 @@ import java.util.LinkedHashMap;
  * This class represents Spectrum Plot extracted from PeptideShaker and
  * converted using DiVA concept
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class SpectrumPlot extends AbsoluteLayout {
 

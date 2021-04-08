@@ -4,10 +4,9 @@ import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.itextpdf.text.pdf.codec.Base64;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.FilterUpdatingEvent;
-import com.uib.web.peptideshaker.model.ModificationMatrixModel;
 import com.uib.web.peptideshaker.model.Selection;
 import com.uib.web.peptideshaker.ui.components.items.FilterButton;
-import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
+import com.uib.web.peptideshaker.ui.interfaces.RegistrableFilter;
 import com.uib.web.peptideshaker.uimanager.SelectionManager;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.MouseEvents;
@@ -36,7 +35,7 @@ import java.util.Set;
  * Venn diagram and matrix diagram the visualisation is switching between the 2
  * diagrams based on the number of intersections
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class ModificationsFilter extends AbsoluteLayout implements RegistrableFilter {
 
@@ -283,13 +282,13 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
                 modificationColorMap.put(mod.toString(), Color.LIGHT_GRAY);
             }
         });
-        matrixDiagram.updateFilter(columns, rows, modificationColorMap, event.getSeletionCategories());
-//        vennDiagram.updateFilter(columns, rows, modificationColorMap, event.getSeletionCategories());
+        matrixDiagram.updateFilter(columns, rows, modificationColorMap, event.getSelectionCategories());
+//        vennDiagram.updateFilter(columns, rows, modificationColorMap, event.getSelectionCategories());
         populateModificationOptionGroup(modificationColorMap);
 
         matrixDiagram.setVisible(true);
         modificationFilterPanel.setVisible(true);
-        setMainAppliedFilter(event.getSeletionCategories() != null && !event.getSeletionCategories().isEmpty());
+        setMainAppliedFilter(event.getSelectionCategories() != null && !event.getSelectionCategories().isEmpty());
     }
     
     private void reset() {

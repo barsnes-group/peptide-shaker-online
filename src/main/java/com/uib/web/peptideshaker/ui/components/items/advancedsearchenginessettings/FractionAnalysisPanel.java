@@ -12,7 +12,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
- * @author y-mok
+ * @author Yehia Mokhtar Farag
  */
 public class FractionAnalysisPanel extends PopupWindow {
 

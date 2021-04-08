@@ -1,8 +1,7 @@
-package com.uib.web.peptideshaker.ui.abstracts;
+package com.uib.web.peptideshaker.ui.interfaces;
 
 import com.uib.web.peptideshaker.model.FilterUpdatingEvent;
 import com.vaadin.ui.Layout;
-import java.util.Map;
 
 import java.util.Set;
 
@@ -10,7 +9,7 @@ import java.util.Set;
  * This interface include all the abstracted methods required to register the
  * filter into the selection manager
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public interface RegistrableFilter extends Layout {
 

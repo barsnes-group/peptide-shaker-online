@@ -5,7 +5,7 @@ import com.vaadin.ui.AbsoluteLayout;
 /**
  * this class represents protein coverage layout
  *
- * @author YEhia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class ProteinCoverageLayout extends AbsoluteLayout {
 

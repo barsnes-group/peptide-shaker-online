@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.uib.web.peptideshaker.ui.components;
 
 import com.uib.web.peptideshaker.ui.components.items.CloseButton;
@@ -12,12 +8,18 @@ import com.vaadin.ui.*;
 /**
  * This class represents popup layout with close button
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class ClosablePopup extends VerticalLayout {
 
     private final PopupView popupView;
 
+    /**
+     *
+     * @param title
+     * @param content
+     * @param caption
+     */
     public ClosablePopup(String title, Component content, String caption) {
 
         AbsoluteLayout container = new AbsoluteLayout();

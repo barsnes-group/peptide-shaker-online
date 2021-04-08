@@ -7,7 +7,7 @@ import com.vaadin.ui.VerticalLayout;
  * This class represents layout for radio buttons, the layout made for Vaadin
  * table components to be updated on select row in table.
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class RadioButton extends VerticalLayout implements LayoutEvents.LayoutClickListener {
 

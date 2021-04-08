@@ -4,7 +4,7 @@ import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.uib.web.peptideshaker.AppManagmentBean;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.VisualizationDatasetModel;
-import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
+import com.uib.web.peptideshaker.ui.interfaces.ViewableFrame;
 import com.uib.web.peptideshaker.ui.components.SearchParametersForm;
 import com.uib.web.peptideshaker.ui.components.items.FilterButton;
 import com.uib.web.peptideshaker.ui.components.items.HelpPopupButton;

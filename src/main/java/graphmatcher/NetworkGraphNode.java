@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package graphmatcher;
 
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
@@ -23,7 +19,7 @@ import java.util.*;
 /**
  * This class represents NetworkGraphNode for graph layout
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class NetworkGraphNode extends VerticalLayout implements LayoutEvents.LayoutClickListener {
 

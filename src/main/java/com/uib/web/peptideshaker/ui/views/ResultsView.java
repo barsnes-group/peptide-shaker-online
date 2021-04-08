@@ -2,7 +2,7 @@ package com.uib.web.peptideshaker.ui.views;
 
 import com.uib.web.peptideshaker.AppManagmentBean;
 import com.uib.web.peptideshaker.model.CONSTANT;
-import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
+import com.uib.web.peptideshaker.ui.interfaces.ViewableFrame;
 import com.uib.web.peptideshaker.ui.components.items.SubViewSideButton;
 import com.uib.web.peptideshaker.ui.views.subviews.DatasetProteinsSubView;
 import com.uib.web.peptideshaker.ui.views.subviews.PeptidePsmsSubView;
@@ -21,7 +21,7 @@ import java.util.Iterator;
  * This class represent PeptideShaker view presenter which is responsible for
  * viewing the peptide shaker results on web
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class ResultsView extends AbsoluteLayout implements ViewableFrame {
 

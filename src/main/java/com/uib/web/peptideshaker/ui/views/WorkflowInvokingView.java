@@ -1,6 +1,6 @@
 package com.uib.web.peptideshaker.ui.views;
 
-import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
+import com.uib.web.peptideshaker.ui.interfaces.ViewableFrame;
 import com.uib.web.peptideshaker.ui.components.items.SubViewSideButton;
 import com.uib.web.peptideshaker.ui.components.WorkFlowDataInputComponent;
 import com.vaadin.server.ThemeResource;

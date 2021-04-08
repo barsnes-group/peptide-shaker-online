@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * This class responsible for calculating matrix for DivaMatrixLayoutChartFilter
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class ModificationMatrixUtilis {
 

@@ -11,22 +11,38 @@ import java.util.Set;
 public class FilterUpdatingEvent {
     
     private Map<Comparable, Set<Integer>> selectionMap;
-    private Set<Comparable> seletionCategories;
+    private Set<Comparable> selectionCategories;
 
+    /**
+     *
+     * @return
+     */
     public Map<Comparable, Set<Integer>> getSelectionMap() {
         return selectionMap;
     }
 
+    /**
+     *
+     * @param selectionMap
+     */
     public void setSelectionMap(Map<Comparable, Set<Integer>> selectionMap) {
         this.selectionMap = selectionMap;
     }
 
-    public Set<Comparable> getSeletionCategories() {
-        return seletionCategories;
+    /**
+     *
+     * @return
+     */
+    public Set<Comparable> getSelectionCategories() {
+        return selectionCategories;
     }
 
-    public void setSeletionCategories(Set<Comparable> seletionCategories) {
-        this.seletionCategories = seletionCategories;
+    /**
+     *
+     * @param selectionCategories
+     */
+    public void setSelectionCategories(Set<Comparable> selectionCategories) {
+        this.selectionCategories = selectionCategories;
     }
     
 }

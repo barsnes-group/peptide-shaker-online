@@ -9,7 +9,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.PopupView;
 
 /**
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class HelpPopupButton extends AbsoluteLayout {
 

@@ -25,6 +25,9 @@ public class ViewActionButtonsComponent extends AbsoluteLayout implements Layout
     private AppManagmentBean appManagmentBean;
     private final SmallSideBtn searchGUIPSWorkflowViewButton;
 
+    /**
+     *
+     */
     public ViewActionButtonsComponent() {
 
         this.buttonsMap = new HashMap<>();

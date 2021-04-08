@@ -18,7 +18,7 @@ import java.util.Set;
 /**
  * This class represents Node for graph layout
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class Node extends VerticalLayout implements LayoutEvents.LayoutClickListener {
 

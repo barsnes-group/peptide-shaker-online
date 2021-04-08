@@ -156,7 +156,7 @@ public class PDBUtils implements Serializable{
                     entities.put(entityDataObject.getEntityId(), entityDataObject);
                 }
                 pdbMatch.setEntities(entities);
-                pdbMatch.setSequence(proteinSequence);
+//                pdbMatch.setSequence(proteinSequence);
 
             }
             url = "https://www.ebi.ac.uk/pdbe/api/mappings/uniprot/";

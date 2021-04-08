@@ -12,7 +12,7 @@ import java.util.Map;
  * This class represent Spark-line label to be used inside tables the spark line
  * support staked barchart with 1,2 or 3 colours
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class SparkLineLabel extends AbsoluteLayout implements Comparable<SparkLineLabel> {
 

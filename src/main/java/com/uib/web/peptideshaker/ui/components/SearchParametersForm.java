@@ -332,42 +332,6 @@ public abstract class SearchParametersForm extends VerticalLayout {
             _advSearchSettings.setVisible(false);
             titleLayout.setHeight(25, Unit.PIXELS);
         }
-//        this.viewCoordinatorListener = (LayoutEvents.LayoutClickEvent event) -> {
-//            Component comp = event.getClickedComponent();
-//            if ((comp instanceof Label)) {
-//                Label modificationLabel = (Label) ((VerticalLayout) modificationContainer.getComponent(0)).getComponent(0);
-//                Label protFragLabel = (Label) (((GridLayout) proteaseFragmentationContainer.getContent()).getComponent(0, 0));
-//                Label l = (Label) comp;
-//                if (l.getData() != null) {
-//                    Integer i = new Integer(l.getData().toString());
-//                    if (i == 1) { //action on top label
-//                        if (l.getValue().contains(VaadinIcons.ANGLE_DOUBLE_DOWN.getHtml())) { //hide top and show bottom
-//                            modificationLabel.setValue(modificationLabel.getValue().replace(VaadinIcons.ANGLE_DOUBLE_DOWN.getHtml(), VaadinIcons.ANGLE_DOUBLE_RIGHT.getHtml()));
-//                            protFragLabel.setValue(protFragLabel.getValue().replace(VaadinIcons.ANGLE_DOUBLE_RIGHT.getHtml(), VaadinIcons.ANGLE_DOUBLE_DOWN.getHtml()));
-//                            modificationContainer.addStyleName("minimizelayout");
-//                            proteaseFragmentationContainer.removeStyleName("minimizelayout");
-//                        } else { //show top and hide bottom
-//                            protFragLabel.setValue(protFragLabel.getValue().replace(VaadinIcons.ANGLE_DOUBLE_DOWN.getHtml(), VaadinIcons.ANGLE_DOUBLE_RIGHT.getHtml()));
-//                            modificationLabel.setValue(modificationLabel.getValue().replace(VaadinIcons.ANGLE_DOUBLE_RIGHT.getHtml(), VaadinIcons.ANGLE_DOUBLE_DOWN.getHtml()));
-//                            modificationContainer.removeStyleName("minimizelayout");
-//                            proteaseFragmentationContainer.addStyleName("minimizelayout");
-//                        }
-//                    } else {//action on bottom label                        
-//                        if (l.getValue().contains(VaadinIcons.ANGLE_DOUBLE_DOWN.getHtml())) { //hide bottom and show top
-//                            protFragLabel.setValue(protFragLabel.getValue().replace(VaadinIcons.ANGLE_DOUBLE_DOWN.getHtml(), VaadinIcons.ANGLE_DOUBLE_RIGHT.getHtml()));
-//                            modificationLabel.setValue(modificationLabel.getValue().replace(VaadinIcons.ANGLE_DOUBLE_RIGHT.getHtml(), VaadinIcons.ANGLE_DOUBLE_DOWN.getHtml()));
-//                            modificationContainer.removeStyleName("minimizelayout");
-//                            proteaseFragmentationContainer.addStyleName("minimizelayout");
-//                        } else { //show bottom and hide top
-//                            modificationLabel.setValue(modificationLabel.getValue().replace(VaadinIcons.ANGLE_DOUBLE_DOWN.getHtml(), VaadinIcons.ANGLE_DOUBLE_RIGHT.getHtml()));
-//                            protFragLabel.setValue(protFragLabel.getValue().replace(VaadinIcons.ANGLE_DOUBLE_RIGHT.getHtml(), VaadinIcons.ANGLE_DOUBLE_DOWN.getHtml()));
-//                            modificationContainer.addStyleName("minimizelayout");
-//                            proteaseFragmentationContainer.removeStyleName("minimizelayout");
-//                        }
-//                    }
-//                }
-//            }
-//        };
 
     }
 
@@ -769,19 +733,6 @@ public abstract class SearchParametersForm extends VerticalLayout {
         proteaseFragmentationLabel.setData(2);
         leftSideLayout.setStyleName("nomargin");
 
-//        GridLayout proteaseFragmentationContainer = new GridLayout(2, 6);
-//        proteaseFragmentationContainer.setStyleName("panelframe");
-//        proteaseFragmentationContainer.setColumnExpandRatio(0, 55);
-//        proteaseFragmentationContainer.setColumnExpandRatio(1, 45);
-//        proteaseFragmentationContainer.setMargin(new MarginInfo(false, false, true, false));
-//        proteaseFragmentationContainer.setWidth(700, Unit.PIXELS);
-//        proteaseFragmentationContainer.setHeight(205, Unit.PIXELS);
-//        proteaseFragmentationContainer.setSpacing(true);
-//
-//        Label label = new Label(VaadinIcons.ANGLE_DOUBLE_DOWN.getHtml() + "  Protease & Fragmentation", ContentMode.HTML);
-//        label.setSizeFull();
-//        label.setData(2);
-//        proteaseFragmentationContainer.addComponent(label, 0, 0);
         Set<String> digestionOptionList = new LinkedHashSet<>();
         digestionOptionList.add("Enzyme");
         digestionOptionList.add("Unspecific");
@@ -1043,7 +994,8 @@ public abstract class SearchParametersForm extends VerticalLayout {
             if (fragmentTolerance.getSecondSelectedValue().equalsIgnoreCase("ppm")) {
                 searchParameters.getSearchParameters().setFragmentAccuracyType(SearchParameters.MassAccuracyType.PPM);
             } else {
-                searchParameters.getSearchParameters().setFragmentAccuracyType(SearchParameters.MassAccuracyType.DA);            }
+                searchParameters.getSearchParameters().setFragmentAccuracyType(SearchParameters.MassAccuracyType.DA);
+            }
 
             searchParameters.getSearchParameters().setMinChargeSearched(Integer.valueOf(precursorCharge.getFirstSelectedValue()));
             searchParameters.getSearchParameters().setMaxChargeSearched(Integer.valueOf(precursorCharge.getSecondSelectedValue()));

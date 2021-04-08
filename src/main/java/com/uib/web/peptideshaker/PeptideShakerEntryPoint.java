@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 @Push(transport = Transport.LONG_POLLING)
 @Theme("webpeptideshakertheme")
 @JavaScript({"../../VAADIN/js/venn.js", "../../VAADIN/js/myD3library.js", "../../VAADIN/js/myD3component-connector.js", "../../VAADIN/js/d3.v5.min.js", "../../VAADIN/litemol/js/LiteMol-plugin.js", "../../VAADIN/litemol/js/mylitemol-connector.js", "../../VAADIN/litemol/js/mylitemollibrary.js", "../../VAADIN/litemol/js/LiteMol-example.js?lmversion=1518789385303", "https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.touch/1.1.0/jquery.touch.min.js", "../../VAADIN/js/mylibrary.js", "../../VAADIN/js/mycomponent-connector.js", "https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery.touch/1.1.0/jquery.touch.min.js", "../../VAADIN/js/mylibrary2.js", "../../VAADIN/js/mycomponent-connector2.js", "../../VAADIN/js/jquery.mousewheel.js"})
-public class PeptidShakerEntryPoint extends UI {
+public class PeptideShakerEntryPoint extends UI {
 
     private AppMainContainer webPeptideShakerApp;
     private AppManagmentBean appManagmentBean;
@@ -58,8 +58,8 @@ public class PeptidShakerEntryPoint extends UI {
 
         try {
             UI.getCurrent().getConnectorTracker().cleanConnectorMap();
-            PeptidShakerEntryPoint.this.addStyleName("uicontainer");
-            PeptidShakerEntryPoint.this.setSizeFull();
+            PeptideShakerEntryPoint.this.addStyleName("uicontainer");
+            PeptideShakerEntryPoint.this.setSizeFull();
             if (VaadinSessionControlListener.getActiveSessions() < appManagmentBean.getAppConfig().getMaximumAllowedUsers()) {
                 VaadinSession.getCurrent().getSession().setMaxInactiveInterval(60 * 15);
                 webPeptideShakerApp = new AppMainContainer();
@@ -82,11 +82,11 @@ public class PeptidShakerEntryPoint extends UI {
                 return;
             }
         } catch (IllegalArgumentException | NullPointerException e) {
-            System.out.println("at error " + PeptidShakerEntryPoint.class.getName() + " line: 85 " + e);
+            System.out.println("at error " + PeptideShakerEntryPoint.class.getName() + " line: 85 " + e);
         }
 
         VaadinSession.getCurrent().setErrorHandler((com.vaadin.server.ErrorEvent event) -> {
-           System.out.println("at error " + PeptidShakerEntryPoint.class.getName() + " line: 89 " + event.getThrowable().getCause());
+           System.out.println("at error " + PeptideShakerEntryPoint.class.getName() + " line: 89 " + event.getThrowable().getCause());
         });
 
         //if there is capacity check the routes        
@@ -123,7 +123,7 @@ public class PeptidShakerEntryPoint extends UI {
      * Main application Servlet.
      */
     @WebServlet(urlPatterns = "/*", name = "PeptidShakerServlet", asyncSupported = true)
-    @VaadinServletConfiguration(ui = PeptidShakerEntryPoint.class, productionMode = true, resourceCacheTime = 0)
+    @VaadinServletConfiguration(ui = PeptideShakerEntryPoint.class, productionMode = true, resourceCacheTime = 0)
     public static class PeptidShakerServlet extends VaadinServlet {
 
         @Override
@@ -131,7 +131,7 @@ public class PeptidShakerEntryPoint extends UI {
             try {
                 super.service(request, response); //To change body of generated methods, choose Tools | Templates.
             } catch (ConcurrentModificationException | IOException | ServletException e) {
-                System.out.println("at error " + PeptidShakerEntryPoint.class.getName() + " line: 144 " + e);
+                System.out.println("at error " + PeptideShakerEntryPoint.class.getName() + " line: 144 " + e);
             }
 
         }
@@ -142,7 +142,7 @@ public class PeptidShakerEntryPoint extends UI {
             try {
                 super.init(servletConfig);
             } catch (ServletException e) {
-                System.out.println("at error " + PeptidShakerEntryPoint.class.getName() + " line: 153 " + e);
+                System.out.println("at error " + PeptideShakerEntryPoint.class.getName() + " line: 153 " + e);
             }
             /**
              * VaadinSessionListener
@@ -157,8 +157,9 @@ public class PeptidShakerEntryPoint extends UI {
             try {
                 super.servletInitialized();
             } catch (ServletException e) {
-                System.out.println("at error " + PeptidShakerEntryPoint.class.getName() + " line: 171 " + e);
+                System.out.println("at error " + PeptideShakerEntryPoint.class.getName() + " line: 171 " + e);
             }
+//            });
 //            });
         }
     }

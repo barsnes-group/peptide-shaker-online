@@ -14,7 +14,6 @@ import com.vaadin.ui.*;
  */
 public class UIContainer extends AbsoluteLayout {
 
-
     /**
      * Initialise welcome page .
      */
@@ -51,35 +50,48 @@ public class UIContainer extends AbsoluteLayout {
         welcomePageView = new WelcomePageView();
         UIContainer.this.addComponent(welcomePageView, "left:0px");
 
-        
         workflowInvokingView = new WorkflowInvokingView();
         UIContainer.this.addComponent(workflowInvokingView, "left:0px");
-        
+
         fileSystemView = new FileSystemView();
         UIContainer.this.addComponent(fileSystemView, "left:0px");
 //
         resultsView = new ResultsView(false);
         UIContainer.this.addComponent(resultsView, "left:0px");
 
-
     }
 
-
+    /**
+     * Get dataset visualization view
+     *
+     * @return layout
+     */
     public ResultsView getResultsView() {
         return resultsView;
     }
 
+    /**
+     *Get search input view
+     * @return layout
+     */
     public WorkflowInvokingView getWorkflowInvokingView() {
         return workflowInvokingView;
     }
 
+    /**
+     *Get files view (the available files and datasets)
+     * @return layout
+     */
     public FileSystemView getFileSystemView() {
         return fileSystemView;
     }
 
+    /**
+     *Get home page view
+     * @return layout
+     */
     public WelcomePageView getWelcomePageView() {
         return welcomePageView;
     }
-
 
 }

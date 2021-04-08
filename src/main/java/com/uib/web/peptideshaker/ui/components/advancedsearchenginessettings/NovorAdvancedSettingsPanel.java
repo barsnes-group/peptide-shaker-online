@@ -17,16 +17,17 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * @author y-mok
+ * @author Yehia Mokhtar Farag
  */
 public class NovorAdvancedSettingsPanel extends PopupWindow {
 
     private final HorizontalLabelDropDownList fragmentaionMethod;
     private final HorizontalLabelDropDownList massAnalyzer;
-
-
     private IdentificationParameters webSearchParameters;
 
+    /**
+     *
+     */
     public NovorAdvancedSettingsPanel() {
         super(VaadinIcons.COG.getHtml() + " Novor Advanced Settings");
         AbsoluteLayout container = new AbsoluteLayout();
@@ -91,6 +92,10 @@ public class NovorAdvancedSettingsPanel extends PopupWindow {
 
     }
 
+    /**
+     *
+     * @param webSearchParameters
+     */
     public void updateGUI(IdentificationParameters webSearchParameters) {
         this.webSearchParameters = webSearchParameters;
         NovorParameters noverParameters = (NovorParameters) webSearchParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.novor.getIndex());
@@ -102,10 +107,17 @@ public class NovorAdvancedSettingsPanel extends PopupWindow {
 
     }
 
+    /**
+     *
+     */
     @Override
     public void onClosePopup() {
     }
 
+    /**
+     *
+     * @param visible
+     */
     @Override
     public void setPopupVisible(boolean visible) {
         if (visible && webSearchParameters != null) {
@@ -113,7 +125,7 @@ public class NovorAdvancedSettingsPanel extends PopupWindow {
         } else if (webSearchParameters != null) {
             updateParameters();
         }
-        super.setPopupVisible(visible); //To change body of generated methods, choose Tools | Templates.
+        super.setPopupVisible(visible); 
     }
 
     private void updateParameters() {

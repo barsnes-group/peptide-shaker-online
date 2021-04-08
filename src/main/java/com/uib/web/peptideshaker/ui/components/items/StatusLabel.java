@@ -8,7 +8,7 @@ import com.vaadin.ui.Image;
 /**
  * This class represent status label
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class StatusLabel extends Image {
 

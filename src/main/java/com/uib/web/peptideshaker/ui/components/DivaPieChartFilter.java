@@ -6,7 +6,7 @@ import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.FilterUpdatingEvent;
 import com.uib.web.peptideshaker.model.Selection;
 import com.uib.web.peptideshaker.ui.components.items.FilterButton;
-import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
+import com.uib.web.peptideshaker.ui.interfaces.RegistrableFilter;
 import com.uib.web.peptideshaker.ui.components.items.LegendItem;
 import com.uib.web.peptideshaker.uimanager.SelectionManager;
 import com.vaadin.event.LayoutEvents;
@@ -35,7 +35,7 @@ import java.util.*;
 /**
  * This class represents matrix layout filter
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class DivaPieChartFilter extends AbsoluteLayout implements RegistrableFilter {
 
@@ -75,6 +75,12 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
     private List<Color> standardColorList;
     private final List<Color> activeColorsList;
 
+    /**
+     *
+     * @param title
+     * @param filterId
+     * @param SelectionManager
+     */
     public DivaPieChartFilter(String title, String filterId, SelectionManager SelectionManager) {
         this.mainWidth = -1;
         this.mainHeight = -1;
@@ -184,6 +190,11 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
                 + " if(elem){ getElSizeof" + filterId + "(elem.clientWidth, elem.clientHeight); }");
     }
 
+    /**
+     *
+     * @param tChartWidth
+     * @param tChartHeight
+     */
     public void sizeChanged(int tChartWidth, int tChartHeight) {
         try {
 
@@ -379,13 +390,26 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
         if (super.isConnectorEnabled()) {
             updateComponentSize();
         }
-        return super.getState(); //To change body of generated methods, choose Tools | Templates.
+        return super.getState(); 
     }
 
+    /**
+     *
+     * @param w
+     * @param h
+     */
     public abstract void filterSizeChanged(int w, int h);
 
+    /**
+     *
+     * @param legWidth
+     */
     public abstract void updateLegendWidth(int legWidth);
 
+    /**
+     *
+     * @param width
+     */
     public void setLegendWidth(int width) {
         rightLayout.setWidth(width, Unit.PIXELS);
     }
@@ -395,7 +419,6 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
         selectionCategories.add(category);
         Selection selection = new Selection(CONSTANT.DATASET_SELECTION, filterId, selectionCategories, true);
         SelectionManager.setSelection(selection);
-//        SelectionManager.setSelection("dataset_filter_selection", new LinkedHashSet<>(appliedFilter), null, filterId);
     }
 
     private void unSelectCategory(String category) {
@@ -403,7 +426,6 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
         selectionCategories.add(category);
         Selection selection = new Selection(CONSTANT.DATASET_SELECTION, filterId, selectionCategories, false);
         SelectionManager.setSelection(selection);
-//        SelectionManager.setSelection("dataset_filter_selection", new LinkedHashSet<>(appliedFilter), null, filterId);
     }
 
     private void reset() {
@@ -411,6 +433,10 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
         SelectionManager.setSelection(selection);
     }
 
+    /**
+     *
+     * @param updateEvent
+     */
     @Override
     public void updateSelection(FilterUpdatingEvent updateEvent) {
         appliedFilter.clear();
@@ -426,19 +452,21 @@ public abstract class DivaPieChartFilter extends AbsoluteLayout implements Regis
             }
             index++;
         }
-        if (updateEvent.getSeletionCategories() != null && updateEvent.getSeletionCategories().containsAll(selectionMap.keySet())) {
+        if (updateEvent.getSelectionCategories() != null && updateEvent.getSelectionCategories().containsAll(selectionMap.keySet())) {
             reset();
             return;
         }
         updateChartDataset(selectionMap);
-        selectSlice(updateEvent.getSeletionCategories(), selectionMap.keySet());
+        selectSlice(updateEvent.getSelectionCategories(), selectionMap.keySet());
         sizeChanged(mainWidth, mainHeight);
-        setMainAppliedFilter(updateEvent.getSeletionCategories() != null && !updateEvent.getSeletionCategories().isEmpty());
+        setMainAppliedFilter(updateEvent.getSelectionCategories() != null && !updateEvent.getSelectionCategories().isEmpty());
     }
 
+    /**
+     *
+     * @param standardColours
+     */
     public void setColours(Color[] standardColours) {
         this.standardColorList = new ArrayList<>(Arrays.asList(standardColours));
     }
-
-//
 }

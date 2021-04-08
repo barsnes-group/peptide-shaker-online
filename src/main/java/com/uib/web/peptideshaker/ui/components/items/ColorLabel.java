@@ -8,7 +8,7 @@ import java.awt.*;
 /**
  * This class represents color label
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class ColorLabel extends Label {
 

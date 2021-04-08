@@ -2,7 +2,7 @@ package com.uib.web.peptideshaker.ui.views;
 
 import com.uib.web.peptideshaker.AppManagmentBean;
 import com.uib.web.peptideshaker.model.CONSTANT;
-import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
+import com.uib.web.peptideshaker.ui.interfaces.ViewableFrame;
 import com.uib.web.peptideshaker.ui.components.items.ButtonWithLabel;
 import com.uib.web.peptideshaker.ui.views.modal.GalaxyLoginPopup;
 import com.vaadin.event.LayoutEvents;

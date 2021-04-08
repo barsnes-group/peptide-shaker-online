@@ -8,7 +8,7 @@ import com.vaadin.ui.Link;
 /**
  * This class represents link to CSF-PR
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class CSFPRLabel extends Link implements Comparable<CSFPRLabel> {
 

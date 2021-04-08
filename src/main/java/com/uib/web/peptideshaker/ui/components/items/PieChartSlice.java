@@ -9,7 +9,7 @@ import java.util.Set;
  * This class contains information required for pie-chart slice(working with pie
  * chart interactive pie-chart filter)
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class PieChartSlice implements Serializable {
 

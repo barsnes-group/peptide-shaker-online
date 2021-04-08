@@ -39,7 +39,7 @@ import java.util.Set;
  * class allows users to get an over view of their files on galaxy and allow
  * users to delete the files and datasets.
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class FilesTablePanel extends Panel {
 
@@ -136,6 +136,9 @@ public class FilesTablePanel extends Panel {
 
     }
 
+    /**
+     *
+     */
     public void updateDatasetsTable() {
         if (appManagmentBean == null) {
             this.appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
@@ -392,6 +395,9 @@ public class FilesTablePanel extends Panel {
         return row;
     }
 
+    /**
+     *
+     */
     public void updateViewDataset() {
         if (appManagmentBean == null) {
             this.appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);

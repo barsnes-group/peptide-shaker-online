@@ -1,6 +1,6 @@
 package com.uib.web.peptideshaker.uimanager;
 
-import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
+import com.uib.web.peptideshaker.ui.interfaces.ViewableFrame;
 import com.uib.web.peptideshaker.ui.views.FileSystemView;
 import com.uib.web.peptideshaker.ui.views.ResultsView;
 import com.uib.web.peptideshaker.ui.views.WelcomePageView;
@@ -22,7 +22,7 @@ import java.util.Set;
  * This class represents the main layout of the application and main view
  * controller manager
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class UIManager implements Serializable {
 

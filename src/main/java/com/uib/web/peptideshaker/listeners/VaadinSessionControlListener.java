@@ -14,7 +14,7 @@ import java.nio.file.Files;
 
 /**
  *
- * @author y-mok
+ * @author Yehia Mokhtar Farag
  */
 public class VaadinSessionControlListener {
 

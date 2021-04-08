@@ -6,7 +6,7 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * This class represents close button layout.
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class CloseButton extends VerticalLayout implements LayoutEvents.LayoutClickListener {
 

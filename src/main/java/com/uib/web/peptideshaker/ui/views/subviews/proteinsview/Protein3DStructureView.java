@@ -25,7 +25,7 @@ import java.util.*;
 /**
  * This class represents 3D protein structure panel using JSMOL web service
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class Protein3DStructureView extends AbsoluteLayout {
 

@@ -21,7 +21,7 @@ import com.vaadin.ui.VerticalLayout;
  * This class represents advanced search settings layout that allow users to
  * modify the search input parameters
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class AdvancedSearchEnginesSettings extends VerticalLayout {
 
@@ -38,12 +38,12 @@ public class AdvancedSearchEnginesSettings extends VerticalLayout {
     private MsGFAdvancedSettingsPanel msGFAdvancedSettingsPanel;
     private CometAdvancedSettingsPanel cometAdvancedSettingsPanel;
 
+    /**
+     *
+     */
     public AdvancedSearchEnginesSettings() {
         AdvancedSearchEnginesSettings.this.setSizeFull();
         AdvancedSearchEnginesSettings.this.setStyleName("advancedsearchenglayout");
-//        Label title = new Label("( Advanced Settings )");
-//        AdvancedSearchEnginesSettings.this.addComponent(title);
-//        AdvancedSearchEnginesSettings.this.addLayoutClickListener(AdvancedSearchEnginesSettings.this);
         popupAdvancedSettingLayout = new PopupWindow(" Search Engines Settings )") {
             @Override
             public void onClosePopup() {

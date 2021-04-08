@@ -10,7 +10,7 @@ import com.vaadin.ui.Label;
 /**
  * This class represent the top right small button
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class SubViewSideButton extends HorizontalLayout {
 

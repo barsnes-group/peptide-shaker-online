@@ -10,7 +10,7 @@ import com.vaadin.ui.themes.ValoTheme;
 /**
  * Utility to allow user to save links (dataset to share by clicking on links
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class ClipboardComponent extends AbsoluteLayout {
 

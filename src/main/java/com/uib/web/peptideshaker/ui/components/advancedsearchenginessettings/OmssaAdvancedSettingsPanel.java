@@ -19,7 +19,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * @author y-mok
+ * @author Yehia Mokhtar Farag
  */
 public class OmssaAdvancedSettingsPanel extends PopupWindow {
 
@@ -67,6 +67,9 @@ public class OmssaAdvancedSettingsPanel extends PopupWindow {
 
     private IdentificationParameters webSearchParameters;
 
+    /**
+     *
+     */
     public OmssaAdvancedSettingsPanel() {
         super(VaadinIcons.COG.getHtml() + " OMSSA Advanced Settings");
 
@@ -370,6 +373,10 @@ public class OmssaAdvancedSettingsPanel extends PopupWindow {
         container.addComponent(okBtn, "bottom:10px;right:96px");
     }
 
+    /**
+     *
+     * @param webSearchParameters
+     */
     public void updateGUI(IdentificationParameters webSearchParameters) {
         this.webSearchParameters = webSearchParameters;
 
@@ -470,16 +477,23 @@ public class OmssaAdvancedSettingsPanel extends PopupWindow {
 
     }
 
+    /**
+     *
+     */
     @Override
     public void onClosePopup() {
     }
 
+    /**
+     *
+     * @param visible
+     */
     @Override
     public void setPopupVisible(boolean visible) {
         if (visible && webSearchParameters != null) {
             updateGUI(webSearchParameters);
         }
-        super.setPopupVisible(visible); //To change body of generated methods, choose Tools | Templates.
+        super.setPopupVisible(visible); 
     }
 
     private void updateParameters() {

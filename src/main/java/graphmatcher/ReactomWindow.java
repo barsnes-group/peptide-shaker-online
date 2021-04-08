@@ -14,7 +14,7 @@ import com.vaadin.ui.Window;
 /**
  * This class represents popup window that show Reactom data
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class ReactomWindow extends Window {
 

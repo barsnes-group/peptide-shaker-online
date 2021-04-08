@@ -4,7 +4,7 @@ import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.FilterUpdatingEvent;
 import com.uib.web.peptideshaker.model.Selection;
 import com.uib.web.peptideshaker.model.VisualizationDatasetModel;
-import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
+import com.uib.web.peptideshaker.ui.interfaces.RegistrableFilter;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
 
@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * This class represents peptideShaker presenter selection manager
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class SelectionManager implements Serializable {
 
@@ -306,7 +306,7 @@ public class SelectionManager implements Serializable {
             updateFilterEvents(fullIndexes, lastSelection.getFilterId());
             FilterUpdatingEvent event = filterEventsMap.get(lastSelection.getFilterId());
             filterFilterUpdatedEvent(event, lastFilterIndexes);
-            event.setSeletionCategories(lastSelection.getSelectionCategories());
+            event.setSelectionCategories(lastSelection.getSelectionCategories());
 
         }
         updateFilters();

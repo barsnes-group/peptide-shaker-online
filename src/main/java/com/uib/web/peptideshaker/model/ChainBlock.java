@@ -4,7 +4,7 @@ package com.uib.web.peptideshaker.model;
  * This class contain the main information for the chain block required by PDB
  * 3D protein structure visualisation.
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class ChainBlock {
 
@@ -67,12 +67,16 @@ public class ChainBlock {
 
     }
 
+    /**get chain sequence as string
+     *
+     * @return chain sequence
+     */
     public String getChain_sequence() {
         return chain_sequence;
     }
 
     /**
-     * Get the chain sequence.
+     * Get the chain sequence from UniProt.
      *
      * @return chain sequence.
      */
@@ -134,18 +138,34 @@ public class ChainBlock {
         return chain_id;
     }
 
+    /**
+     *
+     * @return entity id
+     */
     public int getEntityId() {
         return entityId;
     }
 
+    /**
+     *
+     * @param entityId
+     */
     public void setEntityId(int entityId) {
         this.entityId = entityId;
     }
 
+    /**
+     *
+     * @return the different in length between uniprot sequence and pdb sequence length
+     */
     public int getDifferent() {
         return different;
     }
 
+    /**
+     *the different in length between uniprot sequence and pdb sequence length
+     * @param different
+     */
     public void setDifferent(int different) {
         this.different = different;
     }

@@ -9,7 +9,7 @@ import com.vaadin.ui.themes.ValoTheme;
  * This class represent form component (drop down list with caption on the left
  * side)
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class Horizontal2Label extends HorizontalLayout {
 

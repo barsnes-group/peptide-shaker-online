@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * This class represents proteins coverage container component
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class ProteinCoverageView extends VerticalLayout {
 

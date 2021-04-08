@@ -12,7 +12,7 @@ import com.vaadin.ui.themes.ValoTheme;
 /**
  * This class represents Label with link that support action
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class ActionLabel extends HorizontalLayout implements LayoutEvents.LayoutClickListener {
 

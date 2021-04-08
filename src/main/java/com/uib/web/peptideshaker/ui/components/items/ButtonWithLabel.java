@@ -12,7 +12,7 @@ import com.vaadin.ui.themes.ValoTheme;
 /**
  * This class represent the top right small button
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class ButtonWithLabel extends HorizontalLayout {
 

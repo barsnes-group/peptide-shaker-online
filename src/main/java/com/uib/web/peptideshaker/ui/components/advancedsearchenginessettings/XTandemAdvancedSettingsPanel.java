@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.*;
 
 /**
- * @author y-mok
+ * @author Yehia Mokhtar Farag
  */
 public class XTandemAdvancedSettingsPanel extends PopupWindow {
 
@@ -80,6 +80,9 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
      */
     private ModificationFactory modificationFactory = ModificationFactory.getInstance();
 
+    /**
+     *
+     */
     public XTandemAdvancedSettingsPanel() {
         super(VaadinIcons.COG.getHtml() + " X! Tandem Advanced Settings");
 
@@ -327,9 +330,12 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
         container.addComponent(okBtn, "bottom:10px;right:96px");
     }
 
+    /**
+     *
+     * @param webSearchParameters
+     */
     public void updateGUI(IdentificationParameters webSearchParameters) {
         this.webSearchParameters = webSearchParameters;
-//        this.refModificationSelection.clear();
         XtandemParameters oldXtandemParameters = (XtandemParameters) this.webSearchParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.xtandem.getIndex());
         spectrumDynamicRange.setSelectedValue(oldXtandemParameters.getDynamicRange());
         numberOfPeaks.setSelectedValue(oldXtandemParameters.getnPeaks());
@@ -435,16 +441,23 @@ public class XTandemAdvancedSettingsPanel extends PopupWindow {
 
     }
 
+    /**
+     *
+     */
     @Override
     public void onClosePopup() {
     }
 
+    /**
+     *
+     * @param visible
+     */
     @Override
     public void setPopupVisible(boolean visible) {
         if (visible && webSearchParameters != null) {
             updateGUI(webSearchParameters);
         }
-        super.setPopupVisible(visible); //To change body of generated methods, choose Tools | Templates.
+        super.setPopupVisible(visible); 
     }
 
     private void updateParameters() {

@@ -14,7 +14,7 @@ import java.util.Set;
 /**
  * This class represents coloured modification on the Protein-Proteoforms layout
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class ProteoformModificationLayout extends VerticalLayout implements LayoutEvents.LayoutClickListener {
 

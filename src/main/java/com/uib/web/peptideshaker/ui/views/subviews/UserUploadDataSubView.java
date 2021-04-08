@@ -2,7 +2,7 @@
 package com.uib.web.peptideshaker.ui.views.subviews;
 
 import com.uib.web.peptideshaker.ui.components.UserUploadFilesComponent;
-import com.uib.web.peptideshaker.ui.abstracts.ViewableFrame;
+import com.uib.web.peptideshaker.ui.interfaces.ViewableFrame;
 import com.vaadin.ui.AbsoluteLayout;
 
 /**

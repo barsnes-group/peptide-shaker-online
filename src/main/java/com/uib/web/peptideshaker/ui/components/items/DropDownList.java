@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * This class represents drop-down list component
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class DropDownList extends AbsoluteLayout {
 

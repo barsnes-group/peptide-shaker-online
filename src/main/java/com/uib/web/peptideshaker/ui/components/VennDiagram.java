@@ -49,6 +49,10 @@ public abstract class VennDiagram extends AbsoluteLayout {
     private int mainHeight;
     private final SelectionManager selectionManager;
 
+    /**
+     *
+     * @param selectionManager
+     */
     public VennDiagram(SelectionManager selectionManager) {
         this.selectionManager = selectionManager;
         VennDiagram.this.setSizeFull();
@@ -83,7 +87,6 @@ public abstract class VennDiagram extends AbsoluteLayout {
                         }
                     }
                     updateLegendSelectionStyle();
-//                    applyFilter(selectedIndexes);
                 }
 
             }
@@ -108,17 +111,10 @@ public abstract class VennDiagram extends AbsoluteLayout {
                 return;
             }
             if (selectedColumns.contains(index)) {
-//                selectedColumns.remove(index);
                 System.out.println("at remove category "+((Label)legendContainer.getComponent(index)).getData());
             } else {
                  System.out.println("at select category "+((Label)legendContainer.getComponent(index)).getData());
-//                selectedColumns.add(index);
             }
-//            updateLegendSelectionStyle();
-//            //updatevenn diagram
-//            updateVennDiagramSelectionStyle();
-
-//            applyFilter(selectedIndexes);
         });
 
         SizeReporter reporter = new SizeReporter(vennDiagramComponent);
@@ -144,6 +140,9 @@ public abstract class VennDiagram extends AbsoluteLayout {
 
     }
 
+    /**
+     *
+     */
     public void resetFilter() {
         selectedColumns.clear();
         updateLegendSelectionStyle();
@@ -169,9 +168,9 @@ public abstract class VennDiagram extends AbsoluteLayout {
             if (!key.toString().contains(",")) {
                 String rowKey = key.toString().replace("[", "").replace("]", "");
                 if (!nameToCharMap.containsKey(rowKey)) {
-                    nameToCharMap.put(rowKey.toString(), alphabet.charAt(index++) + "");
+                    nameToCharMap.put(rowKey, alphabet.charAt(index++) + "");
                 }
-                int logSize = rows.get(rowKey);//((int) (Math.log(rows.get(key)) * 10)) + 1;
+                int logSize = rows.get(rowKey);
                 dataset.put(initDatasetObject(new String[]{nameToCharMap.get(rowKey)}, logSize));
                 indexMap.put((dsIndex++) + "", rowKey);
                 Color c = dataColors.get(rowKey);
@@ -202,7 +201,6 @@ public abstract class VennDiagram extends AbsoluteLayout {
                 }
                 intersectionCategories.put(key.toString(), logSize);
                 tempDataset.put(key.toString(), initDatasetObject(updatedIntersection, logSize));
-//                dataset.put(initDatasetObject(updatedIntersection, logSize));
                 indexMap.put((dsIndex++) + "", key.toString());
                 Color c = mixColors(colorsToMix).darker();
                 String colorStr = "rgba(" + c.getRed() + "," + c.getGreen() + "," + c.getBlue() + ",1.0)";
@@ -307,7 +305,7 @@ public abstract class VennDiagram extends AbsoluteLayout {
 
             return dataObject;
         } catch (JSONException ex) {
-            ex.printStackTrace();
+            System.out.println("at Error class: "+this.getClass().getName()+"  line: 308 "+ex);
         }
         return null;
 
@@ -333,7 +331,7 @@ public abstract class VennDiagram extends AbsoluteLayout {
     }
 
     private Component initLegendItem(Map<String, String> charToColorMap, int size, Comparable columnId) {
-        String labelContent = "";// VaadinIcons.CIRCLE.getHtml();
+        String labelContent = "";
         labelContent = charToColorMap.keySet().stream().map((charKey) -> "<div style='background:" + charToColorMap.get(charKey) + ";    margin-right: 0px !important;'>" + charKey + "</div>").reduce(labelContent, String::concat);
         labelContent += "<font>(" + size + ")</font>";
         Label legendItem = new Label(labelContent);
@@ -367,8 +365,19 @@ public abstract class VennDiagram extends AbsoluteLayout {
 
     }
 
+    /**
+     *
+     * @param done
+     */
     public abstract void compleateLoading(boolean done);
 
+    /**
+     *
+     * @param columns
+     * @param rows
+     * @param dataColors
+     * @param selectedCategories
+     */
     public void updateFilter(Map<Comparable, Set<Integer>> columns, Map<Comparable, Integer> rows, Map<Comparable, Color> dataColors, Set<Comparable> selectedCategories) {
         nameToCharMap.clear();
         this.dataColors = dataColors;

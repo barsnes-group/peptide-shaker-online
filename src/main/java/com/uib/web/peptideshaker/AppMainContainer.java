@@ -23,10 +23,6 @@ public class AppMainContainer {
      */
     public AppMainContainer() {
         appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
-        /**
-         * Check galaxy available online using public user API key or run system
-         * in offline galaxy mode.
-         */
         appManagmentBean.getNotificationFacade().showGalaxyConnectingProcess(CONSTANT.PUBLIC_USER_CAPTION);
         String userId = appManagmentBean.getGalaxyFacad().authenticate(appManagmentBean.getAppConfig().getTestUserAPIKey());
         appManagmentBean.getUserHandler().setUserLoggedIn(appManagmentBean.getAppConfig().getTestUserAPIKey(), userId);
@@ -50,15 +46,6 @@ public class AppMainContainer {
         appManagmentBean.getUI_Manager().updateAll();
 
     }
-
-//    /**
-//     * Get the main User Interface layer
-//     *
-//     * @return main user interface container
-//     */
-//    public UIContainer getApplicationUserInterface() {
-//        return uiHandler.getUiContainer();
-//    }
 
     
 

@@ -17,7 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * @author y-mok
+ * @author Yehia Mokhtar Farag
  */
 public class DirecTagAdvancedSettingsPanel extends PopupWindow {
 
@@ -45,6 +45,9 @@ public class DirecTagAdvancedSettingsPanel extends PopupWindow {
     private final HorizontalLabelDropDownList useSpectrumChargeState;
     private IdentificationParameters webSearchParameters;
 
+    /**
+     *
+     */
     public DirecTagAdvancedSettingsPanel() {
         super(VaadinIcons.COG.getHtml() + " DirecTag Advanced Settings");
         AbsoluteLayout container = new AbsoluteLayout();
@@ -167,6 +170,10 @@ public class DirecTagAdvancedSettingsPanel extends PopupWindow {
 
     }
 
+    /**
+     *
+     * @param webSearchParameters
+     */
     public void updateGUI(IdentificationParameters webSearchParameters) {
         this.webSearchParameters = webSearchParameters;
         DirecTagParameters direcTagParameters = (DirecTagParameters) webSearchParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.direcTag.getIndex());
@@ -206,19 +213,23 @@ public class DirecTagAdvancedSettingsPanel extends PopupWindow {
 
     }
 
+    /**
+     *
+     */
     @Override
     public void onClosePopup() {
     }
 
+    /**
+     *
+     * @param visible
+     */
     @Override
     public void setPopupVisible(boolean visible) {
         if (visible && webSearchParameters != null) {
             updateGUI(webSearchParameters);
         }
-//else if (webSearchParameters != null) {
-//            updateParameters();
-//        }
-        super.setPopupVisible(visible); //To change body of generated methods, choose Tools | Templates.
+        super.setPopupVisible(visible); 
     }
 
     private void updateParameters() {

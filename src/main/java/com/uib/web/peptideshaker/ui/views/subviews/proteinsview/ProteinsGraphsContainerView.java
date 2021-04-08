@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * this class represents interactive graph layout
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class ProteinsGraphsContainerView extends VerticalLayout {
 

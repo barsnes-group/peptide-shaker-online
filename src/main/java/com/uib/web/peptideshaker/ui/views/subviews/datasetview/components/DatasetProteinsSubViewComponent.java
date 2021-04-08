@@ -17,7 +17,7 @@ import com.uib.web.peptideshaker.ui.components.SearchableTable;
 import com.uib.web.peptideshaker.ui.components.items.SparkLineLabel;
 import com.uib.web.peptideshaker.ui.components.items.TableColumnHeader;
 import com.uib.web.peptideshaker.ui.components.items.ValidationLabel;
-import com.uib.web.peptideshaker.ui.abstracts.RegistrableFilter;
+import com.uib.web.peptideshaker.ui.interfaces.RegistrableFilter;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.event.LayoutEvents;
@@ -34,7 +34,7 @@ import java.util.*;
 /**
  * This class represents filtered Table with graph view
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class DatasetProteinsSubViewComponent extends AbsoluteLayout implements RegistrableFilter {
 

@@ -13,7 +13,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import java.util.*;
 
 /**
- * @author y-mok
+ * @author Yehia Mokhtar Farag
  */
 public class PSMScoringPanel extends PopupWindow {
 

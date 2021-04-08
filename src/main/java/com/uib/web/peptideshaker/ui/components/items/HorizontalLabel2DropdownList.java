@@ -12,7 +12,7 @@ import java.util.Set;
  * This class represent form component (drop down list with caption on the left
  * side)
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class HorizontalLabel2DropdownList extends HorizontalLayout {
 

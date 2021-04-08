@@ -8,7 +8,7 @@ import com.vaadin.ui.*;
 /**
  * This Class represents pop-up window that support modal mode
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class PopupWindow extends VerticalLayout implements LayoutEvents.LayoutClickListener {
 

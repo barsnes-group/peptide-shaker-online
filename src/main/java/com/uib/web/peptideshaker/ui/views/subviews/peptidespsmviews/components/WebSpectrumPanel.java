@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.uib.web.peptideshaker.ui.views.subviews.peptidespsmviews.components;
 
 import com.compomics.util.gui.interfaces.SpectrumAnnotation;
@@ -15,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 /**
- * @author y-mok
+ * @author Yehia Mokhtar Farag
  */
 public class WebSpectrumPanel extends SpectrumPanel {
 

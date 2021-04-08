@@ -10,7 +10,7 @@ import java.nio.file.Path;
 /**
  * Context listener to perform cleaning on restarting the system
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class VaadinContextListener implements ServletContextListener {
 
@@ -30,7 +30,7 @@ public class VaadinContextListener implements ServletContextListener {
             if (temp_folder.exists()) {
                 for (File tFile : temp_folder.listFiles()) {
                     try {
-                        deletFile(tFile);
+                        deleteFile(tFile);
                     } catch (IOException ex) {
                         System.out.println("at error " + VaadinContextListener.class.getName() + "  line 35 " + ex);
                     }
@@ -44,7 +44,7 @@ public class VaadinContextListener implements ServletContextListener {
 
     }
 
-    private void deletFile(File file) throws IOException {
+    private void deleteFile(File file) throws IOException {
         if (file.isDirectory()) {
             deleteDirectory(file);
         } else {

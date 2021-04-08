@@ -14,7 +14,7 @@ import java.awt.*;
  * This class represents selectable node that used mainly in
  * MatrixLayoutChartFilter
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class SelectableNode extends AbsoluteLayout implements LayoutEvents.LayoutClickListener {
 

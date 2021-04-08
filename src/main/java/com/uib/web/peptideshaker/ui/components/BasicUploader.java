@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * This class represents Uploading class with progress bar
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class BasicUploader extends AbsoluteLayout {
 
@@ -25,6 +25,7 @@ public abstract class BasicUploader extends AbsoluteLayout {
 
     /**
      * Initialise the upload unit
+     * @param tempUploaderFolderPath
      */
     public BasicUploader(String tempUploaderFolderPath) {
         BasicUploader.this.setHeight(23, Unit.PIXELS);
@@ -66,7 +67,7 @@ public abstract class BasicUploader extends AbsoluteLayout {
         uploaderComponent.setPreventDuplicates(true);
 
         /**
-         * autostart the uploader after add files*
+         * auto start the upload after add files*
          */
         uploaderComponent.addFilesAddedListener((PluploadFile[] files) -> {
             uploaderComponent.start();
@@ -135,6 +136,7 @@ public abstract class BasicUploader extends AbsoluteLayout {
     /**
      * Error happened during upload
      *
+     * @param message
      * @param error error message
      */
     public abstract void notification(String message, boolean error);

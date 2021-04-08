@@ -42,12 +42,12 @@ public class AdvancedSearchSettings extends VerticalLayout {
     private PSMScoringPanel psmScoring;
     private QualityControlPanel qualityControl;
 
+    /**
+     *
+     */
     public AdvancedSearchSettings() {
         AdvancedSearchSettings.this.setSizeFull();
         AdvancedSearchSettings.this.setStyleName("advancedsearchlayout");
-//        Label title = new Label("( Advanced Settings )");
-//        AdvancedSearchSettings.this.addComponent(title);
-//        AdvancedSearchSettings.this.addLayoutClickListener(AdvancedSearchSettings.this);
         popupAdvancedSettingLayout = new PopupWindow("( Advanced Settings |") {
             @Override
             public void onClosePopup() {

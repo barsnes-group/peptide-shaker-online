@@ -21,7 +21,7 @@ import java.util.*;
  * This class represents main container for pie-chart filters the class
  * responsible for maintaining pie-charts interactivity
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class DatasetFiltersComponent extends HorizontalLayout {
 

@@ -10,7 +10,7 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * Valid or not valid label
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class ValidationLabel extends VerticalLayout implements Comparable<ValidationLabel> {
 

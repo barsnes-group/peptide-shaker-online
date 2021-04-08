@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * PDB match object to store PDB match information
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class PDBMatch {
 
@@ -34,16 +34,13 @@ public class PDBMatch {
      * PDB name (description).
      */
     private String description;
-    /**
-     * PDB match sequence.
-     */
-    private String sequence;
+
     /**
      * Entity ID 'default value is 1'
      */
     private int entity_id = -1;
-//    private final Set<String> chainsIds;
     private Map<Object, EntityData> entities;
+
     /**
      * Constructor to initialise main variables and data structure
      *
@@ -53,29 +50,23 @@ public class PDBMatch {
         this.pdbId = pdbId;
         this.chains = new LinkedHashMap<>();
         this.fullChainBlocks = new ArrayList<>();
-//        this.chainsIds = new LinkedHashSet<>();
     }
 
-    public void setSequence(String sequence) {
-        this.sequence = sequence;
-    }
-
+    /**
+     *
+     * @return
+     */
     public Map<Object, EntityData> getEntities() {
         return entities;
     }
 
+    /**
+     *
+     * @param entities
+     */
     public void setEntities(Map<Object, EntityData> entities) {
         this.entities = entities;
     }
-
-    /**
-     * Get list of chain block IDs.
-     *
-     * @return List IDs.
-     */
-//    public Set<String> getChainsIds() {
-//        return chainsIds;
-//    }
 
     /**
      * Get list of included chain blocks.
@@ -86,6 +77,11 @@ public class PDBMatch {
         return fullChainBlocks;
     }
 
+    /**
+     *
+     * @param chainId
+     * @return
+     */
     public List<ChainBlock> getChainBlocks(String chainId) {
         return chains.get(chainId);
     }
@@ -116,16 +112,6 @@ public class PDBMatch {
             entity_id = -2;
         }
     }
-
-//    /**
-//     * Add included chain block ID
-//     *
-//     * @param chainId chain block ID
-//     */
-//    public void addChainId(String chainId) {
-//
-//        this.chainsIds.add(chainId);
-//    }
 
     /**
      * Get main PDB match sequence
@@ -159,15 +145,6 @@ public class PDBMatch {
     public String getPdbId() {
         return pdbId;
     }
-//
-//    /**
-//     * Set main PDB match sequence
-//     *
-//     * @param sequence PDB match sequence
-//     */
-//    public void setSequence(String sequence) {
-//        this.sequence = sequence;
-//    }
 
     /**
      * Get PDB match description

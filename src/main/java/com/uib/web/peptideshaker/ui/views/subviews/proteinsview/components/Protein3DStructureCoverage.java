@@ -9,7 +9,7 @@ import com.vaadin.ui.VerticalLayout;
  * This class represents protein 3d structure coverage that placed over protein
  * coverage to show which part of the protein is covered by the 3d structure
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class Protein3DStructureCoverage extends AbsoluteLayout {
 

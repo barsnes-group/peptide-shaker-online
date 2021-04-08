@@ -1,14 +1,10 @@
-package com.uib.web.peptideshaker.ui.abstracts;
-
-import com.uib.web.peptideshaker.ui.components.items.ButtonWithLabel;
-import com.uib.web.peptideshaker.ui.components.items.SmallSideBtn;
-import com.vaadin.ui.VerticalLayout;
+package com.uib.web.peptideshaker.ui.interfaces;
 
 /**
  * This interface represents the minimum requirement for presenter components to
  * be used as a view in web PeptideShaker application
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public interface ViewableFrame {    
 

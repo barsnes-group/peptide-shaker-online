@@ -300,7 +300,7 @@ public class AppManagmentBean implements Serializable {
     /**
      * Get all invoked ScheduledFuture objects
      *
-     * @return
+     * @return scheduled Future Set collection
      */
     public Set<ScheduledFuture> getScheduledFutureSet() {
         return scheduledFutureSet;

@@ -19,10 +19,18 @@ public class ProteinGroupObject extends Protein {
     private final Set<NetworkGraphEdge> localEdges;
     private Set<NetworkGraphEdge> fullEdgesSet;
 
+    /**
+     *
+     * @return
+     */
     public Set<NetworkGraphEdge> getFullEdgesSet() {
         return fullEdgesSet;
     }
 
+    /**
+     *
+     * @param fullEdgesSet
+     */
     public void setFullEdgesSet(Set<NetworkGraphEdge> fullEdgesSet) {
         this.fullEdgesSet = fullEdgesSet;
     }
@@ -193,10 +201,18 @@ public class ProteinGroupObject extends Protein {
     private NetworkGraphNode parentNode;
     private String peptideEvidencesLink;
 
+    /**
+     *
+     * @return
+     */
     public String getPeptideEvidencesLink() {
         return peptideEvidencesLink;
     }
 
+    /**
+     *
+     * @param peptideEvidencesLink
+     */
     public void setPeptideEvidencesLink(String peptideEvidencesLink) {
         this.peptideEvidencesLink = peptideEvidencesLink;
     }
@@ -214,10 +230,18 @@ public class ProteinGroupObject extends Protein {
         this.localEdges = new HashSet<>();
     }
 
+    /**
+     *
+     * @param peptideIndex
+     */
     public void addPeptide(int peptideIndex) {
         peptidesSet.add(peptideIndex);
     }
 
+    /**
+     *
+     * @return
+     */
     public Set<Integer> getPeptidesSet() {
         return peptidesSet;
     }
@@ -372,16 +396,7 @@ public class ProteinGroupObject extends Protein {
     public void addPeptideType(String peptideKey, boolean enzymatic) {
         relatedPeptidesList.put(peptideKey, enzymatic);
     }
-
-//    /**
-//     * Update peptide type
-//     *
-//     * @param peptideKey peptides keys (modified sequence)
-//     * @param enzymatic enzymatic peptide
-//     */
-//    public void updatePeptideType(String peptideKey, boolean enzymatic) {
-//        relatedPeptidesList.put(peptideKey, enzymatic);
-//    }
+    
     /**
      * Check if the peptide is enzymatic
      *

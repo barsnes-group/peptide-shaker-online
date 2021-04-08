@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.uib.web.peptideshaker.ui.components;
 
 import com.uib.web.peptideshaker.model.GalaxyFileModel;
@@ -12,17 +8,11 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
-import java.text.DecimalFormat;
 
 /**
- * @author y-mok
+ * @author Yehia Mokhtar Farag
  */
 public abstract class FileOverviewLayout extends VerticalLayout {
-
-    /**
-     * Decimal Format for memory usage
-     */
-    private final DecimalFormat dsFormater = new DecimalFormat("#.##");
 
     /**
      * Constructor to initialise the main setting parameters
@@ -127,6 +117,9 @@ public abstract class FileOverviewLayout extends VerticalLayout {
 
     }
 
+    /**
+     *
+     */
     public abstract void close();
 
 }

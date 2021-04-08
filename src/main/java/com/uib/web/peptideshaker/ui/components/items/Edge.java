@@ -4,7 +4,7 @@ package com.uib.web.peptideshaker.ui.components.items;
 /**
  * This class represents edge in the developed graph
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class Edge {
 

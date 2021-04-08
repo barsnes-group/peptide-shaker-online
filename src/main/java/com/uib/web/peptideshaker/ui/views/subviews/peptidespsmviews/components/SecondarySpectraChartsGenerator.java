@@ -37,7 +37,8 @@ import java.io.IOException;
 import java.util.HashSet;
 
 /**
- * @author Yehia Farag this class represents spectra chart in relation with
+ * @author Yehia Mokhtar Farag
+ * this class represents spectra chart in relation with
  * peptide sequence
  */
 public class SecondarySpectraChartsGenerator {

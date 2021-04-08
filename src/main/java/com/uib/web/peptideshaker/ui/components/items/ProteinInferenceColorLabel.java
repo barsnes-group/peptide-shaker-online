@@ -6,7 +6,7 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * This class represent coloured based Inference label
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class ProteinInferenceColorLabel extends VerticalLayout implements Comparable<ProteinInferenceColorLabel> {
 

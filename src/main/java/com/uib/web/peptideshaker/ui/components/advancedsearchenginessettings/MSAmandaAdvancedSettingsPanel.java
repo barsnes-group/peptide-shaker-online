@@ -19,7 +19,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * @author y-mok
+ * @author Yehia Mokhtar Farag
  */
 public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
 
@@ -40,6 +40,9 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
 
     private IdentificationParameters webSearchParameters;
 
+    /**
+     *
+     */
     public MSAmandaAdvancedSettingsPanel() {
         super(VaadinIcons.COG.getHtml() + " MS Amanda Advanced Settings");
         AbsoluteLayout container = new AbsoluteLayout();
@@ -67,8 +70,6 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
         fragmentIonTypes = new HorizontalLabelDropDownList("Fragment Ion Types");
         subContainer.addComponent(fragmentIonTypes);
         Set<String> values2 = new LinkedHashSet<>();
-//         new String[] {   , , , , ,, , , , , , ,  };
-
         values2.add("b, y");
         values2.add("b, y, -H2O, -NH3");
         values2.add("a, b, y, -H2O, -NH3, Imm");
@@ -192,6 +193,10 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
 
     }
 
+    /**
+     *
+     * @param webSearchParameters
+     */
     public void updateGUI(IdentificationParameters webSearchParameters) {
         this.webSearchParameters = webSearchParameters;
         MsAmandaParameters oldMsAmandaParameters = (MsAmandaParameters) webSearchParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex());
@@ -227,10 +232,17 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
 
     }
 
+    /**
+     *
+     */
     @Override
     public void onClosePopup() {
     }
 
+    /**
+     *
+     * @param visible
+     */
     @Override
     public void setPopupVisible(boolean visible) {
         if (visible && webSearchParameters != null) {
@@ -238,7 +250,7 @@ public class MSAmandaAdvancedSettingsPanel extends PopupWindow {
         } else if (webSearchParameters != null) {
             updateParameters();
         }
-        super.setPopupVisible(visible); //To change body of generated methods, choose Tools | Templates.
+        super.setPopupVisible(visible); 
     }
 
     private void updateParameters() {

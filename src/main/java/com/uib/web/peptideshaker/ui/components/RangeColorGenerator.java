@@ -17,7 +17,7 @@ import java.util.Map;
  * This class is responsible for generating Colour Gradient as HTML hashed
  * colour code for the heat map
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class RangeColorGenerator {
 
@@ -28,6 +28,10 @@ public class RangeColorGenerator {
     private final Map<Double, String> colorCategories;
     private final DecimalFormat df = new DecimalFormat("0.00E00");
 
+    /**
+     *
+     * @return
+     */
     public double getMax() {
         return max;
     }
@@ -159,8 +163,6 @@ public class RangeColorGenerator {
      * Get colour value from grade scale
      *
      * @param value the value to be converted into colour
-     * @param max1  max value
-     * @param min   minimum value
      * @return RGB colour as string
      */
     public String getGradeColor(double value) {

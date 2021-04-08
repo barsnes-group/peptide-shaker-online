@@ -16,7 +16,7 @@ import java.util.Map;
  * This class responsible for generate change coverage images and do all
  * calculations related to that task
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class ChainCoverageComponent {
 

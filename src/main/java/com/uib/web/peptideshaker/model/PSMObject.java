@@ -8,16 +8,24 @@ import java.util.Set;
  * PeptideShaker system the class contains all the required information for
  * visualising the PSM data
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class PSMObject {
 
     private String key;
 
+    /**
+     *
+     * @return
+     */
     public String getKey() {
         return key;
     }
 
+    /**
+     *
+     * @param key
+     */
     public void setKey(String key) {
         this.key = key;
     }
@@ -198,10 +206,18 @@ public class PSMObject {
         this.intensity = intensity;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getProteinsAsString() {
         return proteinsAsString;
     }
 
+    /**
+     *
+     * @param proteinsAsString
+     */
     public void setProteinsAsString(String proteinsAsString) {
         this.proteinsAsString = proteinsAsString;
     }
