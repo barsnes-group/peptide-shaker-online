@@ -14,9 +14,10 @@ import com.vaadin.ui.Window;
 /**
  * This class represents popup window that show Reactom data
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public class ReactomWindow extends Window {
+
     private final BrowserFrame frame;
 
     public ReactomWindow() {
@@ -38,14 +39,11 @@ public class ReactomWindow extends Window {
     @Override
     public void close() {
         this.setVisible(false);
-
     }
 
     public void visulaizeProtein(String protAccession) {
+        System.out.println("at protein acc "+protAccession);
         frame.setSource(new ThemeResource("reactom/reactomcontainer.html?id=" + protAccession.substring(0, protAccession.length() - 1)));
         ReactomWindow.this.setVisible(true);
-
     }
-
-
 }

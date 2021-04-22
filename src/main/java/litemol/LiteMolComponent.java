@@ -3,6 +3,7 @@ package litemol;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.ui.AbstractJavaScriptComponent;
 import elemental.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,14 +17,14 @@ public class LiteMolComponent extends AbstractJavaScriptComponent {
 
     public LiteMolComponent() {
         LiteMolComponent.this.addFunction("onClick", (JsonArray arguments) -> {
-            getState().setValue(arguments.getString(0));
+            getState().setValue(arguments.getObject(0).toString());
             listeners.forEach((listener) -> {
                 listener.valueChange();
             });
         });
 
         LiteMolComponent.this.addValueChangeListener(() -> {
-            String value = LiteMolComponent.this.getValue();
+            LiteMolComponent.this.getValue();
         });
     }
 
@@ -32,19 +33,12 @@ public class LiteMolComponent extends AbstractJavaScriptComponent {
         listeners.add(listener);
     }
 
-    public String getValue() {
-        return getState().getValue();
+    public JsonObject getValue() {
+        return new JsonObject(getState().getValue());
     }
 
-    public void setValue(String value) {
-        getState().setValue(value);
-    }
-
-    public void setSize(int width, int height) {
-//        this.setWidth(width, Unit.PIXELS);
-//        this.setHeight(height, Unit.PIXELS);
-//        this.setValue(width + "," + height);
-
+    public void setValue(JsonObject value) {
+        getState().setValue(value.encodePrettily());
     }
 
     @Override

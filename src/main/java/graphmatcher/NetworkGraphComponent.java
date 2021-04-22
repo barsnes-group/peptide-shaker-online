@@ -3,7 +3,10 @@ package graphmatcher;
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.SizeReporter;
 import com.itextpdf.text.pdf.codec.Base64;
-import com.uib.web.peptideshaker.presenter.layouts.peptideshakerview.components.coverage.Legend;
+import com.uib.web.peptideshaker.AppManagmentBean;
+import com.uib.web.peptideshaker.model.CONSTANT;
+import com.uib.web.peptideshaker.model.ProteinGroupObject;
+import com.uib.web.peptideshaker.ui.components.items.Legend;
 import com.vaadin.data.Property;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.dd.DragAndDropEvent;
@@ -13,6 +16,7 @@ import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
@@ -40,7 +44,7 @@ import java.util.*;
 /**
  * This class represents Graph layout component
  *
- * @author Yehia Farag
+ * @author Yehia Mokhtar Farag
  */
 public abstract class NetworkGraphComponent extends VerticalLayout {
 
@@ -81,6 +85,7 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
     private int liveWidth = 1000;
     private int liveHeight = 500;
     private Image edgesImage;
+    private String lastSelectedProteinAcc = "";
     /**
      * The graph.
      */
@@ -92,8 +97,10 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
     private Set<NetworkGraphEdge> graphEdges;
     private VisualizationViewer visualizationViewer;
     private FRLayout graphLayout;
+    private final AppManagmentBean appManagmentBean;
 
     public NetworkGraphComponent() {
+        appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
         NetworkGraphComponent.this.setMargin(new MarginInfo(false, false, false, false));
         NetworkGraphComponent.this.setSizeFull();
         this.externalStroke = new BasicStroke(1f, // Width
@@ -270,7 +277,6 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
         graphInfo.addStyleName("inframe");
         mainContainer.addComponent(graphInfo, "right: " + 15 + "px; top: " + 15 + "px");
 
-
         VerticalLayout updateLayoutBtn = new VerticalLayout();
         updateLayoutBtn.setIcon(VaadinIcons.REFRESH);
         updateLayoutBtn.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
@@ -341,21 +347,29 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
         return informationLegend;
     }
 
-    public void updateGraphData(Set<String> selectedIds, Set<NetworkGraphEdge> edges) {//Map<String, Map<String, Node>> graphNodes
+    public void updateGraphData(Map<String, ProteinGroupObject> selectedItems) {//Map<String, Map<String, Node>> graphNodes
+        if (selectedItems.size() == 1 && selectedItems.containsKey(lastSelectedProteinAcc)) {
+            return;
+        }
+       
         this.canvas.removeAllComponents();
         this.selectedNodes.clear();
         this.graphNodes.clear();
-        this.graphEdges = edges;
+        if (selectedItems.size() != 1) { 
+            this.lastSelectedProteinAcc="";
+            return;
+        }
+        lastSelectedProteinAcc = selectedItems.keySet().iterator().next();
+        this.graphEdges = appManagmentBean.getDatasetUtils().getProteoformsNetworkEdges(appManagmentBean.getUserHandler().getDataset(appManagmentBean.getUI_Manager().getSelectedDatasetId()), lastSelectedProteinAcc, selectedItems.get(lastSelectedProteinAcc));
         this.activeGraphEdges.clear();
         this.activeGraphNodes.clear();
-        edges.forEach((edge) -> {
+//        
+        graphEdges.forEach((edge) -> {
             NetworkGraphNode n1 = edge.getN1();
             NetworkGraphNode n2 = edge.getN2();
             if (!graphNodes.containsKey(n1.getAccession())) {
                 this.graphNodes.put(n1.getAccession(), new LinkedHashMap<>());
-
             }
-
             if (!graphNodes.containsKey(n2.getAccession())) {
                 this.graphNodes.put(n2.getAccession(), new LinkedHashMap<>());
             }
@@ -374,7 +388,7 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
                 }
             }
         });
-        selectedIds.forEach((id) -> {
+        selectedItems.keySet().forEach((id) -> {
             if (this.graphNodes.containsKey(id)) {
                 this.graphNodes.get(id).values().forEach((n) -> {
                     n.setSelected(true);
@@ -392,7 +406,7 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
 
             }
         });
-        this.activeGraphEdges.addAll(edges);
+        this.activeGraphEdges.addAll(graphEdges);
         this.initializeGraphLayout();
         if (!nodeControl.getValue().toString().contains("Proteoform") || !nodeControl.getValue().toString().contains("External") || nodeControl.getValue().toString().contains("Reactom Only")) {
             nodeControlAction(!nodeControl.getValue().toString().contains("Proteoform"), !nodeControl.getValue().toString().contains("External"), nodeControl.getValue().toString().contains("Reactom Only"));
@@ -669,7 +683,6 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
 
     }
 
-
     private Shape drawEdge(int x1, int y1, int x2, int y2) {
         return new Line2D.Double(x1, y1, x2, y2);
     }
@@ -691,7 +704,6 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
         visualizationViewer = new VisualizationViewer<>(graphLayout, new Dimension(liveWidth, liveHeight));
         redrawFull();
     }
-
 
     public void selectParentItem(Object parentId) {
         redrawSelection(new Object[]{parentId});
@@ -719,7 +731,6 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
     public VisualizationViewer getVisualizationViewer() {
         return visualizationViewer;
     }
-
 
     private void selectionAction(Set<NetworkGraphNode> selectedNodes) {
         Set<Object> selectedParentItems = new LinkedHashSet<>();
@@ -778,7 +789,7 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
      * This class is a wrapper for the dropped component that is used in the
      * Drag-Drop layout.
      *
-     * @author Yehia Farag
+     * @author Yehia Mokhtar Farag
      */
     protected class WrappedComponent extends DragAndDropWrapper {
 
@@ -790,7 +801,7 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
         /**
          * Constructor to initialise the main attributes.
          *
-         * @param content     the dropped component (the label layout)
+         * @param content the dropped component (the label layout)
          * @param dropHandler The layout drop handler.
          */
         public WrappedComponent(final Component content, final DropHandler dropHandler) {

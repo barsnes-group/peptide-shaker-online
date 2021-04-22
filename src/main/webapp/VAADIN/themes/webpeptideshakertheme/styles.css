@@ -1049,7 +1049,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "7.7.17";
+	content: "7.7.25";
 }
 
 .v-widget {
@@ -9491,7 +9491,7 @@ div.v-layout.v-horizontal.v-widget {
 .webpeptideshakertheme .v-table-cell-content {
 	border-left: 1px solid #d4d4d4;
 	overflow: hidden;
-	height: 37px;
+	height: 38px;
 	vertical-align: middle;
 }
 
@@ -9542,9 +9542,11 @@ div.v-layout.v-horizontal.v-widget {
 
 .webpeptideshakertheme .v-table-table td {
 	border-top: 1px solid #d4d4d4;
+	box-sizing: border-box;
 }
 
 .webpeptideshakertheme .v-table-table tr:first-child > td {
+	height: 37px;
 	border-top: none;
 }
 
@@ -9818,7 +9820,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .webpeptideshakertheme .v-table-row-drag-bottom td.v-table-cell-content {
 	border-bottom: 2px solid #197de1;
-	height: 35px;
+	height: 36px;
 }
 
 .webpeptideshakertheme .v-table-row-drag-bottom .v-table-cell-wrapper {
@@ -9827,7 +9829,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .webpeptideshakertheme .v-table-row-drag-top td.v-table-cell-content {
 	border-top: 2px solid #197de1;
-	height: 36px;
+	height: 37px;
 }
 
 .webpeptideshakertheme .v-table-row-drag-top .v-table-cell-wrapper {
@@ -9853,7 +9855,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .v-table-no-horizontal-lines .v-table-row-drag-top .v-table-cell-content, .webpeptideshakertheme .v-table-no-horizontal-lines .v-table-row-drag-bottom .v-table-cell-content {
-	height: 36px;
+	height: 37px;
 }
 
 .webpeptideshakertheme .v-table-no-header .v-table-header-wrap {
@@ -16756,10 +16758,6 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 0px !important;
 }
 
-.webpeptideshakertheme .selectedbiglbtn .presenterbtn .v-icon, .webpeptideshakertheme .selectedpresenterbtn .v-icon {
-	font-size: 20px !important;
-}
-
 .webpeptideshakertheme .selectedbiglbtn .presenterbtn img {
 	border: none !important;
 }
@@ -16770,7 +16768,7 @@ div.v-layout.v-horizontal.v-widget {
 	line-height: 160%;
 }
 
-.webpeptideshakertheme .bigmenubtn .selectedpresenterbtn {
+.webpeptideshakertheme .selectedpresenterbtn {
 	border-color: orange !important;
 }
 
@@ -17668,13 +17666,14 @@ div.v-layout.v-horizontal.v-widget {
 .webpeptideshakertheme .connectionwindow .v-verticallayout {
 	background-color: transparent;
 	top: 50% !important;
+	margin-top: -60px !important;
 	position: relative;
 	height: 120px !important;
-	min-width: 100% !important;
+	margin-left: 0px;
 }
 
 .webpeptideshakertheme .connectionwindow .v-label {
-	width: 100% !important;
+	min-width: 500px !important;
 }
 
 .webpeptideshakertheme .connectionwindow .popupContent h1 {
@@ -17683,6 +17682,7 @@ div.v-layout.v-horizontal.v-widget {
 	word-spacing: 5px;
 	letter-spacing: 1px;
 	font-family: cursive !important;
+	text-align: center !important;
 }
 
 .webpeptideshakertheme .tooltip {
@@ -18538,10 +18538,6 @@ div.v-layout.v-horizontal.v-widget {
 	max-height: 30px;
 }
 
-.webpeptideshakertheme .mobilestyle .actionbuttoncontainer .v-absolutelayout {
-	margin-top: -80px;
-}
-
 .webpeptideshakertheme .mobilestyle .v-slot-actionbuttoncontainer .reducewidth {
 	width: 80% !important;
 }
@@ -18685,18 +18681,8 @@ div.v-layout.v-horizontal.v-widget {
 	display: none;
 }
 
-.webpeptideshakertheme .mobilestyle .v-absolutelayout-wrapper-dataoverviewsmallbtn {
-	top: 45px !important;
-	left: 0px !important;
-}
-
 .webpeptideshakertheme .mobilestyle .v-absolutelayout-wrapper-resultsmallbtn {
 	top: 90px !important;
-	left: 0px !important;
-}
-
-.webpeptideshakertheme .mobilestyle .v-absolutelayout-wrapper-smalltoolsbtn {
-	top: 135px !important;
 	left: 0px !important;
 }
 
@@ -19439,8 +19425,8 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .mobilestyle .v-slot-extendwidthstyle {
-	height: 85% !important;
-	max-height: 85% !important;
+	height: 96% !important;
+	max-height: 96% !important;
 }
 
 .webpeptideshakertheme .mobilestyle .v-slot-proteincoveragetablecontainer.v-slot-proteincoveragecontainerstyle {
@@ -20165,6 +20151,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .webpeptideshakertheme .homepagepresenterbtn .v-icon {
 	color: #006d98;
+	font-size: 22px;
 }
 
 .webpeptideshakertheme .glubimg .v-image {
@@ -20687,7 +20674,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .mobilestyle .actionbuttoncontainer .v-slot-disableasenable .v-verticallayout-disableasenable {
-	height: 370px !important;
+	height: 325px !important;
 }
 
 .webpeptideshakertheme .mobilestyle .v-horizontallayout-btnwithtext {
@@ -20711,7 +20698,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .v-absolutelayout-wrapper-searchguiicon {
-	top: 10px !important;
+	top: 9px !important;
 }
 
 .webpeptideshakertheme .mobilestyle .v-slot-leftsidelabel {
@@ -20862,9 +20849,8 @@ div.v-layout.v-horizontal.v-widget {
 
 .webpeptideshakertheme .lowresolutionstyle .v-slot-useroverviewpanelstyle {
 	min-width: 500px !important;
-	min-height: 300px;
 	font-size: 20px;
-	min-height: 330px !important;
+	min-height: 375px !important;
 }
 
 .webpeptideshakertheme .lowresolutionstyle .v-slot-leftsidelabel {
@@ -20948,8 +20934,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .v-absolutelayout-wrapper-homepagepresenterbtn {
-	padding-top: 2px !important;
-	top: 43px !important;
+	top: 53px !important;
 }
 
 .webpeptideshakertheme .mobilestyle .v-absolutelayout-wrapper-homepagepresenterbtn {
@@ -21072,17 +21057,6 @@ div.v-layout.v-horizontal.v-widget {
 	background: transparent !important;
 }
 
-.webpeptideshakertheme .mobilestyle .datainputsubcontainer {
-	background-color: white;
-	margin-top: -197px !important;
-	margin-left: -249px !important;
-	left: 50% !important;
-	top: 50% !important;
-	position: relative !important;
-	border: 1px solid lightgrey;
-	border-radius: 5px;
-}
-
 .webpeptideshakertheme .mobilestyle .v-slot-graphframeframe, .webpeptideshakertheme .mobilestyle .v-slot-inframetable {
 	margin-left: 17px;
 	right: 15px !important;
@@ -21098,11 +21072,6 @@ div.v-layout.v-horizontal.v-widget {
 
 .webpeptideshakertheme .mobilestyle .v-caption-framedpanel.v-caption-borderless.v-caption-small.v-caption-compact {
 	margin-top: -5px !important;
-}
-
-.webpeptideshakertheme .mobilestyle .searchguiinputcontainer.v-absolutelayout-datainputsubcontainer {
-	margin-left: 0px !important;
-	margin-top: -210px !important;
 }
 
 .webpeptideshakertheme .mobilestyle .v-absolutelayout-wrapper-floatrightinyscreen .searchguiinputcontainer .v-horizontallayout-optiongroupframe {
@@ -21203,7 +21172,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .averagescreenstyle .bigmenubtn .v-icon {
-	line-height: 33px;
+	line-height: 27px;
 }
 
 .webpeptideshakertheme .averagescreenstyle .uploadbigbtn .v-label div .v-icon-arrow_circle_up_o {
@@ -21221,7 +21190,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .averagescreenstyle .v-slot-bigmenubtn .glubimg .v-image {
-	padding: 5px !important;
+	padding: 0px !important;
 }
 
 .webpeptideshakertheme .averagescreenstyle .v-horizontallayout-bigmenubtn.searchguiicon .v-image {
@@ -21436,7 +21405,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .averagescreenstyle .v-absolutelayout-wrapper-dataoverviewsmallbtn {
-	top: 40px !important;
+	top: 53px !important;
 }
 
 .webpeptideshakertheme .averagescreenstyle .middleviewcontainer {
@@ -21803,9 +21772,10 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .mobilestyle .datainputsubcontainer {
-	margin-top: -197px !important;
-	margin-left: 0px !important;
-	left: 0px !important;
+	background-color: white;
+	margin-top: -210px !important;
+	margin-left: -380px !important;
+	left: 50% !important;
 	top: 50% !important;
 	position: relative !important;
 	border: 1px solid lightgrey;
@@ -21820,7 +21790,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .mobilestyle .v-absolutelayout-wrapper-searchguiinputcontainer.v-absolutelayout-wrapper-datainputsubcontainer {
-	top: 15px !important;
+	top: -4px !important;
 	left: 15px !important;
 	margin-left: 0px !important;
 }
@@ -21928,7 +21898,7 @@ div.v-layout.v-horizontal.v-widget {
 	max-height: 20px;
 	border-radius: 100%;
 	padding: 0px;
-	line-height: 20px;
+	line-height: 20px !important;
 }
 
 .webpeptideshakertheme .v-Notification.tray .v-Notification-caption + .v-Notification-description {
@@ -22165,6 +22135,9 @@ div.v-layout.v-horizontal.v-widget {
 
 .webpeptideshakertheme .modificationlistpanel.v-panel-modificationlistpanel {
 	padding-top: 0px !important;
+	background-color: white;
+	z-index: 5 !important;
+	position: absolute !important;
 }
 
 .webpeptideshakertheme .modificationlistpanel .v-panel-captionwrap {
@@ -22233,9 +22206,9 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .v-horizontallayout-minhight30 .v-horizontallayout .v-absolutelayout-infopopupcontainer {
-	width: 40px !important;
-	margin-top: -5px;
+	width: 40px !important;/** margin-top: -5px;*/
 	margin-left: -15px;
+	line-height: 30px;
 }
 
 .webpeptideshakertheme .v-horizontallayout-minhight30 .v-horizontallayout .v-absolutelayout-infopopupcontainer .v-icon {
@@ -22280,4 +22253,399 @@ div.v-layout.v-horizontal.v-widget {
 
 .webpeptideshakertheme .v-horizontallayout .v-absolutelayout-infopopupcontainer .v-popupview-infopopup .v-icon {
 	line-height: 100% !important;
+}
+
+.webpeptideshakertheme .viewbuttonsactioncontainer {
+	border: 2px solid lightgray;
+	border-radius: 5px;
+	border-right-color: whitesmoke;
+	border-bottom-right-radius: 0px;
+	z-index: 2 !important;
+	position: absolute !important;
+	background-color: whitesmoke;
+}
+
+.webpeptideshakertheme .viewbuttonsactioncontainer .presenterbtn {
+	background-color: white;
+	border: 1px solid lightgray;
+	border-radius: 2px;
+	cursor: pointer;
+}
+
+.webpeptideshakertheme .confirmdialog .v-absolutelayout-margin .v-label {
+	color: gray !important;
+	font-weight: bold !important;
+	font-size: 14px;
+	text-align: left;
+	margin-left: 20px;
+	margin-top: 5px;
+	padding-left: 20px;
+}
+
+.webpeptideshakertheme .confirmdialog .v-icon {
+	margin-left: -40px;
+	line-height: 30px;
+	font-size: 30px;
+	margin-top: 5px;
+	position: absolute;
+}
+
+.webpeptideshakertheme .v-slot-hidetextonmobilemode {
+	max-height: 10px;
+}
+
+.webpeptideshakertheme .ongoingjob .glubimg.bigmenubtn .v-slot, .webpeptideshakertheme .ongoingjob .glubimg.dataoverviewsmallbtn .v-absolutelayout-wrapper {
+	background-image: url(img/globeearthanimation.gif) !important;
+	background-size: 70%;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.webpeptideshakertheme .ongoingjob .glubimg img {
+	opacity: 0;
+}
+
+.webpeptideshakertheme .ongoingjob .btnwithtext.glubimg .v-align-center {
+	background-image: url(img/globeearthanimation.gif) !important;
+	background-size: 70%;
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 70px !important;
+	height: 70px !important;
+	border: 1px solid;
+	border-radius: 5px;
+	background-color: whitesmoke;
+}
+
+.webpeptideshakertheme .v-readonly div {
+	cursor: default !important;
+}
+
+.webpeptideshakertheme .workflowstyle .v-absolutelayout-searchguiicon, .webpeptideshakertheme .filesystemstyle .v-absolutelayout-dataoverviewsmallbtn, .webpeptideshakertheme .resultsviewstyle .v-absolutelayout-resultsmallbtn {
+	border-color: orange !important;
+}
+
+.webpeptideshakertheme .v-horizontallayout-bigmenubtn.v-horizontallayout-prideimg {
+	height: 100px !important;
+}
+
+.webpeptideshakertheme .useruploaddatasubviewstyle .v-horizontallayout-uploadbigbtn, .webpeptideshakertheme .pridesubviewstyle .v-horizontallayout-prideimg, .webpeptideshakertheme .datasetproteinssubviewstyle .v-horizontallayout-dsoverviewbtn, .webpeptideshakertheme .proteinpeptidessubviewstyle .v-horizontallayout-proteinoverviewbtn, .webpeptideshakertheme .peptidepsmssubviewstyle .v-horizontallayout-psmoverviewbtn {
+	border-color: orange !important;
+	border-right-color: white !important;
+}
+
+.webpeptideshakertheme .v-absolutelayout-wrapper-searchfieldwithcaption {
+	margin-top: 5px !important;
+}
+
+.webpeptideshakertheme .v-label-uploadeddsinfo.v-label-longtext p {
+	word-wrap: break-word;
+	text-overflow: visible;
+	overflow: visible;
+	max-height: 100% !important;
+	white-space: normal;
+	text-align: justify;
+}
+
+.webpeptideshakertheme .v-table .v-icon-info_circle_o {
+	text-align: center !important;
+	width: 100% !important;
+	font-size: 15px !important;
+}
+
+.webpeptideshakertheme .v-table .v-selected .v-icon-info_circle_o {
+	color: white;
+}
+
+.webpeptideshakertheme .v-slot-loadpridebutton {
+	max-height: 20px;
+	background-color: whitesmoke;
+	position: relative;
+	margin-top: -2px;
+}
+
+.webpeptideshakertheme .v-button-loadpridebutton {
+	position: relative;
+	min-width: 120px;
+	margin-left: 100%;
+	left: -130px;
+	margin-top: -10px;
+}
+
+.webpeptideshakertheme .v-absolutelayout-wrapper-highzindex {
+	z-index: 5 !important;
+}
+
+.webpeptideshakertheme .v-ui.uicontainer.resultsviewstyle.proteinpeptidessubviewstyle.v-scrollable {
+	overflow: visible !important;
+}
+
+.webpeptideshakertheme .averagescreenstyle .v-absolutelayout-viewbuttonsactioncontainer {
+	max-width: 55px;
+	min-height: 190px;
+}
+
+.webpeptideshakertheme .averagescreenstyle .v-absolutelayout-wrapper-resultsmallbtn.v-absolutelayout-wrapper-presenterbtn {
+	top: 98px !important;
+	left: 9px !important;
+}
+
+.webpeptideshakertheme .averagescreenstyle .v-absolutelayout-wrapper-homepagepresenterbtn.v-absolutelayout-wrapper-presenterbtn {
+	top: 142px !important;
+	left: 9px !important;
+}
+
+.webpeptideshakertheme .averagescreenstyle .v-absolutelayout-wrapper-singlebtn {
+	top: 215px !important;
+	left: -21px !important;
+}
+
+.webpeptideshakertheme .averagescreenstyle .v-absolutelayout-wrapper-integratedframe {
+	left: 43px !important;
+}
+
+.webpeptideshakertheme .averagescreenstyle .v-absolutelayout-wrapper-leftsidebuttonscontainer {
+	top: 215px !important;
+	left: -21px !important;
+}
+
+.webpeptideshakertheme .averagescreenstyle .v-absolutelayout-wrapper-leftsidebuttonscontainer .v-image {
+	margin-top: -10px;
+	min-width: 45px;
+	margin-left: -7px;
+}
+
+.webpeptideshakertheme .averagescreenstyle .v-absolutelayout-wrapper-leftsidebuttonscontainer .v-spacing {
+	max-height: 2px;
+}
+
+.webpeptideshakertheme .averagescreenstyle .v-absolutelayout-wrapper-leftsidebuttonscontainer .v-horizontallayout-bigmenubtn:hover, .webpeptideshakertheme .averagescreenstyle .v-absolutelayout-wrapper-leftsidebuttonscontainer .v-horizontallayout-bigmenubtn .v-image:hover {
+	background-color: whitesmoke;
+}
+
+.webpeptideshakertheme .averagescreenstyle .v-verticallayout-singlebtn .searchguiicon {
+	left: 23px !important;
+	top: -6px;
+	padding: 4px !important;
+}
+
+.webpeptideshakertheme .averagescreenstyle .v-verticallayout-singlebtn .searchguiicon .v-image:hover {
+	background-color: white !important;
+}
+
+.webpeptideshakertheme .averagescreenstyle.mobilestyle .useroverviewpanelstyle {
+	min-height: 375px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-absolutelayout-viewbuttonsactioncontainer {
+	width: 80px;
+	max-width: 81px;
+	min-height: 294px;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-absolutelayout-presenterbtn.v-absolutelayout-smalltoolsbtn.v-absolutelayout-searchguiicon {
+	min-width: 60px !important;
+	min-height: 60px !important;
+	padding: 5px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-absolutelayout-presenterbtn.v-absolutelayout-smalltoolsbtn.v-absolutelayout-dataoverviewsmallbtn {
+	min-width: 60px !important;
+	min-height: 60px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-absolutelayout-wrapper-presenterbtn.v-absolutelayout-wrapper-glubimg.v-absolutelayout-wrapper-dataoverviewsmallbtn {
+	top: 80px !important;
+	width: 60px !important;
+	height: 60px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-absolutelayout-presenterbtn.glubimg.v-absolutelayout-glubimg.v-absolutelayout-dataoverviewsmallbtn {
+	padding: 5px;
+	min-width: 60px !important;
+	min-height: 60px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-absolutelayout-wrapper-presenterbtn.v-absolutelayout-wrapper-resultsmallbtn {
+	top: 150px !important;
+	min-width: 60px !important;
+	min-height: 60px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-absolutelayout-presenterbtn.v-absolutelayout-resultsmallbtn {
+	padding: 5px;
+	min-width: 60px !important;
+	min-height: 60px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-absolutelayout-wrapper-presenterbtn.v-absolutelayout-wrapper-homepagepresenterbtn {
+	top: 220px !important;
+	min-width: 60px !important;
+	min-height: 60px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-absolutelayout-presenterbtn.homepagepresenterbtn.v-absolutelayout-homepagepresenterbtn {
+	font-size: 30px !important;
+	min-width: 60px !important;
+	min-height: 60px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-absolutelayout-presenterbtn.homepagepresenterbtn.v-absolutelayout-homepagepresenterbtn .v-icon.v-icon-home_o {
+	font-size: 35px !important;
+	line-height: 55px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-absolutelayout-wrapper-integratedframe {
+	left: 78px !important;
+	right: 20px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-absolutelayout-wrapper-leftsidebuttonscontainer {
+	top: auto !important;
+	bottom: 9px !important;
+	left: 1px !important;
+	height: 225px !important;
+	width: 100px !important;
+	z-index: 3 !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-slot-uploadbigbtn, .webpeptideshakertheme .mobilestyle.averagescreenstyle .v-slot-dsoverviewbtn {
+	min-width: 91px !important;
+	max-width: 91px !important;
+	max-height: 50px !important;
+	min-height: 50px !important;
+	z-index: 20 !important;
+	background: white !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .uploadbigbtn .v-label .v-icon-file_text_o {
+	font-size: 30px !important;
+	width: 100% !important;
+	left: 0px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .uploadbigbtn .v-label div .v-icon-arrow_circle_up_o {
+	line-height: 20px !important;
+	top: -30px !important;
+	font-size: 15px !important;
+	left: 43px !important;
+	height: 20px !important;
+	width: 20px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-horizontallayout-uploadbigbtn {
+	min-width: 91px !important;
+	min-height: 50px !important;
+	width: 74px !important;
+	height: 50px !important;
+	left: -5px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-absolutelayout-wrapper-leftsidebuttonscontainer .v-horizontallayout-bigmenubtn:hover, .webpeptideshakertheme .mobilestyle.averagescreenstyle .v-absolutelayout-wrapper-leftsidebuttonscontainer .v-horizontallayout-bigmenubtn .v-image:hover {
+	background-color: white !important;
+}
+
+.webpeptideshakertheme .averagescreenstyle.mobilestyle .v-horizontallayout-uploadbigbtn, .webpeptideshakertheme .averagescreenstyle.mobilestyle .v-horizontallayout-dsoverviewbtn, .webpeptideshakertheme .averagescreenstyle.mobilestyle .v-horizontallayout-proteinoverviewbtn, .webpeptideshakertheme .averagescreenstyle.mobilestyle .v-horizontallayout-psmoverviewbtn {
+	border-width: 3px !important;
+	border-right-width: 1px !important;
+	border-top-right-radius: 0px !important;
+	border-bottom-right-radius: 0px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-horizontallayout-dsoverviewbtn {
+	position: relative !important;
+	left: 0px !important;
+	top: 0px !important;
+	z-index: 3 !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-horizontallayout-bigmenubtn.v-horizontallayout-dsoverviewbtn {
+	min-width: 91px !important;
+	min-height: 50px !important;
+	width: 91px !important;
+	height: 50px !important;
+	left: -5px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-absolutelayout-wrapper-leftsidebuttonscontainer .v-image {
+	width: auto !important;
+	max-height: 40px;
+	margin: 0px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-horizontallayout-proteinoverviewbtn {
+	position: relative !important;
+	left: 0px !important;
+	top: 0px !important;
+	z-index: 3 !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-horizontallayout-bigmenubtn.v-horizontallayout-proteinoverviewbtn {
+	min-width: 91px !important;
+	min-height: 50px !important;
+	width: 91px !important;
+	height: 50px !important;
+	left: -5px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-horizontallayout-psmoverviewbtn {
+	position: relative !important;
+	left: 0px !important;
+	top: 0px !important;
+	z-index: 3 !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-horizontallayout-bigmenubtn.v-horizontallayout-psmoverviewbtn {
+	min-width: 91px !important;
+	min-height: 50px !important;
+	width: 91px !important;
+	height: 50px !important;
+	left: -5px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-absolutelayout-margintop-198.v-absolutelayout-datainputsubcontainer {
+	margin-left: -249px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .bigmenubtn :hover {
+	background-color: white !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-absolutelayout-selectablenode {
+	margin-left: -6px;
+	min-width: 20px;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-absolutelayout-wrapper-datasetproteinstablestyle {
+	top: 10px !important;
+	bottom: 20px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-slot-hidedsfilter {
+	top: -1000px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .lm-plugin .lm-layout-region {
+	background-color: transparent !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .psmchartcontainerstyle .v-menubar-menuitem-caption span {
+	max-width: 17px !important;
+	min-width: 17px;
+	text-overflow: hidden !important;
+	overflow: hidden !important;
+	font-size: 17px;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .psmchartcontainerstyle .v-slot-popupasmenueitem {
+	min-width: 17px !important;
+	font-size: 17px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .psmchartcontainerstyle .v-slot-popupasmenueitem .v-icon-sliders {
+	font-size: 17px !important;
+}
+
+.webpeptideshakertheme .mobilestyle.averagescreenstyle .v-verticallayout-inframetable.v-verticallayout-psmchartcontainerstyle.v-verticallayout-viewdsfilter {
+	border-bottom: none;
 }

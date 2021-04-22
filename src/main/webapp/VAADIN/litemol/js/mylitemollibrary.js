@@ -1,4 +1,3 @@
-// Define the namespace
 var mylitemollibrary = mylitemollibrary || {};
 mylitemollibrary.LiteMolComponent = function (element) {
     var document = element.ownerDocument;
@@ -9,11 +8,11 @@ mylitemollibrary.LiteMolComponent = function (element) {
     var controlBtns;
     var updatingBtn;
     var hideWaterVar = true;
-    var tquery = '{"pdbId":"3iuc","chainId":"A","coloring":{"entries":[{"start_residue_number":44,"color":{"r":255,"b":0,"g":0},"end_residue_number":404,"struct_asym_id":"A","entity_id":"1"}],"base":{"r":255,"b":255,"g":255}}}';
     var init = false;
     var latestValue = 'ToTestNotRealValue';
-    element.innerHTML =
-            " <div id='actions'> </div>" +
+    var jsonFullQuery = JSON.parse('{"pdbId":"3iuc"}');
+    var parentElement = null;
+    element.innerHTML = " <div id='actions'> </div>" +
             " <div id='interactions'></div>" +
             "<center id='container' style='position: relative;'><div id='app' class='app-default'> </div></center> " +
             ""
@@ -33,62 +32,48 @@ mylitemollibrary.LiteMolComponent = function (element) {
 
 
     // Getter and setter for the value property
-    this.getValue = function () {
-
-    };
-
+    this.getValue = function () {};
     this.setValue = function (value) {
         try {
-
             if ((typeof value === 'undefined')) {
                 return;
             }
-            //  var mobilemode = isMobileMode();
-            //  if (parentElement === null && mobilemode) {
+            jsonFullQuery= JSON.parse(value);         
+            document.getElementById('pdbid').value  = JSON.stringify(jsonFullQuery.values, null, 2);
             locateParentElement();
-            // }
-            if (parentElement === null || (value === null) || (value === undefined) || latestValue.includes(value)) {
+            if (parentElement === null || (jsonFullQuery === null) || (jsonFullQuery === undefined) || latestValue.localeCompare(value) === 0) {
                 return;
             }
-            latestValue = value + "";
-            if (value.includes("reset-_-")) {
+            latestValue = value;
+            if (jsonFullQuery.type.localeCompare("reset") === 0) {
                 reset();
-            } else if (value.includes("query-_-")) {
-                if (tquery.includes(value.split("-_-")[1])) {
-                    return;
-                }
-                tquery = value.split("-_-")[1];
-                var newid = (value.split("-_-")[2] === 'true');
+            } else if (jsonFullQuery.type.localeCompare("query") === 0) {
                 if (!init && isParentVisible()) {
                     init = true;
                     initplugin();
-
                 }
-
                 if (init) {
-                    excutequery(newid);
+                    excutequery(jsonFullQuery.newid);
                 }
-            } else if (value.includes("update-_-")) {
+            } else if (jsonFullQuery.type.localeCompare("update") === 0) {
                 latestValue = "";
                 redraw();
             }
         } catch (exp) {
-            alert(exp);
+            alert("error at 70: " + exp);
         }
 
     };
-    var parentElement = null;
     function  isParentVisible() {
+        return true;
         if (parentElement === null) {
-            alert('parent elemint was null')
+            return false;
         } else if (parentElement.classList.contains('v-absolutelayout-wrapper-hidepanel')) {
             return false;
         } else {
             return true;
         }
     }
-    ;
-
     function isDescendant(parent, child) {
         var node = child.parentNode;
         while (node !== null) {
@@ -98,60 +83,47 @@ mylitemollibrary.LiteMolComponent = function (element) {
             node = node.parentNode;
         }
         return false;
-    }
-    ;
-    function  isMobileMode() {
-//        var mobileMUI = document.getElementsByClassName("v-ui")[0];
-//        if (mobileMUI.classList.contains('mobilestyle')) {
-//            return true;
-//        }
-        return true;
-    }
-    ;
+    };
     function locateParentElement() {
         var containers = document.getElementsByClassName("v-absolutelayout-wrapper v-absolutelayout-wrapper-transitionallayout");
-        for (i = 0; i < containers.length; i++) {
-            var elem = containers[i]
+        for (var i = 0; i < containers.length; i++) {
+            var elem = containers[i];
             if (isDescendant(elem, document.getElementById('app'))) {
                 parentElement = elem;
-//                alert("found parent element")
             }
         }
-//        alert('parent is found *?? '+parentElement)
-    }
-    ;
-
-//    window.alert = function () {
-//    };
-// Default implementation of the click handler
+    };
     this.click = function () {
         alert("Error: Must implement click() method");
     };
-
     var initplugin = function () {
         try {
-            document.getElementsByTagName('h6');
+            if (document.getElementsByTagName('h6').length < 27) {
+                init = false;
+                return;
+            }
+            document.getElementById('pdbid').value =  JSON.stringify(jsonFullQuery.values, null, 2);
             controlBtns[0].click();
             controlBtns[5].click();
             finalizeStyle();
             controlBtns[19].click();
             controlBtns[24].click();
             controlBtns[26].click();
+
         } catch (exp) {
             alert("init blug error?? " + exp);
         }
 
     };
-
     $(function () {
         try {
+            jsonFullQuery = JSON.parse('{"pdbId":"3iuc"}');
             controlBtns = document.getElementsByTagName('h6');
-
+            initplugin();
         } catch (exp) {
-//            alert(exp);
+            alert("error at loading function " + exp);
         }
     });
-
     function finalizeStyle() {
         try {
             var y = document.getElementsByClassName("lm-btn lm-btn-link");
@@ -171,54 +143,46 @@ mylitemollibrary.LiteMolComponent = function (element) {
             app.setAttribute("style", " z-index:1 !important; background-color:transparent !important;");
             app.style.zIndex = 1;
         } catch (exp) {
-            alert("finalize style error " + exp)
+            alert("finalize style error " + exp);
         }
 
-    }
-
+    };
     var redraw = function () {
         hideWaterVar = !hideWaterVar;
         setTimeout(hideWater, 1000);
     };
-
-    function excutequery(newId) {
+    function excutequery() {
         try {
-            document.getElementById('pdbid').value = tquery;
-            if (newId === true) {
+            document.getElementById('pdbid').value = JSON.stringify(jsonFullQuery.values, null, 2);
+            if (jsonFullQuery.newid === true) {
                 reset();
                 finalizeStyle();
                 controlBtns[14].click();
                 document.getElementById('showWB').value = true;
                 setTimeout(update, 4000);
             } else {
-
                 update();
             }
 
         } catch (exception) {
-            alert("exc query excp " + exception)
-
+            alert("exc query excp " + exception);
         }
 
 
-    }
-
+    };
     function update() {
         controlBtns[24].click();
         controlBtns[19].click();
-
-    }
-
+    };
     function reset() {
         controlBtns[26].click();
-    }
-
+    };
     function hideWater() {
         controlBtns[26].click();
         document.getElementById('showWB').value = hideWaterVar;
         hideWaterVar = !hideWaterVar;
         setTimeout(excutequery(true), 1000);
-    }
+    };
 //    window.alert = function () {
 //    };
 

@@ -2,9 +2,10 @@
 package litemol;
 
 import com.vaadin.shared.ui.JavaScriptComponentState;
+import io.vertx.core.json.JsonObject;
 
 /**
- * @author y-mok
+ * @author Yehia Mokhtar Farag
  */
 public class LiteMolComponentState extends JavaScriptComponentState {
     private String value;
