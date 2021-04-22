@@ -12,8 +12,8 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <vaadin.version>7.7.17</vaadin.version>
-        <vaadin.plugin.version>7.7.17</vaadin.plugin.version>
+        <vaadin.version>7.7.25</vaadin.version>
+        <vaadin.plugin.version>7.7.25</vaadin.plugin.version>
         <jetty.plugin.version>9.3.9.v20160517</jetty.plugin.version>
         <compomics.version>5.0.1</compomics.version>
         <jersey.version>2.32</jersey.version>
