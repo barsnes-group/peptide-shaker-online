@@ -17,7 +17,7 @@
         <jetty.plugin.version>9.3.9.v20160517</jetty.plugin.version>
         <compomics.version>5.0.1</compomics.version>
         <jersey.version>2.32</jersey.version>
-         <vertx.version>3.4.2</vertx.version>
+         <vertx.version>3.5.4</vertx.version>
         <!-- If there are no local customisations, this can also be "fetch" or "cdn" -->
         <vaadin.widgetset.mode>local</vaadin.widgetset.mode>
     </properties>
