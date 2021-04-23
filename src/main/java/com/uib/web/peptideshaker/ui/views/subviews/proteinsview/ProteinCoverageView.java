@@ -56,7 +56,7 @@ public abstract class ProteinCoverageView extends VerticalLayout {
         proteinCoverageTable.addContainerProperty("index", Integer.class, null, "", null, Table.Align.LEFT);
         proteinCoverageTable.addContainerProperty("acc", Link.class, null, generateCaptionWithTooltio("Accession", "Protein accession"), null, Table.Align.CENTER);
         proteinCoverageTable.addContainerProperty("name", String.class, null, generateCaptionWithTooltio("Name", "Protein name"), null, Table.Align.LEFT);
-        proteinCoverageTable.addContainerProperty("proteinIntensity", ColorLabelWithPopupTooltip.class, null, generateCaptionWithTooltio("Intensity", "Protein intinsity"), null, Table.Align.LEFT);
+        proteinCoverageTable.addContainerProperty("proteinIntensity", ColorLabelWithPopupTooltip.class, null, generateCaptionWithTooltio("Intensity", "Protein intensity"), null, Table.Align.LEFT);
 
         proteinCoverageTable.addContainerProperty("coverage", ProteinCoverageComponent.class, null, generateCaptionWithTooltio("Coverage", "Protein sequence coverage"), null, Table.Align.LEFT);
 
@@ -188,12 +188,12 @@ public abstract class ProteinCoverageView extends VerticalLayout {
 //                public void layoutClick(LayoutEvents.LayoutClickEvent event) {
 //                }
 //            };
-            ColorLabelWithPopupTooltip intinsity = new ColorLabelWithPopupTooltip(protein.getAllPeptidesIntensity(), protein.getAllPeptideIintensityColor(), protein.getPercentageAllPeptidesIntensity());
+            ColorLabelWithPopupTooltip intensity = new ColorLabelWithPopupTooltip(protein.getAllPeptidesIntensity(), protein.getAllPeptideIintensityColor(), protein.getPercentageAllPeptidesIntensity());
 
             Link proteinAccLink = new Link(protein.getAccession(), new ExternalResource("http://www.uniprot.org/uniprot/" + protein.getAccession()));
             proteinAccLink.setTargetName("_blank");
             proteinAccLink.setStyleName("tablelink");
-            tableData.put(protein.getAccession(), new Object[]{rowIndex++, proteinAccLink, protein.getDescription(), intinsity, proteinLayout});
+            tableData.put(protein.getAccession(), new Object[]{rowIndex++, proteinAccLink, protein.getDescription(), intensity, proteinLayout});
         });
 //        setSelectedItems(defaultSelectedProteinsItems, defaultSelectedPeptidesItems);
     }

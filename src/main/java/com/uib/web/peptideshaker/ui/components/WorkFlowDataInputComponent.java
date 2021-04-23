@@ -676,7 +676,7 @@ public class WorkFlowDataInputComponent extends Panel {
                     reset();
                 }
             } catch (Exception e) {
-                 System.out.println("at Error class: "+this.getClass().getName()+"  line: 679 "+e);
+                System.out.println("at Error class: " + this.getClass().getName() + "  line: 679 " + e);
             }
         });
     }
@@ -858,7 +858,13 @@ public class WorkFlowDataInputComponent extends Panel {
             }
 
         });
-
+        if (!rawFileSet.isEmpty()) {
+            rawMgfController.select("rawFiles");
+        } else if (!mgfFileSet.isEmpty()) {
+            rawMgfController.select("mgfFiles");
+        } else if (!mzMLFileSet.isEmpty()) {
+            rawMgfController.select("mzMLFiles");
+        }
     }
 
     /**
@@ -995,7 +1001,8 @@ public class WorkFlowDataInputComponent extends Panel {
 
     private boolean validateProjectName() {
         boolean valid = false;
-        if (_projectNameField.getValue().matches("^((?=[A-Za-z0-9_-])(?![åäö\\\\]).)*$")) {
+        System.out.println("at validate project name ");
+        if (_projectNameField.getValue().matches("^((?=[A-Za-z0-9_ -])(?![åäö\\\\]).)*$")) {
             _projectNameField.removeStyleName("errorstyle");
             valid = true;
 

@@ -523,7 +523,7 @@ public abstract class GraphComponent extends VerticalLayout {
             ModificationMatch[] modifications = null;
             String sequence = "";
             int psmNumber;
-            double intinsity;
+            double intensity;
             String intinsityColor;
             String tooltip;
             if (peptidesNodes.containsKey(node)) {
@@ -533,7 +533,7 @@ public abstract class GraphComponent extends VerticalLayout {
                 tooltip = node;
                 psmNumber = peptidesNodes.get(node).getPSMsNumber();
 
-                intinsity = peptidesNodes.get(node).getIntensity();
+                intensity = peptidesNodes.get(node).getIntensity();
                 intinsityColor = peptidesNodes.get(node).getIntensityColor();
 
                 peptidesNodes.get(node).setPsmColor(psmColorScale.getColor(psmNumber));
@@ -541,7 +541,7 @@ public abstract class GraphComponent extends VerticalLayout {
                 psmNumber = -1;
                 tooltip = node + "<br/>" + proteinNodes.get(node).getDescription();
 
-                intinsity = proteinNodes.get(node).getAllPeptidesIntensity();
+                intensity = proteinNodes.get(node).getAllPeptidesIntensity();
                 intinsityColor = proteinNodes.get(node).getAllPeptideIintensityColor();
 
             }
@@ -552,7 +552,7 @@ public abstract class GraphComponent extends VerticalLayout {
                 intCol = new Color(Integer.valueOf(intColoArr[0]), Integer.valueOf(intColoArr[1]), Integer.valueOf(intColoArr[2]));
             }
 
-            Node n = new Node(node, tooltip, modifications, sequence, psmNumber, psmColorScale.getAWTColor(psmNumber), intinsity, intCol) {
+            Node n = new Node(node, tooltip, modifications, sequence, psmNumber, psmColorScale.getAWTColor(psmNumber), intensity, intCol) {
                 @Override
                 public void selected(String id) {
                     selectNodes(new Object[]{id});

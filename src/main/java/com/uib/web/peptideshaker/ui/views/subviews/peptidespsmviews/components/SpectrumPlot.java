@@ -195,7 +195,7 @@ public class SpectrumPlot extends AbsoluteLayout {
                 int k = 0;
                 for (String lossName : lossesNames) {
                     MenuItem lossItem = lossItems.getChildren().get(k++);
-                    lossItem.setEnabled(true);
+                    lossItem.setEnabled(!selectedItem.isChecked());
                 }
             }
             updateAnnotationPreferences();
@@ -279,7 +279,7 @@ public class SpectrumPlot extends AbsoluteLayout {
 
         resetAnnoItem.setEnabled(false);
         disableSizeReporter = false;
-        defaultAnnotationInUse = true;
+        defaultAnnotationInUse = false;
 
         HorizontalLayout spectrumSliderContainer = new HorizontalLayout();
         spectrumSliderContainer.setHeight(200, Unit.PIXELS);
@@ -451,7 +451,7 @@ public class SpectrumPlot extends AbsoluteLayout {
         levelSlider.setDescription("Intensity level : " + ((int) ((double) levelSlider.getValue())) + " %");
         double accuracy = (annotationAccuracySlider.getValue() / 100.0) * fragmentIonAccuracy;
         annotationAccuracySlider.setCaption("Accuracy<br/>" + String.format("%.2f", accuracy) + " Da");
-        annotationAccuracySlider.setDescription("Annotation accuracy : " + accuracy + " Da");
+        annotationAccuracySlider.setDescription("Annotation accuracy : " + String.format("%.3f", accuracy) + " Da");
         PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption();
         currentPeptide = peptideAssumption.getPeptide();
 
@@ -472,7 +472,7 @@ public class SpectrumPlot extends AbsoluteLayout {
                 modificationSequenceMatchingParameters,
                 spectrumAnnotator
         ).clone();
-
+       
         if (!defaultAnnotationInUse) {
             specificAnnotationParameters.getIonTypes().get(IonType.PEPTIDE_FRAGMENT_ION).clear();
             specificAnnotationParameters.getIonTypes().get(IonType.TAG_FRAGMENT_ION).clear();
@@ -502,12 +502,12 @@ public class SpectrumPlot extends AbsoluteLayout {
             if (!adaptItem.isChecked()) {
                 specificAnnotationParameters.clearNeutralLosses();
                 lossItems.getChildren().forEach((mi) -> {
-                    if (mi.isChecked()) {
+                    if (mi.isChecked() && !mi.getText().trim().equals("")) {
                         specificAnnotationParameters.addNeutralLoss(NeutralLoss.getNeutralLoss(mi.getText()));
                     }
                 });
 
-            }
+            } 
 
             specificAnnotationParameters.clearCharges();
             chargeItem.getChildren().stream().filter((charge) -> (charge.isChecked())).forEachOrdered((charge) -> {

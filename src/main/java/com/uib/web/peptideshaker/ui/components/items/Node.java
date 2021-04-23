@@ -109,7 +109,7 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
         this.intensityLayout = new VerticalLayout();
         this.intensityLayout.setSizeFull();
         Node.this.addComponent(intensityLayout);
-        String tooltipExt2 = "</br>Intinsity: " + df1.format(inteinsity) + "";
+        String tooltipExt2 = "</br>Intensity: " + df1.format(inteinsity) + "";
         if (inteinsity == -10000) {
             tooltipExt2 = "";
         }
@@ -187,7 +187,7 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
         this.intensityLayout = new VerticalLayout();
         this.intensityLayout.setSizeFull();
         Node.this.addComponent(intensityLayout);
-        String tooltipExt2 = "</br>Intinsity: " + df1.format(inteinsity) + "";
+        String tooltipExt2 = "</br>Intensity: " + df1.format(inteinsity) + "";
         if (inteinsity == -10000) {
             tooltipExt2 = "";
         }

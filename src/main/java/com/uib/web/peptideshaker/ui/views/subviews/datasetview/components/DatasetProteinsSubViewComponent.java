@@ -138,7 +138,7 @@ public class DatasetProteinsSubViewComponent extends AbsoluteLayout implements R
         TableColumnHeader header4 = new TableColumnHeader("Accession", Link.class, null, generateCaptionWithTooltio("Accession", "Protein accession"), null, Table.Align.CENTER);
         TableColumnHeader header5 = new TableColumnHeader("csf", CSFPRLabel.class, null, generateCaptionWithTooltio("CSF", "View in CSF-PR"), null, Table.Align.CENTER);
         TableColumnHeader header6 = new TableColumnHeader("Name", String.class, null, generateCaptionWithTooltio("Name", "Protein name"), null, Table.Align.LEFT);
-        TableColumnHeader header3 = new TableColumnHeader("proteinIntensity", ColorLabelWithPopupTooltip.class, null, generateCaptionWithTooltio("Intensity", "Protein intinsity"), null, Table.Align.LEFT);
+        TableColumnHeader header3 = new TableColumnHeader("proteinIntensity", ColorLabelWithPopupTooltip.class, null, generateCaptionWithTooltio("Intensity", "Protein intensity"), null, Table.Align.LEFT);
 
         TableColumnHeader header7 = new TableColumnHeader("protein_group", String.class, null, generateCaptionWithTooltio("Protein Group", "Proteins accessions in the same group"), null, Table.Align.LEFT);
         TableColumnHeader header8 = new TableColumnHeader("geneName", String.class, null, generateCaptionWithTooltio("Gene", "Gene Name"), null, Table.Align.CENTER);
@@ -295,11 +295,11 @@ public class DatasetProteinsSubViewComponent extends AbsoluteLayout implements R
                 CSFPRLabel csfprLink = new CSFPRLabel(protein.getAccession(), protein.isAvailableOn_CSF_PR(), csf_pr_Link + protein.getAccession() + "__");
                 String searchKey = protein.getAccession() + "_" + protein.getDescription() + "_" + protein.getOreginalProteinGroup();//.replace(",", "_");
 
-                ColorLabelWithPopupTooltip intinsity = new ColorLabelWithPopupTooltip(protein.getAllPeptidesIntensity(), protein.getAllPeptideIintensityColor(), protein.getPercentageAllPeptidesIntensity());
+                ColorLabelWithPopupTooltip intensity = new ColorLabelWithPopupTooltip(protein.getAllPeptidesIntensity(), protein.getAllPeptideIintensityColor(), protein.getPercentageAllPeptidesIntensity());
                 ColorLabelWithPopupTooltip uniqueIntinsity = new ColorLabelWithPopupTooltip(protein.getUniquePeptidesIntensity(), protein.getUniquePeptideIintensityColor(), protein.getPercentageUniquePeptidesIntensity());
 
-                table_items_map.put(protein.getIndex(), new Object[]{protein.getIndex(), piLabel, proteinAccLink, csfprLink, protein.getDescription(), intinsity, protein.getOreginalProteinGroup(), protein.getGeneName(), new AlphanumComparator(protein.getChromosome()), coverageLabel, peptidesNumberLabelLabel, psmNumberLabelLabel, ms2QuantLabelLabel, mwLabel, confidentLabel, validation});
-                table_optional_items_map.put(protein.getIndex(), new Object[]{intinsity, uniqueIntinsity, searchKey});
+                table_items_map.put(protein.getIndex(), new Object[]{protein.getIndex(), piLabel, proteinAccLink, csfprLink, protein.getDescription(), intensity, protein.getOreginalProteinGroup(), protein.getGeneName(), new AlphanumComparator(protein.getChromosome()), coverageLabel, peptidesNumberLabelLabel, psmNumberLabelLabel, ms2QuantLabelLabel, mwLabel, confidentLabel, validation});
+                table_optional_items_map.put(protein.getIndex(), new Object[]{intensity, uniqueIntinsity, searchKey});
 //                tempTableDataMap.put(protein.getIndex()+ "--_--_--" + searchKey, new Object[]{protein.getIndex(), piLabel, proteinAccLink, csfprLink, protein.getDescription(), intinsity, protein.getProteinGroup(), protein.getGeneName(), new AlphanumComparator(protein.getChromosome()), coverageLabel, peptidesNumberLabelLabel, psmNumberLabelLabel, ms2QuantLabelLabel, mwLabel, confidentLabel, validation});
 //                proteinTableContainer.addTableItem(protein.getIndex(), new Object[]{protein.getIndex(), piLabel, proteinAccLink, csfprLink, protein.getDescription(), intinsity, protein.getProteinGroup(), protein.getGeneName(), new AlphanumComparator(protein.getChromosome()), coverageLabel, peptidesNumberLabelLabel, psmNumberLabelLabel, ms2QuantLabelLabel, mwLabel, confidentLabel, validation}, searchKey);
             } catch (Exception e) {
