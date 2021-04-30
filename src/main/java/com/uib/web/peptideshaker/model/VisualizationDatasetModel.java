@@ -51,7 +51,7 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
     private final Map<String, Object[]> proteinsGraphDataMap;
     private RangeColorGenerator peptideIntinsityColorScale;
     private Map<String, Set<String>> peptidesPsmMap;
-    private Map<String, Map<String, NetworkGraphNode>> proteoformsMap;
+    private LinkedHashMap<String, LinkedHashMap<String, NetworkGraphNode>> proteoformsMap;
     private String datasetSource;
     private String status;
     private GalaxyFileModel psZipFile;
@@ -76,7 +76,7 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
      *
      * @return
      */
-    public Map<String, Map<String, NetworkGraphNode>> getProteoformsMap() {
+    public Map<String, LinkedHashMap<String, NetworkGraphNode>> getProteoformsMap() {
         return proteoformsMap;
     }
 
@@ -84,7 +84,7 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
      *
      * @param proteoformsMap
      */
-    public void setProteoformsMap(Map<String, Map<String, NetworkGraphNode>> proteoformsMap) {
+    public void setProteoformsMap(LinkedHashMap<String, LinkedHashMap<String, NetworkGraphNode>> proteoformsMap) {
         this.proteoformsMap = proteoformsMap;
     }
 

@@ -32,6 +32,7 @@ public class UIContainer extends AbsoluteLayout {
      * or in other databases.
      */
     private FileSystemView fileSystemView;
+    private final ViewActionButtonsComponent actionButtonsComponent;
 
     /**
      * Initialise container layout.
@@ -42,7 +43,7 @@ public class UIContainer extends AbsoluteLayout {
         UIContainer.this.addStyleName("mainapplicationframe");
         UIContainer.this.addStyleName("frame");
 
-        ViewActionButtonsComponent actionButtonsComponent = new ViewActionButtonsComponent();
+         actionButtonsComponent = new ViewActionButtonsComponent();
         UIContainer.this.addComponent(actionButtonsComponent);
         /**
          * landing page initialization.
@@ -56,7 +57,7 @@ public class UIContainer extends AbsoluteLayout {
         fileSystemView = new FileSystemView();
         UIContainer.this.addComponent(fileSystemView, "left:0px");
 //
-        resultsView = new ResultsView(false);
+        resultsView = new ResultsView();
         UIContainer.this.addComponent(resultsView, "left:0px");
 
     }
@@ -92,6 +93,10 @@ public class UIContainer extends AbsoluteLayout {
      */
     public WelcomePageView getWelcomePageView() {
         return welcomePageView;
+    }
+    public void disableActionButtons(){
+    actionButtonsComponent.setEnabled(false);
+    actionButtonsComponent.addStyleName("lowopacity");
     }
 
 }

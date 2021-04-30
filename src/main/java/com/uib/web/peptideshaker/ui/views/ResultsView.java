@@ -48,20 +48,19 @@ public class ResultsView extends AbsoluteLayout implements ViewableFrame {
     /**
      * Constructor to initialise the main layout and attributes.
      *
-     * @param sharedDataset view shared dataset using shared key
      */
-    public ResultsView(boolean sharedDataset) {
+    public ResultsView() {
         ResultsView.this.setSizeFull();
         ResultsView.this.setStyleName("activelayout");
         ResultsView.this.addStyleName("hidelowerpanel");
         this.appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
-        this.initLayout(sharedDataset);
+        this.initLayout();
     }
 
     /**
      * Initialise the container layout.
      */
-    private void initLayout(boolean sharedDataset) {
+    private void initLayout() {
         leftSideButtonsContainer = new VerticalLayout();
         leftSideButtonsContainer.setWidth(100, Unit.PIXELS);
         leftSideButtonsContainer.setHeightUndefined();
@@ -79,11 +78,13 @@ public class ResultsView extends AbsoluteLayout implements ViewableFrame {
 
         int buttonIndex = 1;
 
-
         uploadOwnDataBtn = new SubViewSideButton("upload-project", buttonIndex++);
+        uploadOwnDataBtn.setVisible(!appManagmentBean.isSharingDatasetMode());
         uploadOwnDataBtn.setDescription("Upload project files");
-        leftSideButtonsContainer.addComponent(uploadOwnDataBtn);
-        leftSideButtonsContainer.setComponentAlignment(uploadOwnDataBtn, Alignment.TOP_CENTER);
+        if (!appManagmentBean.isSharingDatasetMode()) {
+            leftSideButtonsContainer.addComponent(uploadOwnDataBtn);
+            leftSideButtonsContainer.setComponentAlignment(uploadOwnDataBtn, Alignment.TOP_CENTER);
+        }
         uploadOwnDataBtn.addStyleName("uploadbigbtn");
         uploadOwnDataBtn.setData(UserUploadDataSubView.class.getName());
         uploadOwnDataBtn.addLayoutClickListener(listener);
@@ -140,8 +141,11 @@ public class ResultsView extends AbsoluteLayout implements ViewableFrame {
         subviewContainerFrame.addComponent(subviewContainerContent, "left:10px;right:10px;top:10px;bottom:10px;");
 
         UserUploadDataSubView userUploadDataSubView = new UserUploadDataSubView();
-        subviewContainerContent.addComponent(userUploadDataSubView);
-        appManagmentBean.getUI_Manager().registerSubView(this.getViewId(), userUploadDataSubView);
+        
+        if (!appManagmentBean.isSharingDatasetMode()) {
+            subviewContainerContent.addComponent(userUploadDataSubView);
+            appManagmentBean.getUI_Manager().registerSubView(this.getViewId(), userUploadDataSubView);
+        }
 
         datasetProteinsSubView = new DatasetProteinsSubView();
         subviewContainerContent.addComponent(datasetProteinsSubView);
@@ -154,11 +158,13 @@ public class ResultsView extends AbsoluteLayout implements ViewableFrame {
         peptidePsmsSubView = new PeptidePsmsSubView();
         subviewContainerContent.addComponent(peptidePsmsSubView);
         appManagmentBean.getUI_Manager().registerSubView(this.getViewId(), peptidePsmsSubView);
-
-        appManagmentBean.getUI_Manager().viewSubLayout(this.getViewId(), userUploadDataSubView.getViewId());
+        if (appManagmentBean.isSharingDatasetMode()) {
+            appManagmentBean.getUI_Manager().viewSubLayout(this.getViewId(), datasetProteinsSubView.getViewId());
+        } else {
+            appManagmentBean.getUI_Manager().viewSubLayout(this.getViewId(), userUploadDataSubView.getViewId());
+        }
 
     }
-
 
     /**
      * Get the current view ID
@@ -189,13 +195,12 @@ public class ResultsView extends AbsoluteLayout implements ViewableFrame {
         this.removeStyleName("hidepanel");
     }
 
-
     @Override
     public void update() {
         try {
             if (appManagmentBean.getUI_Manager().isToUpdatePeptidePSm()) {
                 peptidePsmoverviewBtn.updateIconByResource(new ExternalResource(appManagmentBean.getUI_Manager().getEncodedPeptideButtonImage()));
-            } 
+            }
             if (appManagmentBean.getUI_Manager().getSelectedDatasetId() != null) {
                 datasetProteinsOverviewBtn.removeStyleName("inactive");
                 if (appManagmentBean.getUI_Manager().getSelectedProteinIndex() != -1) {

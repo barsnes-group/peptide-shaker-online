@@ -57,7 +57,7 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
     /**
      * The nodes.
      */
-    private final Map<String, Map<String, NetworkGraphNode>> graphNodes;
+    private final LinkedHashMap<String, LinkedHashMap<String, NetworkGraphNode>> graphNodes;
     /**
      * The nodes.
      */
@@ -66,7 +66,7 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
      * The edges: the keys are the node labels and the elements the list of
      * objects.
      */
-    private final HashSet<NetworkGraphEdge> activeGraphEdges;
+    private final LinkedHashSet<NetworkGraphEdge> activeGraphEdges;
     /**
      * Creates new form GraphForm
      */
@@ -112,7 +112,7 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
                 BasicStroke.JOIN_BEVEL, // Join style
                 0.0f, new float[]{3.0f, 3.0f}, 0.0f);
 
-        this.selectedNodes = new HashSet<>();
+        this.selectedNodes = new LinkedHashSet<>();
         //init main layout
         //calculate canavas dimension 
         mainContainer = new AbsoluteLayout();
@@ -127,7 +127,7 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
             @Override
             public void dragSelectionIsPerformed(double startX, double startY, double endX, double endY) {
 
-                Set<NetworkGraphNode> selectedNodes = new HashSet<>();
+                Set<NetworkGraphNode> selectedNodes = new LinkedHashSet<>();
                 activeGraphEdges.forEach((edge) -> {
                     NetworkGraphNode n1 = edge.getN1();
                     NetworkGraphNode n2 = edge.getN2();
@@ -138,8 +138,7 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
                         selectedNodes.add(n2);
                     }
                 });
-                selectionAction(selectedNodes);
-                System.out.println("at selected nodes are " + selectedNodes.size());
+                selectionAction(selectedNodes, false);
 
             }
 
@@ -149,7 +148,6 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
 
             @Override
             public void leftSelectionIsPerformed(double startX, double startY) {
-                System.out.println("at left selection invoked " + startX + "  " + startY);
             }
 
             @Override
@@ -216,7 +214,7 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
                     n.setY(y);
                     graphLayout.setLocation(node.getData() + "", x, y);
                     drawEdges();
-                    setShowLabels(nodeControl.getValue().toString().contains("Labels"));
+//                    setShowLabels(nodeControl.getValue().toString().contains("Labels"));
                 }
             }
         };
@@ -241,7 +239,7 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
         wrapper.addComponent(layoutWrapper);
         graphWrapper.addComponent(wrapper, "left: 0px; top: 0px");
         mainContainer.addComponent(graphWrapper, "left: 0px; top: 0px");
-        activeGraphEdges = new HashSet<>();
+        activeGraphEdges = new LinkedHashSet<>();
         activeGraphNodes = new LinkedHashMap<>();
         this.graphNodes = new LinkedHashMap<>();
 
@@ -256,13 +254,13 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
         nodeControl.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
         nodeControl.addStyleName("smallertext");
         nodeControl.addItem("External");
-        nodeControl.addItem("Proteoform");
+//        nodeControl.addItem("Proteoform");
         nodeControl.addItem("Reactom Only");
         nodeControl.addItem("Labels");
-        nodeControl.select("Proteoform");
+//        nodeControl.select("Proteoform");
         nodeControl.select("External");
         nodeControl.addValueChangeListener((Property.ValueChangeEvent event) -> {
-            nodeControlAction(!nodeControl.getValue().toString().contains("Proteoform"), !nodeControl.getValue().toString().contains("External"), nodeControl.getValue().toString().contains("Reactom Only"));
+            nodeControlAction(!nodeControl.getValue().toString().contains("External"), nodeControl.getValue().toString().contains("Reactom Only"));
 
         });
         leftBottomPanel.addComponent(nodeControl);
@@ -339,8 +337,29 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
         bottomRightPanel.addComponent(legendLayoutBtn);
         bottomRightPanel.setComponentAlignment(legendLayoutBtn, Alignment.TOP_CENTER);
         mainContainer.addComponent(bottomRightPanel, "right: " + 10 + "px; bottom: " + -12 + "px");
-        mainContainer.addComponent(legendLayout, "left: " + 50 + "%; top: " + 50 + "%");
+        mainContainer.addComponent(legendLayout, "right: " + 10 + "px; bottom: " + -12 + "px");
         canvasWrapper.addComponent(selectionCanavas);
+    }
+
+    private void setShowLabels(boolean showLables) {
+        for (NetworkGraphNode node : activeGraphNodes.values()) {
+            node.setShowLabel(showLables);
+
+        }
+//        activeGraphEdges.forEach((edge) -> {
+////            edge.getEdgeLabel().setVisible(false);
+//            if (edge.isSelected()) {
+//                if (showLables) {
+//                    int startX = ((int) edge.getStartX() + (int) edge.getEndX()) / 2;
+//                    int startY = ((int) edge.getStartY() + (int) edge.getEndY()) / 2;
+//                    edge.setLabelPostion(startX, startY);
+//                    edge.getEdgeLabel().setVisible(true);
+//                    AbsoluteLayout.ComponentPosition newPosition = canvas.getPosition(edge.getEdgeLabel());
+//                    newPosition.setCSSString("left: " + startX + "px; top: " + startY + "px");
+//                }
+//            }
+//        });
+
     }
 
     public Legend getInformationLegend() {
@@ -351,19 +370,27 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
         if (selectedItems.size() == 1 && selectedItems.containsKey(lastSelectedProteinAcc)) {
             return;
         }
-       
+
         this.canvas.removeAllComponents();
         this.selectedNodes.clear();
         this.graphNodes.clear();
-        if (selectedItems.size() != 1) { 
-            this.lastSelectedProteinAcc="";
+        if (selectedItems.size() != 1) {
+            this.lastSelectedProteinAcc = "";
             return;
         }
         lastSelectedProteinAcc = selectedItems.keySet().iterator().next();
         this.graphEdges = appManagmentBean.getDatasetUtils().getProteoformsNetworkEdges(appManagmentBean.getUserHandler().getDataset(appManagmentBean.getUI_Manager().getSelectedDatasetId()), lastSelectedProteinAcc, selectedItems.get(lastSelectedProteinAcc));
         this.activeGraphEdges.clear();
         this.activeGraphNodes.clear();
-//        
+//       
+        LayoutEvents.LayoutClickListener nodeListener = new LayoutEvents.LayoutClickListener() {
+            @Override
+            public void layoutClick(LayoutEvents.LayoutClickEvent event) {
+                Set<NetworkGraphNode> selectedNodes = new LinkedHashSet<>();
+                selectedNodes.add(((NetworkGraphNode) event.getComponent()));
+                selectionAction(selectedNodes, false);
+            }
+        };
         graphEdges.forEach((edge) -> {
             NetworkGraphNode n1 = edge.getN1();
             NetworkGraphNode n2 = edge.getN2();
@@ -378,27 +405,28 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
             this.graphNodes.get(n2.getAccession()).put(n2.getNodeId(), n2);
             this.activeGraphNodes.put(n1.getNodeId(), n1);
             this.activeGraphNodes.put(n2.getNodeId(), n2);
+            if (n1.isInternal()) {
+                n1.addLayoutClickListener(nodeListener);
+            }
+            if (n2.isInternal()) {
+                n2.addLayoutClickListener(nodeListener);
+            }
 
         });
-        graphNodes.keySet().forEach((key) -> {
-            int indexer = 1;
-            for (String subKey : graphNodes.get(key).keySet()) {
-                if (subKey.contains(";")) {
-                    graphNodes.get(key).get(subKey).updateProteformIndex("P" + indexer++);
-                }
+        int indexer = 1;
+        for (NetworkGraphNode node : selectedItems.get(lastSelectedProteinAcc).getProteoformsNodes().values()) {
+            if (node.getNodeId().contains(";")) {
+                node.updateProteformIndex("P" + indexer++);
             }
-        });
+        }
+
         selectedItems.keySet().forEach((id) -> {
             if (this.graphNodes.containsKey(id)) {
                 this.graphNodes.get(id).values().forEach((n) -> {
                     n.setSelected(true);
                 });
             } else {
-                NetworkGraphNode node = new NetworkGraphNode(id, true, true) {
-                    @Override
-                    public void selected(String id) {
-                    }
-                };
+                NetworkGraphNode node = new NetworkGraphNode(id, true, true);
                 node.setSelected(true);
                 this.graphNodes.put(id, new LinkedHashMap<>());
                 this.graphNodes.get(id).put(id, node);
@@ -408,8 +436,8 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
         });
         this.activeGraphEdges.addAll(graphEdges);
         this.initializeGraphLayout();
-        if (!nodeControl.getValue().toString().contains("Proteoform") || !nodeControl.getValue().toString().contains("External") || nodeControl.getValue().toString().contains("Reactom Only")) {
-            nodeControlAction(!nodeControl.getValue().toString().contains("Proteoform"), !nodeControl.getValue().toString().contains("External"), nodeControl.getValue().toString().contains("Reactom Only"));
+        if (!nodeControl.getValue().toString().contains("External") || nodeControl.getValue().toString().contains("Reactom Only")) {
+            nodeControlAction(!nodeControl.getValue().toString().contains("External"), nodeControl.getValue().toString().contains("Reactom Only"));
         }
         this.setEnabled((boolean) graphInfo.getData());
 
@@ -442,71 +470,49 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
         setShowLabels(nodeControl.getValue().toString().contains("Labels"));
     }
 
-    private void setShowLabels(boolean showLables) {
-//        activeGraphEdges.forEach((edge) -> {
-//            edge.getEdgeLabel().setVisible(false);
-//            if (edge.isSelected()) {
-//                if (showLables) {
-//                    int startX = ((int) edge.getStartX() + (int) edge.getEndX()) / 2;
-//                    int startY = ((int) edge.getStartY() + (int) edge.getEndY()) / 2;
-//                    edge.setLabelPostion(startX, startY);
-//                    edge.getEdgeLabel().setVisible(true);
-//                    AbsoluteLayout.ComponentPosition newPosition = canvas.getPosition(edge.getEdgeLabel());
-//                    newPosition.setCSSString("left: " + startX + "px; top: " + startY + "px");
-//                }
-//            }
-//        });
+    private void nodeControlAction(boolean hideExternal, boolean showReactomDataOnly) {
 
-    }
-
-    private void nodeControlAction(boolean hideProteoform, boolean hideExternal, boolean showReactomDataOnly) {
-        if (hideProteoform && hideExternal) {
-            activeGraphNodes.values().forEach((node) -> {
-                if (node.isInternal() && node.isParent()) {
-                    node.getWrappedComponent().setVisible(true);
-                } else {
-                    node.getWrappedComponent().setVisible(false);
-                }
-            });
-            activeGraphEdges.stream().map((edge) -> {
-                edge.setHideChildNodes(hideProteoform);
-                return edge;
-            }).forEachOrdered((edge) -> {
-                if (edge.isInternalEdge() && !edge.isLocalEdge()) {
-                    edge.setHide(false);
-                } else {
-                    edge.setHide(true);
-                }
-            });
-        } else if (hideProteoform && !hideExternal) {
-
-            setHideProtoeform();
-
-        } else if (!hideProteoform && hideExternal) {
-
-            setHideExternal();
-//            
-        } else {
-            activeGraphNodes.values().forEach((node) -> {
+        activeGraphNodes.values().forEach((node) -> {
+            if (node.isInternal() || node.isParent()) {
                 node.getWrappedComponent().setVisible(true);
-                if (node.isParent() && !node.isInternal()) {
-                    node.getWrappedComponent().setVisible(false);
-                }
-            });
-            activeGraphEdges.stream().map((edge) -> {
-                edge.setHideChildNodes(hideProteoform);
-                return edge;
-            }).forEachOrdered((edge) -> {
-                if (edge.isInternalEdge() && edge.isLocalEdge()) {
-                    edge.setHide(false);
-                } else if (!edge.isInternalEdge() && !edge.isLocalEdge()) {
-                    edge.setHide(false);
-                } else {
-                    edge.setHide(true);
-                }
-            });
+            } else {
+                node.getWrappedComponent().setVisible(!hideExternal);
 
-        }
+            }
+        });
+
+        activeGraphEdges.stream().map((edge) -> {
+            edge.setHideChildNodes(false);
+            return edge;
+        }).forEachOrdered((edge) -> {
+            if (!edge.getN1().getWrappedComponent().isVisible()) {
+                edge.setHide(true);
+            } else if (!edge.getN2().getWrappedComponent().isVisible()) {
+                edge.setHide(true);
+            } else {
+                edge.setHide(false);
+            }
+        });
+//         if (hideExternal) {
+//            setHideExternal();//            
+//        }
+//         else {
+//            activeGraphNodes.values().forEach((node) -> {
+//                node.getWrappedComponent().setVisible(true);
+//                if (node.isParent() && !node.isInternal()) {
+//                    node.getWrappedComponent().setVisible(false);
+//                }
+//            });
+//            activeGraphEdges.stream().map((edge) -> {
+//                edge.setHideChildNodes(true);
+//                return edge;
+//            }).forEachOrdered((edge) -> {
+//                if (!edge.isInternalEdge()) {
+//                    edge.setHide(false);
+//                } 
+//            });
+//
+//        }
         if (showReactomDataOnly) {
             activeGraphNodes.values().forEach((node) -> {
                 if (!node.isParent() && node.isInternal() && node.getWrappedComponent().isVisible()) {
@@ -625,8 +631,8 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
     }
 
     private void drawEdges() {
-        Set<NetworkGraphNode> internalNodes = new HashSet<>();
-        Set<NetworkGraphNode> externalNodes = new HashSet<>();
+        Set<NetworkGraphNode> internalNodes = new LinkedHashSet<>();
+        Set<NetworkGraphNode> externalNodes = new LinkedHashSet<>();
         if (liveWidth < 1 || liveHeight < 1) {
             return;
         }
@@ -732,7 +738,7 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
         return visualizationViewer;
     }
 
-    private void selectionAction(Set<NetworkGraphNode> selectedNodes) {
+    private void selectionAction(Set<NetworkGraphNode> selectedNodes, boolean updateOnly) {
         Set<Object> selectedParentItems = new LinkedHashSet<>();
         Set<Object> selectedChiledItems = new LinkedHashSet<>();
         activeGraphNodes.values().forEach((node) -> {
@@ -779,8 +785,20 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
         }
         drawEdges();
         setShowLabels(nodeControl.getValue().toString().contains("Labels"));
-        selectedItem(selectedParentItems, selectedChiledItems);
+        if (!updateOnly) {
+            selectedItem(selectedParentItems, selectedChiledItems);
+        }
 
+    }
+
+    public void selectProteoform(String proteoformId) {
+        if (activeGraphNodes.containsKey(proteoformId)) {
+            NetworkGraphNode node = activeGraphNodes.get(proteoformId);
+            Set<NetworkGraphNode> selectedNodes = new LinkedHashSet<>();
+            selectedNodes.add(node);
+            selectionAction(selectedNodes, true);
+
+        }
     }
 
     public abstract void selectedItem(Set<Object> selectedParentItemsm, Set<Object> selectedChildItems);

@@ -3421,7 +3421,9 @@
     .selectedpeptide.peptidelayout.nodemodificationbackground, .selectedpeptide.peptidelayout.v-absolutelayout-nodemodificationbackground .v-label, .peptidelayout.v-absolutelayout-nodemodificationbackground .v-label:hover {
         background-color: lightgray !important;
         border-color: black !important;
-        opacity: 1 !important;
+        opacity: 1 !important;        
+        border-width: 2px;
+        outline: 2px solid #ff8d00;
     }
     .v-absolutelayout-wrapper-inframetable {
         padding: 25px;
@@ -6504,7 +6506,7 @@
         margin-top: 5px;
         max-width: 120px;
         float: right !important;
-        cursor: pointer;
+        cursor: pointer !important;
     }
 
     .advsettingcontainer .v-label {
@@ -8027,7 +8029,6 @@
     .averagescreenstyle .resizeabletext {
         font-size: 10px;
         top: -5px !important;
-        position: absolute !important;
     }
     .averagescreenstyle .v-absolutelayout-wrapper-stacked.v-absolutelayout-wrapper-colorscale {
         left: auto !important;
@@ -8530,7 +8531,8 @@
         height: 23px;
         line-height: 23px;
         text-align: center;
-        margin-top: 5px
+        margin-top: 5px;
+        margin-left: 20px;
     }
     .v-verticallayout-node.v-verticallayout-pathwaynode.v-verticallayout-proteoformparentnode.v-verticallayout-internalNode.v-verticallayout-legend div {
         overflow: visible !important;
@@ -9380,6 +9382,57 @@
     .mobilestyle.averagescreenstyle  .v-verticallayout-inframetable.v-verticallayout-psmchartcontainerstyle.v-verticallayout-viewdsfilter {
         border-bottom: none;
     } 
+    .v-popupview-popup.v-popupview-popup-protlegend.v-popupview-popup-tiny.v-popupview-popup-link{
+        margin-left:15% !important;
+    }
+    .v-popupview-popup-protlegend .v-verticallayout-viewframecontent.v-verticallayout-whitelayout {
+        min-height:130px !important;
+    }
+    .v-slot-psmlegendrangeconatainer{
+        max-height:40px ;
+    }
+    .proteoformslegend .modificationlegendconatiner .v-label-tiny {
+        left:40px !important
+    }
+    .viewframecontent.whitelayout   .selectednode.proteinnode {
+        margin-left:6px;
+    }
+
+    .nodelabel{
+        display:none;
+    }
+    .selectednode  .nodelabel{
+        font-weight:bold;
+        background-color:whitesmoke;
+        max-width:100px;
+        min-width: 44px;
+        overflow:hidden !important;
+        border:1px solid gray;
+        margin-left:-35px;
+        margin-top:5px;
+        max-height: 15px;
+        line-height: 15px;
+        text-align: center;
+        display:block;
+    }
+    .v-table-inframetable .v-scrollable.v-table-body-wrapper{
+        overflow-x:hidden !important;
+    }
+    .v-absolutelayout-peptidelayout.v-absolutelayout-selectedpeptide{
+        border-color: black !important;
+        opacity: 1 !important;        
+        border-width: 2px;
+        outline: 2px solid #ff8d00;
+    }
+    .chromosomefiltercontainerstyle  .resizableimg img { 
+        border: none;
+        top: 2px;
+        overflow:visible ;
+        position:relative;
+    }
+    .lowopacity img{
+	opacity:0.5
+}
 }
 
 

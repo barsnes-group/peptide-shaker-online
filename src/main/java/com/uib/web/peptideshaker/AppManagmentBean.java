@@ -14,6 +14,7 @@ import com.uib.web.peptideshaker.utils.FilesUtils;
 import com.uib.web.peptideshaker.utils.HttpClientUtils;
 import com.uib.web.peptideshaker.utils.PDBUtils;
 import com.uib.web.peptideshaker.utils.PRIDEUtils;
+import com.uib.web.peptideshaker.utils.SharedDatasetUtils;
 import com.uib.web.peptideshaker.utils.URLUtils;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -48,6 +49,23 @@ public class AppManagmentBean implements Serializable {
     private ScheduledExecutorService scheduler;
     private Set<ScheduledFuture> scheduledFutureSet;
     private boolean availableGalaxy = false;
+    private boolean sharingDatasetMode;
+    private SharedDatasetUtils sharedDatasetUtils;
+
+    public SharedDatasetUtils getSharedDatasetUtils() {
+        if (sharedDatasetUtils == null) {
+            sharedDatasetUtils = new SharedDatasetUtils();
+        }
+        return sharedDatasetUtils;
+    }
+
+    public boolean isSharingDatasetMode() {
+        return sharingDatasetMode;
+    }
+
+    public void setSharingDatasetMode(boolean sharingDatasetMode) {
+        this.sharingDatasetMode = sharingDatasetMode;
+    }
     private PDBUtils pdbUtils;
 
     /**

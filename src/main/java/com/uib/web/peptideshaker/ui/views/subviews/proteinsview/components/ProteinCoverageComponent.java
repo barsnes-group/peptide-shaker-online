@@ -115,7 +115,7 @@ public abstract class ProteinCoverageComponent extends AbsoluteLayout {
             suspendListener = true;
             Component clickedComp = event.getClickedComponent();
             if (clickedComp == null) {
-                 suspendListener = false;
+                suspendListener = false;
                 return;
             }
 
@@ -256,7 +256,7 @@ public abstract class ProteinCoverageComponent extends AbsoluteLayout {
             Iterator<Component> itr = proteoformCoverage.iterator();
             while (itr.hasNext()) {
                 ProteoformLayout proteform = ((ProteoformLayout) itr.next());
-                if (!peptidesId.contains(proteform.getData())) {
+                if (!peptidesId.contains(proteform.getData() + "")) {
                     proteform.addStyleName("inactivatelayout");
                     proteform.setEnabled(false);
                     proteform.getIncludedModifications().stream().map((mod) -> {
@@ -302,6 +302,7 @@ public abstract class ProteinCoverageComponent extends AbsoluteLayout {
     }
 
     public abstract void selectPeptide(Map<String, ProteinGroupObject> selectedItems, Map<String, PeptideObject> selectedChildsItems, boolean isProteform);
+ public abstract void selectProteoform(String proteoformId);
 
     public void updateStylingMode(String style) {
         proteinCoverageLayout.updateStylingMode(style);
@@ -320,10 +321,10 @@ public abstract class ProteinCoverageComponent extends AbsoluteLayout {
                         @Override
                         public void selectProteoform(ProteoformLayout proteoform) {
                             selectProteinProteoform(proteoform);
-                            System.out.println("select protioform also happened");
                             Map<String, ProteinGroupObject> selectedItems = new HashMap<>();
                             selectedItems.put(mainProteinObject.getAccession(), mainProteinObject);
                             selectPeptide(selectedItems, null, proteoformCoverage.isVisible());
+                            ProteinCoverageComponent.this.selectProteoform(proteoform.getProteoformKey());
                         }
 
                     };
@@ -459,6 +460,28 @@ public abstract class ProteinCoverageComponent extends AbsoluteLayout {
             itr.next().removeStyleName("selectedproteoform");
         }
         proteoform.addStyleName("selectedproteoform");
+    }
+
+    public void highlightProteoforms(Set<Object> selectedParentItems, Set<Object> selectedChildItems) {
+        if (selectedParentItems.size() == 1 && selectedChildItems.size() == 1) {
+            Iterator<Component> itr = proteoformCoverage.iterator();
+            String proteoformId = selectedChildItems.iterator().next() + "";
+
+            while (itr.hasNext()) {
+                ProteoformLayout proteoformLayout = (ProteoformLayout) itr.next();
+                if (proteoformId.equalsIgnoreCase(proteoformLayout.getData() + "")) {
+                    selectProteinProteoform(proteoformLayout);
+                    Map<String, ProteinGroupObject> selectedItems = new HashMap<>();
+                    selectedItems.put(mainProteinObject.getAccession(), mainProteinObject);
+                    selectPeptide(selectedItems, null, proteoformCoverage.isVisible());
+                    return;
+
+                }
+
+            }
+
+        }
+        resetHeighlightedProteoforms();
     }
 
 }

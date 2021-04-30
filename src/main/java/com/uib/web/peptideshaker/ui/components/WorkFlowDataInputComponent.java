@@ -428,7 +428,7 @@ public class WorkFlowDataInputComponent extends Panel {
                     return;
                 }
                 _searchParameters = appManagmentBean.getWorkFlowHandler().retriveIdentificationParametersFileFromGalaxy(serachParamFilesMap.get(searchSettingsFileList.getSelectedValue()));
-                String descrip = "Fixed:" + _searchParameters.getSearchParameters().getModificationParameters().getFixedModifications() + "</br>Variable:" + _searchParameters.getSearchParameters().getModificationParameters().getVariableModifications() + "<br/>Fragment Tolerance:" + _searchParameters.getSearchParameters().getFragmentIonAccuracyInDaltons();
+                String descrip = "Fixed:" + _searchParameters.getSearchParameters().getModificationParameters().getFixedModifications() + "</br>Variable:" + _searchParameters.getSearchParameters().getModificationParameters().getVariableModifications() + "<br/>Fragment Tolerance: " + _searchParameters.getSearchParameters().getFragmentIonAccuracyInDaltons();
                 descrip = descrip.replace("[", "").replace("]", "").replace("null", "No modifications");
                 for (String mod : _searchParameterForm.getUpdatedModiList().keySet()) {
                     if (descrip.contains(mod)) {

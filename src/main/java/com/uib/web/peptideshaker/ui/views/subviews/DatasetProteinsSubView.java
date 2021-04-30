@@ -61,7 +61,7 @@ public class DatasetProteinsSubView extends AbsoluteLayout implements ViewableFr
         headerLabel.setWidthUndefined();
         topLeftLabelContainer.setSpacing(true);
         topLeftLabelContainer.addComponent(headerLabel);
-        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Datset Visualization</h1>Users visualise the selected datasets and interact with it.<br/>The dataset visulization has three main levels<br/>  1.Dataset level: include proteins table and dataset filters.</br>  2.Protein level: visulaisation of protein details and related proteins including the peptide coverage and 3D visulisation.</br>  3.Peptide level: visulization of peptide details include available peptide-to-spectrum matches and spectrum visulizaion chart.", "", 400, 175);
+        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Datset Visualization</h1>Users visualise the selected datasets and interact with it.<br/>Dataset level: include proteins table and dataset filters..", "", 350, 90);
         topLeftLabelContainer.addComponent(helpBtn);
         FilterButton removeFilterIcon = new FilterButton() {
             @Override
@@ -129,7 +129,7 @@ public class DatasetProteinsSubView extends AbsoluteLayout implements ViewableFr
      */
     @Override
     public void maximizeView() {
-        if (inactive) {
+        if (inactive && !appManagmentBean.isSharingDatasetMode()) {
             appManagmentBean.getNotificationFacade().showInfoNotification("You need to select Project or upload your own files to visualize data");
             appManagmentBean.getUI_Manager().viewSubLayout(ResultsView.class.getName(), UserUploadDataSubView.class.getName());
         } else {

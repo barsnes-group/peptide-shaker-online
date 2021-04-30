@@ -136,7 +136,7 @@ public class NetworkGraphEdge {
     }
 
     public void setHide(boolean hide) {
-//        this.hide = hide;
+        this.hide = hide;
 //        if (hide) {
 //            edgeLabel.setVisible(false);
 //        }

@@ -162,7 +162,7 @@ public class FilesTablePanel extends Panel {
                 ActionLabel downloadLabel = new ActionLabel(VaadinIcons.DOWNLOAD_ALT, "Download File") {
                     @Override
                     public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                        Page.getCurrent().open(dataset.getDownloadUrl() + "to_ext=" + CONSTANT.ZIP_FILE_EXTENSION, "download='file'", true);
+                        Page.getCurrent().open(dataset.getDownloadUrl() + "&to_ext=" + CONSTANT.ZIP_FILE_EXTENSION, "download='file'", true);
                     }
                 };
                 downloadLabel.setEnabled(dataset.getDatasetSource().equals(CONSTANT.GALAXY_SOURCE));
@@ -306,7 +306,7 @@ public class FilesTablePanel extends Panel {
             ActionLabel downloadLabel = new ActionLabel(VaadinIcons.DOWNLOAD_ALT, "Download File") {
                 @Override
                 public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                    Page.getCurrent().open(file.getDownloadUrl() + "to_ext=" + CONSTANT.ZIP_FILE_EXTENSION, "download='file'", true);
+                    Page.getCurrent().open(file.getDownloadUrl() + "&to_ext=" + file.getExtension(), "_blank", true);
                 }
             };
             ActionLabel deleteLabel = new ActionLabel(VaadinIcons.TRASH, "Delete File") {

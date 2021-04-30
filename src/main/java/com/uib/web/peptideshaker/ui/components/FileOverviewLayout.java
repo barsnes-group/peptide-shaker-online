@@ -21,7 +21,7 @@ public abstract class FileOverviewLayout extends VerticalLayout {
      */
     public FileOverviewLayout(GalaxyFileModel file) {
         FileOverviewLayout.this.setMargin(true);
-        FileOverviewLayout.this.setWidth(300, Unit.PIXELS);
+        FileOverviewLayout.this.setWidth(500, Unit.PIXELS);
         FileOverviewLayout.this.setHeightUndefined();
         FileOverviewLayout.this.setSpacing(true);
         HorizontalLayout titleLayout = new HorizontalLayout();
@@ -70,7 +70,7 @@ public abstract class FileOverviewLayout extends VerticalLayout {
      */
     public FileOverviewLayout(VisualizationDatasetModel ds) {
         FileOverviewLayout.this.setMargin(true);
-        FileOverviewLayout.this.setWidth(300, Unit.PIXELS);
+        FileOverviewLayout.this.setWidth(500, Unit.PIXELS);
         FileOverviewLayout.this.setHeightUndefined();
         FileOverviewLayout.this.setSpacing(true);
         HorizontalLayout titleLayout = new HorizontalLayout();

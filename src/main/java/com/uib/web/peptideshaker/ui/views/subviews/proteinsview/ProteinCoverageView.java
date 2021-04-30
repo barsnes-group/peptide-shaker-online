@@ -20,6 +20,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import java.util.LinkedHashMap;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class represents proteins coverage container component
@@ -182,6 +183,11 @@ public abstract class ProteinCoverageView extends VerticalLayout {
                     });
                 }
 
+                @Override
+                public void selectProteoform(String proteoformId) {
+                    ProteinCoverageView.this.selectProteoform(proteoformId);
+                }
+
             };
 //            ActionLabel info = new ActionLabel(VaadinIcons.INFO, "Click to view protein information") {
 //                @Override
@@ -204,4 +210,10 @@ public abstract class ProteinCoverageView extends VerticalLayout {
 
     public abstract void selectPeptide(Map<String, ProteinGroupObject> selectedProteins, Map<String, PeptideObject> selectedPeptides, boolean isProteform);
 
+    public abstract void selectProteoform(String proteoformId);
+
+    public void highlightProteoforms(Set<Object> selectedParentItems, Set<Object> selectedChildItems) {
+        ProteinCoverageComponent proteinCoverageComponent = (ProteinCoverageComponent) tableData.get(selectedParentItems.iterator().next() + "")[4];
+        proteinCoverageComponent.highlightProteoforms(selectedParentItems, selectedChildItems);
+    }
 }

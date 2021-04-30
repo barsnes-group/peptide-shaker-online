@@ -227,7 +227,7 @@ public abstract class GraphComponent extends VerticalLayout {
         bottomRightPanel.addComponent(legendLayoutBtn);
         bottomRightPanel.setComponentAlignment(legendLayoutBtn, Alignment.TOP_CENTER);
         bottomRightPanel.addStyleName("righttbottompanelstyle");
-        mainContainer.addComponent(legendLayout, "left: " + 50 + "%; top: " + 50 + "%");
+        mainContainer.addComponent(legendLayout, "right: " + 10 + "px; bottom: " + -12 + "px");
         lefTtopPanel = new VerticalLayout();
         lefTtopPanel.setSpacing(false);
         lefTtopPanel.setWidthUndefined();
@@ -1010,6 +1010,11 @@ public abstract class GraphComponent extends VerticalLayout {
             graphsControl.setValue("Protein-Peptide");
         }
     }
+
+    public void reset() {
+        graphsControl.setValue("Protein-Peptide");
+    }
+   
 
     /**
      * This class is a wrapper for the dropped component that is used in the

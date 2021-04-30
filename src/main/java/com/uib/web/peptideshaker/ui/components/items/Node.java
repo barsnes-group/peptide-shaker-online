@@ -1,4 +1,3 @@
-
 package com.uib.web.peptideshaker.ui.components.items;
 
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
@@ -48,7 +47,7 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
     private double x;
     private double y;
 
-    public Node(String id, String tooltip, String modifications, String sequence, int psmNumber, String PSMNumberColor, double inteinsity, String inteinsityColor) {
+    public Node(String id, String tooltip, String modifications, String sequence, int psmNumber, String PSMNumberColor, double intensity, String intensityColor) {
 
         Node.this.setStyleName("node");
         Node.this.addLayoutClickListener(Node.this);
@@ -109,11 +108,11 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
         this.intensityLayout = new VerticalLayout();
         this.intensityLayout.setSizeFull();
         Node.this.addComponent(intensityLayout);
-        String tooltipExt2 = "</br>Intensity: " + df1.format(inteinsity) + "";
-        if (inteinsity == -10000) {
+        String tooltipExt2 = "</br>Intensity: " + df1.format(intensity) + "";
+        if (intensity == -10000 || intensity == 0) {
             tooltipExt2 = "";
         }
-        Label intensityColorLabel = new Label("<div  style='background:" + inteinsityColor + ";border-radius:100%;width: 100%;height: 100%;opacity:0.2;'></div>", ContentMode.HTML);
+        Label intensityColorLabel = new Label("<div  style='background:" + intensityColor + ";border-radius:100%;width: 100%;height: 100%;opacity:0.2;'></div>", ContentMode.HTML);
         intensityColorLabel.setSizeFull();
         intensityColorLabel.setStyleName("intensitycolornode");
         intensityLayout.addComponent(intensityColorLabel);
@@ -121,13 +120,15 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
 
         tooltip += tooltipExt;
         tooltip += tooltipExt2;
-        Node.this.setDescription(tooltip);
+        if (!tooltip.trim().equals("")) {
+            Node.this.setDescription(tooltip);
+        }
 
         this.edges = new LinkedHashSet<>();
 
     }
 
-    public Node(String id, String tooltip, ModificationMatch[] modifications, String sequence, int psmNumber, Color PSMNumberColor, double inteinsity, Color inteinsityColor) {
+    public Node(String id, String tooltip, ModificationMatch[] modifications, String sequence, int psmNumber, Color PSMNumberColor, double intensity, Color intensityColor) {
 
         Node.this.setStyleName("node");
         Node.this.addLayoutClickListener(Node.this);
@@ -187,11 +188,11 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
         this.intensityLayout = new VerticalLayout();
         this.intensityLayout.setSizeFull();
         Node.this.addComponent(intensityLayout);
-        String tooltipExt2 = "</br>Intensity: " + df1.format(inteinsity) + "";
-        if (inteinsity == -10000) {
+        String tooltipExt2 = "</br>Intensity: " + df1.format(intensity) + "";
+        if (intensity == -10000 || intensity == 0) {
             tooltipExt2 = "";
         }
-        Label intensityColorLabel = new Label("<div  style='background:rgb(" + inteinsityColor.getRed() + "," + inteinsityColor.getGreen() + "," + inteinsityColor.getBlue() + ");border-radius:100%;width: 100%;height: 100%;opacity:0.2;'></div>", ContentMode.HTML);
+        Label intensityColorLabel = new Label("<div  style='background:rgb(" + intensityColor.getRed() + "," + intensityColor.getGreen() + "," + intensityColor.getBlue() + ");border-radius:100%;width: 100%;height: 100%;opacity:0.2;'></div>", ContentMode.HTML);
         intensityColorLabel.setSizeFull();
         intensityColorLabel.setStyleName("intensitycolornode");
         intensityLayout.addComponent(intensityColorLabel);
@@ -199,7 +200,7 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
 
         tooltip += tooltipExt;
         tooltip += tooltipExt2;
-        this.intensityColor = inteinsityColor;
+        this.intensityColor = intensityColor;
         this.psmColor = PSMNumberColor;
         Node.this.setDescription(tooltip);
         this.edges = new LinkedHashSet<>();

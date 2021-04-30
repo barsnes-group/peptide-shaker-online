@@ -1,4 +1,3 @@
-
 package graphmatcher;
 
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
@@ -21,7 +20,7 @@ import java.util.*;
  *
  * @author Yehia Mokhtar Farag
  */
-public abstract class NetworkGraphNode extends VerticalLayout implements LayoutEvents.LayoutClickListener {
+public class NetworkGraphNode extends VerticalLayout {
 
     private final String nodeId;
     private final Set<NetworkGraphEdge> edges;
@@ -41,23 +40,27 @@ public abstract class NetworkGraphNode extends VerticalLayout implements LayoutE
     private int type;
     private double x;
     private double y;
+    private final Label nodeLabel;
 
     public NetworkGraphNode(String id, boolean internal, boolean parentNode) {
-
         NetworkGraphNode.this.setStyleName("node");
         NetworkGraphNode.this.addStyleName("pathwaynode");
-        NetworkGraphNode.this.addLayoutClickListener(NetworkGraphNode.this);
         this.nodeId = id;
         this.accession = id.split(";")[0].split("-")[0];
         this.proteoform = id.contains(":") || nodeId.contains("-") || nodeId.contains(";");
         this.internal = internal;
         this.parent = parentNode;
+        this.nodeLabel = new Label();
+        nodeLabel.setStyleName("nodelabel");
         this.modificationsLocationsMap = new HashMap<>();
-        NetworkGraphNode.this.setDescription(id);
+        if (!id.trim().equals("")) {
+            NetworkGraphNode.this.setDescription(id);
+        }
 
         AbsoluteLayout subContainer = new AbsoluteLayout();
         subContainer.setSizeFull();
         NetworkGraphNode.this.addComponent(subContainer);
+        subContainer.addComponent(nodeLabel, "left:50;top:50%");
 
         String tooltip = id.split(";")[0] + "<br/>";
 
@@ -67,12 +70,11 @@ public abstract class NetworkGraphNode extends VerticalLayout implements LayoutE
             NetworkGraphNode.this.addStyleName("proteoformnode");
         }
 
-        if (nodeId.contains("-")) {
-            NetworkGraphNode.this.addStyleName("isoform");
-        }
-
         if (internal) {
             NetworkGraphNode.this.addStyleName("internalNode");
+            if (nodeId.contains("-")) {
+                NetworkGraphNode.this.addStyleName("isoform");
+            }
         } else {
             NetworkGraphNode.this.addStyleName("externalNode");
         }
@@ -106,8 +108,6 @@ public abstract class NetworkGraphNode extends VerticalLayout implements LayoutE
 //                    modMap.get(smodification).addAll(modList);
 //                }
 //            }
-
-
             modificationsSet.stream().map((modification) -> modification.split(":")[0]).forEachOrdered((smodification) -> {
                 List<String> modList = modificationFactory.getModificationsForPsiAccession(smodification);
                 if (!modMap.containsKey(smodification)) {
@@ -143,7 +143,12 @@ public abstract class NetworkGraphNode extends VerticalLayout implements LayoutE
 
             } else {
                 finalColor = Color.ORANGE;
-                modificationLabel = new Label("<div  style='background:rgb(" + finalColor.getRed() + "," + finalColor.getGreen() + "," + finalColor.getBlue() + "); border-radius:100%;width: 100%;height: 100%;    color: white; line-height: 21px; text-align: center;font-size: 12px;  font-weight: 700;'>ModIndex</div>", ContentMode.HTML);
+                if (internal) {
+                    modificationLabel = new Label("<div  style='background:rgb(" + finalColor.getRed() + "," + finalColor.getGreen() + "," + finalColor.getBlue() + "); border-radius:100%;width: 100%;height: 100%;    color: white; line-height: 21px; text-align: center;font-size: 12px;  font-weight: 700;'>ModIndex</div>", ContentMode.HTML);
+                } else {
+                    modificationLabel = new Label("<div  style='background:rgb(" + finalColor.getRed() + "," + finalColor.getGreen() + "," + finalColor.getBlue() + "); border-radius:100%;width: 100%;height: 100%;    color: white; line-height: 21px; text-align: center;font-size: 12px;  font-weight: 700;'>  </div>", ContentMode.HTML);
+                }
+
                 modificationLabel.setSizeFull();
                 subContainer.addComponent(modificationLabel);
                 NetworkGraphNode.this.addStyleName("multimodificationproteoform");
@@ -157,7 +162,9 @@ public abstract class NetworkGraphNode extends VerticalLayout implements LayoutE
             }
         }
         tooltip = tooltip.replace("(null)", "");
-        NetworkGraphNode.this.setDescription(tooltip);
+        if (!tooltip.trim().equals("")) {
+            NetworkGraphNode.this.setDescription(tooltip);
+        }
         if (internal && newIds.split(";").length > 1) {
             newIds = newIds.replace("null", "-1");
             newIds = newIds.split(";")[1];
@@ -180,6 +187,8 @@ public abstract class NetworkGraphNode extends VerticalLayout implements LayoutE
             subParentNode.setSizeFull();
             subContainer.addComponent(subParentNode);
         }
+        nodeLabel.setVisible(false);
+        nodeLabel.setValue(accession.trim());
     }
 
     public NetworkGraphNode getParentNode() {
@@ -271,17 +280,9 @@ public abstract class NetworkGraphNode extends VerticalLayout implements LayoutE
 
     }
 
-    @Override
-    public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-        selected(nodeId);
-    }
-
-    public abstract void selected(String id);
-
     public void addEdge(NetworkGraphEdge e) {
         edges.add(e);
         addEdge();
-//        this.setDescription(this.getDescription() + "(" + edges.size() + ")");
     }
 
     public Set<NetworkGraphEdge> getRelatedEdges() {
@@ -321,6 +322,10 @@ public abstract class NetworkGraphNode extends VerticalLayout implements LayoutE
             }
             modificationLabel.setValue(modificationLabel.getValue().replace("ModIndex", proteformIndex));
         }
+    }
+
+    public void setShowLabel(boolean show) {
+        nodeLabel.setVisible(show);
     }
 
 }

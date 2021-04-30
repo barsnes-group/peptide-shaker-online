@@ -5,6 +5,7 @@ import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.PeptideObject;
 import com.uib.web.peptideshaker.model.ProteinGroupObject;
 import com.uib.web.peptideshaker.model.VisualizationDatasetModel;
+import com.uib.web.peptideshaker.ui.components.items.HelpPopupButton;
 import com.uib.web.peptideshaker.ui.views.subviews.proteinsview.ProteinsGraphsContainerView;
 import com.uib.web.peptideshaker.ui.views.subviews.proteinsview.Protein3DStructureView;
 import com.uib.web.peptideshaker.ui.views.subviews.proteinsview.ProteinCoverageView;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * This class represents the layout that contains selected protein details
@@ -42,7 +44,7 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
     private final HorizontalLayout middleContainer;
 
     private final Map<Integer, Component> filterComponentsMap;
-     private int currentFilterView = 0;
+    private int currentFilterView = 0;
 
     public ProteinPeptidesSubView() {
         this.appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
@@ -56,6 +58,7 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
         HorizontalLayout topLabelContainer = new HorizontalLayout();
         topLabelContainer.setHeight(30, Unit.PIXELS);
         topLabelContainer.setWidth(100, Unit.PERCENTAGE);
+        topLabelContainer.addStyleName("minhight30");
         container.addComponent(topLabelContainer);
         HorizontalLayout topLeftLabelContainer = new HorizontalLayout();
         topLeftLabelContainer.setWidthUndefined();
@@ -67,6 +70,8 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
         headerLabel.setWidthUndefined();
         topLeftLabelContainer.setSpacing(true);
         topLeftLabelContainer.addComponent(headerLabel);
+        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Protein Level Visualization</h1>Visulaisation of protein details and related proteins including the peptide coverage and 3D visulisation.", "", 350, 90);
+        topLeftLabelContainer.addComponent(helpBtn);
 
         Label commentLabel = new Label("<i style='padding-right: 50px;top: 3px !important;position: relative;'>* Click in the graph or table to select proteins and peptides</i>", ContentMode.HTML);
         commentLabel.setWidthUndefined();
@@ -90,8 +95,13 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
         subContainer.addComponent(middleContainer);
         graphsContainerComponent = new ProteinsGraphsContainerView() {
             @Override
-            public void selectedItem(Map<String, ProteinGroupObject> selectedItems, Map<String, PeptideObject> selectedChildsItems, boolean isProteform) {
+            public void selectedItem(Map<String, ProteinGroupObject> selectedItems, Map<String, PeptideObject> selectedChildsItems) {
                 ProteinPeptidesSubView.this.selectPeptide(selectedItems, selectedChildsItems);
+            }
+
+            @Override
+            public void selectedProteform(Set<Object> selectedParentItems, Set<Object> selectedChildItems) {
+               ProteinCoverageView.highlightProteoforms(selectedParentItems, selectedChildItems);
             }
 
             @Override
@@ -132,6 +142,11 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
             @Override
             public void selectPeptide(Map<String, ProteinGroupObject> selectedProteins, Map<String, PeptideObject> selectedPeptides, boolean isProteform) {
                 ProteinPeptidesSubView.this.selectPeptide(selectedProteins, selectedPeptides);
+            }
+
+            @Override
+            public void selectProteoform(String proteoformId) {
+               graphsContainerComponent.selectProteoform(proteoformId);
             }
 
         };
@@ -223,6 +238,7 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
 
         return currentFilterView;
     }
+
     @Override
     public String getViewId() {
         return ProteinPeptidesSubView.class.getName();
@@ -252,6 +268,7 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
             appManagmentBean.getUI_Manager().setEncodedProteinButtonImage("null");
             return;
         }
+      
 //        protein3DStructureView.setMode(4);
         if (appManagmentBean.getUI_Manager().getSelectedProteinIndex() != lastSelectedProteinIndex) {
             lastSelectedProteinIndex = appManagmentBean.getUI_Manager().getSelectedProteinIndex();
@@ -327,5 +344,9 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
         }
 
     }
+
+  
+    
+    
 
 }

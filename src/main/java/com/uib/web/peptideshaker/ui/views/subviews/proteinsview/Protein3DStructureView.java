@@ -181,7 +181,7 @@ public class Protein3DStructureView extends AbsoluteLayout {
 
         });
         pdbMatchesSelect.addValueChangeListener(pdbMatchSelectlistener);
-        this.infoLabel = new Label("<p style='color: gray; font-weight: 200; width: 100% !important;text-align: center;'>Select single protein to visualize proteoforms and protein 3D structure</p>", ContentMode.HTML);
+        this.infoLabel = new Label("<p style='color: #111318;font-weight: 200;width: 100% !important;text-align: center;font-size: 12px;-webkit-text-stroke: thin;'>Select single protein to visualize proteoforms and protein 3D structure</p>", ContentMode.HTML);
         infoLabel.setStyleName("highzindex");
         Protein3DStructureView.this.addComponent(infoLabel, "left: 0px; bottom:25px");
 
@@ -218,7 +218,7 @@ public class Protein3DStructureView extends AbsoluteLayout {
         this.lastSelectedProteinSequence = proteinSequence;
         this.proteinPeptides = proteinPeptides;
         this.uniprotLabel.setValue("UniProt: " + lastSelectedAccession);
-        loadData(lastSelectedAccession, lastSelectedProteinSequence, true);
+        loadData(lastSelectedAccession, lastSelectedProteinSequence,UI.getCurrent().getStyleName().contains("proteinpeptidessubviewstyle"));
 
     }
 

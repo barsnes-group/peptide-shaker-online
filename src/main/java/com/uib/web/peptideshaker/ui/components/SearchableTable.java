@@ -23,7 +23,7 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
 
     private String tableMainTitle;
     private final Map<Integer, String> tableSearchingResults;
-    private final Map<String, String> tableSearchingMap;
+    private final Map<String, Comparable> tableSearchingMap;
     private final Table mainTable;
     private final HorizontalLayout serachComponent;
     private Label searchResultsLabel;
@@ -167,7 +167,10 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
         int index = 1;
         tableSearchingResults.clear();
         for (String key : tableSearchingMap.keySet()) {
-            if (key.contains(keyWord) && mainTable.containsId(tableSearchingMap.get(key))) {
+//            if (key.contains(keyWord)) {
+//                System.out.println("key "+key+"  "+tableSearchingMap.get(key)+"  "+ mainTable.containsId(tableSearchingMap.get(key))+"   "+mainTable.getItemIds().contains(tableSearchingMap.get(key)));
+//            }
+            if (key.contains(keyWord) && mainTable.getItemIds().contains(tableSearchingMap.get(key))) {
                 tableSearchingResults.put(index++, key);
             }
         }
@@ -333,7 +336,7 @@ public abstract class SearchableTable extends AbsoluteLayout implements Property
             e.printStackTrace();
             this.mainTable.addItem(value, dataKey);
         }
-        this.tableSearchingMap.put(searchingKeyword.toLowerCase().replace(",", "_"), dataKey.toString());
+        this.tableSearchingMap.put(searchingKeyword.toLowerCase().replace(",", "_"), dataKey);
     }
 
     /**

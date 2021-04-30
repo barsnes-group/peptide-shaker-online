@@ -99,6 +99,29 @@ public class DatabaseUtils {
         return -1;
     }
 
+      public String  retrieveDataSet(int datasetIndex) {
+        try {
+            if (!dbEnabled) {
+                return "";
+            }
+            if (conn == null || conn.isClosed()) {
+                Class.forName(appManagmentBean.getAppConfig().getDbDriver()).newInstance();
+                conn = DriverManager.getConnection(appManagmentBean.getAppConfig().getDbURL() + appManagmentBean.getAppConfig().getDbName() + CONSTANT.SERVER_TIMEZONE, appManagmentBean.getAppConfig().getDbUserName(), appManagmentBean.getAppConfig().getDbPassword());
+
+            }
+            String selectstatment = "SELECT * FROM `datasetsharing` where `ds_index`=?";
+            PreparedStatement preparedStatment = conn.prepareStatement(selectstatment);
+            preparedStatment.setInt(1, datasetIndex);
+            ResultSet rs = preparedStatment.executeQuery();
+            while (rs.next()) {                
+                return rs.getString("ds_details");
+            }
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | SQLException ex) {
+            System.out.println("at Error : database util " + ex);
+        }
+        return "";
+       
+    }
     /**
      * Get list of accessions available on csf-pr in order to allow mapping data
      * to csf-pr.

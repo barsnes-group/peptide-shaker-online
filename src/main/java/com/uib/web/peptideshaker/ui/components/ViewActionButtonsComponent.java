@@ -92,4 +92,5 @@ public class ViewActionButtonsComponent extends AbsoluteLayout implements Layout
 
         appManagmentBean.getUI_Manager().viewLayout(buttonId);
     }
+    
 }

@@ -4,6 +4,7 @@ import com.uib.web.peptideshaker.AppManagmentBean;
 import com.uib.web.peptideshaker.model.PSMObject;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.PeptideObject;
+import com.uib.web.peptideshaker.ui.components.items.HelpPopupButton;
 import com.uib.web.peptideshaker.ui.views.subviews.peptidespsmviews.PSMContainerView;
 import com.uib.web.peptideshaker.ui.views.subviews.peptidespsmviews.components.SpectrumInformation;
 import com.uib.web.peptideshaker.ui.interfaces.ViewableFrame;
@@ -39,6 +40,7 @@ public class PeptidePsmsSubView extends AbsoluteLayout implements ViewableFrame 
         HorizontalLayout topLabelContainer = new HorizontalLayout();
         topLabelContainer.setHeight(30, Unit.PIXELS);
         topLabelContainer.setWidth(100, Unit.PERCENTAGE);
+        topLabelContainer.addStyleName("minhight30");
         container.addComponent(topLabelContainer);
         HorizontalLayout topLeftLabelContainer = new HorizontalLayout();
         topLeftLabelContainer.setWidthUndefined();
@@ -50,6 +52,10 @@ public class PeptidePsmsSubView extends AbsoluteLayout implements ViewableFrame 
         headerLabel.setWidthUndefined();
         topLeftLabelContainer.setSpacing(true);
         topLeftLabelContainer.addComponent(headerLabel);
+         HelpPopupButton helpBtn = new HelpPopupButton("<h1>Peptide level</h1>visulization of peptide details include available peptide-to-spectrum matches and spectrum visulizaion chart.", "", 350  , 90);
+
+         topLeftLabelContainer.addComponent(helpBtn);
+
         HorizontalLayout middleContainer = new HorizontalLayout();
         middleContainer.setSizeFull();
         middleContainer.setSpacing(true);

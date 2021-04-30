@@ -82,6 +82,7 @@ public class PeptideShakerEntryPoint extends UI {
                 return;
             }
         } catch (IllegalArgumentException | NullPointerException e) {
+            e.printStackTrace();
             System.out.println("at error " + PeptideShakerEntryPoint.class.getName() + " line: 85 " + e);
         }
 

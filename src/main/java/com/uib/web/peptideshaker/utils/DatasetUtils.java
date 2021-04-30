@@ -140,7 +140,7 @@ public class DatasetUtils implements Serializable {
         } catch (UnsupportedEncodingException ex) {
             System.out.println("at Error: dataset utils " + ex);
         }
-        String encodedLink = Page.getCurrent().getLocation().toString().split(appName)[0] + "/" + appName + "?" + encryptedDsIndex;
+        String encodedLink = Page.getCurrent().getLocation().toString().split(appName)[0] + "" + appName + "?" + encryptedDsIndex;
         return encodedLink;
     }
     
@@ -1361,9 +1361,9 @@ public class DatasetUtils implements Serializable {
      *
      * @param proteoform_file input proteoform file
      */
-    private Map<String, Map<String, NetworkGraphNode>> processProteoformFile(File proteoform_file) {
+    private LinkedHashMap<String, LinkedHashMap<String, NetworkGraphNode>> processProteoformFile(File proteoform_file) {
         
-        Map<String, Map<String, NetworkGraphNode>> nodes = new HashMap<>();
+        LinkedHashMap<String, LinkedHashMap<String, NetworkGraphNode>> nodes = new LinkedHashMap<>();
         List<String> readerSet = new ArrayList<>();
         String line;
         try {
@@ -1382,12 +1382,7 @@ public class DatasetUtils implements Serializable {
                     }
                     NetworkGraphNode node;
                     if (!nodes.get(accession).containsKey(proteoformId)) {
-                        node = new NetworkGraphNode(proteoformId, true, false) {
-                            @Override
-                            public void selected(String id) {
-                                
-                            }
-                        };
+                        node = new NetworkGraphNode(proteoformId, true, false) ;
                         node.setType(3);
                         nodes.get(accession).put(proteoformId, node);
                     }
@@ -1412,25 +1407,13 @@ public class DatasetUtils implements Serializable {
             return selectedProtein.getFullEdgesSet();
         }
         
-        Set<NetworkGraphEdge> edges = new HashSet<>();
-        Map<String, NetworkGraphNode> tNodes = new HashMap<>();
+        Set<NetworkGraphEdge> edges = new LinkedHashSet<>();
+        Map<String, NetworkGraphNode> tNodes = new LinkedHashMap<>();
         Map<String, NetworkGraphNode> accMap = dataset.getProteoformsMap().get(proteinAcc);
-        NetworkGraphNode parentNode = new NetworkGraphNode(proteinAcc, true, true) {
-            @Override
-            public void selected(String id) {
-                System.out.println("at selected parent node  id " + id);
-            }
-            
-        };
+        NetworkGraphNode parentNode = new NetworkGraphNode(proteinAcc, true, true) ;
         selectedProtein.setParentNode(parentNode);
         if (accMap == null) {
-            NetworkGraphNode singleNode = new NetworkGraphNode(proteinAcc + ";", true, false) {
-                @Override
-                public void selected(String id) {
-                    System.out.println("at selected single id " + id);
-                }
-                
-            };
+            NetworkGraphNode singleNode = new NetworkGraphNode(proteinAcc + ";", true, false);
             singleNode.setType(3);
             singleNode.setParentNode(parentNode);
             selectedProtein.addProteoformNode(singleNode);
@@ -1470,20 +1453,10 @@ public class DatasetUtils implements Serializable {
             NetworkGraphNode n2;
             n2 = null;
             if ((p1 == null || !(p1.getProteoformsNodes().containsKey(arr[0].trim()))) && !tNodes.containsKey(arr[0].trim())) {
-                n1 = new NetworkGraphNode(arr[0], false, false) {
-                    @Override
-                    public void selected(String id) {
-                        System.out.println("at selected node 2 " + id);
-                    }
-                };
+                n1 = new NetworkGraphNode(arr[0], false, false) ;
                 tNodes.put(n1.getNodeId(), n1);
                 if (!tNodes.containsKey(n1.getAccession())) {
-                    NetworkGraphNode newParentNode = new NetworkGraphNode(n1.getAccession(), false, true) {
-                        @Override
-                        public void selected(String id) {
-                            System.out.println("at selected parent node  id " + id);
-                        }
-                    };
+                    NetworkGraphNode newParentNode = new NetworkGraphNode(n1.getAccession(), false, true) ;
                     n1.setParentNode(newParentNode);
                     tNodes.put(n1.getAccession(), newParentNode);
                 }
@@ -1493,21 +1466,10 @@ public class DatasetUtils implements Serializable {
                 n1 = p1.getProteoformsNodes().get(arr[0]);
             }
             if ((p2 == null || !(p2.getProteoformsNodes().containsKey(arr[1]))) && !tNodes.containsKey(arr[1])) {
-                n2 = new NetworkGraphNode(arr[1], false, false) {
-                    @Override
-                    public void selected(String id) {
-                        System.out.println("at selected node 2 " + id);
-                    }
-                };
+                n2 = new NetworkGraphNode(arr[1], false, false) ;
                 tNodes.put(n2.getNodeId(), n2);
                 if (!tNodes.containsKey(n2.getAccession())) {
-                    NetworkGraphNode NewSecParentNode = new NetworkGraphNode(n2.getAccession(), false, true) {
-                        @Override
-                        public void selected(String id) {
-                            System.out.println("at selected parent node  id " + id);
-                        }
-                        
-                    };
+                    NetworkGraphNode NewSecParentNode = new NetworkGraphNode(n2.getAccession(), false, true) ;
                     tNodes.put(n2.getAccession(), NewSecParentNode);
                     
                 }

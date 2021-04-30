@@ -102,6 +102,10 @@ public abstract class ProteoformLayout extends AbsoluteLayout implements LayoutE
         return includedModifications;
     }
 
+    public String getProteoformKey() {
+        return proteoformKey;
+    }
+
     public abstract void selectProteoform(ProteoformLayout proteoform);
 
 }
