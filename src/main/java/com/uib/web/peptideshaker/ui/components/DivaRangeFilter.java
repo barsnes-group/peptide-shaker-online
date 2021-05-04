@@ -51,8 +51,10 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
     private final AbsoluteLayout slidersContainer;
     private final TreeMap<Comparable, Set<Integer>> activeData;
     private final Label chartTitle;
+    private final AbsoluteLayout frame;
     private final JFreeChart mainChart;
     private final FilterButton resetFilterBtn;
+    private Label noquant;
     private final String title;
     private final String sign;
     private int chartWidth;
@@ -81,7 +83,7 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
         this.activeData = new TreeMap<>();
         DivaRangeFilter.this.setSizeFull();
 
-        AbsoluteLayout frame = new AbsoluteLayout();
+        frame = new AbsoluteLayout();
         frame.setSizeFull();
         frame.setStyleName("innerborderframe");
         frame.addStyleName("thumbfilterframe");
@@ -335,11 +337,15 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
 
     @Override
     public void suspendFilter(boolean suspendFilter) {
-        Label noquant = new Label("<center> No data available </center>", ContentMode.HTML);
-        noquant.setSizeFull();
-        noquant.setStyleName("noquantlabel");
-        this.removeAllComponents();
-        this.addComponent(noquant);
+        frame.setVisible(!suspendFilter);
+        resetFilterBtn.setVisible(!suspendFilter);
+        if (noquant == null) {
+            noquant = new Label("<center> No data available </center>", ContentMode.HTML);
+            noquant.setSizeFull();
+            noquant.setStyleName("noquantlabel");
+            this.addComponent(noquant);
+        }
+        noquant.setVisible(suspendFilter);
 
     }
 
@@ -359,6 +365,9 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
      */
     @Override
     public void updateSelection(FilterUpdatingEvent event) {
+        if (!frame.isVisible()) {
+            return;
+        }
         activeData.clear();
         try {
 
@@ -382,7 +391,7 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
             }
             double min = 0.0;//Double.valueOf(data.firstKey() + "");
 //            if (sign.equalsIgnoreCase("")) {
-                maxValue = Double.valueOf(activeData.lastKey().toString());
+            maxValue = Double.valueOf(activeData.lastKey().toString());
 //            } else {
 //                maxValue = 100.0;
 //            }

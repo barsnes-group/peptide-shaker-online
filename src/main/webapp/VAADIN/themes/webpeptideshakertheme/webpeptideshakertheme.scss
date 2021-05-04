@@ -3421,9 +3421,7 @@
     .selectedpeptide.peptidelayout.nodemodificationbackground, .selectedpeptide.peptidelayout.v-absolutelayout-nodemodificationbackground .v-label, .peptidelayout.v-absolutelayout-nodemodificationbackground .v-label:hover {
         background-color: lightgray !important;
         border-color: black !important;
-        opacity: 1 !important;        
-        border-width: 2px;
-        outline: 2px solid #ff8d00;
+        opacity: 1 !important;       
     }
     .v-absolutelayout-wrapper-inframetable {
         padding: 25px;
@@ -9418,7 +9416,7 @@
     .v-table-inframetable .v-scrollable.v-table-body-wrapper{
         overflow-x:hidden !important;
     }
-    .v-absolutelayout-peptidelayout.v-absolutelayout-selectedpeptide{
+    .v-absolutelayout-peptidelayout.v-absolutelayout-singleselectedpeptide{
         border-color: black !important;
         opacity: 1 !important;        
         border-width: 2px;

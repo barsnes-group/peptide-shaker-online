@@ -323,7 +323,7 @@ public class SpectrumPlot extends AbsoluteLayout {
         g2.fillRect(2, 2, width - 4, height - 4);
         g2.setPaint(Color.GRAY);
         int dw = spectrumPanel.getSize().width;
-        int dh = spectrumPanel.getSize().width;
+        int dh = spectrumPanel.getSize().height;
         spectrumPanel.setSize(width, height);
         spectrumPanel.paint(g2);
 
@@ -340,6 +340,7 @@ public class SpectrumPlot extends AbsoluteLayout {
             System.out.println(e.getLocalizedMessage());
         }
         spectrumPanel.setSize(dw, dh);
+        spectrumPanel.repaint();
         return null;
 
     }

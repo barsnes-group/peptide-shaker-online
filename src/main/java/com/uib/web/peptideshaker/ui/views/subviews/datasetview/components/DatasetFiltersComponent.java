@@ -270,45 +270,45 @@ public class DatasetFiltersComponent extends HorizontalLayout {
      * @param proteinIntinsityUniquePepMap protein intensity map (based on
      * unique peptides intensity)
      */
-    public void updateFiltersData(VisualizationDatasetModel dataset) {
-//        Selection_Manager.reset();
-//        Selection_Manager.setModificationsMap(modificationMatrix);
-//        modificationFilter.initializeFilterData(dataset.getModificationMatrixModel(), new HashSet<>(), dataset.getProteinsMap().size());
-//        chromosomeFilter.initializeFilterData(dataset.getChromosomeMap());
-//        Selection_Manager.setChromosomeMap(chromosomeMap);
-//        proteinInferenceFilter.initializeFilterData(dataset.getProteinInferenceMap(), proteinInferenceColourMap);
-//        Selection_Manager.setPiMap(piMap);
-//        Selection_Manager.setProteinValidationMap(proteinValidationMap);
-//        FilterUpdatingEvent event = new FilterUpdatingEvent();
-//        event.setSelectionMap(dataset.getProteinValidationMap());
-//        validationFilter.updateSelection(event);
-//        validationFilter.initializeFilterData(dataset.getProteinValidationMap(), new ArrayList<>(Arrays.asList(CONSTANT.PROTEIN_VALIDATION_COLOURS)));
-//        Selection_Manager.setProteinCoverageMap(proteinCoverageMap);
-//        Selection_Manager.setProteinIntinsityAllPepMap(proteinIntinsityAllPepMap);
-//        Selection_Manager.setProteinIntinsityUniquePepMap(proteinIntinsityUniquePepMap);
-//        Selection_Manager.setProteinPSMNumberMap(proteinPSMNumberMap);
-//        Selection_Manager.setProteinPeptidesNumberMap(proteinPeptidesNumberMap);
-//        peptidesNumberFilter.initializeFilterData(dataset.getValidatedPetideMap());
-//        psmNumberFilter.initializeFilterData(dataset.getValidatedPsmsMap());
-//        coverageFilter.initializeFilterData(dataset.getValidatedCoverageMap());
-        if (dataset.getDatasetType().equals(CONSTANT.ID_DATASET)) {
-//            Label noquant = new Label("<center> No quant data available </center>", ContentMode.HTML);
-//            noquant.setSizeFull();
-//            noquant.setStyleName("noquantlabel");
-//            intensityAllPeptidesRange.addComponent(noquant);
-            intensityUniquePeptidesRange.suspendFilter(true);
-            intensityAllPeptidesRange.suspendFilter(true);
-
-        } else {
-//            intensityAllPeptidesRange.(dataset.getAllPeptideIntensityMap());
-//            intensityUniquePeptidesRange.initializeFilterData(dataset.getUniquePeptideIntensityMap());
-
-        }
-//        if (toShareDataset) {
-//            peptidesNumberFilter.redrawChart();
-//        }
-
-    }
+//    public void updateFiltersData(VisualizationDatasetModel dataset) {
+////        Selection_Manager.reset();
+////        Selection_Manager.setModificationsMap(modificationMatrix);
+////        modificationFilter.initializeFilterData(dataset.getModificationMatrixModel(), new HashSet<>(), dataset.getProteinsMap().size());
+////        chromosomeFilter.initializeFilterData(dataset.getChromosomeMap());
+////        Selection_Manager.setChromosomeMap(chromosomeMap);
+////        proteinInferenceFilter.initializeFilterData(dataset.getProteinInferenceMap(), proteinInferenceColourMap);
+////        Selection_Manager.setPiMap(piMap);
+////        Selection_Manager.setProteinValidationMap(proteinValidationMap);
+////        FilterUpdatingEvent event = new FilterUpdatingEvent();
+////        event.setSelectionMap(dataset.getProteinValidationMap());
+////        validationFilter.updateSelection(event);
+////        validationFilter.initializeFilterData(dataset.getProteinValidationMap(), new ArrayList<>(Arrays.asList(CONSTANT.PROTEIN_VALIDATION_COLOURS)));
+////        Selection_Manager.setProteinCoverageMap(proteinCoverageMap);
+////        Selection_Manager.setProteinIntinsityAllPepMap(proteinIntinsityAllPepMap);
+////        Selection_Manager.setProteinIntinsityUniquePepMap(proteinIntinsityUniquePepMap);
+////        Selection_Manager.setProteinPSMNumberMap(proteinPSMNumberMap);
+////        Selection_Manager.setProteinPeptidesNumberMap(proteinPeptidesNumberMap);
+////        peptidesNumberFilter.initializeFilterData(dataset.getValidatedPetideMap());
+////        psmNumberFilter.initializeFilterData(dataset.getValidatedPsmsMap());
+////        coverageFilter.initializeFilterData(dataset.getValidatedCoverageMap());
+////        if (dataset.getDatasetType().equals(CONSTANT.ID_DATASET)) {
+////            Label noquant = new Label("<center> No quant data available </center>", ContentMode.HTML);
+////            noquant.setSizeFull();
+////            noquant.setStyleName("noquantlabel");
+////            intensityAllPeptidesRange.addComponent(noquant);
+////            intensityUniquePeptidesRange.suspendFilter(dataset.getDatasetType().equals(CONSTANT.ID_DATASET));
+////            intensityAllPeptidesRange.suspendFilter(dataset.getDatasetType().equals(CONSTANT.ID_DATASET));
+////
+////        } else {
+////            intensityAllPeptidesRange.(dataset.getAllPeptideIntensityMap());
+////            intensityUniquePeptidesRange.initializeFilterData(dataset.getUniquePeptideIntensityMap());
+////
+////        }
+////        if (toShareDataset) {
+////            peptidesNumberFilter.redrawChart();
+////        }
+//
+//    }
 
     /**
      * Convert hashed colour to AWT colour object

@@ -342,8 +342,10 @@ public class SelectionManager implements Serializable {
 
     private void resetFilterEvents() {
         filterEventsMap.clear();
+//        suspendedFilters.clear();
         registeredDatasetFiltersMap.keySet().forEach((filterId) -> {
-            FilterUpdatingEvent event = selectedDataset.getDatasetFilterEventsMap().get(filterId);
+          
+            FilterUpdatingEvent event = selectedDataset.getDatasetFilterEventsMap().get(filterId); 
             if ((event != null)) {
                 FilterUpdatingEvent updatedEvent = new FilterUpdatingEvent();
                 Map<Comparable, Set<Integer>> selectionMap = new LinkedHashMap<>();
@@ -352,15 +354,18 @@ public class SelectionManager implements Serializable {
                 });
                 updatedEvent.setSelectionMap(selectionMap);
                 filterEventsMap.put(filterId, updatedEvent);
+                registeredDatasetFiltersMap.get(filterId).suspendFilter(false);
             } else {
                 suspendedFilters.add(filterId);
+                registeredDatasetFiltersMap.get(filterId).suspendFilter(true);
             }
         });
-        for (String filterId : suspendedFilters) {
-            registeredDatasetFiltersMap.get(filterId).suspendFilter(true);
-            registeredDatasetFiltersMap.remove(filterId);
-        }
-        suspendedFilters.clear();
+//        System.out.println("at suspend filetr ");
+//        for (String filterId : suspendedFilters) {
+//            
+////            registeredDatasetFiltersMap.remove(filterId);
+//        }
+//        suspendedFilters.clear();
     }
 
     private void updateFilterEvents(Set<Integer> filteredIndexes, String lastFilterId) {

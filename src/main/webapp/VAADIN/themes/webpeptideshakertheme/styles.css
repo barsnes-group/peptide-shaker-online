@@ -16572,8 +16572,6 @@ div.v-layout.v-horizontal.v-widget {
 	background-color: lightgray !important;
 	border-color: black !important;
 	opacity: 1 !important;
-	border-width: 2px;
-	outline: 2px solid #ff8d00;
 }
 
 .webpeptideshakertheme .v-absolutelayout-wrapper-inframetable {
@@ -19840,7 +19838,7 @@ div.v-layout.v-horizontal.v-widget {
 	margin-top: 5px;
 	max-width: 145px;
 	float: right !important;
-	cursor: pointer !important;
+	cursor: pointer;
 }
 
 .webpeptideshakertheme .v-tabsheet-subcontainertabsheet {
@@ -22695,18 +22693,20 @@ div.v-layout.v-horizontal.v-widget {
 	overflow-x: hidden !important;
 }
 
-.webpeptideshakertheme .v-absolutelayout-peptidelayout.v-absolutelayout-selectedpeptide {
+.webpeptideshakertheme .v-absolutelayout-peptidelayout.v-absolutelayout-singleselectedpeptide {
 	border-color: black !important;
 	opacity: 1 !important;
 	border-width: 2px;
 	outline: 2px solid #ff8d00;
 }
-.webpeptideshakertheme .chromosomefiltercontainerstyle  .resizableimg img { 
-    border: none;
-    top: 2px;
-    overflow:visible ;
-    position:relative;
+
+.webpeptideshakertheme .chromosomefiltercontainerstyle .resizableimg img {
+	border: none;
+	top: 2px;
+	overflow: visible;
+	position: relative;
 }
-.lowopacity img{
-	opacity:0.5
+
+.webpeptideshakertheme .lowopacity img {
+	opacity: 0.5;
 }

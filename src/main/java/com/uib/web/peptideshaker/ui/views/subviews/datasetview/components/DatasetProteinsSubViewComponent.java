@@ -192,6 +192,11 @@ public class DatasetProteinsSubViewComponent extends AbsoluteLayout implements R
             mainTable.setColumnCollapsible("proteinIntensity", true);
             mainTable.setColumnCollapsed("proteinIntensity", true);
             intensityColumnWidth = 0;
+        }else{
+          mainTable.setColumnCollapsible("proteinIntensity", false);
+            mainTable.setColumnCollapsed("proteinIntensity", false);
+            intensityColumnWidth = 120.0;
+        
         }
 
         if (smallScreen) {

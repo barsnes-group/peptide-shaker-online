@@ -165,6 +165,13 @@ public class PeptideLayout extends AbsoluteLayout implements Comparable<PeptideL
             PeptideLayout.this.removeStyleName("selectedpeptide");
         }
     }
+    public void setSingleSelected(boolean selected) {
+        if (selected) {
+            PeptideLayout.this.addStyleName("singleselectedpeptide");
+        } else {
+            PeptideLayout.this.removeStyleName("singleselectedpeptide");
+        }
+    }
 
     @Override
     public int compareTo(PeptideLayout o) {

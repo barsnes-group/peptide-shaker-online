@@ -249,8 +249,13 @@ public abstract class ProteinCoverageComponent extends AbsoluteLayout {
     }
 
     public void selectSubComponents(Set<String> peptidesId) {
+        boolean singlePeptide = peptidesId.size() == 1;
         peptideDistMap.forEach((peptide) -> {
             peptide.setSelected(peptidesId.contains(peptide.getPeptideId()));
+            peptide.setSingleSelected(false);
+            if (singlePeptide) {
+                peptide.setSingleSelected(peptidesId.contains(peptide.getPeptideId()));
+            }
         });
         if (!peptidesId.isEmpty() && peptidesId.iterator().next().toString().contains(";")) {
             Iterator<Component> itr = proteoformCoverage.iterator();
@@ -287,6 +292,7 @@ public abstract class ProteinCoverageComponent extends AbsoluteLayout {
         final boolean selectAll = peptideId == null;
         peptideDistMap.forEach((PeptideLayout peptide) -> {
             peptide.setSelected(selectAll || peptide.getPeptideId().equals(peptideId));
+            peptide.setSingleSelected(peptide.getPeptideId().equals(peptideId));
         });
 
     }
@@ -302,7 +308,8 @@ public abstract class ProteinCoverageComponent extends AbsoluteLayout {
     }
 
     public abstract void selectPeptide(Map<String, ProteinGroupObject> selectedItems, Map<String, PeptideObject> selectedChildsItems, boolean isProteform);
- public abstract void selectProteoform(String proteoformId);
+
+    public abstract void selectProteoform(String proteoformId);
 
     public void updateStylingMode(String style) {
         proteinCoverageLayout.updateStylingMode(style);
