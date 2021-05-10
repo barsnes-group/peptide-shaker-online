@@ -269,7 +269,6 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
             return;
         }
       
-//        protein3DStructureView.setMode(4);
         if (appManagmentBean.getUI_Manager().getSelectedProteinIndex() != lastSelectedProteinIndex) {
             lastSelectedProteinIndex = appManagmentBean.getUI_Manager().getSelectedProteinIndex();
             String selectedDatasetId = appManagmentBean.getUI_Manager().getSelectedDatasetId();
@@ -301,9 +300,6 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
             headerLabel.setValue("Protein Overview ");
         }
         ProteinCoverageView.setSelectedItems(selectedItems, selectedChildsItems);
-//        if (isProteform) {
-//            return;
-//        }
         if (selectedItems.size() == 1 && protein != null) {
             if (selectedChildsItems != null) {
                 if (!protein.getAccession().equalsIgnoreCase(lastSelectedAccession)) {
@@ -315,13 +311,6 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
                 if (this.selectedChildsItems != null) {
                     protein3DStructureView.updatePanel(protein.getAccession(), protein.getSequence(), this.selectedChildsItems.values());
                 }
-//                String selectedDatasetId = appManagmentBean.getUI_Manager().getSelectedDatasetId();
-//                VisualizationDatasetModel dataset = appManagmentBean.getUserHandler().getDataset(selectedDatasetId);
-//                Set<PeptideObject> fullPeptides = new HashSet<>();
-//                for (int i : protein.getPeptidesSet()) {
-//                    fullPeptides.add(dataset.getPeptidesMap().get(i));
-//                }
-//                protein3DStructureView.updatePanel(protein.getAccession(), protein.getSequence(), fullPeptides);
             }
         } else {
             protein3DStructureView.reset();
@@ -334,7 +323,6 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
         if (selectedItems.size() == 1) {
             Object proteinId = selectedItems.keySet().toArray()[0];
             graphsContainerComponent.selectPeptide(proteinId, peptideId);
-//            protein3DStructureView.selectPeptide(peptideId);
         }
 
         if (peptideId != null) {

@@ -85,6 +85,7 @@ public abstract class MatrixDiagramFilter extends VerticalLayout {
             }
             Comparable columnId = (Comparable) ((HBarWithLabel) barLayout).getData();
             if (selectedColumns.contains(columnId)) {
+                selectedColumns.remove(columnId);
                 unSelectCategory(columnId);
             } else {
                 selectCategory(columnId);

@@ -211,14 +211,16 @@ public class Protein3DStructureView extends AbsoluteLayout {
     }
 
     public void updatePanel(Object accession, String proteinSequence, Collection<PeptideObject> proteinPeptides) {
-        pdbChainsSelect.setVisible(true);
-        pdbMatchesSelect.setVisible(true);
-        infoLabel.setVisible(false);
-        this.lastSelectedAccession = accession;
-        this.lastSelectedProteinSequence = proteinSequence;
-        this.proteinPeptides = proteinPeptides;
-        this.uniprotLabel.setValue("UniProt: " + lastSelectedAccession);
-        loadData(lastSelectedAccession, lastSelectedProteinSequence,UI.getCurrent().getStyleName().contains("proteinpeptidessubviewstyle"));
+        
+            pdbChainsSelect.setVisible(true);
+            pdbMatchesSelect.setVisible(true);
+            infoLabel.setVisible(false);
+            this.lastSelectedAccession = accession;
+            this.lastSelectedProteinSequence = proteinSequence;
+            this.proteinPeptides = proteinPeptides;
+            this.uniprotLabel.setValue("UniProt: " + lastSelectedAccession);
+            loadData(lastSelectedAccession, lastSelectedProteinSequence, UI.getCurrent().getStyleName().contains("proteinpeptidessubviewstyle"));
+       
 
     }
 
@@ -569,8 +571,7 @@ public class Protein3DStructureView extends AbsoluteLayout {
 
                 });
 
-                if (peptideKey != null && !peptideKey.contains("null")) {
-
+                if (peptideKey != null && !peptideKey.contains("null") && peptidesQueryMap.containsKey(peptideKey)) {
                     JsonArray arr = peptidesQueryMap.getJsonArray(peptideKey);
                     for (int i = 0; i < arr.size(); i++) {
                         JsonObject peptide = arr.getJsonObject(i);
