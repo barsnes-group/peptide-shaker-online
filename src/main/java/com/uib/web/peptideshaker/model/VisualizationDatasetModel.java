@@ -546,15 +546,12 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
             return status;
         }
         if (searchGUIZipFile == null) {
-            System.out.println("error i");
             return CONSTANT.ERROR_STATUS;
         }
         if (psZipFile == null) {
-            System.out.println("error i2");
             return CONSTANT.ERROR_STATUS;
         }
         if (mgfIndexList == null) {
-            System.out.println("error i3");
             return CONSTANT.ERROR_STATUS;
         }
         if (mgfList == null) {

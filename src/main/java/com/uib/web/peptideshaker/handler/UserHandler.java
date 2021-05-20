@@ -118,9 +118,9 @@ public class UserHandler implements Serializable {
 
     private boolean synchronizeWithGalaxyHistory() {
         boolean busyHistory = checkBusyHistory();
-        filesToViewList.clear();
+        filesToViewList.clear();       
         this.userInformationMap = appManagmentBean.getGalaxyFacad().getUserInformation(loggedinUserAPIKey, loggedinUserId);
-        //initial user history       
+         //initial user history       
         Object[] storedData = appManagmentBean.getGalaxyFacad().getStoredData(loggedinUserAPIKey);
         this.collectionList = (List<GalaxyCollectionModel>) storedData[0];
         this.filesMap = (Map<String, GalaxyFileModel>) storedData[1];
@@ -143,7 +143,7 @@ public class UserHandler implements Serializable {
                 tempdataset.setSearchEngines(searchGUIFile.getFileOverview().split("DB:")[0].trim());
                 tempdataset.setFastaFileName(searchGUIFile.getFileOverview().split("DB:")[1].split("sequences:")[0].trim());
                 for (String mgfId : searchGUIFile.getGalaxyJob().getInputFileIds()) {
-                    if (appManagmentBean.getGalaxyFacad().trackBackDatasetTool(mgfId, loggedinUserAPIKey).contains("thermo_raw_file_converter")) {
+                    if (appManagmentBean.getGalaxyFacad().trackBackDatasetTool(mgfId, loggedinUserAPIKey).contains("thermo_raw_file_converter")) { //||filesMap.get(mgfId).getExtension().equals(CONSTANT.mzML_FILE_EXTENSION)
                         tempdataset.setDatasetType(CONSTANT.QUANT_DATASET);
                         break;
                     }
@@ -181,7 +181,7 @@ public class UserHandler implements Serializable {
                                                     } else {
                                                         tempdataset.setStatus(CONSTANT.RUNNING_STATUS);
                                                     }
-                                                    
+
                                                 }
                                                 return _item;
                                             }).forEachOrdered((_item) -> {
@@ -191,13 +191,13 @@ public class UserHandler implements Serializable {
                                             });
                                         }
                                     }
-                                    
+
                                 } else {
                                     tempdataset.setStatus(CONSTANT.RUNNING_STATUS);
                                 }
                                 break;
                         }
-                        
+
                     }
                 }
                 dataset = tempdataset;
@@ -205,7 +205,7 @@ public class UserHandler implements Serializable {
                 dataset = appManagmentBean.getDatasetUtils().getOnProgressDataset(CONSTANT.ID_DATASET);
                 dataset.setName(searchGUIFile.getName());
             }
-            
+
             return dataset;
         }).forEachOrdered((dataset) -> {
             // init sharing link

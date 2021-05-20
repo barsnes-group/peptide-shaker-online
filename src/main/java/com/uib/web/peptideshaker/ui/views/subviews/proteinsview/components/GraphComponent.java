@@ -247,7 +247,7 @@ public abstract class GraphComponent extends VerticalLayout {
         proteinsModeControl.addItem("Intensity");
         lefTtopPanel.addComponent(proteinsModeControl);
         lefTtopPanel.addStyleName("lefttoppanelstyle");
-        proteinsModeControl.setValue("PSMNumber");
+//        proteinsModeControl.setValue("PSMNumber");
 
         proteinsControlListener = (Property.ValueChangeEvent event) -> {
             if (proteinsModeControl.getValue() == null) {
@@ -260,6 +260,7 @@ public abstract class GraphComponent extends VerticalLayout {
             }
             psmColorScaleLayout.setVisible((proteinsModeControl.getValue() + "").equalsIgnoreCase("PSMNumber"));
         };
+       
         proteinsModeControl.addValueChangeListener(proteinsControlListener);
 
         VerticalLayout leftBottomPanel = new VerticalLayout();
@@ -617,6 +618,7 @@ public abstract class GraphComponent extends VerticalLayout {
                 if (selectedProtein.getProteinGroupSet().contains(node)) {
                     n.setSelected(true);
                 }
+                
             }
 
             final WrappedComponent wrapper = new WrappedComponent(n,
@@ -1014,7 +1016,6 @@ public abstract class GraphComponent extends VerticalLayout {
     public void reset() {
         graphsControl.setValue("Protein-Peptide");
     }
-   
 
     /**
      * This class is a wrapper for the dropped component that is used in the

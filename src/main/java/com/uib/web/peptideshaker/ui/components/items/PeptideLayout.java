@@ -107,7 +107,7 @@ public class PeptideLayout extends AbsoluteLayout implements Comparable<PeptideL
         psmsColorLabel.setSizeFull();
         psmsColorLabel.setData(peptide.getModifiedSequence());
         psmNumberLayout.addComponent(psmsColorLabel);
-        psmNumberLayout.setVisible(false);
+        psmNumberLayout.setVisible(true);
 
         intensityLayout = new VerticalLayout();
         intensityLayout.setSizeFull();

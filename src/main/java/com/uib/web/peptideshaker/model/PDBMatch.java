@@ -1,6 +1,5 @@
 package com.uib.web.peptideshaker.model;
 
-import com.uib.web.peptideshaker.model.ChainBlock;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;

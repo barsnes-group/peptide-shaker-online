@@ -7,7 +7,7 @@
     <artifactId>webpeptideshaker</artifactId>
     <version>1.0</version>
     <packaging>war</packaging>
-    <name>web-peptide-shaker-1.0</name>
+    <name>webpeptideshaker-1.0-SNAPSHOT</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
@@ -319,7 +319,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <runTarget>http://localhost:8080/web-peptide-shaker-1.0</runTarget>
+                    <runTarget>http://localhost:8080/webpeptideshaker-1.0-SNAPSHOT</runTarget>
                     <logLevel>ALL</logLevel>
                     <compileReport>true</compileReport>
                     <extraJvmArgs>-Xmx1000M</extraJvmArgs>

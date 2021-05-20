@@ -570,12 +570,12 @@ public class SpectrumPlot extends AbsoluteLayout {
 
     public void selectedSpectrum(Spectrum currentSpectrum, SequenceProvider sequenceProvider, String charge, double fragmentIonAccuracy, IdentificationParameters identificationParameters, SpectrumMatch spectrumMatch) {
         mainSizeReporter.removeResizeListener(compResizeListener);
-        deNovoItem.setEnabled(false);
-        deNovoItem.getChildren().get(0).setChecked(false);
-        deNovoItem.getChildren().get(1).setChecked(false);
-        deNovoItem.getChildren().get(3).setChecked(true);
-        deNovoItem.getChildren().get(4).setChecked(false);
-        deNovoItem.setEnabled(true);
+//        deNovoItem.setEnabled(false);
+//        deNovoItem.getChildren().get(0).setChecked(false);
+//        deNovoItem.getChildren().get(1).setChecked(false);
+//        deNovoItem.getChildren().get(3).setChecked(true);
+//        deNovoItem.getChildren().get(4).setChecked(false);
+//        deNovoItem.setEnabled(true);
         this.identificationParameters = identificationParameters;
         this.currentSpectrum = currentSpectrum;
         this.fragmentIonAccuracy = fragmentIonAccuracy;

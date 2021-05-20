@@ -217,14 +217,21 @@ public class GalaxyFacade implements Serializable {
         /**
          * update indexed mgf file names
          */
-        collectionList.stream().filter((collectionModel) -> (collectionModel.getElements().get(0).getGalaxyJob().getToolId().equals(CONSTANT.CONVERT_CHARACTERS_TOOL_ID))).forEachOrdered((collectionModel) -> {
-            collectionModel.getElements().forEach((file) -> {
-                String name = getFileName(userAPIKey, file.getGalaxyJob().getInputFileIds().iterator().next());
-                if (name != null) {
-                    file.setName(name);
+        for (GalaxyCollectionModel collectionModel : collectionList) {
+            if (collectionModel.getElements() != null && !collectionModel.getElements().isEmpty()) {
+                if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().equals(CONSTANT.CONVERT_CHARACTERS_TOOL_ID)) {
+                    collectionModel.getElements().forEach((file) -> {
+                        String name = getFileName(userAPIKey, file.getGalaxyJob().getInputFileIds().iterator().next());
+                        if (name != null) {
+                            file.setName(name);
+                        }
+                    });
                 }
-            });
-        });
+
+            }
+
+        }
+
         return new Object[]{collectionList, filesMap};
     }
 

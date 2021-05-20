@@ -103,7 +103,7 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
         Label psmsColorLabel = new Label("<div  style='background:" + PSMNumberColor + ";border-radius:100%;width: 100%;height: 100%;opacity:0.2;'></div>", ContentMode.HTML);
         psmsColorLabel.setSizeFull();
         psmNumberLayout.addComponent(psmsColorLabel);
-        psmNumberLayout.setVisible(false);
+        psmNumberLayout.setVisible(true);
 
         this.intensityLayout = new VerticalLayout();
         this.intensityLayout.setSizeFull();
