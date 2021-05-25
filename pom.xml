@@ -15,38 +15,39 @@
         <vaadin.version>7.7.25</vaadin.version>
         <vaadin.plugin.version>7.7.25</vaadin.plugin.version>
         <jetty.plugin.version>9.3.9.v20160517</jetty.plugin.version>
-        <compomics.version>5.0.1</compomics.version>
+        <compomics.version>5.0.18</compomics.version>
         <jersey.version>2.32</jersey.version>
-         <vertx.version>3.5.4</vertx.version>
+        <vertx.version>3.5.4</vertx.version>
         <!-- If there are no local customisations, this can also be "fetch" or "cdn" -->
         <vaadin.widgetset.mode>local</vaadin.widgetset.mode>
     </properties>
     <repositories>
+     
         <repository>
             <id>vaadin-addons</id>
-            <url>http://maven.vaadin.com/vaadin-addons</url>
+            <url>https://maven.vaadin.com/vaadin-addons</url>
         </repository>
-        <!-- Compomics Genesis Maven 2 repository -->
-        <repository>
-            <id>genesis-maven2-repository</id>
-            <name>Genesis maven2 repository</name>
-            <url>http://genesis.UGent.be/maven2</url>
-            <layout>default</layout>
-        </repository>
+         <!-- Compomics Genesis Maven 2 repository -->
+    <repository>
+        <id>genesis-maven2-repository</id>
+        <name>Genesis maven2 repository</name>
+        <url>http://genesis.UGent.be/maven2</url>
+        <layout>default</layout>
+    </repository>
 
-        <!-- old EBI repository -->
-        <repository>
-            <id>ebi-repo</id>
-            <name>The EBI internal repository</name>
-            <url>http://www.ebi.ac.uk/~maven/m2repo</url>
-        </repository>
+    <!-- old EBI repository -->
+    <repository>
+        <id>ebi-repo</id> 
+        <name>The EBI internal repository</name>
+        <url>http://www.ebi.ac.uk/~maven/m2repo</url>
+    </repository>
 
-        <!-- EBI repository -->
-        <repository>
-            <id>pst-release</id>
-            <name>EBI Nexus Repository</name>
-            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
-        </repository>
+    <!-- EBI repository -->
+    <repository>
+        <id>pst-release</id>
+        <name>EBI Nexus Repository</name>
+        <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
+    </repository>
     </repositories>
     <dependencyManagement>
         <dependencies>
@@ -110,11 +111,7 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>org.vaadin.addons</groupId>
-            <artifactId>refresher</artifactId>
-            <version>1.2.3.7</version>
-        </dependency>
+       
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-icons</artifactId>
@@ -149,6 +146,18 @@
                     <groupId>it.unimi.dsi</groupId>
                     <artifactId>fastutil</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>io.airlift</groupId>
+                    <artifactId>aircompressor</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>uk.ac.ebi.pride.archive</groupId>
+                    <artifactId>archive-data-provider-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>axis</groupId>
+                    <artifactId>axis</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -156,7 +165,7 @@
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
             <version>${jersey.version}</version>
-             <scope>compile</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.inject</groupId>
@@ -174,10 +183,10 @@
             <version>${jersey.version}</version>
         </dependency>
         <dependency>
-    <groupId>org.glassfish.jersey.containers</groupId>
-    <artifactId>jersey-container-servlet-core</artifactId>
-    <version>2.6</version>
-</dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet-core</artifactId>
+            <version>2.6</version>
+        </dependency>
 
         <dependency>
             <groupId>org.vaadin.addons</groupId>
@@ -265,15 +274,22 @@
             <artifactId>commons-codec</artifactId>
             <version>1.10</version>
         </dependency>
-         <dependency>
+        <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
             <version>${vertx.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.vaadin/vaadin-client-compiler -->
-        
-
-
+        <dependency>
+            <groupId>jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.13</version>
+        </dependency>
+        <dependency>
+            <groupId>jfree</groupId>
+            <artifactId>jcommon</artifactId>
+            <version>1.0.16</version>
+        </dependency>
     </dependencies>
 
     <build>
