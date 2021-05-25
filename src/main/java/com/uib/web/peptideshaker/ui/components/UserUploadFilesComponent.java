@@ -69,8 +69,8 @@ public class UserUploadFilesComponent extends HorizontalLayout {
         titleLabel.setStyleName("frametitle");
         titleLabel.addStyleName("maintitleheader");
         container.addComponent(titleLabel, "left:40px;top:13px");
-        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Upload / Visualize Projects</h1>Users can upload and visualise their own processed files ( FASTA, protein and  peptide files )the format of the protein and peptide files should follow the sample files format <a href='VAADIN/sample_files.zip' download>[download sample files]</a>.\n"
-                + "please note that the files will be automatically deleted after the session expire.", "", 400, 150);
+        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Upload / Visualize Projects</h1>Users can upload and visualize their own processed files (FASTA, protein and  peptide files). The format of the protein and peptide files should follow the sample files format <a href='VAADIN/sample_files.zip' download>[download sample files]</a>.\n"
+                + "Please note that the files will be automatically deleted after the session expires.", "", 400, 150);
         container.addComponent(helpBtn, "left:265px;top:10px");
 
         AbsoluteLayout mainContainerLayout = new AbsoluteLayout();
@@ -165,7 +165,7 @@ public class UserUploadFilesComponent extends HorizontalLayout {
         visualizeDataBtn.setWidth(100, Unit.PIXELS);
         visualizeDataBtn.addStyleName("aligntoleft");
         visualizeDataBtn.addClickListener((Button.ClickEvent event) -> {
-            validateAndVisualise();
+            validateAndVisualize();
         });
 
         Button clearBtn = new Button("Clear");
@@ -271,7 +271,7 @@ public class UserUploadFilesComponent extends HorizontalLayout {
 
     }
 
-    private void validateAndVisualise() {
+    private void validateAndVisualize() {
         projectNameField.setRequired(false);
         proteinFileContainerLayout.removeStyleName("errorstyle");
         peptideFileContainerLayout.removeStyleName("errorstyle");

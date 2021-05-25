@@ -78,7 +78,7 @@ public class WorkflowInvokingView extends AbsoluteLayout implements ViewableFram
     }
 
     /**
-     * Hide this presenter visualisation.
+     * Hide this presenter visualization.
      */
     @Override
     public void minimizeView() {
@@ -88,7 +88,7 @@ public class WorkflowInvokingView extends AbsoluteLayout implements ViewableFram
     }
 
     /**
-     * Show this presenter visualisation.
+     * Show this presenter visualization.
      */
     @Override
     public void maximizeView() {

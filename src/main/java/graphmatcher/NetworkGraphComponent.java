@@ -612,7 +612,7 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
      * Set up the graph.
      *
      * @param parentPanel the parent panel
-     * @return the visualisation viewer
+     * @return the visualization viewer
      */
     private void layoutGraphData() {
         graph = new UndirectedSparseGraph<>();

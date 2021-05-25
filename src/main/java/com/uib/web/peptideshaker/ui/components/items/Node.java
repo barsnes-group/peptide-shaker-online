@@ -10,6 +10,7 @@ import com.vaadin.ui.VerticalLayout;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -141,12 +142,15 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
 
         String subTooltip = "";
         Map<String, String> modificationsTooltip = new HashMap<>();
+         Set<String>modNames = new HashSet<>();          
         if (modifications != null && modifications.length > 0) {
-            for (ModificationMatch mod : modifications) {
+            
+            for (ModificationMatch mod : modifications) { 
+                modNames.add(mod.getModification());
                 if (mod.getModification().trim().equalsIgnoreCase("") || mod.getModification().contains("No Modifications") || mod.getModification().contains("Two or More Modifications")) {// || mod.contains("Pyrolidone") || mod.contains("Acetylation of protein N-term") || mod.contains("No Modifications") || mod.contains("Two or More Modifications")) {
                     continue;
                 }
-                modificationColor = new Color(PTM.getDefaultColor(mod.getModification()));
+                modificationColor = new Color(ModificationFactory.getDefaultColor(mod.getModification()));
                 Label modification = new Label("<div  style='background:rgb(" + modificationColor.getRed() + "," + modificationColor.getGreen() + "," + modificationColor.getBlue() + ");border-radius:100%;width: 100%;height: 100%;opacity:0.2;'></div>", ContentMode.HTML);
                 modification.setSizeFull();
                 modificationLayout.addComponent(modification);
@@ -160,7 +164,9 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
 
             }
         }
-        if (modifications != null && (modificationLayout.getComponentCount() > 1 || modifications.length > 1)) {// modifications.equalsIgnoreCase("Two or More Modifications")) {
+        if (modNames.size()>1 && modifications != null && (modificationLayout.getComponentCount() > 1 || modifications.length > 1)) {// modifications.equalsIgnoreCase("Two or More Modifications")) {
+          
+            
             modificationLayout.removeAllComponents();
             Label modification = new Label("<div style='background:orange; width:100%;height:100%;border-radius:100%;opacity:0.2;'></div>", ContentMode.HTML);
             modification.setSizeFull();

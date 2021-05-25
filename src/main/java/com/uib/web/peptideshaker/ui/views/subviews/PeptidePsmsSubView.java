@@ -52,7 +52,7 @@ public class PeptidePsmsSubView extends AbsoluteLayout implements ViewableFrame 
         headerLabel.setWidthUndefined();
         topLeftLabelContainer.setSpacing(true);
         topLeftLabelContainer.addComponent(headerLabel);
-         HelpPopupButton helpBtn = new HelpPopupButton("<h1>Peptide level</h1>visulization of peptide details include available peptide-to-spectrum matches and spectrum visulizaion chart.", "", 350  , 90);
+         HelpPopupButton helpBtn = new HelpPopupButton("<h1>Peptide Visualization</h1>Visualization of peptide details include available peptide-to-spectrum matches and spectrum visualization chart.", "", 350  , 90);
 
          topLeftLabelContainer.addComponent(helpBtn);
 

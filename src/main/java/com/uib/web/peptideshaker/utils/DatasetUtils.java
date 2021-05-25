@@ -154,7 +154,7 @@ public class DatasetUtils implements Serializable {
     }
 
     /**
-     * Prepare visualisation dataset from uploaded uploaded files by checking
+     * Prepare visualization dataset from uploaded uploaded files by checking
      * all uploaded files
      *
      * @param projectName
@@ -206,7 +206,7 @@ public class DatasetUtils implements Serializable {
     }
 
     /**
-     * Prepare visualisation dataset from uploaded uploaded files by checking
+     * Prepare visualization dataset from uploaded uploaded files by checking
      * all uploaded files
      *
      * @param projectName

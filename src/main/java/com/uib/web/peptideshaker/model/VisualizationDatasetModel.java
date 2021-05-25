@@ -15,7 +15,7 @@ import java.util.TreeMap;
 import org.biojava.nbio.core.sequence.ProteinSequence;
 
 /**
- * This class contains all files and data needed to visualise the data
+ * This class contains all files and data needed to visualize the data
  *
  * @author Yehia Mokhtar Farag
  */

@@ -11,8 +11,10 @@ import com.vaadin.ui.VerticalLayout;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author yfa041
@@ -62,9 +64,9 @@ public class PeptideLayout extends AbsoluteLayout implements Comparable<PeptideL
         modificationLayout.setStyleName("basicpeptidemodification");
         String subTooltip = "";
         Map<String, String> modificationsTooltip = new HashMap<>();
-
+         Set<String>modNames = new HashSet<>();   
         for (ModificationMatch mod : peptide.getVariableModifications()) {
-
+             modNames.add(mod.getModification());
             Color c = new Color(ModificationFactory.getDefaultColor(mod.getModification()));
             Label modification = new Label("<div  style='background:rgb(" + c.getRed() + "," + c.getGreen() + "," + c.getBlue() + ");;width: 100%;height: 100%;'></div>", ContentMode.HTML);
             modification.setSizeFull();
@@ -85,7 +87,7 @@ public class PeptideLayout extends AbsoluteLayout implements Comparable<PeptideL
         tooltip += subTooltip;
 
         PeptideLayout.this.setDescription(tooltip);//peptide.getModifiedSequence().replace("<", "&lt;").replace(">", "&gt;")
-        if (modificationLayout.getComponentCount() > 1) {
+        if (modificationLayout.getComponentCount() > 1 &&  modNames.size()>1) {
             modificationLayout.removeAllComponents();
             Label modification = new Label("<div style='background:orange; width:100%;height:100%;'></div>", ContentMode.HTML);
             modification.setSizeFull();

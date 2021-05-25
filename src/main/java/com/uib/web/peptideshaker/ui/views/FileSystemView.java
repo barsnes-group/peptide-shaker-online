@@ -73,7 +73,7 @@ public class FileSystemView extends AbsoluteLayout implements ViewableFrame {
         titleLabel.setStyleName("frametitle");
         titleLabel.addStyleName("maintitleheader");
         dataViewFrameContent.addComponent(titleLabel, "left:40px;top:13px");
-        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Projects Overview</h1>Users can check the available ready to visualise datasets, get an overview for the processed data, check the dataset processing statues and have access for the dataset sharing links where users can visulize the dataset using dataset link.<br/>Also users can delete datasets and input files.", "", 400, 150);
+        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Projects Overview</h1>Users can check the available ready to visualize datasets, get an overview for the processed data, check the dataset processing status and have access for the dataset sharing links.", "", 400, 130);
         dataViewFrameContent.addComponent(helpBtn, "left:178;top:0px");
         
         

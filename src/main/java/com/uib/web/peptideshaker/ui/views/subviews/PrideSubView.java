@@ -65,7 +65,7 @@ public class PrideSubView extends AbsoluteLayout implements ViewableFrame {
         titleLabel.setStyleName("frametitle");
         titleLabel.addStyleName("maintitleheader");
         container.addComponent(titleLabel, "left:40px;top:13px");
-        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Search / Visualize PRIDE Projects</h1>Users can search and visualise PRIDE projects, please note that the imported projects will be automatically deleted after the session expire.", "", 400, 110);
+        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Search / Visualize PRIDE Projects</h1>Users can search and visualize PRIDE projects, please note that the imported projects will be automatically deleted after the session expire.", "", 400, 110);
         container.addComponent(helpBtn, "left:162px;top:3px");
 
         AbsoluteLayout mainContainerLayout = new AbsoluteLayout();

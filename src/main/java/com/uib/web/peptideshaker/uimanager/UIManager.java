@@ -63,7 +63,7 @@ public class UIManager implements Serializable {
     /**
      * Register view into the view management system.
      *
-     * @param view visualisation layout.
+     * @param view visualization layout.
      */
     public void registerView(ViewableFrame view) {
         visualizationMap.put(view.getViewId(), view);
@@ -72,7 +72,8 @@ public class UIManager implements Serializable {
     /**
      * Register sub view into the view management system.
      *
-     * @param view visualisation layout.
+     * @param mainViewId
+     * @param subView
      */
     public void registerSubView(String mainViewId, ViewableFrame subView) {
         if (!subVisualizationMap.containsKey(mainViewId)) {

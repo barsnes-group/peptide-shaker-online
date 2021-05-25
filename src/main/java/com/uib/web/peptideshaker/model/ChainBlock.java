@@ -2,7 +2,7 @@ package com.uib.web.peptideshaker.model;
 
 /**
  * This class contain the main information for the chain block required by PDB
- * 3D protein structure visualisation.
+ * 3D protein structure visualization.
  *
  * @author Yehia Mokhtar Farag
  */

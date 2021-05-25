@@ -32,7 +32,7 @@ import java.util.Set;
 
 /**
  * This class represents Modifications filter theat support both interactive
- * Venn diagram and matrix diagram the visualisation is switching between the 2
+ * Venn diagram and matrix diagram the visualization is switching between the 2
  * diagrams based on the number of intersections
  *
  * @author Yehia Mokhtar Farag

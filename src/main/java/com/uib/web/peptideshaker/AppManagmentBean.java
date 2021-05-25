@@ -93,7 +93,7 @@ public class AppManagmentBean implements Serializable {
     }
 
     /**
-     * Get visualisation dataset utilities
+     * Get visualization dataset utilities
      *
      * @return DatasetUtils object
      */

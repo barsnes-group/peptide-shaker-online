@@ -78,7 +78,7 @@ public class FilesUtils implements Serializable {
     }
 
     /**
-     * Prepare visualisation dataset from uploaded uploaded files by checking
+     * Prepare visualization dataset from uploaded uploaded files by checking
      * all uploaded files
      *
      * @param file file to validate
