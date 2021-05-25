@@ -60,9 +60,11 @@ public abstract class Node extends VerticalLayout implements LayoutEvents.Layout
         for (String mod : modifications.split("\\),")) {
             if (mod.trim().equalsIgnoreCase("") || mod.contains("No Modifications") || mod.contains("Two or More Modifications")) {// || mod.contains("Pyrolidone") || mod.contains("Acetylation of protein N-term") || mod.contains("No Modifications") || mod.contains("Two or More Modifications")) {
                 continue;
+            } else if (mod.contains(";")) {
+                mod = mod.split(";")[0];
             }
             String[] tmod = mod.split("\\(");
-            Color c = new Color(PTM.getDefaultColor(tmod[0].trim()));
+            Color c = new Color(ModificationFactory.getDefaultColor(tmod[0].trim()));
             Label modification = new Label("<div  style='background:rgb(" + c.getRed() + "," + c.getGreen() + "," + c.getBlue() + ");border-radius:100%;width: 100%;height: 100%;opacity:0.2;'></div>", ContentMode.HTML);
             modification.setSizeFull();
             modificationLayout.addComponent(modification);

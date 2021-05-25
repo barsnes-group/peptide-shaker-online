@@ -22710,3 +22710,15 @@ div.v-layout.v-horizontal.v-widget {
 .webpeptideshakertheme .lowopacity img {
 	opacity: 0.5;
 }
+.modificationlegendconatiner .v-horizontallayout .v-label{
+	
+	text-overflow:ellipsis !important;;
+	overflow:visible !important;
+	max-width:100% !important;
+	margin-left:-30px !important;
+	
+}
+.modificationlegendconatiner .v-horizontallayout .v-spacing{
+	max-width:1px !important;
+	display:none;
+}
