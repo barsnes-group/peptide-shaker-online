@@ -9,6 +9,7 @@ mylitemollibrary.LiteMolComponent = function (element) {
     var updatingBtn;
     var hideWaterVar = true;
     var init = false;
+    var delay = false;
     var latestValue = 'ToTestNotRealValue';
     var jsonFullQuery = JSON.parse('{"pdbId":"3iuc"}');
     var parentElement = null;
@@ -38,8 +39,9 @@ mylitemollibrary.LiteMolComponent = function (element) {
             if ((typeof value === 'undefined')) {
                 return;
             }
-            jsonFullQuery= JSON.parse(value);         
-            document.getElementById('pdbid').value  = JSON.stringify(jsonFullQuery.values, null, 2);
+
+            jsonFullQuery = JSON.parse(value);
+            document.getElementById('pdbid').value = JSON.stringify(jsonFullQuery.values, null, 2);
             locateParentElement();
             if (parentElement === null || (jsonFullQuery === null) || (jsonFullQuery === undefined) || latestValue.localeCompare(value) === 0) {
                 return;
@@ -51,13 +53,21 @@ mylitemollibrary.LiteMolComponent = function (element) {
                 if (!init && isParentVisible()) {
                     init = true;
                     initplugin();
+                    delay = true;
                 }
                 if (init) {
-                    excutequery(jsonFullQuery.newid);
+                    if (delay) {
+                        delay = false;
+                        setTimeout(excutequery(jsonFullQuery.newid), 5000);
+                    } else {
+                        excutequery(jsonFullQuery.newid);
+                    }
                 }
             } else if (jsonFullQuery.type.localeCompare("update") === 0) {
                 latestValue = "";
+                window.alert("update - redraw");
                 redraw();
+
             }
         } catch (exp) {
             alert("error at 70: " + exp);
@@ -111,7 +121,7 @@ mylitemollibrary.LiteMolComponent = function (element) {
             controlBtns[26].click();
 
         } catch (exp) {
-            alert("init blug error?? " + exp);
+            alert("init blug error " + exp);
         }
 
     };
@@ -158,7 +168,7 @@ mylitemollibrary.LiteMolComponent = function (element) {
                 reset();
                 finalizeStyle();
                 controlBtns[14].click();
-                document.getElementById('showWB').value = true;
+                document.getElementById('showWB').value = false;
                 setTimeout(update, 4000);
             } else {
                 update();
