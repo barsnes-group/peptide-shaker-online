@@ -143,7 +143,7 @@ public class WorkFlowDataInputComponent extends Panel {
         titleLabel.setStyleName("frametitle");
         titleLabel.addStyleName("maintitleheader");
         container.addComponent(titleLabel, "left:40px;top:13px");
-        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Analyze Data (create new projects)</h1>Users can upload their data files (FASTA files, Spectrum input files) and process their data using SearchGUI and visualize the result dataset.</br>Currently the supported Spectrum input files are (MGF and mzML) for identification datastes and (.raw) files for quantification datasets.", "", 400, 155);
+        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Analyze Data (create new projects)</h1>Users can upload their data files and process them using SearchGUI and PeptideShaker and finally visualize the results. The supported spectrum formats are (MGF) for identification and (mzML and raw) for quantification.", "", 400, 120);
         container.addComponent(helpBtn, "left:143px;top:0px");
 
         AbsoluteLayout mainContainerLayout = new AbsoluteLayout();

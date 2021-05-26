@@ -218,7 +218,7 @@ public class FilesTablePanel extends Panel {
                     }
                     Label type = new Label(VaadinIcons.FILE_TEXT_O.getHtml() + "<div class='overlayicon'>" + VaadinIcons.ARROW_CIRCLE_UP_O.getHtml() + "</div>" + quant, ContentMode.HTML);
 
-                    type.setDescription(dataset.getDatasetType() + " " + quantTooltip);
+                    type.setDescription(dataset.getDatasetType().replace("Quant", "Quantification"));
                     type.setStyleName("smalliconlabel");
                     type.addStyleName("datatypeicon");
                     ClipboardComponent shareLabel = new ClipboardComponent("");
@@ -261,7 +261,7 @@ public class FilesTablePanel extends Panel {
                         };
                         infoLabel.setContent(fileOverview);
                     }
-                    infoLabel.setDescription("Information! ");
+                    infoLabel.setDescription("Information ");
                     infoLabel.setClosable(false);
                     if (statusLabel.getStatus().equals(CONSTANT.ERROR)) {
                         statusLabel.setStatus("Some files are missings or corrupted please re-run SearchGUI-PeptideShaker-WorkFlow");
@@ -336,7 +336,7 @@ public class FilesTablePanel extends Panel {
 
             };
             infoLabel.setContent(fileOverview);
-            infoLabel.setDescription("Information! ");
+            infoLabel.setDescription("Information ");
 
             nameLabel = new Label(file.getName());
 

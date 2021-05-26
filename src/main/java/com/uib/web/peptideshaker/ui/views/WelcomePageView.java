@@ -124,11 +124,11 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         Label usedMemory = initLeftSideInfoLabel(VaadinIcons.CLOUD_O.getHtml() + " Storage ", "<i>Not Available</i>");
         userOverviewLayout.addComponent(usedMemory);
 
-        Label searchGUI = initLeftSideInfoLabel("<img src='VAADIN/themes/webpeptideshakertheme/img/sgiconHRNSgray21.png' alt style='width: auto;height:15px;margin-left:-2px;    margin-right: 4px;'>" + " SearchGUI ", "<i class='nrightsidediv'>" + CONSTANT.SEARCHGUI_TOOL_VERSION + "</i>");
+        Label searchGUI = initLeftSideInfoLabel("<img src='VAADIN/themes/webpeptideshakertheme/img/sgiconHRNSgray21.png' alt style='width: auto;height:15px;margin-left:-2px;    margin-right: 4px;'>" + " SearchGUI ", "<i class='nrightsidediv'>" + CONSTANT.SEARCHGUI_TOOL_VERSION.replace("+galaxy0", "") + "</i>");
         searchGUI.setValue(searchGUI.getValue().replace("<div style='white-space: nowrap;width: 65px;height: 20px;", "<div class='psversstyle' style='white-space: nowrap;width: 65px;height: 20px;"));
         userOverviewLayout.addComponent(searchGUI);
 
-        Label peptideShaker = initLeftSideInfoLabel("<img src='VAADIN/themes/webpeptideshakertheme/img/psiconHRNSgray21.png' alt style='width: auto;height:15px;margin-left:-2px;    margin-right: 4px;'>" + " PeptideShaker ", "<i class='nrightsidediv'>" + CONSTANT.PEPTIDESHAKER_TOOL_VERSION+ "</i>");
+        Label peptideShaker = initLeftSideInfoLabel("<img src='VAADIN/themes/webpeptideshakertheme/img/psiconHRNSgray21.png' alt style='width: auto;height:15px;margin-left:-2px;    margin-right: 4px;'>" + " PeptideShaker ", "<i class='nrightsidediv'>" + CONSTANT.PEPTIDESHAKER_TOOL_VERSION.replace("+galaxy0", "")+ "</i>");
         peptideShaker.setValue(peptideShaker.getValue().replace("<div style='white-space: nowrap;width: 65px;height: 20px;", "<div class='psversstyle' style='white-space: nowrap;width: 65px;height: 20px;"));
         userOverviewLayout.addComponent(peptideShaker);
 

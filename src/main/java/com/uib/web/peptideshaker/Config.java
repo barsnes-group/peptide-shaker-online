@@ -4,7 +4,11 @@ import com.vaadin.server.Page;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.ui.JavaScript;
+import com.vaadin.ui.JavaScriptFunction;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
+import io.vertx.core.json.JsonArray;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -31,7 +35,6 @@ public class Config implements Serializable {
     }
 
     private boolean mobileDeviceStyle;
-    private boolean smallDeviceStyle;
     private boolean portraitScreenMode;
     private String testUserAPIKey;
 
@@ -117,15 +120,6 @@ public class Config implements Serializable {
      */
     public String getTestUserAPIKey() {
         return testUserAPIKey;
-    }
-
-    /**
-     * Get screen styling model
-     *
-     * @return device with small screen
-     */
-    public boolean isSmallDeviceStyle() {
-        return smallDeviceStyle;
     }
 
     /**
@@ -236,27 +230,55 @@ public class Config implements Serializable {
         maximumAllowedUsers = Integer.parseUnsignedInt(scx.getInitParameter("maxusernumb") + "");
 
         VaadinSession.getCurrent().setAttribute("mobilescreenstyle", (mobileDeviceStyle));
-        VaadinSession.getCurrent().setAttribute("smallscreenstyle", smallDeviceStyle);
 
         String brwserApp = Page.getCurrent().getWebBrowser().getBrowserApplication();
         int screenWidth = Page.getCurrent().getBrowserWindowWidth();
         int screenHeigh = Page.getCurrent().getBrowserWindowHeight();
         portraitScreenMode = screenWidth < screenHeigh;
-        /**
-         * case of average screen 1000*500
-         */
-        if (brwserApp.contains("Mobile")) {
-            mobileDeviceStyle = true;
-            UI.getCurrent().addStyleName("mobilestyle");
-            UI.getCurrent().addStyleName("averagescreenstyle");
-        } else if ((screenWidth < 1349 && screenWidth >= 1000) && (screenHeigh < 742 && screenHeigh >= 500)) {
-            UI.getCurrent().addStyleName("averagescreenstyle");
+        Thread t = new Thread(() -> {
+            JavaScript.getCurrent().addFunction("com.example.foo.myfunc", (elemental.json.JsonArray arguments) -> {
+                double ratio = arguments.getNumber(0);
+//                if (screenWidth < 3000 || screenHeigh < 2000) {
+//                    ratio -= 0.5;
+//                }
+//                double uScreenWidth = ((double) screenWidth / ratio);
+//                double uScreenHeigh = ((double) screenHeigh / ratio);
+//
+//                System.out.println("excute is done ratio: " + ratio + " " + uScreenWidth + "  " + uScreenHeigh);
+                if (brwserApp.contains("Mobile")) {
+                    mobileDeviceStyle = true;
+                    UI.getCurrent().addStyleName("mobilestyle");
+                    UI.getCurrent().addStyleName("averagescreenstyle");
+                } else if (((screenWidth < 1349 && screenWidth >= 1000) && (screenHeigh < 742 && screenHeigh >= 500))|| ratio>1.5) {
+                    UI.getCurrent().addStyleName("averagescreenstyle");
 
-        } else if (screenWidth < 1000 || screenHeigh <= 500) {
-            UI.getCurrent().addStyleName("lowresolutionstyle");
-            mobileDeviceStyle = true;
-            UI.getCurrent().addStyleName("mobilestyle");
-        }
+                } else if (screenWidth < 1000 || screenHeigh <= 500) {
+                    UI.getCurrent().addStyleName("lowresolutionstyle");
+                    mobileDeviceStyle = true;
+                    UI.getCurrent().addStyleName("mobilestyle");
+                }
+
+            });
+            Page.getCurrent().getJavaScript().execute("com.example.foo.myfunc(window.devicePixelRatio)");
+
+        });
+        t.start();
+
+//        /**
+//         * case of average screen 1000*500
+//         */
+//        if (brwserApp.contains("Mobile")) {
+//            mobileDeviceStyle = true;
+//            UI.getCurrent().addStyleName("mobilestyle");
+//            UI.getCurrent().addStyleName("averagescreenstyle");
+//        } else if ((screenWidth < 1349 && screenWidth >= 1000) && (screenHeigh < 742 && screenHeigh >= 500)) {
+//            UI.getCurrent().addStyleName("averagescreenstyle");
+//
+//        } else if (screenWidth < 1000 || screenHeigh <= 500) {
+//            UI.getCurrent().addStyleName("lowresolutionstyle");
+//            mobileDeviceStyle = true;
+//            UI.getCurrent().addStyleName("mobilestyle");
+//        }
     }
 
     /**
