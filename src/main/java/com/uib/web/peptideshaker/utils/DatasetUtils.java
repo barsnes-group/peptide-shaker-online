@@ -8,6 +8,7 @@ import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.experiment.identification.matches.SpectrumMatch;
 import com.compomics.util.experiment.identification.spectrum_assumptions.PeptideAssumption;
 import com.compomics.util.experiment.identification.utils.PeptideUtils;
+import com.compomics.util.experiment.io.biology.protein.FastaParameters;
 import com.compomics.util.experiment.io.mass_spectrometry.mgf.MgfIndex;
 import com.compomics.util.experiment.mass_spectrometry.spectra.Spectrum;
 import com.compomics.util.io.file.SerializationUtils;
@@ -55,6 +56,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import javax.servlet.ServletContext;
 import org.biojava.nbio.core.sequence.ProteinSequence;
 import org.biojava.nbio.core.sequence.compound.AminoAcidCompound;
@@ -70,7 +72,7 @@ import pl.exsio.plupload.PluploadFile;
  * @author Yehia Mokhtar Farag
  */
 public class DatasetUtils implements Serializable {
-    
+
     private final AppManagmentBean appManagmentBean;
     /**
      * Standard header values for protein, peptides, psm and moff table files
@@ -81,13 +83,13 @@ public class DatasetUtils implements Serializable {
     private RangeColorGenerator peptideIntensityColorGenerator;
     private RangeColorGenerator psmIntensityColorGenerator;
     private final Set<String> csf_pr_Accession_List;
-    
+
     public DatasetUtils() {
         appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
         table_headers = new TableHeaderConstatnts();
         this.csf_pr_Accession_List = appManagmentBean.getDatabaseUtils().getCsfprAccList();
     }
-    
+
     public IdentificationParameters initIdentificationParametersObject(String datasetId, String initIdentificationParametersFileURI) {
         String fileName = datasetId + "_SEARCHGUI_IdentificationParameters.par";
         File file = new File(appManagmentBean.getAppConfig().getUserFolderUri(), fileName);
@@ -95,9 +97,9 @@ public class DatasetUtils implements Serializable {
             if (!file.exists()) {
                 file.createNewFile();
                 file = appManagmentBean.getHttpClientUtil().downloadFileFromZipFolder(initIdentificationParametersFileURI, "IdentificationParameters.par", file);
-                
+
             }
-            
+
             return IdentificationParameters.getIdentificationParameters(file);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -105,7 +107,7 @@ public class DatasetUtils implements Serializable {
         }
         return null;
     }
-    
+
     public String createSharingLink(String userAPIKey, VisualizationDatasetModel dataset) {
         String dsKey = userAPIKey + "_" + dataset.getId();
         String encryptedDsKey = appManagmentBean.getURLUtils().encrypt(dsKey);
@@ -134,7 +136,7 @@ public class DatasetUtils implements Serializable {
         ServletContext scx = VaadinServlet.getCurrent().getServletContext();
         String appName = scx.getContextPath();
         String encryptedDsIndex = appManagmentBean.getURLUtils().encrypt(dsIndex + "");
-        
+
         try {
             encryptedDsIndex = URLEncoder.encode("datasetid=" + encryptedDsIndex, "UTF-8");
         } catch (UnsupportedEncodingException ex) {
@@ -143,7 +145,7 @@ public class DatasetUtils implements Serializable {
         String encodedLink = Page.getCurrent().getLocation().toString().split(appName)[0] + "" + appName + "?" + encryptedDsIndex;
         return encodedLink;
     }
-    
+
     public VisualizationDatasetModel getOnProgressDataset(String datasetType) {
         VisualizationDatasetModel dataset = new VisualizationDatasetModel();
         dataset.setDatasetSource(CONSTANT.GALAXY_SOURCE);
@@ -162,7 +164,7 @@ public class DatasetUtils implements Serializable {
      * @return array of checked valid files
      */
     public VisualizationDatasetModel initialiseDatasetFromUploadedFiles(String projectName, Map<String, PluploadFile> uploadedFileMap) {
-        
+
         VisualizationDatasetModel dataset = new VisualizationDatasetModel();
         dataset.setDatasetSource(CONSTANT.USER_UPLOAD_SOURCE);
         dataset.setName(projectName);
@@ -193,16 +195,16 @@ public class DatasetUtils implements Serializable {
                     peptideileModel.setName(uploadedFileMap.get(key).getName());
                     dataset.setPeptideFileModel(peptideileModel);
                     break;
-                
+
             }
         }
-        
+
         appManagmentBean.getUserHandler().addToDatasetMap(dataset);
         appManagmentBean.getUI_Manager().updateAll();
         appManagmentBean.getUI_Manager().setSelectedDatasetId(dataset.getId());
         appManagmentBean.getUI_Manager().viewSubLayout(ResultsView.class.getName(), DatasetProteinsSubView.class.getName());
         return dataset;
-        
+
     }
 
     /**
@@ -222,35 +224,35 @@ public class DatasetUtils implements Serializable {
         dataset.setStatus(CONSTANT.OK_STATUS);
         dataset.setCreatedTime(new Timestamp(System.currentTimeMillis()));
         dataset.setId("Uploaded_Dataset_Demo_" + dataset.getCreatedTime());
-        
+
         File fastaFile = new File(appManagmentBean.getAppConfig().getWorking_folder_path() + "_FASTA_.fasta");
         GalaxyFileModel fastaFileModel = new GalaxyFileModel();
         fastaFileModel.setDownloadUrl(fastaFile.getAbsolutePath());
         fastaFileModel.setName(fastaFile.getName());
         dataset.setFastaFileModel(fastaFileModel);
-        
+
         File proteinFile = new File(appManagmentBean.getAppConfig().getWorking_folder_path() + "_proteins_.txt");
         GalaxyFileModel proteinFileModel = new GalaxyFileModel();
         proteinFileModel.setDownloadUrl(proteinFile.getAbsolutePath());
         proteinFileModel.setName(proteinFile.getName());
         dataset.setProteinFileModel(proteinFileModel);
-        
+
         File peptideFile = new File(appManagmentBean.getAppConfig().getWorking_folder_path() + "_Peptides_.txt");
         GalaxyFileModel peptideileModel = new GalaxyFileModel();
         peptideileModel.setDownloadUrl(peptideFile.getAbsolutePath());
         peptideileModel.setName(peptideFile.getName());
         dataset.setPeptideFileModel(peptideileModel);
-        
+
         appManagmentBean.getUserHandler().addToDatasetMap(dataset);
         appManagmentBean.getUI_Manager().updateAll();
         appManagmentBean.getUI_Manager().setSelectedDatasetId(dataset.getId());
         appManagmentBean.getUI_Manager().viewSubLayout(ResultsView.class.getName(), DatasetProteinsSubView.class.getName());
         return dataset;
-        
+
     }
     private final int[] idFileIndexes = new int[]{1, 2, 3, 4, 6};
     private final int[] quantFileIndexes = new int[]{3, 1, 2, 4, 6};
-    
+
     public void processDatasetProteins(VisualizationDatasetModel dataset) {
         switch (dataset.getDatasetSource()) {
             case CONSTANT.GALAXY_SOURCE:
@@ -262,18 +264,18 @@ public class DatasetUtils implements Serializable {
 
                 String fileName = dataset.getPsZipFile().getId() + "_proteins_.txt";
                 File proteinsFile = new File(appManagmentBean.getAppConfig().getUserFolderUri(), fileName);
-                
+
                 fileName = dataset.getPsZipFile().getId() + "_Peptides_.txt";
                 File peptidesFile = new File(appManagmentBean.getAppConfig().getUserFolderUri(), fileName);
-                
+
                 fileName = dataset.getPsZipFile().getId() + "_PSMs_.txt";
                 File psmsFile = new File(appManagmentBean.getAppConfig().getUserFolderUri(), fileName);
                 try {
-                    
+
                     if (!proteinsFile.exists()) {
                         proteinsFile.createNewFile();
                         appManagmentBean.getHttpClientUtil().downloadFileFromZipFolder(dataset.getPsZipFile().getDownloadUrl(), "Default_Protein_Report_with_non-validated_matches", proteinsFile);
-                        
+
                     }
                     dataset.setProteinsMap(processGalaxyProteinsFile(proteinsFile));
                     if (!peptidesFile.exists()) {
@@ -281,7 +283,7 @@ public class DatasetUtils implements Serializable {
                         appManagmentBean.getHttpClientUtil().downloadFileFromZipFolder(dataset.getPsZipFile().getDownloadUrl(), "Default_Peptide_Report_with_non-validated_matches", peptidesFile);
                     }
                     dataset.setPeptidesMap(processGalaxyPeptidesFile(peptidesFile));
-                    
+
                     if (!psmsFile.exists()) {
                         psmsFile.createNewFile();
                         appManagmentBean.getHttpClientUtil().downloadFileFromZipFolder(dataset.getPsZipFile().getDownloadUrl(), "Default_PSM_Report_with_non-validated_matches", psmsFile);
@@ -322,11 +324,11 @@ public class DatasetUtils implements Serializable {
                             appManagmentBean.getHttpClientUtil().downloadFile(galaxyFileModel.getDownloadUrl(), cuiFile);
                             Object object = SerializationUtils.readObject(cuiFile);
                             dataset.getImportedMgfIndexObjectMap().put(galaxyFileModel.getName(), (MgfIndex) object);
-                            
+
                         }
-                        
+
                     }
-                    
+
                 } catch (IOException ex) {
                     System.err.println("at Error: " + this.getClass().getName() + " : " + ex);
                 }
@@ -351,9 +353,9 @@ public class DatasetUtils implements Serializable {
                 break;
         }
         initialiseDatasetFilterMaps(dataset);
-        
+
     }
-    
+
     private Map<Integer, ProteinGroupObject> processGalaxyProteinsFile(File file) {
         Map<Integer, ProteinGroupObject> proteinsMap = new LinkedHashMap<>();
         BufferedReader bufferedReader = null;
@@ -396,12 +398,12 @@ public class DatasetUtils implements Serializable {
                 if (proteinFileHeaderIndexerMap.containsKey(str)) {
                     proteinFileHeaderIndexerMap.replace(str, i);
                 }
-                
+
                 i++;
             }
             i = 1;
             while ((line = bufferedReader.readLine()) != null) {
-                
+
                 line = line.replace("\"", "");
                 String[] arr = line.split("\\t");
                 ProteinGroupObject proteinGroup = new ProteinGroupObject();
@@ -429,11 +431,11 @@ public class DatasetUtils implements Serializable {
                     proteinGroup.setConfidentlyLocalizedModificationSites(arr[proteinFileHeaderIndexerMap.get(table_headers.Confidently_Localized_Modification_Sites)]);//.split("\\(")[0]);
                 }
                 proteinGroup.setConfidentlyLocalizedModificationSitesNumber(arr[proteinFileHeaderIndexerMap.get(table_headers.Number_Confidently_Localized_Modification_Sites)]);
-                
+
                 proteinGroup.setAmbiguouslyLocalizedModificationSites(arr[proteinFileHeaderIndexerMap.get(table_headers.Ambiguously_Localized_Modification_Sites)]);
                 proteinGroup.setAmbiguouslyLocalizedModificationSitesNumber(arr[proteinFileHeaderIndexerMap.get(table_headers.Number_Ambiguously_Localized_Modification_Sites)]);
                 proteinGroup.setProteinInference(arr[proteinFileHeaderIndexerMap.get(table_headers.Protein_Inference)].replace(" Proteins", "").replace(" Protein", "").replace("and", "&").trim());
-                
+
                 if (proteinGroup.getProteinInference().trim().isEmpty()) {
                     proteinGroup.setProteinInference("No Information");
                 }
@@ -441,7 +443,7 @@ public class DatasetUtils implements Serializable {
                 proteinGroup.setUniqueNumber(Integer.parseInt(arr[proteinFileHeaderIndexerMap.get(table_headers.Number_Unique_Peptides)]));
                 proteinGroup.setValidatedUniqueNumber(Integer.parseInt(arr[proteinFileHeaderIndexerMap.get(table_headers.Number_Validated_Unique_Peptides)]));
                 proteinGroup.setValidation(arr[proteinFileHeaderIndexerMap.get(table_headers.Validation)]);
-                
+
                 if (proteinGroup.getValidation().trim().isEmpty()) {
                     proteinGroup.setValidation("No Information");
                 }
@@ -459,7 +461,7 @@ public class DatasetUtils implements Serializable {
         }
         return proteinsMap;
     }
-    
+
     private Map<Integer, PeptideObject> processGalaxyPeptidesFile(File file) {
         Map<Integer, PeptideObject> peptidesMap = new LinkedHashMap<>();
         BufferedReader bufferedReader = null;
@@ -497,12 +499,12 @@ public class DatasetUtils implements Serializable {
                 str = str.replace(" ", "").toLowerCase();
                 if (peptideFileHeaderIndexerMap.containsKey(str)) {
                     peptideFileHeaderIndexerMap.replace(str, i);
-                    
+
                 }
                 i++;
             }
             while ((line = bufferedReader.readLine()) != null) {
-                
+
                 line = line.replace("\"", "");
                 String[] arr = line.split("\\t");
                 PeptideObject peptide = new PeptideObject();
@@ -515,7 +517,7 @@ public class DatasetUtils implements Serializable {
                 peptide.setPSMsNumber(Integer.parseInt(arr[peptideFileHeaderIndexerMap.get(table_headers.Number_PSMs)]));
                 peptide.setConfidence(Double.parseDouble(arr[peptideFileHeaderIndexerMap.get(table_headers.Confidence_Pers)]));
                 peptide.setValidation(arr[peptideFileHeaderIndexerMap.get(table_headers.Validation)]);
-                
+
                 peptide.setIndex(Integer.parseInt(arr[peptideFileHeaderIndexerMap.get(table_headers.Index)]));
                 peptide.setProteins(arr[peptideFileHeaderIndexerMap.get(table_headers.Proteins)]);
                 peptide.setValidatedProteinGroupsNumber(Integer.parseInt(arr[peptideFileHeaderIndexerMap.get(table_headers.Number_Validated_Protein_Groups)]));
@@ -524,12 +526,12 @@ public class DatasetUtils implements Serializable {
                 peptide.setAasBefore(arr[peptideFileHeaderIndexerMap.get(table_headers.AAs_Before)]);
                 peptide.setAasAfter(arr[peptideFileHeaderIndexerMap.get(table_headers.AAs_After)]);
                 peptide.setLocalizationConfidence(arr[peptideFileHeaderIndexerMap.get(table_headers.Localization_Confidence)]);
-                
+
                 if (peptide.isModified() && peptide.getVariableModificationsAsString().contains("0") && peptide.getSequence().startsWith("NH2")) {
                     peptide.setModifiedSequence(peptide.getModifiedSequence().replaceFirst("NH2", "pyro"));
                 }
                 peptidesMap.put(peptide.getIndex(), peptide);
-                
+
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -544,7 +546,7 @@ public class DatasetUtils implements Serializable {
         }
         return peptidesMap;
     }
-    
+
     private Map<String, PSMObject> processGalaxyPsmsFile(File file) {
         Map<String, PSMObject> psmsMap = new LinkedHashMap<>();
         HashMap<String, Integer> psmFileHeaderIndexerMap = new HashMap<>();
@@ -576,7 +578,7 @@ public class DatasetUtils implements Serializable {
         int index = 1;
         try {//     
             bufferedReader = new BufferedReader(new FileReader(file), 1024 * 100);
-            
+
             String line = bufferedReader.readLine();
             line = line.replace("\"", "");
             int i = 0;
@@ -587,7 +589,7 @@ public class DatasetUtils implements Serializable {
                 }
                 i++;
             }
-            
+
             while ((line = bufferedReader.readLine()) != null) {
                 line = line.replace("\"", "");
                 String[] arr = line.split("\\t");
@@ -657,7 +659,7 @@ public class DatasetUtils implements Serializable {
         }
         return psmsMap;
     }
-    
+
     private double processGalaxyMoFFFile(File file, Map<String, PSMObject> psmsMap) {
         HashMap<String, Integer> moFFFileHeaderIndexerMap = new HashMap<>();
         moFFFileHeaderIndexerMap.put(table_headers.Intensity, -1);
@@ -679,7 +681,7 @@ public class DatasetUtils implements Serializable {
                     moFFFileHeaderIndexerMap.replace(str, i);
                 }
                 i++;
-                
+
             }
 
 //                    int index = 1;
@@ -712,7 +714,7 @@ public class DatasetUtils implements Serializable {
         }
         return topValue;
     }
-    
+
     private void initialiseDatasetFilterMaps(VisualizationDatasetModel dataset) {
         Map<Comparable, Set<Integer>> proteinInferenceMap = new LinkedHashMap<>();
         proteinInferenceMap.put("No Information", new LinkedHashSet<>());
@@ -720,13 +722,13 @@ public class DatasetUtils implements Serializable {
         proteinInferenceMap.put("Related", new LinkedHashSet<>());
         proteinInferenceMap.put("Related & Unrelated", new LinkedHashSet<>());
         proteinInferenceMap.put("Unrelated", new LinkedHashSet<>());
-        
+
         Map<Comparable, Set<Integer>> proteinValidationMap = new LinkedHashMap<>();
         proteinValidationMap.put(CONSTANT.NO_INFORMATION, new LinkedHashSet<>());
         proteinValidationMap.put(CONSTANT.VALIDATION_CONFIDENT, new LinkedHashSet<>());
         proteinValidationMap.put(CONSTANT.VALIDATION_DOUBTFUL, new LinkedHashSet<>());
         proteinValidationMap.put(CONSTANT.VALIDATION_NOT_VALID, new LinkedHashSet<>());
-        
+
         Map<Comparable, Set<Integer>> chromosomeMap = new LinkedHashMap<>();
         TreeMap<Comparable, Set<Integer>> validatedPetideMap = new TreeMap<>();
         TreeMap<Comparable, Set<Integer>> validatedPsmsMap = new TreeMap<>();
@@ -760,17 +762,17 @@ public class DatasetUtils implements Serializable {
                 chromosomeMap.put(protein.getChromosomeIndex(), new LinkedHashSet<>());
             }
             chromosomeMap.get(protein.getChromosomeIndex()).add(protein.getIndex());
-            
+
             if (!validatedPetideMap.containsKey(protein.getValidatedPeptidesNumber())) {
                 validatedPetideMap.put(protein.getValidatedPeptidesNumber(), new LinkedHashSet<>());
             }
             validatedPetideMap.get(protein.getValidatedPeptidesNumber()).add(protein.getIndex());
-            
+
             if (!validatedPsmsMap.containsKey(protein.getValidatedPSMsNumber())) {
                 validatedPsmsMap.put(protein.getValidatedPSMsNumber(), new LinkedHashSet<>());
             }
             validatedPsmsMap.get(protein.getValidatedPSMsNumber()).add(protein.getIndex());
-            
+
             int roundedPercentage = (int) Math.round(protein.getCoverage());
             if (!validatedCoverageMap.containsKey(roundedPercentage)) {
                 validatedCoverageMap.put(roundedPercentage, new LinkedHashSet<>());
@@ -783,7 +785,7 @@ public class DatasetUtils implements Serializable {
                 }
                 accessionToGroupMap.get(accession).add(protein.getIndex());
             }
-            
+
         }
         dataset.setProteinInferenceMap(proteinInferenceMap);
         dataset.setProteinValidationMap(proteinValidationMap);
@@ -794,7 +796,7 @@ public class DatasetUtils implements Serializable {
         dataset.setAccessionToGroupMap(accessionToGroupMap);
         dataset.setMaxMS2Quant(maxMS2Quant);
         dataset.setMaxMW(maxMW);
-        
+
         for (PeptideObject peptide : dataset.getPeptidesMap().values()) {
             /**
              * calculate modifications from peptide file*
@@ -811,7 +813,7 @@ public class DatasetUtils implements Serializable {
                         }
                     }
                 }
-                
+
             }
         }
         ModificationMatrixModel matrixModel = appManagmentBean.getModificationMatrixUtilis().generateMatrixModel(modificationMap);
@@ -832,11 +834,11 @@ public class DatasetUtils implements Serializable {
         } else if (dataset.getDatasetSource().equals(CONSTANT.USER_UPLOAD_SOURCE)) {
             mapProteinsPeptides(dataset);
         }
-        
+
     }
-    
+
     private void mapProteinsPeptides(VisualizationDatasetModel dataset) {
-        
+
         Map<String, List<PeptideObject>> peptideToProteinMap = new HashMap<>();
         for (PeptideObject peptideObject : dataset.getPeptidesMap().values()) {
             for (String key : peptideObject.getProteinGroupsSet()) {
@@ -845,7 +847,7 @@ public class DatasetUtils implements Serializable {
                 }
                 peptideToProteinMap.get(key).add(peptideObject);
             }
-            
+
         }
         for (ProteinGroupObject proteinObject : dataset.getProteinsMap().values()) {
             proteinObject.setAvailableOn_CSF_PR(csf_pr_Accession_List.contains(proteinObject.getAccession()));
@@ -856,11 +858,11 @@ public class DatasetUtils implements Serializable {
                 }
             }
         }
-        
+
     }
-    
+
     private void mapProteinsPeptidesPsms(VisualizationDatasetModel dataset) {
-        
+
         Map<String, List<PSMObject>> psmToPeptideMap = new HashMap<>();
         for (PSMObject psmObject : dataset.getPsmsMap().values()) {
             if (!psmToPeptideMap.containsKey(psmObject.getModifiedSequence())) {
@@ -897,7 +899,7 @@ public class DatasetUtils implements Serializable {
                 }
                 peptideToProteinMap.get(key).add(peptideObject);
             }
-            
+
         }
         peptideIntensityColorGenerator = new RangeColorGenerator(topValue);
         dataset.setPeptideIntinsityColorScale(peptideIntensityColorGenerator);
@@ -941,7 +943,7 @@ public class DatasetUtils implements Serializable {
             TreeMap<Comparable, Set<Integer>> proteinsAllPeptidesIntensityMap = new TreeMap<>();
             TreeMap<Comparable, Set<Integer>> proteinsUniquePeptidesIntensityMap = new TreeMap<>();
             for (ProteinGroupObject protein : dataset.getProteinsMap().values()) {
-                
+
                 protein.setAllPeptideIintensityColor(proteinAllIntensityColorGenerator.getGradeColor(protein.getAllPeptidesIntensity()));
                 protein.setUniquePeptideIintensityColor(proteinUniqueIntensityColorGenerator.getGradeColor(protein.getUniquePeptidesIntensity()));
                 int per = (int) Math.round((protein.getAllPeptidesIntensity() / proteinAllIntensityColorGenerator.getMax()) * 100.0);
@@ -956,15 +958,14 @@ public class DatasetUtils implements Serializable {
                     proteinsUniquePeptidesIntensityMap.put(per, new HashSet<>());
                 }
                 proteinsUniquePeptidesIntensityMap.get(per).add(protein.getIndex());
-                
+
             }
             dataset.setAllPeptideIntensityMap(proteinsAllPeptidesIntensityMap);
             dataset.setUniquePeptideIntensityMap(proteinsUniquePeptidesIntensityMap);
-            
+
         }
-        
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(() -> {
+        Future f = executorService.submit(() -> {
             String fastaFileName = dataset.getPsZipFile().getId() + "_FASTA_.txt";
             File fastaFile = new File(appManagmentBean.getAppConfig().getUserFolderUri(), fastaFileName);
             if (!fastaFile.exists()) {
@@ -995,8 +996,10 @@ public class DatasetUtils implements Serializable {
             }
             appManagmentBean.getHttpClientUtil().downloadFileFromZipFolder(dataset.getPsZipFile().getDownloadUrl(), "proteins_proteoforms", proteoformsFile);
             dataset.setProteoformsMap(processProteoformFile(proteoformsFile));
-            
+
         });
+        while (!f.isDone()) {
+        }
         executorService.shutdown();
 
 //        psmsMap.keySet().forEach((modSeq) -> {
@@ -1151,21 +1154,24 @@ public class DatasetUtils implements Serializable {
     private LinkedHashMap<String, ProteinSequence> processFastaFile(File fastaFile) {
         FileInputStream inStream;
         try {
+
             inStream = new FileInputStream(fastaFile);
             FastaReader<ProteinSequence, AminoAcidCompound> fastaReader
                     = new FastaReader<>(
                             inStream,
                             new GenericFastaHeaderParser<>(),
                             new ProteinSequenceCreator(AminoAcidCompoundSet.getAminoAcidCompoundSet()));
-            return fastaReader.process();
-            
+            LinkedHashMap<String, ProteinSequence> l = fastaReader.process(-1);
+            inStream.close();
+            return l;
+
         } catch (IOException | NumberFormatException ex) {
-            ex.printStackTrace();
+            System.out.println("at Error : "+this.getClass().getName()+"  line: 1171  "+ex);
         }
         return null;
-        
+
     }
-    
+
     public ProteinGroupObject createSubGroupProtein(VisualizationDatasetModel dataset, String accession) {
         ProteinGroupObject proteinGroup = new ProteinGroupObject();
         proteinGroup.setAccession(accession);
@@ -1178,13 +1184,13 @@ public class DatasetUtils implements Serializable {
             proteinGroup.setProteinEvidence(CONSTANT.PROTEIN_EVIDENCE[Integer.parseInt(descArr[descArr.length - 2].replace("PE=", "").trim())]);
             proteinGroup.setSequence(sequence.getSequenceAsString());
         }
-        
+
         return proteinGroup;
-        
+
     }
-    
+
     private int maxPSMsNumber;
-    
+
     public Object[] initialiseProteinGraphData(String datasetId, int selectedProteinIndex) {
         VisualizationDatasetModel dataset = appManagmentBean.getUserHandler().getDataset(datasetId);
         ProteinGroupObject selectedProteinObject = dataset.getProteinsMap().get(selectedProteinIndex);
@@ -1200,12 +1206,12 @@ public class DatasetUtils implements Serializable {
         RangeColorGenerator psmsColorScale = new RangeColorGenerator(maxPSMsNumber);
         RangeColorGenerator intinsityColorScale = dataset.getPeptideIntinsityColorScale();
         return new Object[]{selectedProteinObject, proteinNodes, peptidesNodes, edges, psmsColorScale, intinsityColorScale};
-        
+
     }
     int index = 0;
-    
+
     private void populateGraphProteinList(ProteinGroupObject selectedProteinObject, VisualizationDatasetModel dataset, Map<String, ProteinGroupObject> proteinNodes, Map<String, PeptideObject> peptidesNodes, HashMap<String, Set<String>> edges) {
-        
+
         if (proteinNodes.keySet().containsAll(selectedProteinObject.getProteinGroupSet())) {
             return;
         }
@@ -1228,7 +1234,7 @@ public class DatasetUtils implements Serializable {
                         newAccessionList.put(proteinAcc + "_" + oreginalProteinObject.getProteinGroupKey(), newProteinObject);
                     }
                 }
-                
+
             }
         }
         Set<PeptideObject> newPeptides = new HashSet<>();
@@ -1239,7 +1245,7 @@ public class DatasetUtils implements Serializable {
                 if (!edges.containsKey(peptide.getModifiedSequence())) {
                     edges.put(peptide.getModifiedSequence(), new HashSet<>());
                 }
-                
+
                 edges.get(peptide.getModifiedSequence()).add(newProteinObject.getAccession());
                 peptidesNodes.put(peptide.getModifiedSequence(), peptide);
                 proteinNodes.put(newProteinObject.getAccession(), newProteinObject);
@@ -1263,7 +1269,7 @@ public class DatasetUtils implements Serializable {
                         } else {
                             proteinNodes.get(proteinGropAcc).addPeptideType(peptide.getModifiedSequence(), true);
                         }
-                        
+
                     }
                     continue;
                 }
@@ -1280,7 +1286,7 @@ public class DatasetUtils implements Serializable {
                         }
                     }
                 } else {
-                    
+
                     ProteinGroupObject newProteinObject = createSubGroupProtein(dataset, proteinGropAcc);
                     newProteinObject.setOreginalProteinGroup(proteinGropAcc);
                     newProteinObject.getPeptidesSet().add(peptide.getIndex());
@@ -1295,13 +1301,13 @@ public class DatasetUtils implements Serializable {
                         } else {
                             newProteinObject.addPeptideType(peptide.getModifiedSequence(), true);
                         }
-                        
+
                     }
                 }
-                
+
             }
         }
-        
+
     }
 
     /**
@@ -1353,7 +1359,7 @@ public class DatasetUtils implements Serializable {
             }
         }
         return false;
-        
+
     }
 
     /**
@@ -1362,7 +1368,7 @@ public class DatasetUtils implements Serializable {
      * @param proteoform_file input proteoform file
      */
     private LinkedHashMap<String, LinkedHashMap<String, NetworkGraphNode>> processProteoformFile(File proteoform_file) {
-        
+
         LinkedHashMap<String, LinkedHashMap<String, NetworkGraphNode>> nodes = new LinkedHashMap<>();
         List<String> readerSet = new ArrayList<>();
         String line;
@@ -1375,14 +1381,14 @@ public class DatasetUtils implements Serializable {
                     readerSet.add(line);
                 }
                 readerSet.stream().map((parsline) -> parsline.trim()).forEachOrdered((proteoformId) -> {
-                    
+
                     String accession = proteoformId.split(";")[0];
                     if (!nodes.containsKey(accession)) {
                         nodes.put(accession, new LinkedHashMap<>());
                     }
                     NetworkGraphNode node;
                     if (!nodes.get(accession).containsKey(proteoformId)) {
-                        node = new NetworkGraphNode(proteoformId, true, false) ;
+                        node = new NetworkGraphNode(proteoformId, true, false);
                         node.setType(3);
                         nodes.get(accession).put(proteoformId, node);
                     }
@@ -1400,17 +1406,17 @@ public class DatasetUtils implements Serializable {
         }
         return nodes;
     }
-    
+
     public Set<NetworkGraphEdge> getProteoformsNetworkEdges(VisualizationDatasetModel dataset, String proteinAcc, ProteinGroupObject selectedProtein) {
-        
+
         if (selectedProtein.isProteoformUpdated()) {
             return selectedProtein.getFullEdgesSet();
         }
-        
+
         Set<NetworkGraphEdge> edges = new LinkedHashSet<>();
         Map<String, NetworkGraphNode> tNodes = new LinkedHashMap<>();
         Map<String, NetworkGraphNode> accMap = dataset.getProteoformsMap().get(proteinAcc);
-        NetworkGraphNode parentNode = new NetworkGraphNode(proteinAcc, true, true) ;
+        NetworkGraphNode parentNode = new NetworkGraphNode(proteinAcc, true, true);
         selectedProtein.setParentNode(parentNode);
         if (accMap == null) {
             NetworkGraphNode singleNode = new NetworkGraphNode(proteinAcc + ";", true, false);
@@ -1426,9 +1432,9 @@ public class DatasetUtils implements Serializable {
                 selectedProtein.addProteoformNode(n);
                 tNodes.put(n.getNodeId(), n);
             });
-            
+
         }
-        
+
         selectedProtein.setProteoformUpdated(true);
         edges.addAll(selectedProtein.getLocalEdges());
 
@@ -1453,10 +1459,10 @@ public class DatasetUtils implements Serializable {
             NetworkGraphNode n2;
             n2 = null;
             if ((p1 == null || !(p1.getProteoformsNodes().containsKey(arr[0].trim()))) && !tNodes.containsKey(arr[0].trim())) {
-                n1 = new NetworkGraphNode(arr[0], false, false) ;
+                n1 = new NetworkGraphNode(arr[0], false, false);
                 tNodes.put(n1.getNodeId(), n1);
                 if (!tNodes.containsKey(n1.getAccession())) {
-                    NetworkGraphNode newParentNode = new NetworkGraphNode(n1.getAccession(), false, true) ;
+                    NetworkGraphNode newParentNode = new NetworkGraphNode(n1.getAccession(), false, true);
                     n1.setParentNode(newParentNode);
                     tNodes.put(n1.getAccession(), newParentNode);
                 }
@@ -1466,17 +1472,17 @@ public class DatasetUtils implements Serializable {
                 n1 = p1.getProteoformsNodes().get(arr[0]);
             }
             if ((p2 == null || !(p2.getProteoformsNodes().containsKey(arr[1]))) && !tNodes.containsKey(arr[1])) {
-                n2 = new NetworkGraphNode(arr[1], false, false) ;
+                n2 = new NetworkGraphNode(arr[1], false, false);
                 tNodes.put(n2.getNodeId(), n2);
                 if (!tNodes.containsKey(n2.getAccession())) {
-                    NetworkGraphNode NewSecParentNode = new NetworkGraphNode(n2.getAccession(), false, true) ;
+                    NetworkGraphNode NewSecParentNode = new NetworkGraphNode(n2.getAccession(), false, true);
                     tNodes.put(n2.getAccession(), NewSecParentNode);
-                    
+
                 }
                 n2.setParentNode(tNodes.get(n2.getAccession()));
             } else if (tNodes.containsKey(arr[1])) {
                 n2 = tNodes.get(arr[1]);
-                
+
             } else if (p2 != null && p2.getProteoformsNodes() != null) {
                 n2 = p2.getProteoformsNodes().get(arr[1]);
             }
@@ -1487,7 +1493,7 @@ public class DatasetUtils implements Serializable {
                 n1.addEdge(edge);
                 n2.addEdge(edge);
             }
-            
+
             return edge;
         }).forEachOrdered((edge) -> {
             edges.add(edge);
@@ -1495,7 +1501,7 @@ public class DatasetUtils implements Serializable {
         selectedProtein.setFullEdgesSet(edges);
         return edges;
     }
-    
+
     public Map<Object, SpectrumInformation> getSelectedSpectrumData(List<PSMObject> PSMs, PeptideObject peptideObject, VisualizationDatasetModel dataset, String userAPIKey) {//SpectrumPlot plot
 
         Map<Object, SpectrumInformation> spectrumInformationMap = new LinkedHashMap<>();
@@ -1534,14 +1540,14 @@ public class DatasetUtils implements Serializable {
                     tCharge = (int) Double.parseDouble(selectedPsm.getMeasuredCharge().replace("+", ""));
                 }
             }
-            
+
             if (tCharge > maxCharge) {
                 maxCharge = tCharge;
             }
             if (selectedPsm.getPrecursorMZError_PPM() > maxError) {
                 maxError = selectedPsm.getPrecursorMZError_PPM();
             }
-            
+
             ArrayList<ModificationMatch> psModificationMatches = null;
             if (peptideObject.isModified()) {
                 psModificationMatches = new ArrayList<>(peptideObject.getVariableModifications().length);
@@ -1549,7 +1555,7 @@ public class DatasetUtils implements Serializable {
                     psModificationMatches.add(seModMatch);
                 }
             }
-            
+
             Peptide psPeptide = new Peptide(peptideObject.getSequence(), peptideObject.getVariableModifications());
             PeptideAssumption psAssumption = new PeptideAssumption(psPeptide, tCharge);
             SpectrumMatch spectrumMatch = new SpectrumMatch(selectedPsm.getSpectrumFile(), selectedPsm.getSpectrumTitle());
@@ -1568,7 +1574,7 @@ public class DatasetUtils implements Serializable {
             spectrumInformation.setMzError(maxError);
         }
         return spectrumInformationMap;
-        
+
     }
-    
+
 }

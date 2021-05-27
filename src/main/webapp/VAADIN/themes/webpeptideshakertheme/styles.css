@@ -22698,6 +22698,7 @@ div.v-layout.v-horizontal.v-widget {
 	opacity: 1 !important;
 	border-width: 2px;
 	outline: 2px solid #ff8d00;
+        z-index: 3 !important;
 }
 
 .webpeptideshakertheme .chromosomefiltercontainerstyle .resizableimg img {
@@ -22723,9 +22724,10 @@ div.v-layout.v-horizontal.v-widget {
 	display: none;
 }
 
-.v-label.v-widget.tiny.v-label-tiny.small.v-label-small.bold.v-label-bold.smallundecorated.v-label-smallundecorated.v-label-undef-w {
-    min-width: 120px;
+.webpeptideshakertheme .v-label.v-widget.tiny.v-label-tiny.small.v-label-small.bold.v-label-bold.smallundecorated.v-label-smallundecorated.v-label-undef-w {
+	min-width: 120px;
 }
-.v-absolutelayout-wrapper-borderless.v-absolutelayout-wrapper-maxheight50per .v-panel-content-borderless.v-panel-content-maxheight50per .v-spacing {
-	max-height:5px;	
+
+.webpeptideshakertheme .v-absolutelayout-wrapper-borderless.v-absolutelayout-wrapper-maxheight50per .v-panel-content-borderless.v-panel-content-maxheight50per .v-spacing {
+	max-height: 5px;
 }

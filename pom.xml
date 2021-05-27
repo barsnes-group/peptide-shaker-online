@@ -15,17 +15,17 @@
         <vaadin.version>7.7.25</vaadin.version>
         <vaadin.plugin.version>7.7.25</vaadin.plugin.version>
         <jetty.plugin.version>9.3.9.v20160517</jetty.plugin.version>
-        <compomics.version>5.0.18</compomics.version>
+        <compomics.version>5.0.19</compomics.version>
         <jersey.version>2.32</jersey.version>
         <vertx.version>3.5.4</vertx.version>
+         <biojava.version>5.4.0</biojava.version>
         <!-- If there are no local customisations, this can also be "fetch" or "cdn" -->
         <vaadin.widgetset.mode>local</vaadin.widgetset.mode>
     </properties>
     <repositories>
-     
         <repository>
             <id>vaadin-addons</id>
-            <url>https://maven.vaadin.com/vaadin-addons</url>
+            <url>http://maven.vaadin.com/vaadin-addons</url>
         </repository>
          <!-- Compomics Genesis Maven 2 repository -->
     <repository>
@@ -111,7 +111,11 @@
             </exclusions>
         </dependency>
 
-       
+        <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>refresher</artifactId>
+            <version>1.2.3.7</version>
+        </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-icons</artifactId>
@@ -145,18 +149,6 @@
                 <exclusion>
                     <groupId>it.unimi.dsi</groupId>
                     <artifactId>fastutil</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>io.airlift</groupId>
-                    <artifactId>aircompressor</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>uk.ac.ebi.pride.archive</groupId>
-                    <artifactId>archive-data-provider-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>axis</groupId>
-                    <artifactId>axis</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -218,9 +210,9 @@
         <dependency>
             <groupId>org.biojava</groupId>
             <artifactId>biojava-core</artifactId>
-            <version>5.0.2</version>
+            <version>${biojava.version}</version>
         </dependency>
-
+      
         <dependency>
             <groupId>pl.exsio</groupId>
             <artifactId>plupload-vaadin</artifactId>
@@ -280,16 +272,9 @@
             <version>${vertx.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.vaadin/vaadin-client-compiler -->
-        <dependency>
-            <groupId>jfree</groupId>
-            <artifactId>jfreechart</artifactId>
-            <version>1.0.13</version>
-        </dependency>
-        <dependency>
-            <groupId>jfree</groupId>
-            <artifactId>jcommon</artifactId>
-            <version>1.0.16</version>
-        </dependency>
+        
+
+
     </dependencies>
 
     <build>
