@@ -61,7 +61,7 @@ public class DatasetProteinsSubView extends AbsoluteLayout implements ViewableFr
         headerLabel.setWidthUndefined();
         topLeftLabelContainer.setSpacing(true);
         topLeftLabelContainer.addComponent(headerLabel);
-        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Datset Visualization</h1>Users visualize the selected datasets and interact with them.", "", 350, 85);
+        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Datset Visualization</h1>Users visualize the selected dataset and interact with them.", "", 350, 85);
         topLeftLabelContainer.addComponent(helpBtn);
         FilterButton removeFilterIcon = new FilterButton() {
             @Override

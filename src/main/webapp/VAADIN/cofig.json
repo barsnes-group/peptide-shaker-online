@@ -1,0 +1,21 @@
+{
+    "galaxyServerUrl": "http://158.39.77.27/",
+    "testUserAPIKey": "",
+    "url": "jdbc:mysql://localhost:3306/",
+    "driver": "com.mysql.jdbc.Driver",
+    "password": "",
+    "userName": "", 
+    "dbName": "",
+    "appName": "webpeptideshaker-1.0-SNAPSHOT",
+
+    "csfprservice": "https://proteomics.uib.no/csf-pr/VAADIN/",
+    "maxusernumb": 5,
+    "infotext": {
+        "Analyze_Data": "<h1>Analyze Data (create new projects)</h1>Users can upload their data files and process them using SearchGUI and PeptideShaker and finally visualize the results. The supported spectrum formats are (MGF) for identification and (mzML and raw) for quantification.",
+        "Projects_Overview": "<h1>Projects Overview</h1>Users can check the available ready to visualize datasets, get an overview for the processed data, check the dataset processing status and have access for the dataset sharing links.",
+        "Upload_Visualize_Projects": "<h1>Upload / Visualize Projects</h1>Users can upload and visualize their own processed files (FASTA, protein and  peptide files). The format of the protein and peptide files should follow the sample files format <a href='VAADIN/sample_files.zip' download>[download sample files]</a>.\nPlease note that the files will be automatically deleted after the session expires.",
+        "Datset_Visualization": "<h1>Datset Visualization</h1>Users visualize the selected dataset and interact with them.",
+        "Protein_Visualization": "<h1>Protein Visualization</h1>Visualization of protein details and related proteins including the peptide coverage and 3D visualization.",
+        "Peptide_Visualization": "<h1>Peptide Visualization</h1>Visualization of peptide details include available peptide-to-spectrum matches and spectrum visualization chart."
+    }
+}

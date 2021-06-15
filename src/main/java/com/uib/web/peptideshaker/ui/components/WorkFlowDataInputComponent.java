@@ -153,7 +153,7 @@ public class WorkFlowDataInputComponent extends Panel {
 
         AbsoluteLayout newProjectContainer = new AbsoluteLayout();
         newProjectContainer.setWidth(100, Unit.PERCENTAGE);
-        newProjectContainer.setHeight(426, Unit.PIXELS);
+        newProjectContainer.setHeight(460, Unit.PIXELS);
         newProjectContainer.addStyleName("searchguiinputcontainer");
         newProjectContainer.addStyleName("datainputsubcontainer");
         mainContainerLayout.addComponent(newProjectContainer, "left: 15px;right: 15px;top:50%");
@@ -588,7 +588,15 @@ public class WorkFlowDataInputComponent extends Panel {
                     return;
                 }
                 Object[] objArr = ((Set<Object>) event.getProperty().getValue()).toArray();
-                Object lastSelected = objArr[objArr.length - 1];
+                Object lastSelected;
+                if (objArr.length > 0) {
+                    lastSelected = objArr[objArr.length - 1];
+                    if (lastSelected.toString().equalsIgnoreCase("MetaMorpheus")) {
+                        Notification.show("MetaMorpheus only produce results when using mzML format", Notification.Type.TRAY_NOTIFICATION);
+                    }
+                } else {
+                    lastSelected = "";
+                }
                 if (searchEngines.getSelectedValue() != null && searchEngines.getSelectedValue().size() > 3) {
                     if (searchEngines.getSelectedValue().contains(lastSelected.toString())) {
                         selfSelection = true;
@@ -694,6 +702,7 @@ public class WorkFlowDataInputComponent extends Panel {
         searchEnginesList.put("Comet", "Comet");
         searchEnginesList.put("Tide", "Tide");
         searchEnginesList.put("MyriMatch", "MyriMatch");
+        searchEnginesList.put("MetaMorpheus", "MetaMorpheus");
         searchEnginesList.put("MS_Amanda", "MS Amanda");
         searchEnginesList.put("DirecTag", "DirecTag");
         searchEnginesList.put("Novor (Select for non-commercial use only)", "Novor");

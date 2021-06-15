@@ -96,17 +96,19 @@ public class MultiSelectOptionGroup extends HorizontalLayout implements LayoutEv
         listII.clear();
         listIII.removeAllItems();
         listIII.clear();
+        listIV.removeAllItems();
+        listIV.clear();
         int counter = 0;
         OptionGroup list = listI;
-        if (idToCaptionMap.size() < 11) {
+        if (idToCaptionMap.size() > 12) {
             for (String id : idToCaptionMap.keySet()) {
-                if (counter == 3) {
+                if (counter == 4) {
                     list = listII;
                 }
-                if (counter == 6) {
+                if (counter == 8) {
                     list = listIII;
                 }
-                if (counter == 9) {
+                if (counter == 12) {
                     list = listIV;
                 }
                 list.addItem(id);
@@ -114,7 +116,7 @@ public class MultiSelectOptionGroup extends HorizontalLayout implements LayoutEv
                 counter++;
             }
         } else {
-            int rowsNumber = (int) Math.nextUp((double) idToCaptionMap.size() / 3.0);
+            int rowsNumber = 4;
             for (String id : idToCaptionMap.keySet()) {
                 if (counter == rowsNumber) {
                     list = listII;
@@ -122,6 +124,7 @@ public class MultiSelectOptionGroup extends HorizontalLayout implements LayoutEv
                 if (counter == (rowsNumber * 2)) {
                     list = listIII;
                 }
+                
                 list.addItem(id);
                 list.setItemCaption(id, idToCaptionMap.get(id));
                 counter++;
@@ -305,14 +308,14 @@ public class MultiSelectOptionGroup extends HorizontalLayout implements LayoutEv
     }
 
     public void selectByIndex(int index) {
-        if (index < 3) {
+        if (index < 4) {
             listI.select(listI.getItemIds().toArray()[index]);
-        } else if (index >= 3 && index < 6) {
-            listII.select(listII.getItemIds().toArray()[index - 3]);
-        } else if (index >= 6 && index < 9) {
-            listIII.select(listIII.getItemIds().toArray()[index - 6]);
-        } else if (index >= 9) {
-            listIV.select(listIV.getItemIds().toArray()[index - 9]);
+        } else if (index >= 4 && index < 8) {
+            listII.select(listII.getItemIds().toArray()[index - 4]);
+        } else if (index >= 8 && index < 12) {
+            listIII.select(listIII.getItemIds().toArray()[index - 8]);
+        } else if (index >= 12) {
+            listIV.select(listIV.getItemIds().toArray()[index - 12]);
         }
     }
 

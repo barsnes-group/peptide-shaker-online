@@ -5,7 +5,7 @@
 
     <groupId>com.uib</groupId>
     <artifactId>webpeptideshaker</artifactId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>webpeptideshaker-1.0-SNAPSHOT</name>
 
@@ -16,7 +16,7 @@
         <vaadin.plugin.version>7.7.25</vaadin.plugin.version>
         <jetty.plugin.version>9.3.9.v20160517</jetty.plugin.version>
         <compomics.version>5.0.19</compomics.version>
-        <jersey.version>2.32</jersey.version>
+        <jersey.version>2.34</jersey.version>
         <vertx.version>3.5.4</vertx.version>
          <biojava.version>5.4.0</biojava.version>
         <!-- If there are no local customisations, this can also be "fetch" or "cdn" -->

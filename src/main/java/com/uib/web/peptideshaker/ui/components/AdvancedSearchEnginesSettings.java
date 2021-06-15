@@ -11,6 +11,7 @@ import com.uib.web.peptideshaker.ui.components.advancedsearchenginessettings.XTa
 import com.uib.web.peptideshaker.ui.components.advancedsearchenginessettings.MyriMatchAdvancedSettingsPanel;
 import com.uib.web.peptideshaker.ui.components.advancedsearchenginessettings.NovorAdvancedSettingsPanel;
 import com.compomics.util.parameters.identification.IdentificationParameters;
+import com.uib.web.peptideshaker.ui.components.advancedsearchenginessettings.MetaMorpheusAdvancedSettingsPanel;
 import com.uib.web.peptideshaker.ui.views.modal.PopupWindow;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
@@ -37,6 +38,7 @@ public class AdvancedSearchEnginesSettings extends VerticalLayout {
     private DirecTagAdvancedSettingsPanel direcTagAdvancedSettingsPanel;
     private MsGFAdvancedSettingsPanel msGFAdvancedSettingsPanel;
     private CometAdvancedSettingsPanel cometAdvancedSettingsPanel;
+    private MetaMorpheusAdvancedSettingsPanel metaMorpheusAdvancedSettingsPanel;
 
     /**
      *
@@ -53,7 +55,7 @@ public class AdvancedSearchEnginesSettings extends VerticalLayout {
         AdvancedSearchEnginesSettings.this.addComponent(popupAdvancedSettingLayout);
         AbsoluteLayout vlo = initLayout();
         vlo.setWidth(500, Unit.PIXELS);
-        vlo.setHeight(500, Unit.PIXELS);
+        vlo.setHeight(545, Unit.PIXELS);
         popupAdvancedSettingLayout.setClosable(true);
         popupAdvancedSettingLayout.setContent(vlo);
 
@@ -78,6 +80,9 @@ public class AdvancedSearchEnginesSettings extends VerticalLayout {
 
         myriMatchAdvancedSettingsPanel = new MyriMatchAdvancedSettingsPanel();
         subContainer.addComponent(myriMatchAdvancedSettingsPanel);
+        
+        metaMorpheusAdvancedSettingsPanel = new MetaMorpheusAdvancedSettingsPanel();
+        subContainer.addComponent(metaMorpheusAdvancedSettingsPanel);
 
         mSAmandaAdvancedSettingsPanel = new MSAmandaAdvancedSettingsPanel();
         subContainer.addComponent(mSAmandaAdvancedSettingsPanel);
@@ -113,6 +118,7 @@ public class AdvancedSearchEnginesSettings extends VerticalLayout {
         if (idSearchParameter != null) {
             xTandemAdvancedSettingsPanel.updateGUI(searchParameters);
             myriMatchAdvancedSettingsPanel.updateGUI(searchParameters);
+            metaMorpheusAdvancedSettingsPanel.updateGUI(searchParameters);
             mSAmandaAdvancedSettingsPanel.updateGUI(searchParameters);
             msGFAdvancedSettingsPanel.updateGUI(searchParameters);
             novorAdvancedSettingsPanel.updateGUI(searchParameters);
