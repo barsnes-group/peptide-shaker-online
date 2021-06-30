@@ -1,19 +1,15 @@
 package com.uib.web.peptideshaker.ui.views.subviews;
 
 import com.uib.web.peptideshaker.AppManagmentBean;
-import com.uib.web.peptideshaker.model.PSMObject;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.PeptideObject;
 import com.uib.web.peptideshaker.ui.components.items.HelpPopupButton;
 import com.uib.web.peptideshaker.ui.views.subviews.peptidespsmviews.PSMContainerView;
-import com.uib.web.peptideshaker.ui.views.subviews.peptidespsmviews.components.SpectrumInformation;
 import com.uib.web.peptideshaker.ui.interfaces.ViewableFrame;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import java.util.List;
-import java.util.Map;
 
 /**
  * This class represents the layout that contains selected peptide psm subview
@@ -52,7 +48,7 @@ public class PeptidePsmsSubView extends AbsoluteLayout implements ViewableFrame 
         headerLabel.setWidthUndefined();
         topLeftLabelContainer.setSpacing(true);
         topLeftLabelContainer.addComponent(headerLabel);
-         HelpPopupButton helpBtn = new HelpPopupButton("<h1>Peptide Visualization</h1>Visualization of peptide details include available peptide-to-spectrum matches and spectrum visualization chart.", "", 350  , 90);
+         HelpPopupButton helpBtn = new HelpPopupButton(appManagmentBean.getAppConfig().getPeptide_Visualization_text(), "", 350  , 90);
 
          topLeftLabelContainer.addComponent(helpBtn);
 

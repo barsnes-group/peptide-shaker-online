@@ -1,6 +1,5 @@
 package com.uib.web.peptideshaker.ui.views.subviews.proteinsview.components;
 
-import com.itextpdf.text.pdf.codec.Base64;
 import org.jfree.chart.encoders.ImageEncoder;
 import org.jfree.chart.encoders.ImageEncoderFactory;
 import org.jfree.chart.encoders.ImageFormat;
@@ -11,6 +10,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * This class responsible for generate change coverage images and do all
@@ -143,7 +143,7 @@ public class ChainCoverageComponent {
             System.out.println(e.getLocalizedMessage());
         }
 
-        String base64 = Base64.encodeBytes(iconImageData);
+        String base64 = Base64.encodeBase64String(iconImageData);
         base64 = "data:image/png;base64," + base64;
 
         //total chain coverage

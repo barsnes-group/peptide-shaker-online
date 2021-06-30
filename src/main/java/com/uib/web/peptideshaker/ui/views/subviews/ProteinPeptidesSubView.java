@@ -70,7 +70,7 @@ public class ProteinPeptidesSubView extends AbsoluteLayout implements ViewableFr
         headerLabel.setWidthUndefined();
         topLeftLabelContainer.setSpacing(true);
         topLeftLabelContainer.addComponent(headerLabel);
-        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Protein Visualization</h1>Visualization of protein details and related proteins including the peptide coverage and 3D visualization.", "", 350, 90);
+        HelpPopupButton helpBtn = new HelpPopupButton(appManagmentBean.getAppConfig().getProtein_Visualization_text(), "", 350, 90);
         topLeftLabelContainer.addComponent(helpBtn);
 
         Label commentLabel = new Label("<i style='padding-right: 50px;top: 3px !important;position: relative;'>* Click in the graph or table to select proteins and peptides</i>", ContentMode.HTML);

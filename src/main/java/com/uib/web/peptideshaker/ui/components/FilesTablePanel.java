@@ -170,14 +170,28 @@ public class FilesTablePanel extends Panel {
                     @Override
                     public void layoutClick(LayoutEvents.LayoutClickEvent event) {
                         appManagmentBean.getNotificationFacade().confirmAlertNotification(VaadinIcons.TRASH.getHtml() + " Are you sure you want to delete the dataset?", (Button.ClickEvent event1) -> {
+                            String dsId = dataset.getId();
                             appManagmentBean.getUserHandler().deleteDataset(dataset);
-                            if (appManagmentBean.getUI_Manager().getSelectedDatasetId().equals(dataset.getId())) {
+                            if (appManagmentBean.getUI_Manager().getSelectedDatasetId() != null && appManagmentBean.getUI_Manager().getSelectedDatasetId().equals(dsId)) {
                                 appManagmentBean.getUI_Manager().setSelectedDatasetId(null);
                             }
                         });
                     }
 
+                    @Override
+                    public void setEnabled(boolean enabled) {
+                        if (!appManagmentBean.getAppConfig().isEnableDelete()) {
+                            super.setEnabled(false);
+                            this.setDescription("Delete is disabled in the demo version");
+                        } else {
+                            super.setEnabled(enabled);
+                        }
+
+                    }
+
                 };
+                deleteLabel.setEnabled(true);
+
                 if (dataset.getDatasetSource().equals(CONSTANT.USER_UPLOAD_SOURCE)) {
                     String dsName = dataset.getName();
                     nameLabel = new ActionLabel(VaadinIcons.CLUSTER, dsName, "Uploaded Project results ") {
@@ -317,7 +331,20 @@ public class FilesTablePanel extends Panel {
                     });
                 }
 
+                @Override
+                public void setEnabled(boolean enabled) {
+                    if (!appManagmentBean.getAppConfig().isEnableDelete()) {
+                        super.setEnabled(false);
+                        this.setDescription("Delete is disabled in the demo version");
+                       
+                    } else {
+                        super.setEnabled(enabled);
+                    }
+
+                }
+
             };
+            deleteLabel.setEnabled(true);
             PopupWindow infoLabel = new PopupWindow("   ") {
                 @Override
                 public void onClosePopup() {

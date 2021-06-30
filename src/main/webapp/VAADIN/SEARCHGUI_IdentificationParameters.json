@@ -794,8 +794,8 @@
     "id": 0
   },
   "geneParameters": {
-    "autoUpdate": false,
-    "useGeneMapping": false,
+    "autoUpdate": true,
+    "useGeneMapping": true,
     "id": 0
   },
   "psmScoringParameters": {

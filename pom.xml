@@ -12,8 +12,8 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <vaadin.version>7.7.25</vaadin.version>
-        <vaadin.plugin.version>7.7.25</vaadin.plugin.version>
+        <vaadin.version>7.7.26</vaadin.version>
+        <vaadin.plugin.version>7.7.26</vaadin.plugin.version>
         <jetty.plugin.version>9.3.9.v20160517</jetty.plugin.version>
         <compomics.version>5.0.19</compomics.version>
         <jersey.version>2.34</jersey.version>
@@ -92,31 +92,6 @@
             <artifactId>vaadin-themes</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.jmchilton.blend4j</groupId>
-            <artifactId>blend4j</artifactId>
-            <version>0.2.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.sun.jersey</groupId>
-                    <artifactId>jersey-client</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun.jersey</groupId>
-                    <artifactId>jersey-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun.jersey.contribs</groupId>
-                    <artifactId>jersey-multipart</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.vaadin.addons</groupId>
-            <artifactId>refresher</artifactId>
-            <version>1.2.3.7</version>
-        </dependency>
-        <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-icons</artifactId>
             <version>2.0.0</version>
@@ -179,12 +154,6 @@
             <artifactId>jersey-container-servlet-core</artifactId>
             <version>2.6</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.vaadin.addons</groupId>
-            <artifactId>canvas</artifactId>
-            <version>2.1</version>
-        </dependency>
         <dependency>
             <groupId>org.vaadin.addons</groupId>
             <artifactId>sizereporter</artifactId>
@@ -199,13 +168,6 @@
             <groupId>net.sf.jung</groupId>
             <artifactId>jung-graph-impl</artifactId>
             <version>2.0.1</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>itextpdf</artifactId>
-            <version>5.5.9</version>
         </dependency>
         <dependency>
             <groupId>org.biojava</groupId>
@@ -234,11 +196,6 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.16</version>
-        </dependency>
-        <dependency>
-            <groupId>org.vaadin.alump.gofullscreen</groupId>
-            <artifactId>gofullscreen-addon</artifactId>
-            <version>0.5.3</version>
         </dependency>
         <dependency>
             <groupId>com.github.vaadin4qbanos</groupId>

@@ -165,7 +165,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         welcomeText.setContentMode(ContentMode.HTML);
         welcomeText.setStyleName(ValoTheme.LABEL_NO_MARGIN);
         welcomeText.addStyleName("hideonmobilemode");
-        welcomeText.setValue("<font style='font-weight: bold; font-size:23px'>Welcome to PeptideShaker </font>");
+        welcomeText.setValue("<font style='font-weight: bold; font-size:23px'>Welcome to PeptideShaker Online </font>");
         welcomeText.setData("ignoreclick");
         welcomeTextContainerLayout.addComponent(welcomeText);
         welcomeTextContainerLayout.setExpandRatio(welcomeText, 0.05f);
@@ -337,7 +337,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         headerLayoutContainer.addComponent(peptideShakerLogoIcon);
         headerLayoutContainer.setComponentAlignment(peptideShakerLogoIcon, Alignment.MIDDLE_LEFT);
 
-        Link headerLogoLabel = new Link("PeptideShaker", new ExternalResource(""));
+        Link headerLogoLabel = new Link("PeptideShaker <i>Online</i>", new ExternalResource(""));
         headerLayoutContainer.addComponent(headerLogoLabel);
         headerLogoLabel.setCaptionAsHtml(true);
         headerLayoutContainer.setComponentAlignment(headerLogoLabel, Alignment.MIDDLE_LEFT);

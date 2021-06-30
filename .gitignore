@@ -122,3 +122,5 @@ src/main/webapp/WEB-INF/web.xml
 .idea/artifacts/webpeptideshaker_war.xml
 .idea/artifacts/webpeptideshaker_war_exploded.xml
 .idea/encodings.xml
+src/main/webapp/VAADIN/cofig.json
+src/main/webapp/WEB-INF/web.xml

@@ -69,8 +69,7 @@ public class UserUploadFilesComponent extends HorizontalLayout {
         titleLabel.setStyleName("frametitle");
         titleLabel.addStyleName("maintitleheader");
         container.addComponent(titleLabel, "left:40px;top:13px");
-        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Upload / Visualize Projects</h1>Users can upload and visualize their own processed files (FASTA, protein and  peptide files). The format of the protein and peptide files should follow the sample files format <a href='VAADIN/sample_files.zip' download>[download sample files]</a>.\n"
-                + "Please note that the files will be automatically deleted after the session expires.", "", 400, 150);
+        HelpPopupButton helpBtn = new HelpPopupButton(appManagmentBean.getAppConfig().getUpload_Visualize_Projects_text(), "", 400, 150);
         container.addComponent(helpBtn, "left:265px;top:10px");
 
         AbsoluteLayout mainContainerLayout = new AbsoluteLayout();

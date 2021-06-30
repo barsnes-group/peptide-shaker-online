@@ -383,7 +383,7 @@ public class UserHandler implements Serializable {
                 appManagmentBean.getUI_Manager().updateAll();
                 appManagmentBean.getUI_Manager().setOngoingJob(false);
                 toFollowUpBusyHistoryFuture.cancel(true);
-                appManagmentBean.getNotificationFacade().showInfoNotification("Data are ready to visualize!");
+                appManagmentBean.getNotificationFacade().showInfoNotification("Data are ready!");
             }
 
         }, 0, 20, TimeUnit.SECONDS);

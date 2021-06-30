@@ -2,7 +2,7 @@ package graphmatcher;
 
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.SizeReporter;
-import com.itextpdf.text.pdf.codec.Base64;
+import org.apache.commons.codec.binary.Base64;
 import com.uib.web.peptideshaker.AppManagmentBean;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.ProteinGroupObject;
@@ -680,7 +680,7 @@ public abstract class NetworkGraphComponent extends VerticalLayout {
             System.out.println(e.getLocalizedMessage());
         }
 
-        String base64 = Base64.encodeBytes(imageData);
+        String base64 = Base64.encodeBase64String(imageData);
         base64 = "data:image/png;base64," + base64;
         edgesImage.setSource(new ExternalResource(base64));
         edgesImage.removeStyleName("hide");

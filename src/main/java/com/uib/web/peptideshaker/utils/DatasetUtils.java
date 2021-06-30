@@ -97,7 +97,6 @@ public class DatasetUtils implements Serializable {
             if (!file.exists()) {
                 file.createNewFile();
                 file = appManagmentBean.getHttpClientUtil().downloadFileFromZipFolder(initIdentificationParametersFileURI, "IdentificationParameters.par", file);
-
             }
 
             return IdentificationParameters.getIdentificationParameters(file);
@@ -1166,7 +1165,7 @@ public class DatasetUtils implements Serializable {
             return l;
 
         } catch (IOException | NumberFormatException ex) {
-            System.out.println("at Error : "+this.getClass().getName()+"  line: 1171  "+ex);
+            System.out.println("at Error : " + this.getClass().getName() + "  line: 1171  " + ex);
         }
         return null;
 

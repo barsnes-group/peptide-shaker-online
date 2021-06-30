@@ -138,7 +138,6 @@ public class MetaMorpheusAdvancedSettingsPanel extends PopupWindow {
         values.clear();
         values.add(1 + "");
         values.add(0 + "");
-       
 
         USE_DELTA_SCORE = new HorizontalLabelDropDownList("Use Delta Score");
         USE_DELTA_SCORE.updateData(values);
@@ -166,14 +165,13 @@ public class MetaMorpheusAdvancedSettingsPanel extends PopupWindow {
         values.clear();
         values.add(1 + "");
         values.add(0 + "");
-        
 
         VerticalLayout tab2 = new VerticalLayout();
         subContainer.addTab(tab2, "Output");
         writemzIdentML = new HorizontalLabelDropDownList("Write mzIdentML");
         writemzIdentML.updateData(values);
         tab2.addComponent(this.writemzIdentML);
-        writemzIdentML.setItemCaption(1 + "","Yes" );
+        writemzIdentML.setItemCaption(1 + "", "Yes");
         writemzIdentML.setItemCaption(0 + "", "No");
 //        writemzIdentML.setSelected(0 + "");
 
@@ -218,7 +216,6 @@ public class MetaMorpheusAdvancedSettingsPanel extends PopupWindow {
         values.clear();
         values.add(1 + "");
         values.add(0 + "");
-        
 
         trimMS1Peaks = new HorizontalLabelDropDownList("Trim MS1 Peaks");
         trimMS1Peaks.updateData(values);
@@ -328,7 +325,7 @@ public class MetaMorpheusAdvancedSettingsPanel extends PopupWindow {
         okBtn.setHeight(20, Unit.PIXELS);
         okBtn.setStyleName(ValoTheme.BUTTON_TINY);
         okBtn.addClickListener((Button.ClickEvent event) -> {
-            if (numberofPartitions.isValid()&& maxNumberofModificationsperPeptide.isValid() && scoreCutOff.isValid()&& peptideLength.isValid() && deconIntensityRatio.isValid() &&deconvolutionMassTolerance.isValid()&& numberofPeakstoKeepperWindow.isValid() && minimumAllowedIntensityRatiotoBasePeak.isValid() && maxFragmentSize.isValid() && maxModificationIsoforms.isValid() && minimumVariantDepth.isValid() && maximumHeterozygousVariants.isValid()) {
+            if (numberofPartitions.isValid() && maxNumberofModificationsperPeptide.isValid() && scoreCutOff.isValid() && peptideLength.isValid() && deconIntensityRatio.isValid() && deconvolutionMassTolerance.isValid() && numberofPeakstoKeepperWindow.isValid() && minimumAllowedIntensityRatiotoBasePeak.isValid() && maxFragmentSize.isValid() && maxModificationIsoforms.isValid() && minimumVariantDepth.isValid() && maximumHeterozygousVariants.isValid()) {
                 updateParameters();
                 setPopupVisible(false);
             }
@@ -354,7 +351,11 @@ public class MetaMorpheusAdvancedSettingsPanel extends PopupWindow {
     public void updateGUI(IdentificationParameters webSearchParameters) {
         this.webSearchParameters = webSearchParameters;//
         MetaMorpheusParameters oldCometParameters = (MetaMorpheusParameters) this.webSearchParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.metaMorpheus.getIndex());
-        searchType.setSelected(oldCometParameters.getSearchType().name());
+        if (oldCometParameters.getSearchType() != null) {
+            searchType.setSelected(oldCometParameters.getSearchType().name());
+        } else {
+            return;
+        }
         numberofPartitions.setSelectedValue(oldCometParameters.getTotalPartitions());
         dissociationType.setSelected(oldCometParameters.getDissociationType().name());
         maxNumberofModificationsperPeptide.setSelectedValue(oldCometParameters.getMaxModsForPeptide());
@@ -560,7 +561,7 @@ public class MetaMorpheusAdvancedSettingsPanel extends PopupWindow {
 
             ModificationCategory tempModCategory = ModificationCategory.values()[i];
             CheckBox cb = new CheckBox();
-            cb.setData(tempModCategory);           
+            cb.setData(tempModCategory);
             if (i > 0 && i < 4) {
 //                cb.setValue(true);
             }

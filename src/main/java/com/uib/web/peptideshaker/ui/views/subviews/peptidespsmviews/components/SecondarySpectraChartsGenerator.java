@@ -14,7 +14,6 @@ import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.advanced.SequenceMatchingParameters;
 import com.compomics.util.parameters.identification.search.ModificationParameters;
 import com.compomics.util.parameters.identification.search.SearchParameters;
-import com.itextpdf.text.pdf.codec.Base64;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -35,6 +34,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashSet;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * @author Yehia Mokhtar Farag
@@ -227,7 +227,7 @@ public class SecondarySpectraChartsGenerator {
         } catch (IOException e) {
             System.out.println(e.getLocalizedMessage());
         }
-        base64 = Base64.encodeBytes(imageData);
+        base64 = Base64.encodeBase64String(imageData);
         base64 = "data:image/png;base64," + base64;
         //total chain coverage     
         return base64;

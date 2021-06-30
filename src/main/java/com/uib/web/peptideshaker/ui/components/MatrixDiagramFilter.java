@@ -109,7 +109,7 @@ public abstract class MatrixDiagramFilter extends VerticalLayout {
                 return;
             }
             mainWidth = tChartWidth - 2;
-            mainHeight = tChartHeight;
+            mainHeight = tChartHeight-2;
             frameHeight = mainHeight;
             frameWidth = mainWidth;
             reDrawLayout(false);

@@ -306,6 +306,12 @@ public class MultiSelectOptionGroup extends HorizontalLayout implements LayoutEv
     listIII.unselect(id);
     listIV.unselect(id);
     }
+    public void setItemEnabled(Object id, boolean enabled){
+    listI.setItemEnabled(id, enabled);
+    listII.setItemEnabled(id, enabled);
+    listIII.setItemEnabled(id, enabled);    
+    listIV.setItemEnabled(id, enabled);
+    }
 
     public void selectByIndex(int index) {
         if (index < 4) {

@@ -28,13 +28,11 @@ import com.compomics.util.parameters.identification.search.SearchParameters;
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.ComponentResizeListener;
 import com.ejt.vaadin.sizereporter.SizeReporter;
-import com.itextpdf.text.pdf.codec.Base64;
 import com.uib.web.peptideshaker.AppManagmentBean;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.vaadin.data.Property;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
-import com.vaadin.server.Resource;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.slider.SliderOrientation;
@@ -52,7 +50,6 @@ import selectioncanvas.SelectioncanvasComponent;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -62,6 +59,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * This class represents Spectrum Plot extracted from PeptideShaker and
@@ -700,7 +698,7 @@ public class SpectrumPlot extends AbsoluteLayout {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        String base64 = Base64.encodeBytes(imageData);
+        String base64 = Base64.encodeBase64String(imageData);
         base64 = "data:image/png;base64," + base64;
         return base64;
     }

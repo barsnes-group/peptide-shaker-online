@@ -143,7 +143,7 @@ public class WorkFlowDataInputComponent extends Panel {
         titleLabel.setStyleName("frametitle");
         titleLabel.addStyleName("maintitleheader");
         container.addComponent(titleLabel, "left:40px;top:13px");
-        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Analyze Data (create new projects)</h1>Users can upload their data files and process them using SearchGUI and PeptideShaker and finally visualize the results. The supported spectrum formats are (MGF) for identification and (mzML and raw) for quantification.", "", 400, 120);
+        HelpPopupButton helpBtn = new HelpPopupButton(appManagmentBean.getAppConfig().getAnalyze_Data_text(), "", 400, 120);
         container.addComponent(helpBtn, "left:143px;top:0px");
 
         AbsoluteLayout mainContainerLayout = new AbsoluteLayout();
@@ -210,8 +210,12 @@ public class WorkFlowDataInputComponent extends Panel {
             String selectedValue = rawMgfController.getValue().toString();
             _mgfFileList.clear();
             _rawFileList.clear();
+            if (_searchEngines != null) {
+                _searchEngines.setItemEnabled("MetaMorpheus", !selectedValue.equals("mgfFiles"));
+            }
             switch (selectedValue) {
                 case "mgfFiles":
+                    _searchEngines.unselect("MetaMorpheus");
                     mzMLDataListLayout.setVisible(false);
                     rawDataListLayout.setVisible(false);
                     mgfDataListLayout.setVisible(true);
@@ -280,6 +284,11 @@ public class WorkFlowDataInputComponent extends Panel {
         mgf_raw_dataUploader.addUploaderFilter("raw");
         mgf_raw_dataUploader.addUploaderFilter(CONSTANT.mzML_FILE_EXTENSION);
         inputDataFilesContainer.addComponent(mgf_raw_dataUploader, "right:5px;top:-40px");
+        if (!appManagmentBean.getAppConfig().isEnableUpload()) {
+            mgf_raw_dataUploader.setEnabled(false);
+            mgf_raw_dataUploader.setDescription("Upload is disabled in the demo version");
+            mgf_raw_dataUploader.addStyleName("permanentdisable");
+        }
 
         rawDataListLayout = new VerticalLayout();
         rawDataListLayout.setSizeFull();
@@ -454,11 +463,35 @@ public class WorkFlowDataInputComponent extends Panel {
             @Override
             public void filesUploaded(PluploadFile[] uploadedFiles) {
                 File file = (File) uploadedFiles[0].getUploadedFile();
-                appManagmentBean.getWorkFlowHandler().uploadFile(file, uploadedFiles[0].getName(), CONSTANT.FASTA_FILE_EXTENSION);
+                String fileName = uploadedFiles[0].getName();
+                GalaxyFileModel fastaFile = new GalaxyFileModel();
+                fastaFile.setName(fileName);
+                fastaFile.setExtension(CONSTANT.FASTA_FILE_EXTENSION);
+                fastaFile.setStatus(CONSTANT.RUNNING_STATUS);
+                fastaFile.setId(file.getAbsolutePath());
+                fastaFile.setDeleted(Boolean.FALSE);
+                fastaFile.setCreatedDate(java.util.Calendar.getInstance().getTime());
+                fastaFile.setDownloadUrl(file.getAbsolutePath());
+                appManagmentBean.getUserHandler().addToFilesMap(fastaFile);
+                appManagmentBean.getUI_Manager().updateAll();
+                ExecutorService executorService = Executors.newSingleThreadExecutor();
+                executorService.submit(() -> {
+                    appManagmentBean.getWorkFlowHandler().uploadFile(file, fileName, CONSTANT.FASTA_FILE_EXTENSION);
+                    file.delete();
+                    appManagmentBean.getUserHandler().syncAndUpdateUserData();
+                    appManagmentBean.getUI_Manager().updateAll();
+                    fastaFileUploader.setBusy(false);
+                });
+
             }
 
         };
         fastaFileUploader.addUploaderFilter("fasta");
+         if (!appManagmentBean.getAppConfig().isEnableUpload()) {
+            fastaFileUploader.setEnabled(false);
+            fastaFileUploader.setDescription("Upload is disabled in the demo version");
+             fastaFileUploader.addStyleName("permanentdisable");
+        }
         final DropDownList fastaFileList = new DropDownList(null) {
             @Override
             public boolean isValid() {
@@ -592,7 +625,7 @@ public class WorkFlowDataInputComponent extends Panel {
                 if (objArr.length > 0) {
                     lastSelected = objArr[objArr.length - 1];
                     if (lastSelected.toString().equalsIgnoreCase("MetaMorpheus")) {
-                        Notification.show("MetaMorpheus only produce results when using mzML format", Notification.Type.TRAY_NOTIFICATION);
+                        Notification.show("MetaMorpheus only produce results when using raw and mzML format", Notification.Type.TRAY_NOTIFICATION);
                     }
                 } else {
                     lastSelected = "";
@@ -1010,7 +1043,6 @@ public class WorkFlowDataInputComponent extends Panel {
 
     private boolean validateProjectName() {
         boolean valid = false;
-        System.out.println("at validate project name ");
         if (_projectNameField.getValue().matches("^((?=[A-Za-z0-9_ -])(?![åäö\\\\]).)*$")) {
             _projectNameField.removeStyleName("errorstyle");
             valid = true;

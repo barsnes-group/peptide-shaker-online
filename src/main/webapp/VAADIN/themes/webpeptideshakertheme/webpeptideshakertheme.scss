@@ -9450,6 +9450,18 @@
 .v-absolutelayout-wrapper-borderless.v-absolutelayout-wrapper-maxheight50per .v-panel-content-borderless.v-panel-content-maxheight50per .v-spacing {
 	max-height:5px;	
 }
+.v-link-headerlogo i{
+	font-size:13px;
+	color:orange;
+	font-weight:bold;
+	font-style:normal;
+	text-shadow:0.5px 0.5px gray;
+	margin-left:-5px;
+}
+.permanentdisable.v-disabled.v-absolutelayout-uploaderlayout .v-button {
+    display: inline-block !important;
+    opacity:1;
+}
 }
 
 

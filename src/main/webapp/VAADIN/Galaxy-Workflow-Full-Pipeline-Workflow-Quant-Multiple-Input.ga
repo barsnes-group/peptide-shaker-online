@@ -121,7 +121,7 @@
             "name": "Thermo",
             "outputs": [
                 {
-                    "name": "output_mgf_collection",
+                    "name": "output_mzml_collection",
                     "type": "input"
                 }
             ],
@@ -137,14 +137,14 @@
                 "owner": "galaxyp",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "tool_state": {"ignore_instrument_errors_boolean": true, "input_files": {"__class__": "ConnectedValue"}, "output_format": "0", "output_metadata_selector": "off", "peakpicking_boolean": true, "zlib_boolean": true, "__page__": null, "__rerun_remap_job_id__": null},
+            "tool_state": {"ignore_instrument_errors_boolean": true, "input_files": {"__class__": "ConnectedValue"}, "output_format": "1", "output_metadata_selector": "off", "peakpicking_boolean": true, "zlib_boolean": true, "__page__": null, "__rerun_remap_job_id__": null},
             "tool_version": "1.2.3+galaxy0",
             "type": "tool",
             "uuid": "c3862cc0-7930-43aa-ac2e-8f925ca0a588",
             "workflow_outputs": [
                 {
                     "label": null,
-                    "output_name": "output_mgf_collection",
+                    "output_name": "output_mzml_collection",
                     "uuid": "a98922a9-c5bf-443a-b549-70253c5472da"
                 }
             ]
@@ -165,7 +165,7 @@
                 },
                 "peak_lists_files": {
                     "id": 3,
-                    "output_name": "output_mgf_collection"
+                    "output_name": "output_mzml_collection"
                 }
             },
             "inputs": [],

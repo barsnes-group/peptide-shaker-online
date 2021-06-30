@@ -3,7 +3,6 @@ package com.uib.web.peptideshaker.ui.views.subviews.proteinsview.components;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.ejt.vaadin.sizereporter.ComponentResizeEvent;
 import com.ejt.vaadin.sizereporter.SizeReporter;
-import com.itextpdf.text.pdf.codec.Base64;
 import com.uib.web.peptideshaker.AppManagmentBean;
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.PeptideObject;
@@ -54,6 +53,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * This class represents Graph layout component
@@ -786,7 +786,7 @@ public abstract class GraphComponent extends VerticalLayout {
             System.out.println(e.getLocalizedMessage());
         }
 
-        String base64 = Base64.encodeBytes(imageData);
+        String base64 = Base64.encodeBase64String(imageData);
         base64 = "data:image/png;base64," + base64;
         edgesImage.setSource(new ExternalResource(base64));
         edgesImage.removeStyleName("hide");
@@ -836,7 +836,7 @@ public abstract class GraphComponent extends VerticalLayout {
             System.out.println(e.getLocalizedMessage());
         }
 
-        String base64 = Base64.encodeBytes(imageData);
+        String base64 = Base64.encodeBase64String(imageData);
         base64 = "data:image/png;base64," + base64;
         return base64;
 

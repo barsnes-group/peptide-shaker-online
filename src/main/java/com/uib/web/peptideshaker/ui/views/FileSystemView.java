@@ -1,10 +1,13 @@
 package com.uib.web.peptideshaker.ui.views;
 
+import com.uib.web.peptideshaker.AppManagmentBean;
+import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.ui.interfaces.ViewableFrame;
 import com.uib.web.peptideshaker.ui.components.items.HelpPopupButton;
 import com.uib.web.peptideshaker.ui.components.items.SubViewSideButton;
 import com.uib.web.peptideshaker.ui.components.FilesTablePanel;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.*;
 
 /**
@@ -25,11 +28,13 @@ public class FileSystemView extends AbsoluteLayout implements ViewableFrame {
      */
     private SubViewSideButton viewDataBtn;
     private boolean jobInProgress;
+    private final AppManagmentBean appManagmentBean;
 
     /**
      * Constructor to initialise the web tool main attributes.
      */
     public FileSystemView() {
+        appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
         FileSystemView.this.setSizeFull();
         FileSystemView.this.setStyleName("activelayout");
         FileSystemView.this.addStyleName("hidelowerpanel");
@@ -73,7 +78,7 @@ public class FileSystemView extends AbsoluteLayout implements ViewableFrame {
         titleLabel.setStyleName("frametitle");
         titleLabel.addStyleName("maintitleheader");
         dataViewFrameContent.addComponent(titleLabel, "left:40px;top:13px");
-        HelpPopupButton helpBtn = new HelpPopupButton("<h1>Projects Overview</h1>Users can check the available ready to visualize datasets, get an overview for the processed data, check the dataset processing status and have access for the dataset sharing links.", "", 400, 110);
+        HelpPopupButton helpBtn = new HelpPopupButton(appManagmentBean.getAppConfig().getProjects_Overview_text(), "", 400, 110);
         dataViewFrameContent.addComponent(helpBtn, "left:178;top:0px");
         
         

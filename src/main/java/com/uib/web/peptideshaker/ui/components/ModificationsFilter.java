@@ -1,7 +1,7 @@
 package com.uib.web.peptideshaker.ui.components;
 
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
-import com.itextpdf.text.pdf.codec.Base64;
+
 import com.uib.web.peptideshaker.model.CONSTANT;
 import com.uib.web.peptideshaker.model.FilterUpdatingEvent;
 import com.uib.web.peptideshaker.model.Selection;
@@ -29,6 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * This class represents Modifications filter theat support both interactive
@@ -257,7 +258,7 @@ public class ModificationsFilter extends AbsoluteLayout implements RegistrableFi
         } catch (IOException e) {
             System.out.println(e.getLocalizedMessage());
         }
-        String base64 = Base64.encodeBytes(imageData);
+        String base64 = Base64.encodeBase64String(imageData);
         base64 = "data:image/png;base64," + base64;
         //total chain coverage     
         return base64;

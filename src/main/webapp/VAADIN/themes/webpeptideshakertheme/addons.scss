@@ -5,13 +5,8 @@
 @import "../../../VAADIN/addons/vaadin-icons/vaadin-icons.scss";
 
 
-/* Provided by gofullscreen-addon-0.5.3.jar */
-@import "../../../VAADIN/addons/gofullscreen/gofullscreen.scss";
-
-
 /* Import and include this mixin into your project theme to include the addon themes */
 @mixin addons {
 	@include vaadin-icons;
-	@include gofullscreen;
 }
 
