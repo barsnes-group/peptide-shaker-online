@@ -630,7 +630,7 @@ public class WorkFlowDataInputComponent extends Panel {
                 } else {
                     lastSelected = "";
                 }
-                if (searchEngines.getSelectedValue() != null && searchEngines.getSelectedValue().size() > 3) {
+                if (searchEngines.getSelectedValue() != null && searchEngines.getSelectedValue().size() > 3 && appManagmentBean.getAppConfig().isLimitedsearchengine()) {
                     if (searchEngines.getSelectedValue().contains(lastSelected.toString())) {
                         selfSelection = true;
                         searchEngines.unselect(lastSelected);
@@ -730,7 +730,7 @@ public class WorkFlowDataInputComponent extends Panel {
     private Map<String, String> getSearchEnginesList() {
         Map<String, String> searchEnginesList = new LinkedHashMap<>();
         searchEnginesList.put("X!Tandem", "X! Tandem");
-        searchEnginesList.put("MS-GF+", "MS-GF+");
+        searchEnginesList.put("MSGF", "MS-GF+");
         searchEnginesList.put("OMSSA", "OMSSA");
         searchEnginesList.put("Comet", "Comet");
         searchEnginesList.put("Tide", "Tide");
@@ -738,7 +738,7 @@ public class WorkFlowDataInputComponent extends Panel {
         searchEnginesList.put("MetaMorpheus", "MetaMorpheus");
         searchEnginesList.put("MS_Amanda", "MS Amanda");
         searchEnginesList.put("DirecTag", "DirecTag");
-        searchEnginesList.put("Novor (Select for non-commercial use only)", "Novor");
+        searchEnginesList.put("Novor", "Novor");
         return searchEnginesList;
     }
 

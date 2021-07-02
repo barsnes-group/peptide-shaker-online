@@ -63,6 +63,7 @@ public class Config implements Serializable {
     private String protein_Visualization_text;
     private String peptide_Visualization_text;
      private boolean enableUpload;
+     private boolean limitedsearchengine;
 
     public boolean isEnableUpload() {
         return enableUpload;
@@ -236,7 +237,7 @@ public class Config implements Serializable {
             peptide_Visualization_text = configJson.getJsonObject("infotext").getString("Peptide_Visualization");
             enableUpload= configJson.getBoolean("enableupload");
             enableDelete= configJson.getBoolean("enabledelete");
-
+limitedsearchengine= configJson.getBoolean("limitedsearchengine");
         } catch (IOException ex) {
             ex.printStackTrace();
             System.out.println("at error at " + Config.class.getName() + " line 223" + ex);
@@ -411,6 +412,10 @@ public class Config implements Serializable {
 
     public String getPeptide_Visualization_text() {
         return peptide_Visualization_text;
+    }
+
+    public boolean isLimitedsearchengine() {
+        return limitedsearchengine;
     }
 
 }

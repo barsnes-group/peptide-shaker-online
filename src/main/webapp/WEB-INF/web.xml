@@ -10,71 +10,7 @@
     <listener>
         <listener-class>com.uib.web.peptideshaker.listeners.VaadinContextListener</listener-class>
     </listener>
-    <context-param>
-        <description>link to csf-pr available proteins list</description>
-        <param-name>csfprservice</param-name>
-        <param-value>https://proteomics.uib.no/csf-pr/VAADIN/</param-value>
-    </context-param>
-    <context-param>
-        <description>maximum number of users</description>
-        <param-name>maxusernumb</param-name>
-        <param-value>15</param-value>
-    </context-param>
-    <context-param>
-        <description>galaxy url</description>
-        <param-name>galaxyServerUrl</param-name>
-        <param-value>http://158.39.74.194/</param-value>
-    </context-param>
-    <context-param>
-        <description>Test user API key for galaxy  </description>
-        <param-name>testUserAPIKey</param-name>
-        <param-value>28c55020d491930777dba4a7bc92187a</param-value>
-    </context-param>
-    <context-param>
-        <description>peptide shaker tool version</description>
-        <param-name>psvirsion</param-name>
-        <param-value>2.0.0_BETA.15</param-value>
-    </context-param>
-    <context-param>
-        <description>SearchGUI tool version</description>
-        <param-name>searchguivirsion</param-name>
-        <param-value>4.0.0_BETA.14</param-value>
-    </context-param>
-    <context-param>
-        <description>MoFF tool version</description>
-        <param-name>moffvirsion</param-name>
-        <param-value>2.0.3.0</param-value>
-    </context-param>
-    <context-param>
-        <description>Database url</description>
-        <param-name>url</param-name>
-        <param-value>jdbc:mysql://localhost:3306/</param-value>
-    </context-param>
-    <context-param>
-        <description>Database Driver</description>
-        <param-name>driver</param-name>
-        <param-value>com.mysql.jdbc.Driver</param-value>
-    </context-param>
-    <context-param>
-        <description>Database Password</description>
-        <param-name>password</param-name>
-        <param-value>qwe1212qwe1212</param-value>
-    </context-param>
-    <context-param>
-        <description>Database Username</description>
-        <param-name>userName</param-name>
-        <param-value>root</param-value>
-    </context-param>
-    <context-param>
-        <description>Web Application name (same as war file)</description>
-        <param-name>appName</param-name>
-        <param-value>web-peptide-shaker-1.0</param-value>
-    </context-param>
-    <context-param>
-        <description>database name</description>
-        <param-name>dbName</param-name>
-        <param-value></param-value>
-    </context-param>
+
     <!-- Session Configuration -->
     <session-config>
         <session-timeout>15</session-timeout>
