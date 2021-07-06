@@ -124,3 +124,6 @@ src/main/webapp/WEB-INF/web.xml
 .idea/encodings.xml
 src/main/webapp/VAADIN/cofig.json
 src/main/webapp/WEB-INF/web.xml
+src/main/webapp/VAADIN/config.json
+src/main/webapp/VAADIN/config.json
+*.json
