@@ -6,14 +6,13 @@
     "password": "",    
     "userName": "", 
     "dbName": "",
-    "appName": "webpeptideshaker-1.0-SNAPSHOT",
-    
+    "appName": "peptideshaker-online",
 
     "csfprservice": "https://proteomics.uib.no/csf-pr/VAADIN/",
     "maxusernumb": 5,
-    "enableupload":false,
-    "enabledelete":false,
-    "limitedsearchengine":true,
+    "enableupload":true,
+    "enabledelete":true,
+    "limitedsearchengine":false,
     "infotext": {
         "Analyze_Data": "<h1>Analyze Data (create new projects)</h1>Users can upload their data files and process them using SearchGUI and PeptideShaker and finally visualize the results. The supported spectrum formats are (MGF) for identification and (mzML and raw) for quantification.",
         "Projects_Overview": "<h1>Projects Overview</h1>Users can check the available ready to visualize datasets, get an overview for the processed data, check the dataset processing status and have access for the dataset sharing links.",
