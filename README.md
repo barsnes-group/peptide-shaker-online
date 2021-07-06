@@ -15,6 +15,9 @@ PeptideShaker Online is a distributed web-based framework that supports fully in
 ## Setup
 Step-by-step instructions on how to deploy PeptideShaker Online on your own web server available under Wiki [PeptideShaker Online Setup](https://github.com/barsnes-group/peptide-shaker-online/wiki/PeptideShaker-Online-Setup).
 
+## Start using PeptideShaker Online
+Before start using  PeptideShaker Online please read [Start with PeptideShaker Online](https://github.com/barsnes-group/peptide-shaker-online/wiki/Start-with-PeptideShaker-Online) under Wiki. 
+
 ## Demo
 A fully functional demo is available to test the platform.  Due to resource limitations, the maximum number of concurrent users for the demo is set to 5 usersand upload and delete files feature is suspended.
 
