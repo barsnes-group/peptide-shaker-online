@@ -20776,6 +20776,10 @@ div.v-layout.v-horizontal.v-widget {
 	height: 40px !important;
 }
 
+.webpeptideshakertheme .nrightsidediv i {
+	font-style: normal !important;
+}
+
 .webpeptideshakertheme .mobilestyle .psversstyle {
 	top: -36px !important;
 	left: 259px !important;
@@ -22737,7 +22741,6 @@ div.v-layout.v-horizontal.v-widget {
 	color: orange;
 	font-weight: bold;
 	font-style: normal;
-	text-shadow: 0.5px 0.5px gray;
 	margin-left: -5px;
 }
 

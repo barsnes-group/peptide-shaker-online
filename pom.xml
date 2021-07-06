@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.uib</groupId>
-    <artifactId>webpeptideshaker</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>peptideshakeronline</artifactId>
+    <version>1.0</version>
     <packaging>war</packaging>
-    <name>webpeptideshaker-1.0-SNAPSHOT</name>
+    <name>peptideshaker-online</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
@@ -277,7 +277,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <runTarget>http://localhost:8080/webpeptideshaker-1.0-SNAPSHOT</runTarget>
+                    <runTarget>http://localhost:8080/peptideshaker-online</runTarget>
                     <logLevel>ALL</logLevel>
                     <compileReport>true</compileReport>
                     <extraJvmArgs>-Xmx1000M</extraJvmArgs>

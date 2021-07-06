@@ -7568,7 +7568,9 @@
         width: 150px !important;
         height: 40px !important;
     }
-
+    .nrightsidediv i {
+        font-style: normal !important;
+    }
     .mobilestyle .psversstyle {
         top: -36px !important;
         left: 259px !important;
@@ -9455,7 +9457,6 @@
 	color:orange;
 	font-weight:bold;
 	font-style:normal;
-	text-shadow:0.5px 0.5px gray;
 	margin-left:-5px;
 }
 .permanentdisable.v-disabled.v-absolutelayout-uploaderlayout .v-button {

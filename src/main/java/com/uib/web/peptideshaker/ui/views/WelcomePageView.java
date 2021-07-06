@@ -165,7 +165,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         welcomeText.setContentMode(ContentMode.HTML);
         welcomeText.setStyleName(ValoTheme.LABEL_NO_MARGIN);
         welcomeText.addStyleName("hideonmobilemode");
-        welcomeText.setValue("<font style='font-weight: bold; font-size:23px'>Welcome to PeptideShaker Online </font>");
+        welcomeText.setValue("<font style='font-weight: bold; font-size:18px'>Welcome to PeptideShaker Online </font>");
         welcomeText.setData("ignoreclick");
         welcomeTextContainerLayout.addComponent(welcomeText);
         welcomeTextContainerLayout.setExpandRatio(welcomeText, 0.05f);
@@ -207,7 +207,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         mainBottomPanel.setComponentAlignment(sponserContainer, Alignment.TOP_CENTER);
         sponserContainer.addStyleName("hidetextonmobilemode");
 
-        Label developmentText = new Label("<font>The web version of PeptideShaker is being developed by <a href='http://www.cbu.uib.no/barsnes/' target='_blank'>Barsnes Group</a> at the Computational Biology Unit (CBU) at the University of Bergen, Norway, in close collaboration with the Proteomics Unit at the University of Bergen (PROBE), Bergen, Norway.</font>", ContentMode.HTML);
+        Label developmentText = new Label("<font>The web version of PeptideShaker is being developed by <a href='http://www.cbu.uib.no/barsnes/' target='_blank'>Barsnes Group</a> at the Computational Biology Unit <a href='http://www.cbu.uib.no/' target='_blank'>(CBU)</a> at the University of Bergen, Norway, in close collaboration with the Proteomics Unit at the University of Bergen <a href='https://www.uib.no/rg/probe' target='_blank'>(PROBE)</a>, Bergen, Norway. The source code and step-by-step instructions on how to deploy PeptideShaker Online available on <a href='https://github.com/barsnes-group/peptide-shaker-online' target='_blank'>Github</a></font>", ContentMode.HTML);
         developmentText.setStyleName("refrencetext");
         sponserContainer.addComponent(developmentText);
 
