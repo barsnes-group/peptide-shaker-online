@@ -8,7 +8,7 @@ PeptideShaker Online is a distributed web-based framework that supports fully in
 
 |  |  |  |  |
 |:--:|:--:|:--:|:--:|
-|[![](https://github.com/barsnes-group/peptide-shaker-online/wiki/images//screen2.png)](https://github.com/barsnes-group/peptide-shaker-online/wiki/images//screen2.png) | [![](https://github.com/barsnes-group/peptide-shaker-online/wiki/images/screen3.png)](https://github.com/barsnes-group/peptide-shaker-online/wiki/images/screen3.png) | [![](https://github.com/barsnes-group/peptide-shaker-online/wiki/images/screen4.png)](https://github.com/barsnes-group/peptide-shaker-online/wiki/images/screen4.png) |[![](https://github.com/barsnes-group/peptide-shaker-online/wiki/images/screen5.png)](https://github.com/barsnes-group/peptide-shaker-online/wiki/images/screen5.png) |
+|[![](https://github.com/barsnes-group/peptide-shaker-online/wiki/images//screen2_small.png)](https://github.com/barsnes-group/peptide-shaker-online/wiki/images//screen2.png) | [![](https://github.com/barsnes-group/peptide-shaker-online/wiki/images/screen3_small.png)](https://github.com/barsnes-group/peptide-shaker-online/wiki/images/screen3.png) | [![](https://github.com/barsnes-group/peptide-shaker-online/wiki/images/screen4_small.png)](https://github.com/barsnes-group/peptide-shaker-online/wiki/images/screen4.png) |[![](https://github.com/barsnes-group/peptide-shaker-online/wiki/images/screen5_small.png)](https://github.com/barsnes-group/peptide-shaker-online/wiki/images/screen5.png) |
 
 (Click on figure to see the full size version)
 
