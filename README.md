@@ -1,4 +1,4 @@
-[![](https://github.com/barsnes-group/peptide-shaker-online/wiki/images/screen1.png)](https://github.com/barsnes-group/peptide-shaker-online/wiki/images/screen1.png) 
+[![](https://github.com/barsnes-group/peptide-shaker-online/wiki/images/screen1.png)](http://158.39.77.27:8081/webpeptideshaker-1.0-SNAPSHOT/) 
 
 # PeptideShaker Online
 
