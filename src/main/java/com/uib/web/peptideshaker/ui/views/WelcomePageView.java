@@ -192,6 +192,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         presenterControlButtonsPanel.setExpandRatio(viewsControlButtonsLayout, 0.6f);
         viewsControlButtonsLayout.setEnabled(true);
         viewsControlButtonsLayout.addStyleName("disableasenable");
+       
 
         VerticalLayout mainBottomPanel = new VerticalLayout();
         mainBottomPanel.setStyleName("bluelayout");
@@ -207,7 +208,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         mainBottomPanel.setComponentAlignment(sponserContainer, Alignment.TOP_CENTER);
         sponserContainer.addStyleName("hidetextonmobilemode");
 
-        Label developmentText = new Label("<font>The web version of PeptideShaker is being developed by <a href='http://www.cbu.uib.no/barsnes/' target='_blank'>Barsnes Group</a> at the Computational Biology Unit <a href='http://www.cbu.uib.no/' target='_blank'>(CBU)</a> at the University of Bergen, Norway, in close collaboration with the Proteomics Unit at the University of Bergen <a href='https://www.uib.no/rg/probe' target='_blank'>(PROBE)</a>, Bergen, Norway. The source code and step-by-step instructions on how to deploy PeptideShaker Online available on <a href='https://github.com/barsnes-group/peptide-shaker-online' target='_blank'>Github</a></font>", ContentMode.HTML);
+        Label developmentText = new Label("<font>The web version of PeptideShaker is being developed by <a href='http://www.cbu.uib.no/barsnes/' target='_blank'>Barsnes Group</a> at the Computational Biology Unit <a href='http://www.cbu.uib.no/' target='_blank'>(CBU)</a> at the University of Bergen, Norway, in close collaboration with the Proteomics Unit at the University of Bergen <a href='https://www.uib.no/rg/probe' target='_blank'>(PROBE)</a>, Bergen, Norway. The source code and step-by-step instructions on how to deploy PeptideShaker Online is available on <a href='https://github.com/barsnes-group/peptide-shaker-online' target='_blank'>Github</a>.</font>", ContentMode.HTML);
         developmentText.setStyleName("refrencetext");
         sponserContainer.addComponent(developmentText);
 
