@@ -9439,7 +9439,6 @@
 	text-overflow:ellipsis !important;;
 	overflow:visible !important;
 	max-width:100% !important;
-	margin-left:-30px !important;
 	
 }
 .modificationlegendconatiner .v-horizontallayout .v-spacing{
@@ -9462,6 +9461,46 @@
 .permanentdisable.v-disabled.v-absolutelayout-uploaderlayout .v-button {
     display: inline-block !important;
     opacity:1;
+}
+.demosamplesbutton{
+	font-size:18px;
+	color: #355a86 !important;
+	text-decoration:none !important;
+	top:10px;
+	left:-29px;
+	text-align:left !important;
+	text-shadow:0.2px 0.2px  #197de1 !important;
+
+}
+.demosamplesbutton .Vaadin-Icons{
+	color:orange ;
+	font-weight:normal !important;
+	text-shadow:0px 0px  transparent !important;
+}
+.averagescreenstyle .demosamplesbutton {	
+	top: 80px;
+}
+.averagescreenstyle.mobilestyle .demosamplesbutton {	
+	top:120px;
+}
+ .mobilestyle .v-horizontallayout-logocontainer .v-link-headerlogo,  .mobilestyle .v-horizontallayout-logocontainer .v-image{
+top: 0px !important;
+padding-top:0px;
+margin-top:0px ;
+position:absolute; 
+height:120px !important;
+width:auto !important;
+}
+ .mobilestyle .v-horizontallayout-logocontainer .v-link-headerlogo span{
+    top:-45px !important;
+	margin-left:80px;
+	position:relative !important;
+}
+.v-caption-useroverviewpanelstyle{
+	display:none !important;
+}
+.averagescreenstyle.mobilestyle .v-caption-useroverviewpanelstyle{
+	display:inline-block !important;
 }
 }
 

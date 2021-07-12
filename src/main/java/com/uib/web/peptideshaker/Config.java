@@ -62,8 +62,8 @@ public class Config implements Serializable {
     private String datset_Visualization_text;
     private String protein_Visualization_text;
     private String peptide_Visualization_text;
-     private boolean enableUpload;
-     private boolean limitedsearchengine;
+    private boolean enableUpload;
+    private boolean limitedsearchengine;
 
     public boolean isEnableUpload() {
         return enableUpload;
@@ -72,7 +72,7 @@ public class Config implements Serializable {
     public boolean isEnableDelete() {
         return enableDelete;
     }
-      private boolean enableDelete;
+    private boolean enableDelete;
 
     /**
      * Main working folder to offload files from galaxy server
@@ -216,6 +216,34 @@ public class Config implements Serializable {
          * Initialise the context parameters and store them in VaadinSession.
          */
 
+          VaadinSession.getCurrent().setAttribute("mobilescreenstyle", (mobileDeviceStyle));
+
+        String brwserApp = Page.getCurrent().getWebBrowser().getBrowserApplication();
+        int screenWidth = Page.getCurrent().getBrowserWindowWidth();
+        int screenHeigh = Page.getCurrent().getBrowserWindowHeight();
+        portraitScreenMode = screenWidth < screenHeigh;
+        Thread t = new Thread(() -> {
+            JavaScript.getCurrent().addFunction("com.example.foo.myfunc", (elemental.json.JsonArray arguments) -> {
+                double ratio = arguments.getNumber(0);
+
+                if (brwserApp.contains("Mobile")) {
+                    mobileDeviceStyle = true;
+                    UI.getCurrent().addStyleName("mobilestyle");
+                    UI.getCurrent().addStyleName("averagescreenstyle");
+                } else if (((screenWidth < 1349 && screenWidth >= 1000) && (screenHeigh < 742 && screenHeigh >= 500)) || ratio > 1.5) {
+                    UI.getCurrent().addStyleName("averagescreenstyle");
+
+                } else if (screenWidth < 1000 || screenHeigh <= 500) {
+                    UI.getCurrent().addStyleName("lowresolutionstyle");
+                    mobileDeviceStyle = true;
+                    UI.getCurrent().addStyleName("mobilestyle");
+                }
+            });
+            Page.getCurrent().getJavaScript().execute("com.example.foo.myfunc(window.devicePixelRatio)");
+
+        });
+        t.start();
+        
         Path path;
         try {
             path = Files.createTempDirectory("userTempFolder");
@@ -235,9 +263,9 @@ public class Config implements Serializable {
             datset_Visualization_text = configJson.getJsonObject("infotext").getString("Datset_Visualization");
             protein_Visualization_text = configJson.getJsonObject("infotext").getString("Protein_Visualization");
             peptide_Visualization_text = configJson.getJsonObject("infotext").getString("Peptide_Visualization");
-            enableUpload= configJson.getBoolean("enableupload");
-            enableDelete= configJson.getBoolean("enabledelete");
-limitedsearchengine= configJson.getBoolean("limitedsearchengine");
+            enableUpload = configJson.getBoolean("enableupload");
+            enableDelete = configJson.getBoolean("enabledelete");
+            limitedsearchengine = configJson.getBoolean("limitedsearchengine");
         } catch (IOException ex) {
             ex.printStackTrace();
             System.out.println("at error at " + Config.class.getName() + " line 223" + ex);
@@ -259,34 +287,7 @@ limitedsearchengine= configJson.getBoolean("limitedsearchengine");
         quant_workflow_invoking_file_path = basePath + "/VAADIN/Multi-Quant-Invoking.json";
         id_workflow_invoking_file_path = basePath + "/VAADIN/Multi-Id-Invoking.json";
 
-        VaadinSession.getCurrent().setAttribute("mobilescreenstyle", (mobileDeviceStyle));
-
-        String brwserApp = Page.getCurrent().getWebBrowser().getBrowserApplication();
-        int screenWidth = Page.getCurrent().getBrowserWindowWidth();
-        int screenHeigh = Page.getCurrent().getBrowserWindowHeight();
-        portraitScreenMode = screenWidth < screenHeigh;
-        Thread t = new Thread(() -> {
-            JavaScript.getCurrent().addFunction("com.example.foo.myfunc", (elemental.json.JsonArray arguments) -> {
-                double ratio = arguments.getNumber(0);
-              
-                if (brwserApp.contains("Mobile")) {
-                    mobileDeviceStyle = true;
-                    UI.getCurrent().addStyleName("mobilestyle");
-                    UI.getCurrent().addStyleName("averagescreenstyle");
-                } else if (((screenWidth < 1349 && screenWidth >= 1000) && (screenHeigh < 742 && screenHeigh >= 500)) || ratio > 1.5) {
-                    UI.getCurrent().addStyleName("averagescreenstyle");
-
-                } else if (screenWidth < 1000 || screenHeigh <= 500) {
-                    UI.getCurrent().addStyleName("lowresolutionstyle");
-                    mobileDeviceStyle = true;
-                    UI.getCurrent().addStyleName("mobilestyle");
-                }
-
-            });
-            Page.getCurrent().getJavaScript().execute("com.example.foo.myfunc(window.devicePixelRatio)");
-
-        });
-        t.start();
+      
 
 //        /**
 //         * case of average screen 1000*500

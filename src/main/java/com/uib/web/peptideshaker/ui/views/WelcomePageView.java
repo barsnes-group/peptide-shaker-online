@@ -128,7 +128,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         searchGUI.setValue(searchGUI.getValue().replace("<div style='white-space: nowrap;width: 65px;height: 20px;", "<div class='psversstyle' style='white-space: nowrap;width: 65px;height: 20px;"));
         userOverviewLayout.addComponent(searchGUI);
 
-        Label peptideShaker = initLeftSideInfoLabel("<img src='VAADIN/themes/webpeptideshakertheme/img/psiconHRNSgray21.png' alt style='width: auto;height:15px;margin-left:-2px;    margin-right: 4px;'>" + " PeptideShaker ", "<i class='nrightsidediv'>" + CONSTANT.PEPTIDESHAKER_TOOL_VERSION.replace("+galaxy0", "")+ "</i>");
+        Label peptideShaker = initLeftSideInfoLabel("<img src='VAADIN/themes/webpeptideshakertheme/img/psiconHRNSgray21.png' alt style='width: auto;height:15px;margin-left:-2px;    margin-right: 4px;'>" + " PeptideShaker ", "<i class='nrightsidediv'>" + CONSTANT.PEPTIDESHAKER_TOOL_VERSION.replace("+galaxy0", "") + "</i>");
         peptideShaker.setValue(peptideShaker.getValue().replace("<div style='white-space: nowrap;width: 65px;height: 20px;", "<div class='psversstyle' style='white-space: nowrap;width: 65px;height: 20px;"));
         userOverviewLayout.addComponent(peptideShaker);
 
@@ -176,7 +176,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         subWelcomeText.setData("ignoreclick");
         subWelcomeText.setContentMode(ContentMode.HTML);
         subWelcomeText.setStyleName(ValoTheme.LABEL_NO_MARGIN);
-        subWelcomeText.setValue("<font>Interactive visual analysis of proteomics data on the web!</font>");
+        subWelcomeText.setValue("<font>Interactive web-based search and visualization of proteomics data!</font>");
 
         welcomeTextContainerLayout.addComponent(subWelcomeText);
         welcomeTextContainerLayout.setExpandRatio(subWelcomeText, 0.05f);
@@ -192,7 +192,17 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         presenterControlButtonsPanel.setExpandRatio(viewsControlButtonsLayout, 0.6f);
         viewsControlButtonsLayout.setEnabled(true);
         viewsControlButtonsLayout.addStyleName("disableasenable");
-       
+
+        if (!appManagmentBean.getAppConfig().isEnableUpload()) {
+            Button demoLabel = new Button("Select sample datasets");
+            demoLabel.setStyleName(ValoTheme.BUTTON_LINK);
+            demoLabel.setIcon(VaadinIcons.CLUSTER);
+            demoLabel.addStyleName("demosamplesbutton");
+            presenterControlButtonsPanel.addComponent(demoLabel);
+            demoLabel.addClickListener((Button.ClickEvent event) -> {
+                appManagmentBean.getUI_Manager().viewLayout(FileSystemView.class.getName());
+            });
+        }
 
         VerticalLayout mainBottomPanel = new VerticalLayout();
         mainBottomPanel.setStyleName("bluelayout");
@@ -243,18 +253,20 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         busyConnectinWindow.center();
         this.busyConnectinWindow.setWindowMode(WindowMode.NORMAL);
         busyConnectinWindow.addStyleName("hidewindow");
-        if (appManagmentBean.getAppConfig().isMobileDeviceStyle()) {
-            userOverviewPanel.setIcon(VaadinIcons.ANGLE_RIGHT);
-            userOverviewPanel.addLayoutClickListener((LayoutEvents.LayoutClickEvent event) -> {
-                if (userOverviewPanel.getStyleName().contains("hidecontent")) {
-                    userOverviewPanel.removeStyleName("hidecontent");
-                } else {
-                    userOverviewPanel.addStyleName("hidecontent");
-                }
-            });
-            userOverviewPanel.addStyleName("hidecontent");
 
-        }
+        userOverviewPanel.setIcon(VaadinIcons.ANGLE_RIGHT);
+        userOverviewPanel.addLayoutClickListener((LayoutEvents.LayoutClickEvent event) -> {
+            if (!appManagmentBean.getAppConfig().isMobileDeviceStyle()) {
+                return;
+            }
+            if (userOverviewPanel.getStyleName().contains("hidecontent")) {
+                userOverviewPanel.removeStyleName("hidecontent");
+            } else {
+                userOverviewPanel.addStyleName("hidecontent");
+            }
+        });
+        userOverviewPanel.addStyleName("hidecontent");
+
         this.viewBtnsContainer = new AbsoluteLayout();
         viewBtnsContainer.setSizeFull();
         viewBtnsContainer.addComponent(galaxyLoginBtn, "left:50%;top:50%;");
