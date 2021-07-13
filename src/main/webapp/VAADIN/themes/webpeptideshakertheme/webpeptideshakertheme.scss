@@ -7401,8 +7401,9 @@
     }
 
     .mobilestyle .v-absolutelayout-wrapper-welcomepagebody {
-        top: 120px !important;
-        min-height: 520px;
+        top: 100px !important;
+	min-height: 400px;
+	overflow:hidden !important;
     }
 
     .mobilestyle .v-verticallayout-connectionpanelstyle {
@@ -7468,7 +7469,7 @@
         top: -55px !important;
     }
     .mobilestyle .actionbuttoncontainer .v-slot-disableasenable .v-verticallayout-disableasenable {
-        height: 325px !important;
+        height: 275px !important;
     }
 
 
@@ -7944,7 +7945,7 @@
     }
 
     .averagescreenstyle .v-verticallayout-actionbuttoncontainer {
-        max-height: 210px;
+        max-height: 260px;
     }
     .averagescreenstyle .v-absolutelayout-wrapper-searchguiinputcontainer.v-absolutelayout-wrapper-datainputsubcontainer {
         top: 15px !important;
@@ -9463,25 +9464,26 @@
     opacity:1;
 }
 .demosamplesbutton{
-	font-size:18px;
+	font-size:15px;
 	color: #355a86 !important;
 	text-decoration:none !important;
-	top:10px;
-	left:-29px;
+	left:-16px;
 	text-align:left !important;
 	text-shadow:0.2px 0.2px  #197de1 !important;
+        top:20px;
 
 }
-.demosamplesbutton .Vaadin-Icons{
-	color:orange ;
-	font-weight:normal !important;
-	text-shadow:0px 0px  transparent !important;
+.demosamplesbutton .v-icon-cluster{
+	color: orange;
+	font-weight: normal !important;
+	text-shadow: 0px 0px transparent !important;
 }
 .averagescreenstyle .demosamplesbutton {	
-	top: 80px;
+	top: 40px;
 }
 .averagescreenstyle.mobilestyle .demosamplesbutton {	
-	top:120px;
+	top: 70px;
+	font-size:16px; 
 }
  .mobilestyle .v-horizontallayout-logocontainer .v-link-headerlogo,  .mobilestyle .v-horizontallayout-logocontainer .v-image{
 top: 0px !important;
@@ -9501,6 +9503,14 @@ width:auto !important;
 }
 .averagescreenstyle.mobilestyle .v-caption-useroverviewpanelstyle{
 	display:inline-block !important;
+}
+
+.v-caption-useroverviewpanelstyle.v-caption-hidecontent .v-icon.Vaadin-Icons{
+left:22px  !important;
+ font-size:1px !important;
+}
+.v-verticallayout-actionbuttoncontainer{
+    max-height:300px;
 }
 }
 

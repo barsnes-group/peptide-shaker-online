@@ -193,10 +193,10 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         viewsControlButtonsLayout.setEnabled(true);
         viewsControlButtonsLayout.addStyleName("disableasenable");
 
-        if (!appManagmentBean.getAppConfig().isEnableUpload()) {
-            Button demoLabel = new Button("Select sample datasets");
+        if (!appManagmentBean.getAppConfig().isEnableUpload()|| true) {
+            Button demoLabel = new Button("Click here to open example data "+VaadinIcons.CLUSTER.getHtml());
             demoLabel.setStyleName(ValoTheme.BUTTON_LINK);
-            demoLabel.setIcon(VaadinIcons.CLUSTER);
+            demoLabel.setCaptionAsHtml(true);
             demoLabel.addStyleName("demosamplesbutton");
             presenterControlButtonsPanel.addComponent(demoLabel);
             demoLabel.addClickListener((Button.ClickEvent event) -> {
@@ -218,7 +218,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         mainBottomPanel.setComponentAlignment(sponserContainer, Alignment.TOP_CENTER);
         sponserContainer.addStyleName("hidetextonmobilemode");
 
-        Label developmentText = new Label("<font>The web version of PeptideShaker is being developed by <a href='http://www.cbu.uib.no/barsnes/' target='_blank'>Barsnes Group</a> at the Computational Biology Unit <a href='http://www.cbu.uib.no/' target='_blank'>(CBU)</a> at the University of Bergen, Norway, in close collaboration with the Proteomics Unit at the University of Bergen <a href='https://www.uib.no/rg/probe' target='_blank'>(PROBE)</a>, Bergen, Norway. The source code and step-by-step instructions on how to deploy PeptideShaker Online is available on <a href='https://github.com/barsnes-group/peptide-shaker-online' target='_blank'>Github</a>.</font>", ContentMode.HTML);
+        Label developmentText = new Label("<font>The web version of PeptideShaker is being developed by <a href='http://www.cbu.uib.no/barsnes/' target='_blank'>Barsnes Group</a> at the Computational Biology Unit <a href='http://www.cbu.uib.no/' target='_blank'>(CBU)</a> at the University of Bergen, Norway, in close collaboration with the Proteomics Unit at the University of Bergen <a href='https://www.uib.no/rg/probe' target='_blank'>(PROBE)</a>, Bergen, Norway. The source code and step-by-step instructions on how to deploy PeptideShaker Online is available on <a href='https://github.com/barsnes-group/peptide-shaker-online' target='_blank'>GitHub</a>.</font>", ContentMode.HTML);
         developmentText.setStyleName("refrencetext");
         sponserContainer.addComponent(developmentText);
 

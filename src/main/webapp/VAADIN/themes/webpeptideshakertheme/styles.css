@@ -20603,8 +20603,9 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .mobilestyle .v-absolutelayout-wrapper-welcomepagebody {
-	top: 120px !important;
-	min-height: 520px;
+	top: 100px !important;
+	min-height: 400px;
+	overflow: hidden !important;
 }
 
 .webpeptideshakertheme .mobilestyle .v-verticallayout-connectionpanelstyle {
@@ -20674,7 +20675,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .mobilestyle .actionbuttoncontainer .v-slot-disableasenable .v-verticallayout-disableasenable {
-	height: 325px !important;
+	height: 275px !important;
 }
 
 .webpeptideshakertheme .mobilestyle .v-horizontallayout-btnwithtext {
@@ -21138,7 +21139,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .averagescreenstyle .v-verticallayout-actionbuttoncontainer {
-	max-height: 210px;
+	max-height: 260px;
 }
 
 .webpeptideshakertheme .averagescreenstyle .v-absolutelayout-wrapper-searchguiinputcontainer.v-absolutelayout-wrapper-datainputsubcontainer {
@@ -22749,27 +22750,28 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .demosamplesbutton {
-	font-size: 18px;
+	font-size: 15px;
 	color: #355a86 !important;
 	text-decoration: none !important;
-	top: 10px;
-	left: -29px;
+	left: -16px;
 	text-align: left !important;
 	text-shadow: 0.2px 0.2px #197de1 !important;
+	top: 20px;
 }
 
-.webpeptideshakertheme .demosamplesbutton .Vaadin-Icons {
+.webpeptideshakertheme .demosamplesbutton .v-icon-cluster {
 	color: orange;
 	font-weight: normal !important;
 	text-shadow: 0px 0px transparent !important;
 }
 
 .webpeptideshakertheme .averagescreenstyle .demosamplesbutton {
-	top: 80px;
+	top: 40px;
 }
 
 .webpeptideshakertheme .averagescreenstyle.mobilestyle .demosamplesbutton {
-	top: 120px;
+	top: 70px;
+	font-size: 16px;
 }
 
 .webpeptideshakertheme .mobilestyle .v-horizontallayout-logocontainer .v-link-headerlogo, .webpeptideshakertheme .mobilestyle .v-horizontallayout-logocontainer .v-image {
@@ -22793,4 +22795,13 @@ div.v-layout.v-horizontal.v-widget {
 
 .webpeptideshakertheme .averagescreenstyle.mobilestyle .v-caption-useroverviewpanelstyle {
 	display: inline-block !important;
+}
+
+.webpeptideshakertheme .v-caption-useroverviewpanelstyle.v-caption-hidecontent .v-icon.Vaadin-Icons {
+	left: 22px !important;
+	font-size: 1px !important;
+}
+
+.webpeptideshakertheme .v-verticallayout-actionbuttoncontainer {
+	max-height: 300px;
 }

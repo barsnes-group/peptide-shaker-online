@@ -232,6 +232,7 @@ public class Config implements Serializable {
                     UI.getCurrent().addStyleName("averagescreenstyle");
                 } else if (((screenWidth < 1349 && screenWidth >= 1000) && (screenHeigh < 742 && screenHeigh >= 500)) || ratio > 1.5) {
                     UI.getCurrent().addStyleName("averagescreenstyle");
+                     UI.getCurrent().addStyleName("highresolutionstyle");
 
                 } else if (screenWidth < 1000 || screenHeigh <= 500) {
                     UI.getCurrent().addStyleName("lowresolutionstyle");
