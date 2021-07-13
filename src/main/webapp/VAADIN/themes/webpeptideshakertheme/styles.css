@@ -17059,7 +17059,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .webpeptideshakertheme .refrencetext {
 	max-width: 550px;
-	font-size: 12px;
+	font-size: 11px;
 	text-align: justify;
 	white-space: pre-wrap !important;
 	margin-top: -15px;
@@ -22766,7 +22766,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .averagescreenstyle .demosamplesbutton {
-	top: 40px;
+	top: 30px;
 }
 
 .webpeptideshakertheme .averagescreenstyle.mobilestyle .demosamplesbutton {
@@ -22803,5 +22803,5 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .webpeptideshakertheme .v-verticallayout-actionbuttoncontainer {
-	max-height: 300px;
+	max-height: 280px;
 }

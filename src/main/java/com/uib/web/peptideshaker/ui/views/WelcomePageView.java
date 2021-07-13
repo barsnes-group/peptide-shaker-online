@@ -142,7 +142,8 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         VerticalLayout presenterControlButtonsPanel = new VerticalLayout();
         presenterControlButtonsPanel.setWidth(100, Unit.PERCENTAGE);
         presenterControlButtonsPanel.setHeight(360, Unit.PIXELS);
-        presenterControlButtonsPanel.setSpacing(true);
+        presenterControlButtonsPanel.setSpacing(false);
+       
         mainMiddlePanel.addComponent(presenterControlButtonsPanel);
         mainMiddlePanel.setExpandRatio(presenterControlButtonsPanel, 80);
         presenterControlButtonsPanel.setMargin(new MarginInfo(false, false, false, true));
@@ -155,10 +156,10 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         welcomeTextContainerLayout.addStyleName("connectionpanelstyle");
         welcomeTextContainerLayout.setSpacing(true);
         welcomeTextContainerLayout.setWidth(100, Unit.PERCENTAGE);
-        welcomeTextContainerLayout.setHeight(100, Unit.PIXELS);
+        welcomeTextContainerLayout.setHeight(60, Unit.PIXELS);
         presenterControlButtonsPanel.addComponent(welcomeTextContainerLayout);
         presenterControlButtonsPanel.setComponentAlignment(welcomeTextContainerLayout, Alignment.TOP_LEFT);
-        presenterControlButtonsPanel.setExpandRatio(welcomeTextContainerLayout, 0.4f);
+        presenterControlButtonsPanel.setExpandRatio(welcomeTextContainerLayout, 0.35f);
 
         Label welcomeText = new Label();
         welcomeText.setSizeFull();
@@ -189,12 +190,12 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         viewsControlButtonsLayout.setWidth(100, Unit.PERCENTAGE);
         viewsControlButtonsLayout.setSpacing(true);
         presenterControlButtonsPanel.addComponent(viewsControlButtonsLayout);
-        presenterControlButtonsPanel.setExpandRatio(viewsControlButtonsLayout, 0.6f);
+        presenterControlButtonsPanel.setExpandRatio(viewsControlButtonsLayout, 0.65f);
         viewsControlButtonsLayout.setEnabled(true);
         viewsControlButtonsLayout.addStyleName("disableasenable");
 
         if (!appManagmentBean.getAppConfig().isEnableUpload()|| true) {
-            Button demoLabel = new Button("Click here to open example data "+VaadinIcons.CLUSTER.getHtml());
+            Button demoLabel = new Button("Click here to open example data ");
             demoLabel.setStyleName(ValoTheme.BUTTON_LINK);
             demoLabel.setCaptionAsHtml(true);
             demoLabel.addStyleName("demosamplesbutton");
@@ -218,7 +219,7 @@ public class WelcomePageView extends VerticalLayout implements ViewableFrame {
         mainBottomPanel.setComponentAlignment(sponserContainer, Alignment.TOP_CENTER);
         sponserContainer.addStyleName("hidetextonmobilemode");
 
-        Label developmentText = new Label("<font>The web version of PeptideShaker is being developed by <a href='http://www.cbu.uib.no/barsnes/' target='_blank'>Barsnes Group</a> at the Computational Biology Unit <a href='http://www.cbu.uib.no/' target='_blank'>(CBU)</a> at the University of Bergen, Norway, in close collaboration with the Proteomics Unit at the University of Bergen <a href='https://www.uib.no/rg/probe' target='_blank'>(PROBE)</a>, Bergen, Norway. The source code and step-by-step instructions on how to deploy PeptideShaker Online is available on <a href='https://github.com/barsnes-group/peptide-shaker-online' target='_blank'>GitHub</a>.</font>", ContentMode.HTML);
+        Label developmentText = new Label("<font>PeptideShaker Online is being developed by <a href='http://www.cbu.uib.no/barsnes/' target='_blank'>Barsnes Group</a> at the Computational Biology Unit <a href='http://www.cbu.uib.no/' target='_blank'>(CBU)</a> at the University of Bergen, Norway, in close collaboration with the Proteomics Unit at the University of Bergen <a href='https://www.uib.no/rg/probe' target='_blank'>(PROBE)</a>, Bergen, Norway. The source code and step-by-step instructions on how to deploy PeptideShaker Online is available on <a href='https://github.com/barsnes-group/peptide-shaker-online' target='_blank'>GitHub</a>.</font>", ContentMode.HTML);
         developmentText.setStyleName("refrencetext");
         sponserContainer.addComponent(developmentText);
 
