@@ -127,3 +127,4 @@ src/main/webapp/WEB-INF/web.xml
 src/main/webapp/VAADIN/config.json
 src/main/webapp/VAADIN/config.json
 *.json
+src/main/webapp/VAADIN/config.json
