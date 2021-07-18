@@ -2,7 +2,7 @@
 
 # PeptideShaker Online
 
-PeptideShaker Online is an interactive web-based search and visualization of proteomics data. PeptideShaker Online consists of two main components: [Galaxy-based backend](https://github.com/barsnes-group/peptide-shaker-online/wiki/PeptideShaker-Online-Backend) and [a web application as a frontend](https://github.com/barsnes-group/peptide-shaker-online/wiki/PeptideShaker-Online-Frontend).
+PeptideShaker Online is a user-friendly web-based framework for the identification of mass spectrometry-based proteomics data. PeptideShaker Online consists of two main components: [Galaxy-based backend](https://github.com/barsnes-group/peptide-shaker-online/wiki/PeptideShaker-Online-Backend) and [a web application as a frontend](https://github.com/barsnes-group/peptide-shaker-online/wiki/PeptideShaker-Online-Frontend).
 
 ----
 
