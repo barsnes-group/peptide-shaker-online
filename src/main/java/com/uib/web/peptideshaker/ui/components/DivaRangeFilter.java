@@ -241,7 +241,10 @@ public abstract class DivaRangeFilter extends AbsoluteLayout implements Property
 
     @Override
     public void updateFilterSelection(Set<Comparable> selectedItems, Set<Comparable> selectedCategories, boolean topFilter, boolean singleProteinsFilter, boolean selfAction) {
-
+         XYPlot plot = ((XYPlot) mainChart.getPlot());
+        XYSeriesCollection dataset = (XYSeriesCollection) plot.getDataset();
+        dataset.removeAllSeries();
+    
     }
 
     private void redrawRangeOnChart(double start, double end, boolean highlight) {

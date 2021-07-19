@@ -219,7 +219,7 @@ public class GalaxyFacade implements Serializable {
          */
         for (GalaxyCollectionModel collectionModel : collectionList) {
             if (collectionModel.getElements() != null && !collectionModel.getElements().isEmpty()) {
-                if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().equals(CONSTANT.CONVERT_CHARACTERS_TOOL_ID)) {
+                if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().equals(appManagmentBean.getAppConfig().getCONVERT_CHARACTERS_TOOL_ID())) {
                     collectionModel.getElements().forEach((file) -> {
                         String name = getFileName(userAPIKey, file.getGalaxyJob().getInputFileIds().iterator().next());
                         if (name != null) {
@@ -329,6 +329,9 @@ public class GalaxyFacade implements Serializable {
     public boolean deleteCollection(GalaxyCollectionModel collection, String userAPIKey) {
 
         boolean success = true;
+        if (collection == null || collection.getElements() == null) {
+            return true;
+        }
         for (GalaxyFileModel element : collection.getElements()) {
             boolean deleted = deleteFile(element, userAPIKey);
             if (!deleted) {
@@ -356,6 +359,9 @@ public class GalaxyFacade implements Serializable {
         JsonObject body = new JsonObject();
         body.put(CONSTANT.DELETED, Boolean.TRUE);
         body.put(CONSTANT.PURGED, Boolean.TRUE);
+        if (file == null || file.getHistoryId() == null || file.getId() == null) {
+            return true;
+        }
         Response response = appManagmentBean.getHttpClientUtil().doPut(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/histories/" + file.getHistoryId() + "/contents/datasets/" + file.getId() + "?key=" + userAPIKey, body);
         return (response.getStatus() == HttpStatus.SC_OK);
 

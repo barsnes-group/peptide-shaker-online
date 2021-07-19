@@ -65,6 +65,19 @@ public class Config implements Serializable {
     private boolean enableUpload;
     private boolean limitedsearchengine;
 
+    public String MOFF_TOOL_ID;
+    public String MOFF_TOOL_Version;
+    public String CONVERT_CHARACTERS_TOOL_ID;
+    public String THERMO_RAW_CONVERTOR_TOOL_ID;
+    public String THERMO_RAW_CONVERTOR_TOOL_VERSION;
+    public String SEARCHGUI_TOOL_VERSION;
+    public String SEARCHGUI_TOOL_ID;
+
+    public String BUILD_LIST_TOOL_ID;
+    public String BUILD_LIST_TOOL_VERSION;
+    public String PEPTIDESHAKER_TOOL_VERSION;
+    public String PEPTIDESHAKER_TOOL_ID;
+
     public boolean isEnableUpload() {
         return enableUpload;
     }
@@ -216,7 +229,7 @@ public class Config implements Serializable {
          * Initialise the context parameters and store them in VaadinSession.
          */
 
-          VaadinSession.getCurrent().setAttribute("mobilescreenstyle", (mobileDeviceStyle));
+        VaadinSession.getCurrent().setAttribute("mobilescreenstyle", (mobileDeviceStyle));
 
         String brwserApp = Page.getCurrent().getWebBrowser().getBrowserApplication();
         int screenWidth = Page.getCurrent().getBrowserWindowWidth();
@@ -232,7 +245,7 @@ public class Config implements Serializable {
                     UI.getCurrent().addStyleName("averagescreenstyle");
                 } else if (((screenWidth < 1349 && screenWidth >= 1000) && (screenHeigh < 742 && screenHeigh >= 500)) || ratio > 1.5) {
                     UI.getCurrent().addStyleName("averagescreenstyle");
-                     UI.getCurrent().addStyleName("highresolutionstyle");
+                    UI.getCurrent().addStyleName("highresolutionstyle");
 
                 } else if (screenWidth < 1000 || screenHeigh <= 500) {
                     UI.getCurrent().addStyleName("lowresolutionstyle");
@@ -244,7 +257,7 @@ public class Config implements Serializable {
 
         });
         t.start();
-        
+
         Path path;
         try {
             path = Files.createTempDirectory("userTempFolder");
@@ -267,6 +280,20 @@ public class Config implements Serializable {
             enableUpload = configJson.getBoolean("enableupload");
             enableDelete = configJson.getBoolean("enabledelete");
             limitedsearchengine = configJson.getBoolean("limitedsearchengine");
+
+            MOFF_TOOL_ID = configJson.getString("MOFF_TOOL_ID");//"toolshed.g2.bx.psu.edu/repos/galaxyp/proteomics_moff/proteomics_moff/2.0.3.0";
+            MOFF_TOOL_Version = configJson.getString("MOFF_TOOL_Version");//"2.0.3.0";
+            CONVERT_CHARACTERS_TOOL_ID = configJson.getString("CONVERT_CHARACTERS_TOOL_ID");//"Convert characters1";
+            THERMO_RAW_CONVERTOR_TOOL_ID = configJson.getString("THERMO_RAW_CONVERTOR_TOOL_ID");//"toolshed.g2.bx.psu.edu/repos/galaxyp/thermo_raw_file_converter/thermo_raw_file_converter/1.2.3+galaxy0";
+            THERMO_RAW_CONVERTOR_TOOL_VERSION = configJson.getString("THERMO_RAW_CONVERTOR_TOOL_VERSION");//"1.2.3+galaxy0";
+            SEARCHGUI_TOOL_VERSION = configJson.getString("SEARCHGUI_TOOL_VERSION");//"4.0.33+galaxy0";
+            SEARCHGUI_TOOL_ID = configJson.getString("SEARCHGUI_TOOL_ID");//"toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/search_gui/" + SEARCHGUI_TOOL_VERSION;
+
+            BUILD_LIST_TOOL_ID = configJson.getString("BUILD_LIST_TOOL_ID");//"__BUILD_LIST__";
+            BUILD_LIST_TOOL_VERSION = configJson.getString("BUILD_LIST_TOOL_VERSION");// "1.0.0";
+            PEPTIDESHAKER_TOOL_VERSION = configJson.getString("PEPTIDESHAKER_TOOL_VERSION");// "2.0.25+galaxy0";
+            PEPTIDESHAKER_TOOL_ID = configJson.getString("PEPTIDESHAKER_TOOL_ID");//"toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/peptide_shaker/" + PEPTIDESHAKER_TOOL_VERSION;
+
         } catch (IOException ex) {
             ex.printStackTrace();
             System.out.println("at error at " + Config.class.getName() + " line 223" + ex);
@@ -287,8 +314,6 @@ public class Config implements Serializable {
         id_workflow_file_path = basePath + "/VAADIN/Galaxy-Workflow-Full-Pipeline-Workflow-Id-Multiple-Input.ga";
         quant_workflow_invoking_file_path = basePath + "/VAADIN/Multi-Quant-Invoking.json";
         id_workflow_invoking_file_path = basePath + "/VAADIN/Multi-Id-Invoking.json";
-
-      
 
 //        /**
 //         * case of average screen 1000*500
@@ -332,6 +357,50 @@ public class Config implements Serializable {
      */
     public String getDbUserName() {
         return dbUserName;
+    }
+
+    public String getMOFF_TOOL_ID() {
+        return MOFF_TOOL_ID;
+    }
+
+    public String getMOFF_TOOL_Version() {
+        return MOFF_TOOL_Version;
+    }
+
+    public String getCONVERT_CHARACTERS_TOOL_ID() {
+        return CONVERT_CHARACTERS_TOOL_ID;
+    }
+
+    public String getTHERMO_RAW_CONVERTOR_TOOL_ID() {
+        return THERMO_RAW_CONVERTOR_TOOL_ID;
+    }
+
+    public String getTHERMO_RAW_CONVERTOR_TOOL_VERSION() {
+        return THERMO_RAW_CONVERTOR_TOOL_VERSION;
+    }
+
+    public String getSEARCHGUI_TOOL_VERSION() {
+        return SEARCHGUI_TOOL_VERSION;
+    }
+
+    public String getSEARCHGUI_TOOL_ID() {
+        return SEARCHGUI_TOOL_ID;
+    }
+
+    public String getBUILD_LIST_TOOL_ID() {
+        return BUILD_LIST_TOOL_ID;
+    }
+
+    public String getBUILD_LIST_TOOL_VERSION() {
+        return BUILD_LIST_TOOL_VERSION;
+    }
+
+    public String getPEPTIDESHAKER_TOOL_VERSION() {
+        return PEPTIDESHAKER_TOOL_VERSION;
+    }
+
+    public String getPEPTIDESHAKER_TOOL_ID() {
+        return PEPTIDESHAKER_TOOL_ID;
     }
 
     /**

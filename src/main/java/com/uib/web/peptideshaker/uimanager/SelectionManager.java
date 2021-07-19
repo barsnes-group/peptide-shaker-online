@@ -54,6 +54,9 @@ public class SelectionManager implements Serializable {
         this.selectedDataset = selectedDataset;
         this.selectionSet.clear();
         this.suspendedFilters.clear();
+        for (RegistrableFilter filter : registeredDatasetFiltersMap.values()) {
+            filter.updateFilterSelection(null, null, true, true, true);
+        }
         Selection datasetSelection = new Selection(CONSTANT.DATASET_SELECTION, "dataset_full", null, true);
         handelDatasetSelection(datasetSelection);
 
@@ -344,8 +347,8 @@ public class SelectionManager implements Serializable {
         filterEventsMap.clear();
 //        suspendedFilters.clear();
         registeredDatasetFiltersMap.keySet().forEach((filterId) -> {
-          
-            FilterUpdatingEvent event = selectedDataset.getDatasetFilterEventsMap().get(filterId); 
+
+            FilterUpdatingEvent event = selectedDataset.getDatasetFilterEventsMap().get(filterId);
             if ((event != null)) {
                 FilterUpdatingEvent updatedEvent = new FilterUpdatingEvent();
                 Map<Comparable, Set<Integer>> selectionMap = new LinkedHashMap<>();

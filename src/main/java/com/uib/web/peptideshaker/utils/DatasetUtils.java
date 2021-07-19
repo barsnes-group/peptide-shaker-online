@@ -91,12 +91,12 @@ public class DatasetUtils implements Serializable {
     }
 
     public IdentificationParameters initIdentificationParametersObject(String datasetId, String initIdentificationParametersFileURI) {
-        String fileName = datasetId + "_SEARCHGUI_IdentificationParameters.par";
+        String fileName = datasetId +"_SEARCHGUI_IdentificationParameters.par";// "_Default.par";
         File file = new File(appManagmentBean.getAppConfig().getUserFolderUri(), fileName);
         try {
             if (!file.exists()) {
                 file.createNewFile();
-                file = appManagmentBean.getHttpClientUtil().downloadFileFromZipFolder(initIdentificationParametersFileURI, "IdentificationParameters.par", file);
+                file = appManagmentBean.getHttpClientUtil().downloadFileFromZipFolder(initIdentificationParametersFileURI, ".par", file);
             }
 
             return IdentificationParameters.getIdentificationParameters(file);
@@ -341,8 +341,9 @@ public class DatasetUtils implements Serializable {
                 dataset.setProteinSequenceMap(processFastaFile(new File(dataset.getFastaFileModel().getDownloadUrl())));
                 dataset.getProteinsMap().values().stream().map((protein) -> {
                     String[] descArr = dataset.getProteinSequenceMap().get(protein.getAccession()).getDescription().split("\\s");
+                   if (protein.getDescription() == null) {
                     protein.setDescription(descArr[0].replace("OS", "").trim());
-                    protein.setProteinEvidence(CONSTANT.PROTEIN_EVIDENCE[Integer.parseInt(descArr[descArr.length - 2].replace("PE=", "").trim())]);
+                   } protein.setProteinEvidence(CONSTANT.PROTEIN_EVIDENCE[Integer.parseInt(descArr[descArr.length - 2].replace("PE=", "").trim())]);
                     return protein;
                 }).forEachOrdered((protein) -> {
                     protein.setSequence(dataset.getProteinSequenceMap().get(protein.getAccession()).getSequenceAsString());
@@ -401,6 +402,7 @@ public class DatasetUtils implements Serializable {
                 i++;
             }
             i = 1;
+            boolean t = true;
             while ((line = bufferedReader.readLine()) != null) {
 
                 line = line.replace("\"", "");
@@ -978,7 +980,9 @@ public class DatasetUtils implements Serializable {
             dataset.setProteinSequenceMap(processFastaFile(fastaFile));
             dataset.getProteinsMap().values().stream().map((protein) -> {
                 String[] descArr = dataset.getProteinSequenceMap().get(protein.getAccession()).getDescription().split("\\s");
-                protein.setDescription(descArr[0].replace("OS", "").trim());
+                if (protein.getDescription() == null) {
+                    protein.setDescription(descArr[0].replace("OS", "").trim());
+                }
                 protein.setProteinEvidence(CONSTANT.PROTEIN_EVIDENCE[Integer.parseInt(descArr[descArr.length - 2].replace("PE=", "").trim())]);
                 return protein;
             }).forEachOrdered((protein) -> {
@@ -1001,154 +1005,7 @@ public class DatasetUtils implements Serializable {
         }
         executorService.shutdown();
 
-//        psmsMap.keySet().forEach((modSeq) -> {
-//            PeptideObject peptide = peptidesMap.get(modSeq);
-//            double quant = 0d;
-//            quant = psmsMap.get(modSeq).stream().map((psm) -> psm.getIntensity()).reduce(quant, (accumulator, _item) -> accumulator + _item);
-//            if (quant > 0) {
-//                double finalquant = quant / (double) psmsMap.get(modSeq).size();
-//                peptide.setIntensity(finalquant);
-//            }
-//        });
-//        //calc outliers
-//        colorGenerator = new RangeColorGenerator(topIntensityValue);
-//        psmsMap.keySet().forEach((modSeq) -> {
-//            PeptideObject peptide = peptidesMap.get(modSeq);
-//            peptide.setIntensityColor(colorGenerator.getGradeColor(peptide.getIntensity(), topIntensityValue, intensitySet.first()));
-//        });
-//    }
-//    //calc quant for proteins
-//    double quant = 0.0;
-//    proteinIntensityValuesSet  = new TreeSet<>();
-//    double quant2 = 0.0;
-//    TreeSet<Double> treeSet3 = new TreeSet<>();
-//    for (String protGroupKey
-//
-//    : proteinsGroupMap.keySet () 
-//        ) {
-//                ProteinGroupObject proteinGroup = proteinsGroupMap.get(protGroupKey);
-//        double counter = 0.0;
-//        double counter2 = 0.0;
-//        for (String modSeq : proteinGroup.getRelatedPeptidesList()) {
-//            if (peptidesMap.get(modSeq).getIntensity() > 0) {
-//                quant += peptidesMap.get(modSeq).getIntensity();
-//                counter++;
-//                if (!peptidesMap.get(modSeq).getProteinGroupKey().contains("-_-")) {
-//                    quant2 += peptidesMap.get(modSeq).getIntensity();
-//                    counter2++;
-//                }
-//            }
-//        }
-//        if (counter > 0) {
-//            quant = quant / counter;
-//            proteinGroup.setAllPeptidesIntensity(quant);
-//            proteinIntensityValuesSet.add(quant);
-//        }
-//        if (counter2 > 0) {
-//            quant2 = quant2 / counter2;
-//            proteinGroup.setUniquePeptidesIntensity(quant2);
-//            treeSet3.add(quant2);
-//        }
-//    }
-//
-//    proteinsGroupMap.values () 
-//        .stream().map((proteinGroup) -> {
-//                proteinGroup.setAllPeptideIintensityColor(colorGenerator.getGradeColor(proteinGroup.getAllPeptidesIntensity(), topIntensityValue, intensitySet.first()));
-//
-//        int per = (int) Math.round((proteinGroup.getAllPeptidesIntensity() / proteinIntensityValuesSet.last()) * 100.0);
-//        proteinGroup.setPercentageAllPeptidesIntensity(per);
-//        if (!this.proteinIntensityAllPeptideMap.containsKey(per)) {
-//            this.proteinIntensityAllPeptideMap.put(per, new LinkedHashSet<>());
-//        }
-//        this.proteinIntensityAllPeptideMap.get(per).add(proteinGroup.getProteinGroupKey());
-//        return proteinGroup;
-//    }
-//
-//    ).forEachOrdered(
-//             
-//        (proteinGroup) -> {
-//                proteinGroup.setUniquePeptideIintensityColor(colorGenerator.getGradeColor(proteinGroup.getUniquePeptidesIntensity(), topIntensityValue, intensitySet.first()));
-//        int per = (int) Math.round((proteinGroup.getUniquePeptidesIntensity() / treeSet3.last()) * 100.0);
-//        proteinGroup.setPercentageUniquePeptidesIntensity(per);
-//        if (!this.proteinIntensityUniquePeptideMap.containsKey(per)) {
-//            this.proteinIntensityUniquePeptideMap.put(per, new LinkedHashSet<>());
-//        }
-//        this.proteinIntensityUniquePeptideMap.get(per).add(proteinGroup.getProteinGroupKey());
-//    }
-//
-//
-//);
     }
-//
-//    /**
-//     * Get protein object from the protein list
-//     *
-//     * @param proteinKey (accession)
-//     * @return protein object
-//     */
-//    public ProteinGroupObject getProtein(String proteinKey) {
-//        checkAndUpdateProtein(proteinKey);
-//        if (processProteinsTask.getProteinsMap().containsKey(proteinKey)) {
-//            return processProteinsTask.getProteinsMap().get(proteinKey);
-//        } else if (processFastaFileTask.getFastaProteinMap().containsKey(proteinKey)) {
-//            return processFastaFileTask.getFastaProteinMap().get(proteinKey);
-//        } else {
-//            ProteinGroupObject newRelatedProt = updateProteinInformation(null, proteinKey);
-//            return newRelatedProt;
-//        }
-//
-//    }
-//
-//    /**
-//     * Update protein information
-//     *
-//     * @param id protein ID (accession)
-//     */
-//    private void checkAndUpdateProtein(String id) {
-//        if (processProteinsTask.getProteinsMap().containsKey(id) && processProteinsTask.getProteinsMap().get(id).getSequence() != null) {
-//            return;
-//        }
-//        if (processProteinsTask.getProteinsMap().containsKey(id) && processProteinsTask.getProteinsMap().get(id).getSequence() == null) {
-//            completeProteinInformation(processProteinsTask.getProteinsMap().get(id));
-//        } else if (!processFastaFileTask.getFastaProteinMap().containsKey(id) && processFastaFileTask.getFastaProteinSequenceMap().containsKey(id)) {
-//            initialiseFromFastaFile(id);
-//        }
-//
-//    }
-//
-//    /**
-//     * Add missing information to protein object
-//     *
-//     * @param protein object to be updated
-//     */
-//    public void completeProteinInformation(ProteinGroupObject protein) {
-//        ProteinSequence entry = processFastaFileTask.getFastaProteinSequenceMap().get(protein.getAccession());
-//        String protDesc = entry.getDescription().split("OS")[0];
-//        String[] descArr = entry.getDescription().split("\\s");
-//        protein.setDescription(protDesc.replace(descArr[0], "").trim());
-//        protein.setSequence(entry.getSequenceAsString());
-//        protein.setProteinEvidence(proteinEvidence[Integer.parseInt(descArr[descArr.length - 2].replace("PE=", "").trim())]);
-//        processFastaFileTask.getFastaProteinMap().put(protein.getAccession(), protein);
-//
-//    }
-//
-//    /**
-//     * Initialise protein object from the provided FASTA file
-//     *
-//     * @param proteinkey protein accession used as a key
-//     */
-//    private void initialiseFromFastaFile(String proteinkey) {
-//        ProteinGroupObject protein = new ProteinGroupObject();
-//        protein.setAccession(proteinkey);
-//        protein.setAvailableOn_CSF_PR(csf_pr_Accession_List.contains(protein.getAccession().trim()));
-//        ProteinSequence entry = processFastaFileTask.getFastaProteinSequenceMap().get(protein.getAccession());
-//        String[] descArr = entry.getDescription().split("\\s");
-//        protein.setDescription(descArr[0].replace("OS", "").trim());
-//        protein.setSequence(entry.getSequenceAsString());
-//        protein.setProteinEvidence(proteinEvidence[Integer.parseInt(descArr[descArr.length - 2].replace("PE=", "").trim())]);
-//        processFastaFileTask.getFastaProteinMap().put(proteinkey, protein);
-//
-//    }
 
     private LinkedHashMap<String, ProteinSequence> processFastaFile(File fastaFile) {
         FileInputStream inStream;
@@ -1179,7 +1036,7 @@ public class DatasetUtils implements Serializable {
         if (dataset.getProteinSequenceMap().containsKey(accession)) {
             ProteinSequence sequence = dataset.getProteinSequenceMap().get(accession);
             String[] descArr = sequence.getDescription().split("\\s");
-            proteinGroup.setDescription(descArr[0].replace("OS", "").trim());
+            proteinGroup.setDescription(sequence.getDescription().trim());
             proteinGroup.setProteinEvidence(CONSTANT.PROTEIN_EVIDENCE[Integer.parseInt(descArr[descArr.length - 2].replace("PE=", "").trim())]);
             proteinGroup.setSequence(sequence.getSequenceAsString());
         }

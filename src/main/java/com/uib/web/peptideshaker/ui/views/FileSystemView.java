@@ -145,6 +145,7 @@ public class FileSystemView extends AbsoluteLayout implements ViewableFrame {
         filesTablePanel.setEnabled(true);
         this.leftSideButtonsContainer.addStyleName("visible");
         this.removeStyleName("hidepanel");
+        filesTablePanel.updateViewDataset();
 
     }
 

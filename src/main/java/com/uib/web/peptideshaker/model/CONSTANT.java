@@ -79,20 +79,7 @@ public class CONSTANT {
     
     
     
-    public static final String MOFF_TOOL_ID = "toolshed.g2.bx.psu.edu/repos/galaxyp/proteomics_moff/proteomics_moff/2.0.3.0";
-    public static final String MOFF_TOOL_Version = "2.0.3.0";
-    public static final String CONVERT_CHARACTERS_TOOL_ID = "Convert characters1";
-    public static final String THERMO_RAW_CONVERTOR_TOOL_ID = "toolshed.g2.bx.psu.edu/repos/galaxyp/thermo_raw_file_converter/thermo_raw_file_converter/1.2.3+galaxy0";
-    public static final String THERMO_RAW_CONVERTOR_TOOL_VERSION = "1.2.3+galaxy0";
-    public static final String SEARCHGUI_TOOL_VERSION = "4.0.33+galaxy0";
-    public static final String SEARCHGUI_TOOL_ID = "toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/search_gui/"+SEARCHGUI_TOOL_VERSION;
-   
-    public static final String BUILD_LIST_TOOL_ID = "__BUILD_LIST__";
-    public static final String BUILD_LIST_TOOL_VERSION = "1.0.0";
-    public static final String PEPTIDESHAKER_TOOL_VERSION = "2.0.25+galaxy0";
-    public static final String PEPTIDESHAKER_TOOL_ID = "toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/peptide_shaker/"+PEPTIDESHAKER_TOOL_VERSION;
-    
-    public static final String SERVER_TIMEZONE = "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+   public static final String SERVER_TIMEZONE = "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 
     public static final String[] EXTRA_COLOURS = new String[]{
         "C00000", "00C000", "0000C0", "C0C000", "C000C0", "00C0C0", "C0C0C0",

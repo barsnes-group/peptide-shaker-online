@@ -209,8 +209,8 @@ public class WorkFlowHandler {
     private String buildList(Set<GalaxyFileModel> fileSet) {
         JsonObject body = new JsonObject();
         body.put(CONSTANT.HISTORY_ID, appManagmentBean.getAppConfig().getMainGalaxyHistoryId());
-        body.put(CONSTANT.TOOL_ID, CONSTANT.BUILD_LIST_TOOL_ID);
-        body.put(CONSTANT.TOOL_VERSION, CONSTANT.BUILD_LIST_TOOL_ID);
+        body.put(CONSTANT.TOOL_ID, appManagmentBean.getAppConfig().getBUILD_LIST_TOOL_ID());
+        body.put(CONSTANT.TOOL_VERSION, appManagmentBean.getAppConfig().getBUILD_LIST_TOOL_ID());
         JsonObject inputs = new JsonObject();
         JsonObject outputs = new JsonObject();
         int counter = 0;
@@ -263,17 +263,17 @@ public class WorkFlowHandler {
          */
         int step = 3;
         if (quant) {
-            steps.getJsonObject(step + "").put("content_id", CONSTANT.THERMO_RAW_CONVERTOR_TOOL_ID);
-            steps.getJsonObject(step + "").put("tool_id", CONSTANT.THERMO_RAW_CONVERTOR_TOOL_ID);
-            steps.getJsonObject(step + "").put("tool_version", CONSTANT.THERMO_RAW_CONVERTOR_TOOL_VERSION);
+            steps.getJsonObject(step + "").put("content_id", appManagmentBean.getAppConfig().getTHERMO_RAW_CONVERTOR_TOOL_ID());
+            steps.getJsonObject(step + "").put("tool_id", appManagmentBean.getAppConfig().getTHERMO_RAW_CONVERTOR_TOOL_ID());
+            steps.getJsonObject(step + "").put("tool_version", appManagmentBean.getAppConfig().getTHERMO_RAW_CONVERTOR_TOOL_VERSION());
             step++;
         }
         /**
          * SearchGUI
          */
-        steps.getJsonObject(step + "").put("content_id", CONSTANT.SEARCHGUI_TOOL_ID);
-        steps.getJsonObject(step + "").put("tool_id", CONSTANT.SEARCHGUI_TOOL_ID);
-        steps.getJsonObject(step + "").put("tool_version", CONSTANT.SEARCHGUI_TOOL_VERSION);
+        steps.getJsonObject(step + "").put("content_id", appManagmentBean.getAppConfig().getSEARCHGUI_TOOL_ID());
+        steps.getJsonObject(step + "").put("tool_id", appManagmentBean.getAppConfig().getSEARCHGUI_TOOL_ID());
+        steps.getJsonObject(step + "").put("tool_version", appManagmentBean.getAppConfig().getSEARCHGUI_TOOL_VERSION());
         steps.getJsonObject(step + "").getJsonObject("post_job_actions").getJsonObject("RenameDatasetActionsearchgui_results").getJsonObject("action_arguments").put("newname", projectName);
         steps.getJsonObject(step + "").getJsonArray("workflow_outputs").getJsonObject(0).put("label", projectName);
         JsonArray searchEnginesArray = new JsonArray();
@@ -285,18 +285,18 @@ public class WorkFlowHandler {
         /**
          * PeptideShaker
          */
-        steps.getJsonObject(step + "").put("content_id", CONSTANT.PEPTIDESHAKER_TOOL_ID);
-        steps.getJsonObject(step + "").put("tool_id", CONSTANT.PEPTIDESHAKER_TOOL_ID);
-        steps.getJsonObject(step + "").put("tool_version", CONSTANT.PEPTIDESHAKER_TOOL_VERSION);
+        steps.getJsonObject(step + "").put("content_id", appManagmentBean.getAppConfig().getPEPTIDESHAKER_TOOL_ID());
+        steps.getJsonObject(step + "").put("tool_id", appManagmentBean.getAppConfig().getPEPTIDESHAKER_TOOL_ID());
+        steps.getJsonObject(step + "").put("tool_version", appManagmentBean.getAppConfig().getPEPTIDESHAKER_TOOL_VERSION());
         steps.getJsonObject(step + "").getJsonObject("post_job_actions").getJsonObject("RenameDatasetActionoutput_zip").getJsonObject("action_arguments").put("newname", projectName);
 
         /**
          * moff tool
          */
         if (quant) {
-            steps.getJsonObject("7").put("content_id", CONSTANT.MOFF_TOOL_ID);
-            steps.getJsonObject("7").put("tool_id", CONSTANT.MOFF_TOOL_ID);
-            steps.getJsonObject("7").put("tool_version", CONSTANT.MOFF_TOOL_Version);
+            steps.getJsonObject("7").put("content_id", appManagmentBean.getAppConfig().getMOFF_TOOL_ID());
+            steps.getJsonObject("7").put("tool_id", appManagmentBean.getAppConfig().getMOFF_TOOL_ID());
+            steps.getJsonObject("7").put("tool_version", appManagmentBean.getAppConfig().getMOFF_TOOL_Version());
         }
 
         JsonObject body = new JsonObject();

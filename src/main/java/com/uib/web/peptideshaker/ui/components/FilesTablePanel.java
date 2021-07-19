@@ -300,6 +300,8 @@ public class FilesTablePanel extends Panel {
                     } else if (statusLabel.getStatus().equals(CONSTANT.RUNNING_STATUS)) {
                         rowLayout.getComponent(0).setReadOnly(true);
                         rowLayout.getComponent(1).setReadOnly(true);
+                        rowLayout.getComponent(1).setEnabled(false);
+                        rowLayout.getComponent(2).setEnabled(false);
                         rowLayout.getComponent(2).setReadOnly(true);
                         rowLayout.getComponent(3).setEnabled(false);
                         rowLayout.getComponent(4).setEnabled(false);

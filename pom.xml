@@ -15,7 +15,7 @@
         <vaadin.version>7.7.26</vaadin.version>
         <vaadin.plugin.version>7.7.26</vaadin.plugin.version>
         <jetty.plugin.version>9.3.9.v20160517</jetty.plugin.version>
-        <compomics.version>5.0.19</compomics.version>
+        <compomics.version>5.0.22</compomics.version>
         <jersey.version>2.34</jersey.version>
         <vertx.version>3.5.4</vertx.version>
          <biojava.version>5.4.0</biojava.version>

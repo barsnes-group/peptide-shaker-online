@@ -173,9 +173,9 @@ public class UserHandler implements Serializable {
                                             }
                                         } else if (collectionModel.getElementsExtension().equals(CONSTANT.TABULAR_FILE_EXTENSION)) {
                                             collectionModel.getElements().get(0).getGalaxyJob().getInputFileIds().stream().filter((id) -> (tempdataset.getPsZipFile().getGalaxyJob().getOutputFileIds().contains(id))).map((String _item) -> {
-                                                if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().equals(CONSTANT.CONVERT_CHARACTERS_TOOL_ID)) {
+                                                if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().equals(appManagmentBean.getAppConfig().getCONVERT_CHARACTERS_TOOL_ID())) {
                                                     tempdataset.setMgfList(collectionModel);
-                                                } else if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().contains(CONSTANT.MOFF_TOOL_ID)) {
+                                                } else if (collectionModel.getElements().get(0).getGalaxyJob().getToolId().contains(appManagmentBean.getAppConfig().getMOFF_TOOL_ID())) {
                                                     if (collectionModel.getElements().get(0).getStatus().equals(CONSTANT.OK_STATUS)) {
                                                         tempdataset.setMoffList(collectionModel);
                                                     } else {
@@ -319,7 +319,7 @@ public class UserHandler implements Serializable {
         collectionList.stream().filter((collectionModel) -> !(!collectionModel.getHistoryId().equals(appManagmentBean.getAppConfig().getMainGalaxyHistoryId()))).filter((collectionModel) -> (collectionModel.getElementsExtension().equals(CONSTANT.mzML_FILE_EXTENSION) || collectionModel.getElementsExtension().equals(CONSTANT.THERMO_RAW_FILE_EXTENSION) || (collectionModel.getElementsExtension().equals(CONSTANT.MGF_FILE_EXTENSION) || collectionModel.getElementsExtension().equals(CONSTANT.TXT_FILE_EXTENSION)))).forEachOrdered((collectionModel) -> {
             galaxyItemsToDelete.add(collectionModel);
         });
-        filesMap.values().stream().filter((fileModel) -> !(!fileModel.getHistoryId().equals(appManagmentBean.getAppConfig().getMainGalaxyHistoryId()))).filter((fileModel) -> (fileModel.getGalaxyJob().getToolId().equals(CONSTANT.PEPTIDESHAKER_TOOL_ID) && (fileModel.getExtension().equals(CONSTANT.TXT_FILE_EXTENSION) || fileModel.getExtension().equals(CONSTANT.TABULAR_FILE_EXTENSION)))).forEachOrdered((fileModel) -> {
+        filesMap.values().stream().filter((fileModel) -> !(!fileModel.getHistoryId().equals(appManagmentBean.getAppConfig().getMainGalaxyHistoryId()))).filter((fileModel) -> (fileModel.getGalaxyJob().getToolId().equals(appManagmentBean.getAppConfig().getPEPTIDESHAKER_TOOL_ID()) && (fileModel.getExtension().equals(CONSTANT.TXT_FILE_EXTENSION) || fileModel.getExtension().equals(CONSTANT.TABULAR_FILE_EXTENSION)))).forEachOrdered((fileModel) -> {
             galaxyItemsToDelete.add(fileModel);
         });
         if (!galaxyItemsToDelete.isEmpty()) {
