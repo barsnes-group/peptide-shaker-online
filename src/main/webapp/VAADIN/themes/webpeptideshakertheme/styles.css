@@ -22805,7 +22805,8 @@ div.v-layout.v-horizontal.v-widget {
 .webpeptideshakertheme .v-verticallayout-actionbuttoncontainer {
 	max-height: 280px;
 }
-.row  .v-disabled.v-readonly .v-label, .row  .v-disabled.v-readonly .Vaadin-Icons{
-	opacity:1 !important;
-	color:#474747 !important;
+
+.webpeptideshakertheme .row .v-disabled.v-readonly .v-label, .webpeptideshakertheme .row .v-disabled.v-readonly .Vaadin-Icons {
+	opacity: 1 !important;
+	color: #474747 !important;
 }

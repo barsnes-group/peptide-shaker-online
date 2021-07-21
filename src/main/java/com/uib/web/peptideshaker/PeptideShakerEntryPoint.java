@@ -47,7 +47,9 @@ public class PeptideShakerEntryPoint extends UI {
         AppManagmentBean oldManager = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
         if (oldManager != null) {
             if (oldManager.getUserHandler() != null && oldManager.isAvailableGalaxy()) {
-                oldManager.getUserHandler().cleanGalaxyHistory();
+               try{ oldManager.getUserHandler().cleanGalaxyHistory();}
+               catch(Exception e){
+                }
             }
             VaadinSession.getCurrent().close();
             Page.getCurrent().reload();
