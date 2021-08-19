@@ -183,10 +183,10 @@ public class WorkFlowDataInputComponent extends Panel {
         _fastaFileInputLayout = initialiseFastaFileDropdownList();
         fastaFileContainer.addComponent(_fastaFileInputLayout, "left:15px;top:15px;right:15px");
         //add decoy layout
-        Label addDecoyLable = new Label("<h6 style='font-size: 12px;font-weight: normal;'>FASTA file should not contain decoys</h6>",ContentMode.HTML);
+        Label addDecoyLable = new Label("<h7 style='font-size: 12px;font-weight: normal;'>FASTA file should not contain decoys</h7>",ContentMode.HTML);
         addDecoyLable.setWidth(100, Unit.PERCENTAGE);
         addDecoyLable.setHeight(20, Unit.PIXELS);
-        fastaFileContainer.addComponent(addDecoyLable, "left:17px;top:18px;right:15px");
+        fastaFileContainer.addComponent(addDecoyLable, "left:17px;top:40px;right:15px");
 
         /**
          * Initialise Raw/MGF available files controller.
