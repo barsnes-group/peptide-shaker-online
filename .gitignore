@@ -123,3 +123,4 @@ nb-configuration.xml
 
 src/main/webapp/WEB-INF/config.json
 src/main/webapp/WEB-INF/config.json
+*.json
