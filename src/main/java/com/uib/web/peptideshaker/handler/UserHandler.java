@@ -118,12 +118,19 @@ public class UserHandler implements Serializable {
 
     private boolean synchronizeWithGalaxyHistory() {
         boolean busyHistory = checkBusyHistory();
-        filesToViewList.clear();       
+        filesToViewList.clear();
         this.userInformationMap = appManagmentBean.getGalaxyFacad().getUserInformation(loggedinUserAPIKey, loggedinUserId);
-         //initial user history       
+        //initial user history       
         Object[] storedData = appManagmentBean.getGalaxyFacad().getStoredData(loggedinUserAPIKey);
         this.collectionList = (List<GalaxyCollectionModel>) storedData[0];
         this.filesMap = (Map<String, GalaxyFileModel>) storedData[1];
+        Set<String> idsToIgnor = new HashSet<>();
+        filesMap.keySet().stream().filter((fileModelKey) -> (filesMap.get(fileModelKey).getGalaxyJob().getToolId().equals(appManagmentBean.getAppConfig().getFasta_cli_TOOL_ID()))).forEachOrdered((fileModelKey) -> {
+            idsToIgnor.add(fileModelKey);
+        });
+        idsToIgnor.forEach((id) -> {
+            filesMap.remove(id);
+        });
         filesToViewList.addAll(filesMap.values());
         return busyHistory;
     }
@@ -312,6 +319,7 @@ public class UserHandler implements Serializable {
      */
     public void cleanGalaxyHistory() {
         boolean busyHistory = appManagmentBean.getGalaxyFacad().isHistoryBusy(loggedinUserAPIKey);
+        //check if busy or deu error in invoking
         if (busyHistory) {
             return;
         }
@@ -322,6 +330,11 @@ public class UserHandler implements Serializable {
         filesMap.values().stream().filter((fileModel) -> !(!fileModel.getHistoryId().equals(appManagmentBean.getAppConfig().getMainGalaxyHistoryId()))).filter((fileModel) -> (fileModel.getGalaxyJob().getToolId().equals(appManagmentBean.getAppConfig().getPEPTIDESHAKER_TOOL_ID()) && (fileModel.getExtension().equals(CONSTANT.TXT_FILE_EXTENSION) || fileModel.getExtension().equals(CONSTANT.TABULAR_FILE_EXTENSION)))).forEachOrdered((fileModel) -> {
             galaxyItemsToDelete.add(fileModel);
         });
+        for (GalaxyFileModel fileModel : filesMap.values()) {
+            if (fileModel.getGalaxyJob().getToolId().equals(appManagmentBean.getAppConfig().getFasta_cli_TOOL_ID())) {
+                galaxyItemsToDelete.add(fileModel);
+            }
+        }
         if (!galaxyItemsToDelete.isEmpty()) {
             galaxyItemsToDelete.forEach((object) -> {
                 if (object instanceof GalaxyCollectionModel) {

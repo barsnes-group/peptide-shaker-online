@@ -73,6 +73,17 @@ public class Config implements Serializable {
     public String SEARCHGUI_TOOL_VERSION;
     public String SEARCHGUI_TOOL_ID;
 
+    public String fasta_cli_TOOL_VERSION;
+
+    public String getFasta_cli_TOOL_VERSION() {
+        return fasta_cli_TOOL_VERSION;
+    }
+
+    public String getFasta_cli_TOOL_ID() {
+        return fasta_cli_TOOL_ID;
+    }
+    public String fasta_cli_TOOL_ID;
+
     public String BUILD_LIST_TOOL_ID;
     public String BUILD_LIST_TOOL_VERSION;
     public String PEPTIDESHAKER_TOOL_VERSION;
@@ -268,7 +279,7 @@ public class Config implements Serializable {
             return;
         }
         basePath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
-        String configJsonFilePath = basePath + "/VAADIN/config.json";
+        String configJsonFilePath = basePath + "/WEB-INF/config.json";
         try {
             configJson = new JsonObject(IOUtils.toString(new FileReader(configJsonFilePath)));
             analyze_Data_text = configJson.getJsonObject("infotext").getString("Analyze_Data");
@@ -288,7 +299,8 @@ public class Config implements Serializable {
             THERMO_RAW_CONVERTOR_TOOL_VERSION = configJson.getString("THERMO_RAW_CONVERTOR_TOOL_VERSION");//"1.2.3+galaxy0";
             SEARCHGUI_TOOL_VERSION = configJson.getString("SEARCHGUI_TOOL_VERSION");//"4.0.33+galaxy0";
             SEARCHGUI_TOOL_ID = configJson.getString("SEARCHGUI_TOOL_ID");//"toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/search_gui/" + SEARCHGUI_TOOL_VERSION;
-
+            fasta_cli_TOOL_ID = configJson.getString("fasta_cli_TOOL_ID");
+            fasta_cli_TOOL_VERSION = configJson.getString("fasta_cli_TOOL_VERSION");
             BUILD_LIST_TOOL_ID = configJson.getString("BUILD_LIST_TOOL_ID");//"__BUILD_LIST__";
             BUILD_LIST_TOOL_VERSION = configJson.getString("BUILD_LIST_TOOL_VERSION");// "1.0.0";
             PEPTIDESHAKER_TOOL_VERSION = configJson.getString("PEPTIDESHAKER_TOOL_VERSION");// "2.0.25+galaxy0";
@@ -309,11 +321,11 @@ public class Config implements Serializable {
         dbName = configJson.getString("dbName");//(scx.getInitParameter("dbName"));
         maximumAllowedUsers = configJson.getInteger("maxusernumb");// Integer.parseUnsignedInt(scx.getInitParameter("maxusernumb") + "");
         defaultSearchParamPath = basePath + "/VAADIN/SEARCHGUI_IdentificationParameters.json";
-        quant_workflow_file_path = basePath + "/VAADIN/Galaxy-Workflow-Full-Pipeline-Workflow-Quant-Multiple-Input.ga";
+        quant_workflow_file_path = basePath + "/VAADIN/Galaxy-Workflow-Full-Pipeline-Workflow-Quant-Multiple-Input_updated.ga";
         working_folder_path = basePath + "/VAADIN/";
-        id_workflow_file_path = basePath + "/VAADIN/Galaxy-Workflow-Full-Pipeline-Workflow-Id-Multiple-Input.ga";
-        quant_workflow_invoking_file_path = basePath + "/VAADIN/Multi-Quant-Invoking.json";
-        id_workflow_invoking_file_path = basePath + "/VAADIN/Multi-Id-Invoking.json";
+        id_workflow_file_path = basePath + "/VAADIN/Galaxy-Workflow-Full-Pipeline-Workflow-Id-Multiple-Input_updated.ga";
+        quant_workflow_invoking_file_path = basePath + "/VAADIN/Multi-Quant-Invoking-updated.json";
+        id_workflow_invoking_file_path = basePath + "/VAADIN/Multi-Id-Invoking_updated.json";
 
 //        /**
 //         * case of average screen 1000*500

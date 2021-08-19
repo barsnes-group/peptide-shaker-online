@@ -605,6 +605,14 @@
         19,
         20
       ],
+      "TAG_FRAGMENT_ION": [
+        4,
+        1
+      ],
+      "REPORTER_ION": [],
+      "PRECURSOR_ION": [
+        0
+      ],
       "RELATED_ION": [
         0,
         1,
@@ -627,14 +635,6 @@
         18
       ],
       "PEPTIDE_FRAGMENT_ION": [
-        4,
-        1
-      ],
-      "PRECURSOR_ION": [
-        0
-      ],
-      "REPORTER_ION": [],
-      "TAG_FRAGMENT_ION": [
         4,
         1
       ]
@@ -759,7 +759,7 @@
     "neutralLossesAuto": true,
     "reporterIons": true,
     "relatedIons": true,
-    "fragmentIonAccuracy": 10.0,
+    "fragmentIonAccuracy": 0.02,
     "fragmentIonPpm": false,
     "showForwardIonDeNovoTags": false,
     "showRewindIonDeNovoTags": false,
@@ -873,7 +873,7 @@
   },
   "fastaParameters": {
     "targetDecoy": true,
-    "decoyFlag": "-REVERSED",
+    "decoyFlag": "_REVERSED",
     "decoySuffix": true,
     "targetDecoyFileNameTag": "_concatenated_target_decoy",
     "id": 0

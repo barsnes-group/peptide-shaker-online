@@ -167,12 +167,13 @@ public class WorkFlowHandler {
      *
      * @param projectName
      * @param fastaFile
-     * @param searchParam
+     * @param searchParamFile
      * @param spectrumFileSet
      * @param searchEngineSet
-     * @return
+     * @param selectedSearchParameter
+     * @return dataset model
      */
-    public VisualizationDatasetModel executeWorkFlow(String projectName, GalaxyFileModel fastaFile, GalaxyFileModel searchParam, Set<GalaxyFileModel> spectrumFileSet, Map<String, Boolean> searchEngineSet) {
+    public VisualizationDatasetModel executeWorkFlow(String projectName, GalaxyFileModel fastaFile, GalaxyFileModel searchParamFile, Set<GalaxyFileModel> spectrumFileSet, Map<String, Boolean> searchEngineSet, IdentificationParameters selectedSearchParameter) {
 
         boolean quant = false;
         String datasetType = CONSTANT.ID_DATASET;
@@ -185,13 +186,13 @@ public class WorkFlowHandler {
         //upload the workflow
         String workflowId = prepareAndUploadWorkFlow(projectName, searchEngineSet, quant);
 //        execute workflow
-        JsonObject body = prepareWorkFlowInvoking(fastaFile, searchParam, inputListId, quant);
+        JsonObject body = prepareWorkFlowInvoking(fastaFile, searchParamFile, inputListId, quant, selectedSearchParameter);
         Response response = appManagmentBean.getGalaxyFacad().invokeWorkFlow(workflowId, body);
         boolean status = response.getStatus() == HttpResponseStatus.OK.code();
-        JsonArray jsonArrayResp = new JsonArray(response.readEntity(String.class));
 //        delete workflow
         appManagmentBean.getGalaxyFacad().deleteWorkFlow(workflowId);
         if (status) {
+            JsonArray jsonArrayResp = new JsonArray(response.readEntity(String.class));
             VisualizationDatasetModel tempDataset = appManagmentBean.getDatasetUtils().getOnProgressDataset(datasetType);
             tempDataset.setName(projectName);
             tempDataset.setId(jsonArrayResp.getJsonObject(0).getString(CONSTANT.ID));
@@ -258,10 +259,20 @@ public class WorkFlowHandler {
          */
         JsonObject workflowAsJson = appManagmentBean.getFilesUtils().readJsonFile(workflowFile);
         JsonObject steps = workflowAsJson.getJsonObject("steps");
+
+        int step = 3;
+        /**
+         * fasta decoy*
+         */
+        // "tool_state": "{\"database_processing_options\": {\"decoy_tag\": \"_REVERSED\", \"decoy_type\": \"2\", \"decoy_file_tag\": \"_concatenated_target_decoy\"}, \"input_database\": {\"__class__\": \"RuntimeValue\"}, \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+        steps.getJsonObject(step + "").put("content_id", appManagmentBean.getAppConfig().getFasta_cli_TOOL_ID());
+        steps.getJsonObject(step + "").put("tool_id", appManagmentBean.getAppConfig().getFasta_cli_TOOL_ID());
+        steps.getJsonObject(step + "").put("tool_version", appManagmentBean.getAppConfig().getFasta_cli_TOOL_VERSION());
+
         /**
          * Thermo raw convertor
          */
-        int step = 3;
+        step++;
         if (quant) {
             steps.getJsonObject(step + "").put("content_id", appManagmentBean.getAppConfig().getTHERMO_RAW_CONVERTOR_TOOL_ID());
             steps.getJsonObject(step + "").put("tool_id", appManagmentBean.getAppConfig().getTHERMO_RAW_CONVERTOR_TOOL_ID());
@@ -294,19 +305,20 @@ public class WorkFlowHandler {
          * moff tool
          */
         if (quant) {
-            steps.getJsonObject("7").put("content_id", appManagmentBean.getAppConfig().getMOFF_TOOL_ID());
-            steps.getJsonObject("7").put("tool_id", appManagmentBean.getAppConfig().getMOFF_TOOL_ID());
-            steps.getJsonObject("7").put("tool_version", appManagmentBean.getAppConfig().getMOFF_TOOL_Version());
+            steps.getJsonObject("8").put("content_id", appManagmentBean.getAppConfig().getMOFF_TOOL_ID());
+            steps.getJsonObject("8").put("tool_id", appManagmentBean.getAppConfig().getMOFF_TOOL_ID());
+            steps.getJsonObject("8").put("tool_version", appManagmentBean.getAppConfig().getMOFF_TOOL_Version());
         }
 
         JsonObject body = new JsonObject();
         body.put("workflow", workflowAsJson);
         Response response = appManagmentBean.getGalaxyFacad().uploadWorkFlow(body);
+//        System.out.println("at updateworkflow " + response.getStatus());
         JsonObject jsonObject = new JsonObject(response.readEntity(String.class));
         return jsonObject.getString(CONSTANT.ID);
     }
 
-    private JsonObject prepareWorkFlowInvoking(GalaxyFileModel fastaFile, GalaxyFileModel searchParam, String inputListId, boolean quant) {
+    private JsonObject prepareWorkFlowInvoking(GalaxyFileModel fastaFile, GalaxyFileModel searchParam, String inputListId, boolean quant, IdentificationParameters selectedSearchParameter) {
         File workflowInvokingFile;
         if (quant) {
             workflowInvokingFile = new File(appManagmentBean.getAppConfig().getQuant_workflow_invoking_file_path());
@@ -324,9 +336,18 @@ public class WorkFlowHandler {
         parameters.getJsonObject("0").getJsonObject("input").getJsonArray("values").getJsonObject(0).put(CONSTANT.HISTORY_ID, searchParam.getHistoryId());
         parameters.getJsonObject("1").getJsonObject("input").getJsonArray("values").getJsonObject(0).put(CONSTANT.ID, fastaFile.getId());
         parameters.getJsonObject("1").getJsonObject("input").getJsonArray("values").getJsonObject(0).put(CONSTANT.HISTORY_ID, fastaFile.getHistoryId());
-//
+
         parameters.getJsonObject("2").getJsonObject("input").getJsonArray("values").getJsonObject(0).put(CONSTANT.ID, inputListId);
         parameters.getJsonObject("2").getJsonObject("input").getJsonArray("values").getJsonObject(0).put(CONSTANT.HISTORY_ID, appManagmentBean.getAppConfig().getMainGalaxyHistoryId());
+
+        System.out.println("add searching param " + selectedSearchParameter.getFastaParameters().getTargetDecoyFileNameSuffix() + "  ++++  " + selectedSearchParameter.getFastaParameters().isDecoySuffix());
+        parameters.getJsonObject("3").put("database_processing_options|decoy_tag", selectedSearchParameter.getFastaParameters().getDecoyFlag());
+        if (selectedSearchParameter.getFastaParameters().isDecoySuffix()) {
+            parameters.getJsonObject("3").put("database_processing_options|decoy_type", "2");
+        } else {
+            parameters.getJsonObject("3").put("database_processing_options|decoy_type", "1");
+        }
+        parameters.getJsonObject("3").put("database_processing_options|decoy_file_tag", selectedSearchParameter.getFastaParameters().getTargetDecoyFileNameSuffix());
 
         return workflowInvokingAsJson;
     }

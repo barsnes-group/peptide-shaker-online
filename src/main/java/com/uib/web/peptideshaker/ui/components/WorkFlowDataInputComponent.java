@@ -122,7 +122,7 @@ public class WorkFlowDataInputComponent extends Panel {
      * Initialise main form layout.
      */
     public void initLayout() {
-
+        
         WorkFlowDataInputComponent.this.setWidth(100, Unit.PERCENTAGE);
         WorkFlowDataInputComponent.this.setHeight(100, Unit.PERCENTAGE);
         /**
@@ -145,12 +145,12 @@ public class WorkFlowDataInputComponent extends Panel {
         container.addComponent(titleLabel, "left:40px;top:13px");
         HelpPopupButton helpBtn = new HelpPopupButton(appManagmentBean.getAppConfig().getAnalyze_Data_text(), "", 400, 120);
         container.addComponent(helpBtn, "left:143px;top:0px");
-
+        
         AbsoluteLayout mainContainerLayout = new AbsoluteLayout();
         mainContainerLayout.setSizeFull();
         mainContainerLayout.setStyleName("maincontentcontainer");
         container.addComponent(mainContainerLayout, "left:25px;top:25px;bottom:25px;right:25px");
-
+        
         AbsoluteLayout newProjectContainer = new AbsoluteLayout();
         newProjectContainer.setWidth(100, Unit.PERCENTAGE);
         newProjectContainer.setHeight(460, Unit.PIXELS);
@@ -179,9 +179,14 @@ public class WorkFlowDataInputComponent extends Panel {
         fastaFileContainer.setHeight(28, Unit.PERCENTAGE);
         fastaFileContainer.setStyleName("titleinborder");
         newProjectContainer.addComponent(fastaFileContainer, "left:25px;top:46%;right:50%");
-
+        
         _fastaFileInputLayout = initialiseFastaFileDropdownList();
         fastaFileContainer.addComponent(_fastaFileInputLayout, "left:15px;top:15px;right:15px");
+        //add decoy layout
+        Label addDecoyLable = new Label("<h6 style='font-size: 12px;font-weight: normal;'>FASTA file should not contain decoys</h6>",ContentMode.HTML);
+        addDecoyLable.setWidth(100, Unit.PERCENTAGE);
+        addDecoyLable.setHeight(20, Unit.PIXELS);
+        fastaFileContainer.addComponent(addDecoyLable, "left:17px;top:18px;right:15px");
 
         /**
          * Initialise Raw/MGF available files controller.
@@ -193,13 +198,13 @@ public class WorkFlowDataInputComponent extends Panel {
         spectrumFileContainer.setStyleName("titleinborder");
         spectrumFileContainer.addStyleName("marginleft25");
         newProjectContainer.addComponent(spectrumFileContainer, "left:50%;top:25px;right:50px");
-
+        
         rawMgfController = new OptionGroup();
         rawMgfController.setStyleName("controllercombobox");
         rawMgfController.addItem("rawFiles");
         rawMgfController.addItem("mgfFiles");
         rawMgfController.addItem("mzMLFiles");
-
+        
         rawMgfController.setHeight(26, Unit.PERCENTAGE);
         rawMgfController.setHtmlContentAllowed(true);
         rawMgfController.setItemCaption("rawFiles", "Raw");
@@ -231,7 +236,7 @@ public class WorkFlowDataInputComponent extends Panel {
                     mgfDataListLayout.setVisible(false);
                     break;
             }
-
+            
             updateMgfFilesTable();
             updateRawFilesTable();
             updateMzMLFilesTable();
@@ -244,11 +249,11 @@ public class WorkFlowDataInputComponent extends Panel {
         mgf_raw_dataUploader = new Uploader(appManagmentBean.getAppConfig().getUserFolderUri()) {
             @Override
             public void filesUploaded(PluploadFile[] uploadedFiles) {
-
+                
                 File file = (File) uploadedFiles[0].getUploadedFile();
                 String fileExtension;
                 String fileName = uploadedFiles[0].getName();
-
+                
                 if (fileName.toLowerCase().endsWith(CONSTANT.MGF_FILE_EXTENSION)) {
                     fileExtension = CONSTANT.MGF_FILE_EXTENSION;
                 } else if (fileName.toLowerCase().endsWith(CONSTANT.mzML_FILE_EXTENSION)) {
@@ -266,7 +271,7 @@ public class WorkFlowDataInputComponent extends Panel {
                 spectrumFile.setDeleted(Boolean.FALSE);
                 spectrumFile.setCreatedDate(java.util.Calendar.getInstance().getTime());
                 spectrumFile.setDownloadUrl(file.getAbsolutePath());
-
+                
                 appManagmentBean.getUserHandler().addToFilesMap(spectrumFile);
                 appManagmentBean.getUI_Manager().updateAll();
                 ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -277,7 +282,7 @@ public class WorkFlowDataInputComponent extends Panel {
                     appManagmentBean.getUI_Manager().updateAll();
                     this.setBusy(false);
                 });
-
+                
             }
         };
         mgf_raw_dataUploader.addUploaderFilter(CONSTANT.MGF_FILE_EXTENSION);
@@ -289,13 +294,13 @@ public class WorkFlowDataInputComponent extends Panel {
             mgf_raw_dataUploader.setDescription("Upload is disabled in the demo version");
             mgf_raw_dataUploader.addStyleName("permanentdisable");
         }
-
+        
         rawDataListLayout = new VerticalLayout();
         rawDataListLayout.setSizeFull();
         rawDataListLayout.setSpacing(true);
         rawDataListLayout.setStyleName("astablelayout");
         inputDataFilesContainer.addComponent(rawDataListLayout, "top:0px;");
-
+        
         mgfDataListLayout = new VerticalLayout();
         mgfDataListLayout.setSizeFull();
         mgfDataListLayout.setStyleName("astablelayout");
@@ -342,7 +347,7 @@ public class WorkFlowDataInputComponent extends Panel {
         _executeWorkFlowButtonLayoutContainer.setHeight(100, Unit.PERCENTAGE);
         _executeWorkFlowButtonLayoutContainer.setStyleName("titleinborder");
         _executeWorkFlowButtonLayoutContainer.addStyleName("marginleft25");
-
+        
         HorizontalLayout bottomLayout = new HorizontalLayout();
         bottomLayout.setSizeFull();
         bottomLayout.setSpacing(true);
@@ -353,7 +358,7 @@ public class WorkFlowDataInputComponent extends Panel {
         _projectNameField.addStyleName("focos");
         rawClickListener = (LayoutEvents.LayoutClickEvent event) -> {
             GalaxyFileModel galaxyFile = (GalaxyFileModel) ((HorizontalLayout) event.getComponent()).getData();
-
+            
             if (_rawFileList.contains(galaxyFile)) {
                 _rawFileList.remove(galaxyFile);
             } else {
@@ -368,10 +373,10 @@ public class WorkFlowDataInputComponent extends Panel {
             } else {
                 _mgfFileList.add(galaxyFile);
             }
-
+            
             updateMgfFilesTable();
         };
-
+        
         mzMLClickListener = (LayoutEvents.LayoutClickEvent event) -> {
             GalaxyFileModel galaxyFile = (GalaxyFileModel) ((HorizontalLayout) event.getComponent()).getData();
             if (_mzMLFileList.contains(galaxyFile)) {
@@ -379,7 +384,7 @@ public class WorkFlowDataInputComponent extends Panel {
             } else {
                 _mzMLFileList.add(galaxyFile);
             }
-
+            
             updateMzMLFilesTable();
         };
     }
@@ -428,7 +433,7 @@ public class WorkFlowDataInputComponent extends Panel {
         searchSettingsFileList.addStyleName("nomargintop");
         searchSettingsFileList.setReadOnly(true);
         searchParameterContainer.addComponent(searchSettingsFileList, "left:15px;top:15px;right:15px");
-
+        
         searchSettingsFileList.addValueChangeListener((Property.ValueChangeEvent event) -> {
             if (searchSettingsFileList.getSelectedValue() != null) {
                 if (searchSettingsFileList.getSelectedValue().equalsIgnoreCase("Add new")) {
@@ -445,11 +450,11 @@ public class WorkFlowDataInputComponent extends Panel {
                     }
                 }
                 searchSettingInfo.setValue(descrip);
-
+                
             }
         }
         );
-
+        
         return searchParameterContainer;
     }
 
@@ -482,15 +487,15 @@ public class WorkFlowDataInputComponent extends Panel {
                     appManagmentBean.getUI_Manager().updateAll();
                     fastaFileUploader.setBusy(false);
                 });
-
+                
             }
-
+            
         };
         fastaFileUploader.addUploaderFilter("fasta");
-         if (!appManagmentBean.getAppConfig().isEnableUpload()) {
+        if (!appManagmentBean.getAppConfig().isEnableUpload()) {
             fastaFileUploader.setEnabled(false);
             fastaFileUploader.setDescription("Upload is disabled in the demo version");
-             fastaFileUploader.addStyleName("permanentdisable");
+            fastaFileUploader.addStyleName("permanentdisable");
         }
         final DropDownList fastaFileList = new DropDownList(null) {
             @Override
@@ -499,19 +504,19 @@ public class WorkFlowDataInputComponent extends Panel {
                 boolean check = super.isValid();
                 this.setRequired(!check, "No FASTA FILE AVAILABLE");
                 return check;
-
+                
             }
-
+            
             @Override
             public void setEnabled(boolean enable) {
-
+                
                 if (!enable) {
                     this.removeStyleName("focos");
                 }
                 super.setEnabled(enable);
             }
         };
-
+        
         fastaFileList.addStyleName("v-caption-on-left");
         fastaFileList.setWidth(100, Unit.PERCENTAGE);
         fastaFileList.addUploadBtn(fastaFileUploader);
@@ -532,22 +537,22 @@ public class WorkFlowDataInputComponent extends Panel {
                 _searchParameterFormContainer.setPopupVisible(false);
                 searchSettingsFileList.removeStyleName("focos");
             }
-
+            
             @Override
             public void cancel() {
                 _searchParameterFormContainer.setPopupVisible(false);
                 searchSettingsFileList.defultSelect();
             }
-
+            
             @Override
             public void setEnabled(boolean enable) {
-
+                
                 if (!enable) {
                     this.removeStyleName("focos");
                 }
                 super.setEnabled(enable);
             }
-
+            
         };
         return searchSettingsLayout;
     }
@@ -563,7 +568,7 @@ public class WorkFlowDataInputComponent extends Panel {
             @Override
             public void onClosePopup() {
             }
-
+            
         };
         editSearchOption.setContent(searchParametersForm);
         editSearchOption.setSizeFull();
@@ -614,7 +619,7 @@ public class WorkFlowDataInputComponent extends Panel {
 //        searchEngines.setSelectedValue("OMSSA");
         searchEngines.addValueChangeListener(new Property.ValueChangeListener() {
             private boolean selfSelection = false;
-
+            
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
                 if (selfSelection) {
@@ -652,7 +657,7 @@ public class WorkFlowDataInputComponent extends Panel {
      * @return button
      */
     private void initialiseExecuteWorkFlowBtn(AbstractOrderedLayout layout, MultiSelectOptionGroup searchEngines, Map<String, String> searchEnginesList) {
-
+        
         executeWorkFlowBtn = new Button("Execute");
         executeWorkFlowBtn.setStyleName(ValoTheme.BUTTON_SMALL);
         executeWorkFlowBtn.addStyleName(ValoTheme.BUTTON_TINY);
@@ -660,7 +665,7 @@ public class WorkFlowDataInputComponent extends Panel {
         executeWorkFlowBtn.setHeight(100, Unit.PERCENTAGE);
         layout.addComponent(executeWorkFlowBtn);
         layout.setComponentAlignment(executeWorkFlowBtn, Alignment.TOP_CENTER);
-
+        
         executeWorkFlowBtn.addClickListener((Button.ClickEvent event) -> {
             if (searchSettingsFileList.getSelectedValue() == null || searchSettingsFileList.getSelectedValue().equalsIgnoreCase("null")) {
                 searchSettingsFileList.addStyleName("errorstyle");
@@ -690,9 +695,9 @@ public class WorkFlowDataInputComponent extends Panel {
             if (!valid) {
                 return;
             }
-
+            
             String fastFileId = this.getFastaFileId();
-
+            
             String projectName = _projectNameField.getValue().trim();
             searchEngines.setRequired(false, "Select at least 1 search engine");
             Map<String, Boolean> selectedSearchEngines = new HashMap<>();
@@ -708,7 +713,7 @@ public class WorkFlowDataInputComponent extends Panel {
                 usedList = _mzMLFileList;
             }
             try {
-                VisualizationDatasetModel dataset = appManagmentBean.getWorkFlowHandler().executeWorkFlow(projectName, fastaFilesMap.get(fastFileId), serachParamFilesMap.get(searchSettingsFileList.getSelectedValue()), usedList, selectedSearchEngines);
+                VisualizationDatasetModel dataset = appManagmentBean.getWorkFlowHandler().executeWorkFlow(projectName, fastaFilesMap.get(fastFileId), serachParamFilesMap.get(searchSettingsFileList.getSelectedValue()), usedList, selectedSearchEngines,_searchParameters);
                 if (dataset != null) {
                     appManagmentBean.getUserHandler().addToDatasetMap(dataset);
                     appManagmentBean.getUI_Manager().updateAll();
@@ -717,6 +722,7 @@ public class WorkFlowDataInputComponent extends Panel {
                     reset();
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 System.out.println("at Error class: " + this.getClass().getName() + "  line: 679 " + e);
             }
         });
@@ -750,7 +756,7 @@ public class WorkFlowDataInputComponent extends Panel {
         this.updateFastaFileList();
         this.updateSearchParamFileList();
         this.updateSpectrumPanel();
-
+        
     }
 
     /**
@@ -764,7 +770,7 @@ public class WorkFlowDataInputComponent extends Panel {
         GalaxyFileModel paramFile = appManagmentBean.getWorkFlowHandler().saveSearchParametersFile(searchParameters);//saveSearchGUIParameters(searchParameters, isNew);
         appManagmentBean.getUserHandler().addToFilesMap(paramFile);
         appManagmentBean.getUI_Manager().updateAll();
-
+        
     }
 
     /**
@@ -794,11 +800,11 @@ public class WorkFlowDataInputComponent extends Panel {
                     break;
                 case CONSTANT.mzML_FILE_EXTENSION:
                     mzMLFileSet.add(galaxyFile);
-
+                
             }
-
+            
         }
-
+        
         Map<String, String> mgfFileIdToNameMap = new LinkedHashMap<>();
         numberChanged = numberChanged || ((mzMLDataListLayout.getComponentCount() < mzMLFileSet.size()) || (mgfDataListLayout.getComponentCount() < mgfFileSet.size()) || (rawDataListLayout.getComponentCount() < rawFileSet.size()));
         indexer = 1;
@@ -806,7 +812,7 @@ public class WorkFlowDataInputComponent extends Panel {
         rawDataListLayout.removeAllComponents();
         mzMLDataListLayout.removeAllComponents();
         spectrumFileUploaderBusy = false;
-
+        
         mzMLFileSet.forEach((galaxyFile) -> {
             mgfFileIdToNameMap.put(galaxyFile.getId(), galaxyFile.getName());
             StatusLabel statusLabel = new StatusLabel();
@@ -819,10 +825,10 @@ public class WorkFlowDataInputComponent extends Panel {
             RadioButton selectionRadioBtn = new RadioButton(galaxyFile) {
                 @Override
                 public void selectItem(Object itemId) {
-
+                    
                 }
             };
-
+            
             HorizontalLayout rowLayout = initializeRowData(new Component[]{new Label(indexer + ""), selectionRadioBtn, nameLabel, type, statusLabel}, false);
             rowLayout.setId(galaxyFile.getId());
             rowLayout.setEnabled(galaxyFile.getStatus().equals(CONSTANT.OK_STATUS));
@@ -830,10 +836,10 @@ public class WorkFlowDataInputComponent extends Panel {
             rowLayout.addLayoutClickListener(mzMLClickListener);
             mzMLDataListLayout.addComponent(rowLayout);
             indexer++;
-
+            
         });
         indexer = 1;
-
+        
         mgfFileSet.forEach((galaxyFile) -> {
             mgfFileIdToNameMap.put(galaxyFile.getId(), galaxyFile.getName());
             StatusLabel statusLabel = new StatusLabel();
@@ -846,10 +852,10 @@ public class WorkFlowDataInputComponent extends Panel {
             RadioButton selectionRadioBtn = new RadioButton(galaxyFile) {
                 @Override
                 public void selectItem(Object itemId) {
-
+                    
                 }
             };
-
+            
             HorizontalLayout rowLayout = initializeRowData(new Component[]{new Label(indexer + ""), selectionRadioBtn, nameLabel, type, statusLabel}, false);
             rowLayout.setId(galaxyFile.getId());
             rowLayout.addLayoutClickListener(mgfClickListener);
@@ -857,7 +863,7 @@ public class WorkFlowDataInputComponent extends Panel {
             rowLayout.setData(galaxyFile);
             mgfDataListLayout.addComponent(rowLayout);
             indexer++;
-
+            
         });
         indexer = 1;
         rawFileSet.forEach((galaxyFile) -> {
@@ -874,10 +880,10 @@ public class WorkFlowDataInputComponent extends Panel {
             RadioButton selectionRadioBtn = new RadioButton(galaxyFile) {
                 @Override
                 public void selectItem(Object itemId) {
-
+                    
                 }
             };
-
+            
             HorizontalLayout rowLayout = initializeRowData(new Component[]{new Label(indexer + ""), selectionRadioBtn, nameLabel, type, statusLabel}, false);
             rowLayout.setId(galaxyFile.getId());
             rowLayout.addLayoutClickListener(rawClickListener);
@@ -887,9 +893,9 @@ public class WorkFlowDataInputComponent extends Panel {
             indexer++;
         }
         );
-
+        
         UI.getCurrent().access(() -> {
-
+            
             updateMgfFilesTable();
             updateRawFilesTable();
             updateMzMLFilesTable();
@@ -898,7 +904,7 @@ public class WorkFlowDataInputComponent extends Panel {
                 UI.getCurrent().push();
                 numberChanged = false;
             }
-
+            
         });
         if (!rawFileSet.isEmpty()) {
             rawMgfController.select("rawFiles");
@@ -919,7 +925,7 @@ public class WorkFlowDataInputComponent extends Panel {
         appManagmentBean.getUserHandler().getFilesToViewList().stream().filter((galaxyFile) -> (galaxyFile.getExtension().equals(CONSTANT.JSON_FILE_EXTENSION) && galaxyFile.getName().contains(" PAR "))).forEachOrdered((galaxyFile) -> {
             serachParamFilesMap.put(galaxyFile.getId(), galaxyFile);
             searchSettingsFileIdToNameMap.put(galaxyFile.getId(), galaxyFile.getName());
-
+            
         });
         searchSettingsFileIdToNameMap.put("Add new", "Add new");
         searchSettingsFileList.updateList(searchSettingsFileIdToNameMap);
@@ -927,7 +933,7 @@ public class WorkFlowDataInputComponent extends Panel {
             searchSettingsFileList.setSelected(searchSettingsFileIdToNameMap.keySet().iterator().next());
         }
         searchSettingsFileList.setItemIcon("Add new", VaadinIcons.FILE_ADD);
-
+        
     }
 
     /**
@@ -940,15 +946,15 @@ public class WorkFlowDataInputComponent extends Panel {
         appManagmentBean.getUserHandler().getFilesToViewList().stream().filter((galaxyFile) -> (galaxyFile.getExtension().equals(CONSTANT.FASTA_FILE_EXTENSION))).forEachOrdered((galaxyFile) -> {
             fastaFilesMap.put(galaxyFile.getId(), galaxyFile);
             fastaFileIdToNameMap.put(galaxyFile.getId(), galaxyFile.getName());
-
+            
         });
-
+        
         this._fastaFileInputLayout.updateList(fastaFileIdToNameMap);
         if (!fastaFileIdToNameMap.isEmpty()) {
             this._fastaFileInputLayout.setSelected(fastaFileIdToNameMap.keySet().iterator().next());
         }
         fastaFileUploader.setBusy(fastaFileUploaderBusy);
-
+        
     }
 
     /**
@@ -987,10 +993,10 @@ public class WorkFlowDataInputComponent extends Panel {
         if (header) {
             row.addStyleName("header");
         }
-
+        
         return row;
     }
-
+    
     private void updateMgfFilesTable() {
         Iterator<Component> itr = mgfDataListLayout.iterator();
         while (itr.hasNext()) {
@@ -1001,9 +1007,9 @@ public class WorkFlowDataInputComponent extends Panel {
                 raw.removeStyleName("selectedraw");
             }
         }
-
+        
     }
-
+    
     private void updateMzMLFilesTable() {
         Iterator<Component> itr = mzMLDataListLayout.iterator();
         while (itr.hasNext()) {
@@ -1014,9 +1020,9 @@ public class WorkFlowDataInputComponent extends Panel {
                 raw.removeStyleName("selectedraw");
             }
         }
-
+        
     }
-
+    
     private void updateRawFilesTable() {
         Iterator<Component> itr = rawDataListLayout.iterator();
         while (itr.hasNext()) {
@@ -1040,13 +1046,13 @@ public class WorkFlowDataInputComponent extends Panel {
         updateRawFilesTable();
         this._projectNameField.clear();
     }
-
+    
     private boolean validateProjectName() {
         boolean valid = false;
         if (_projectNameField.getValue().matches("^((?=[A-Za-z0-9_ -])(?![åäö\\\\]).)*$")) {
             _projectNameField.removeStyleName("errorstyle");
             valid = true;
-
+            
         } else {
             _projectNameField.addStyleName("errorstyle");
             Notification.show("Please use alphabets, numbers, '-' and '_' only ", Notification.Type.TRAY_NOTIFICATION);
@@ -1055,10 +1061,10 @@ public class WorkFlowDataInputComponent extends Panel {
             valid = false;
             _projectNameField.addStyleName("errorstyle");
             Notification.show("Dataset name exist, please use different name", Notification.Type.TRAY_NOTIFICATION);
-
+            
         }
-
+        
         return valid;
     }
-
+    
 }

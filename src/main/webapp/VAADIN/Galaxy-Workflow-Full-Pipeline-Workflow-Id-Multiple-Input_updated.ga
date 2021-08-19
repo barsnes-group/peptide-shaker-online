@@ -13,26 +13,26 @@
             "inputs": [
                 {
                     "description": "",
-                    "name": "searchparfile"
+                    "name": "SearchParamFile"
                 }
             ],
-            "label": "searchparfile",
+            "label": "SearchParamFile",
             "name": "Input dataset",
             "outputs": [],
             "position": {
-                "left": 355.01301097869873,
-                "top": 294.9869689941406
+                "left": 210,
+                "top": 179
             },
             "tool_id": null,
-            "tool_state": "{\"optional\": false}",
+            "tool_state": {"optional": false},
             "tool_version": null,
             "type": "data_input",
-            "uuid": "3cb81896-3fdc-4164-a423-5ce087d4f7d7",
+            "uuid": "95e51630-c158-4c29-88c7-30a8dee3111e",
             "workflow_outputs": [
                 {
                     "label": null,
                     "output_name": "output",
-                    "uuid": "b2dbc886-d811-4509-bb5b-d1d8b912f71b"
+                    "uuid": "ab71f7dc-035b-4659-947b-af3b80f331ce"
                 }
             ]
         },
@@ -52,21 +52,19 @@
             "name": "Input dataset",
             "outputs": [],
             "position": {
-                "left": 351.01561546325684,
-                "top": 371.9791564941406
+                "left": 205,
+                "top": 284
             },
             "tool_id": null,
-            "tool_state": {
-                "optional": false
-            },
+            "tool_state": {"optional": false},
             "tool_version": null,
             "type": "data_input",
-            "uuid": "a0034fad-af5d-4386-8c6b-fdca09066032",
+            "uuid": "05f00219-c50a-49bf-b6ea-a2bcf1c626d1",
             "workflow_outputs": [
                 {
                     "label": null,
                     "output_name": "output",
-                    "uuid": "d20ac1a3-fc07-4b4f-bd00-ab227071bdda"
+                    "uuid": "58a900af-44a0-4c3c-a69c-61b4e5a0e2c7"
                 }
             ]
         },
@@ -86,34 +84,75 @@
             "name": "Input dataset collection",
             "outputs": [],
             "position": {
-                "left": 199.98696899414062,
-                "top": 578.9843597412109
+                "left": 203,
+                "top": 374
             },
             "tool_id": null,
-            "tool_state": {
-                "optional": false,
-                "collection_type": "list"
-            },
+            "tool_state": {"optional": false, "collection_type": "list"},
             "tool_version": null,
             "type": "data_collection_input",
-            "uuid": "3b42db99-afd2-4e43-80ec-57391eeaa1ce",
+            "uuid": "c3f41a7c-50e5-42ac-ac4d-e8df39384ab4",
             "workflow_outputs": [
                 {
                     "label": null,
                     "output_name": "output",
-                    "uuid": "34c2e6c7-73eb-4df1-96cb-cd43fff6fea1"
+                    "uuid": "1ae2b82d-9cd2-4e15-b5f6-6f07710200c6"
                 }
             ]
         },
         "3": {
             "annotation": "",
-            "content_id": "testtoolshed.g2.bx.psu.edu/repos/carlosh/peptideshaker_tests/search_gui/4.0.4.0",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/fasta_cli/4.0.41+galaxy1",
             "errors": null,
             "id": 3,
             "input_connections": {
-                "input_fasta_file": {
+                "input_database": {
                     "id": 1,
                     "output_name": "output"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "FastaCLI",
+            "outputs": [
+                {
+                    "name": "input_database_concatenated_target_decoy",
+                    "type": "fasta"
+                }
+            ],
+            "position": {
+                "left": 481,
+                "top": 245
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/fasta_cli/4.0.41+galaxy1",
+            "tool_shed_repository": {
+                "changeset_revision": "3ec27b4cee7c",
+                "name": "peptideshaker",
+                "owner": "galaxyp",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": {"database_processing_options": {"decoy_tag": "_REVERSED", "decoy_type": "2", "decoy_file_tag": "_concatenated_target_decoy"}, "input_database": {"__class__": "ConnectedValue"}, "__page__": null, "__rerun_remap_job_id__": null},
+            "tool_version": "4.0.41+galaxy1",
+            "type": "tool",
+            "uuid": "5222af2c-f7f2-4eb7-90de-0c2eb21b113a",
+            "workflow_outputs": [
+                {
+                    "label": null,
+                    "output_name": "input_database_concatenated_target_decoy",
+                    "uuid": "a740a195-dfe5-4b11-9a65-def61e602165"
+                }
+            ]
+        },
+        "4": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/search_gui/4.0.41+galaxy0",
+            "errors": null,
+            "id": 4,
+            "input_connections": {
+                "input_fasta_file": {
+                    "id": 3,
+                    "output_name": "input_database_concatenated_target_decoy"
                 },
                 "input_parameters_file": {
                     "id": 0,
@@ -134,8 +173,8 @@
                 }
             ],
             "position": {
-                "left": 710.0130004882812,
-                "top": 423.98435974121094
+                "left": 813,
+                "top": 273
             },
             "post_job_actions": {
                 "RenameDatasetActionsearchgui_results": {
@@ -146,52 +185,33 @@
                     "output_name": "searchgui_results"
                 }
             },
-            "tool_id": "testtoolshed.g2.bx.psu.edu/repos/carlosh/peptideshaker_tests/search_gui/4.0.4.0",
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/search_gui/4.0.41+galaxy0",
             "tool_shed_repository": {
-                "changeset_revision": "aff5cb7aa3e8",
-                "name": "peptideshaker_tests",
-                "owner": "carlosh",
-                "tool_shed": "testtoolshed.g2.bx.psu.edu"
+                "changeset_revision": "a6ff76e057fd",
+                "name": "peptideshaker",
+                "owner": "galaxyp",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "tool_state": {
-                "input_fasta_file": {
-                    "__class__": "ConnectedValue"
-                },
-                "input_parameters_file": {
-                    "__class__": "ConnectedValue"
-                },
-                "peak_lists_files": {
-                    "__class__": "ConnectedValue"
-                },
-                "search_engines_options": {
-                    "engines": ["X!Tandem"]
-                },
-                "searchgui_advanced": {
-                    "searchgui_advanced_selector": "basic",
-                    "__current_case__": 0
-                },
-                "__page__": null,
-                "__rerun_remap_job_id__": null
-            },
-            "tool_version": null,
+            "tool_state": {"input_fasta_file": {"__class__": "ConnectedValue"}, "input_parameters_file": {"__class__": "ConnectedValue"}, "peak_lists_files": {"__class__": "ConnectedValue"}, "search_engines_options": {"engines": ["X!Tandem"]}, "searchgui_advanced": {"searchgui_advanced_selector": "basic", "__current_case__": 0}, "__page__": null, "__rerun_remap_job_id__": null},
+            "tool_version": "4.0.41+galaxy0",
             "type": "tool",
-            "uuid": "d41b8627-4f2c-4408-9976-13f8c9b27318",
+            "uuid": "de1dd341-b24b-4026-b188-dc343d763bd2",
             "workflow_outputs": [
                 {
                     "label": "LabelToRename",
                     "output_name": "searchgui_results",
-                    "uuid": "bfa4d2e7-c802-489f-8b17-b9de01d6bb45"
+                    "uuid": "c0bb6ca0-54a4-4056-a4c4-047c5e35259f"
                 }
             ]
         },
-        "4": {
+        "5": {
             "annotation": "",
-            "content_id": "testtoolshed.g2.bx.psu.edu/repos/carlosh/peptideshaker_tests/peptide_shaker/2.0.5.0",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/peptide_shaker/2.0.33+galaxy1",
             "errors": null,
-            "id": 4,
+            "id": 5,
             "input_connections": {
                 "searchgui_input": {
-                    "id": 3,
+                    "id": 4,
                     "output_name": "searchgui_results"
                 }
             },
@@ -242,10 +262,30 @@
                 }
             ],
             "position": {
-                "left": 1038.0207824707031,
-                "top": 130.97655868530273
+                "left": 1169,
+                "top": 197
             },
             "post_job_actions": {
+                "HideDatasetActionoutput_peptides_nonvalidated": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "output_peptides_nonvalidated"
+                },
+                "HideDatasetActionoutput_proteins_nonvalidated": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "output_proteins_nonvalidated"
+                },
+                "HideDatasetActionoutput_proteoforms": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "output_proteoforms"
+                },
+                "HideDatasetActionoutput_psm_nonvalidated": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "output_psm_nonvalidated"
+                },
                 "RenameDatasetActionoutput_psm_nonvalidated": {
                     "action_arguments": {
                         "newname": "psm_report"
@@ -261,63 +301,43 @@
                     "output_name": "output_zip"
                 }
             },
-            "tool_id": "testtoolshed.g2.bx.psu.edu/repos/carlosh/peptideshaker_tests/peptide_shaker/2.0.5.0",
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/peptide_shaker/2.0.33+galaxy1",
             "tool_shed_repository": {
-                "changeset_revision": "aff5cb7aa3e8",
-                "name": "peptideshaker_tests",
-                "owner": "carlosh",
-                "tool_shed": "testtoolshed.g2.bx.psu.edu"
+                "changeset_revision": "3ec27b4cee7c",
+                "name": "peptideshaker",
+                "owner": "galaxyp",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
             },
             "tool_state": "{\"exporting_options\": {\"zip_conditional\": {\"zip_output_boolean\": \"true\", \"__current_case__\": 1, \"export_reports_when_zip\": \"true\", \"export_mgf_when_zip\": \"true\"}, \"mzidentml_conditional\": {\"mzidentml_creation\": \"false\", \"__current_case__\": 1}, \"followup_conditional\": {\"followup_conditional_selector\": \"yes\", \"__current_case__\": 1, \"followup_export_spectra\": \"off\", \"followup_export_accession_numbers\": \"off\", \"followup_export_sequences\": \"off\", \"followup_export_proteoforms\": \"on\", \"followup_export_progenesis_conditional\": {\"followup_export_progenesis_selector\": \"off\", \"__current_case__\": 4}, \"followup_export_inclusion_list_conditional\": {\"followup_export_inclusion_list_selector\": \"off\", \"__current_case__\": 4}}, \"output_reports\": [\"4\", \"7\", \"10\"]}, \"optional_main_parameters\": {\"input_optional_identification_parameters\": {\"__class__\": \"RuntimeValue\"}, \"input_fasta_file\": {\"__class__\": \"RuntimeValue\"}, \"input_optional_spectrum_files\": {\"__class__\": \"RuntimeValue\"}}, \"searchgui_input\": {\"__class__\": \"ConnectedValue\"}, \"__page__\": null, \"__rerun_remap_job_id__\": null}",
-            "tool_version": null,
+            "tool_version": "2.0.33+galaxy1",
             "type": "tool",
-            "uuid": "897ec0ff-e16b-40ce-af92-911c8eac3bb2",
+            "uuid": "0885f212-9f61-4791-8e3f-dfb92bcc79b7",
             "workflow_outputs": [
-                {
-                    "label": "psm_report",
-                    "output_name": "output_psm_nonvalidated",
-                    "uuid": "b23155fe-b536-4d1e-bc51-619cec075198"
-                },
                 {
                     "label": null,
                     "output_name": "output_mgf",
-                    "uuid": "ce185a94-3494-4972-8368-20c5f1c761a3"
+                    "uuid": "009cc6ab-3b1e-4041-b1ae-29bc3a4137da"
                 },
                 {
-                    "label": null,
-                    "output_name": "output_proteoforms",
-                    "uuid": "d869fd4c-03a6-4efe-9d67-780de040409c"
+                    "label": "LabelToRename",
+                    "output_name": "output_zip",
+                    "uuid": "5649cc2a-7406-48ef-823a-ce1370f4a6d8"
                 },
                 {
                     "label": null,
                     "output_name": "output_cui",
-                    "uuid": "acce5375-4a6f-4cba-9021-6c1705ac885c"
-                },
-                {
-                    "label": null,
-                    "output_name": "output_proteins_nonvalidated",
-                    "uuid": "a9318cb7-82e7-405c-869e-390c09d634bc"
-                },
-                {
-                    "label": null,
-                    "output_name": "output_peptides_nonvalidated",
-                    "uuid": "c0109a46-af48-4922-b03e-fc7400c6e7f7"
-                },
-                {
-                    "label": null,
-                    "output_name": "output_zip",
-                    "uuid": "7ac3b1ec-adeb-4103-929f-e7f89ff7d7a5"
+                    "uuid": "717a1d6f-e3f8-4532-a3c3-86ca218e1bd4"
                 }
             ]
         },
-        "5": {
+        "6": {
             "annotation": "",
             "content_id": "Convert characters1",
             "errors": null,
-            "id": 5,
+            "id": 6,
             "input_connections": {
                 "input": {
-                    "id": 4,
+                    "id": 5,
                     "output_name": "output_mgf"
                 }
             },
@@ -331,34 +351,25 @@
                 }
             ],
             "position": {
-                "left": 1428.0207824707031,
-                "top": 453.9973907470703
+                "left": 1541,
+                "top": 291
             },
             "post_job_actions": {},
             "tool_id": "Convert characters1",
-            "tool_state": {
-                "condense": "true",
-                "convert_from": "s",
-                "input": {
-                    "__class__": "ConnectedValue"
-                },
-                "strip": "true",
-                "__page__": null,
-                "__rerun_remap_job_id__": null
-            },
-            "tool_version": null,
+            "tool_state": "{\"condense\": \"true\", \"convert_from\": \"s\", \"input\": {\"__class__\": \"ConnectedValue\"}, \"strip\": \"true\", \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "1.0.0",
             "type": "tool",
-            "uuid": "57668973-d778-4198-b436-cccb2051f401",
+            "uuid": "5635bb02-7598-427c-9cdc-316d8c733420",
             "workflow_outputs": [
                 {
                     "label": null,
                     "output_name": "out_file1",
-                    "uuid": "5fafaf52-1fac-46d1-884f-ad09b4d97b6c"
+                    "uuid": "d9b23de8-00ba-453e-9265-753390e9a674"
                 }
             ]
         }
     },
     "tags": [],
-    "uuid": "ec1177f2-c8ea-4f05-8ce4-59336a70051c",
+    "uuid": "97034111-4952-4d8a-a715-b19f9fe5ddd7",
     "version": 2
 }

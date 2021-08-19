@@ -36,7 +36,6 @@ public class GalaxyFacade implements Serializable {
 
     private final AppManagmentBean appManagmentBean;
     private final Map<String, GalaxyJobModel> galaxyJobs;
-
     /**
      *
      */
@@ -44,7 +43,6 @@ public class GalaxyFacade implements Serializable {
         appManagmentBean = (AppManagmentBean) VaadinSession.getCurrent().getAttribute(CONSTANT.APP_MANAGMENT_BEAN);
         this.galaxyJobs = new HashMap<>();
     }
-
     /**
      * authenticate user on galaxy server
      *
@@ -66,7 +64,6 @@ public class GalaxyFacade implements Serializable {
         }
         return null;
     }
-
     /**
      * Create functional user history on galaxy server
      *
@@ -99,7 +96,6 @@ public class GalaxyFacade implements Serializable {
             appManagmentBean.getAppConfig().setMainGalaxyHistoryId(mainHistoryId);
         }
     }
-
     /**
      * Get user information
      *
@@ -117,7 +113,6 @@ public class GalaxyFacade implements Serializable {
         }
         return userDetailsMap;
     }
-
     /**
      * Get user stored data (files and lists)
      *
@@ -160,6 +155,7 @@ public class GalaxyFacade implements Serializable {
                         if (dataset.getBoolean(CONSTANT.DELETED) || dataset.getBoolean(CONSTANT.PURGED) || dataset.getString(CONSTANT.STATE).equals(CONSTANT.ERROR)) {
                             continue;
                         }
+                       
                         GalaxyFileModel file = new GalaxyFileModel();
                         file.setDeleted(dataset.getBoolean(CONSTANT.DELETED));
                         file.setName(dataset.getString(CONSTANT.NAME));
@@ -234,7 +230,6 @@ public class GalaxyFacade implements Serializable {
 
         return new Object[]{collectionList, filesMap};
     }
-
     private void fillFileDetails(GalaxyFileModel file, String userAPIKey) {
         Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/datasets/" + file.getId() + "?key=" + userAPIKey);
         if (response.getStatus() == HttpStatus.SC_OK) {
@@ -250,7 +245,6 @@ public class GalaxyFacade implements Serializable {
         }
 
     }
-
     private String getFileName(String userAPIKey, String fileId) {
         Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/datasets/" + fileId + "?key=" + userAPIKey);
         if (response.getStatus() == HttpStatus.SC_OK) {
@@ -261,7 +255,6 @@ public class GalaxyFacade implements Serializable {
         return null;
 
     }
-
     private void populateCollections(GalaxyCollectionModel collection, String userAPIKey, Map<String, GalaxyFileModel> filesMap) {
         Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/histories/" + collection.getHistoryId() + "/contents/dataset_collections/" + collection.getId() + "?key=" + userAPIKey);
         if (response.getStatus() == HttpStatus.SC_OK) {
@@ -276,7 +269,6 @@ public class GalaxyFacade implements Serializable {
             }
         }
     }
-
     private GalaxyJobModel fillJobDetails(String jobId, String userAPIKey) {
         Response response = appManagmentBean.getHttpClientUtil().doGet(appManagmentBean.getAppConfig().getGalaxyServerUrl() + "/api/jobs/" + jobId + "?key=" + userAPIKey);
         GalaxyJobModel jobModel = new GalaxyJobModel();

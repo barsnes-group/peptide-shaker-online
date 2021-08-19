@@ -545,6 +545,7 @@ public class VisualizationDatasetModel implements Comparable<VisualizationDatase
         if (status != null) {
             return status;
         }
+        
         if (searchGUIZipFile == null) {
             return CONSTANT.ERROR_STATUS;
         }

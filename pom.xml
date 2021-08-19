@@ -18,7 +18,7 @@
         <compomics.version>5.0.22</compomics.version>
         <jersey.version>2.34</jersey.version>
         <vertx.version>3.5.4</vertx.version>
-         <biojava.version>5.4.0</biojava.version>
+        <biojava.version>5.4.0</biojava.version>
         <!-- If there are no local customisations, this can also be "fetch" or "cdn" -->
         <vaadin.widgetset.mode>local</vaadin.widgetset.mode>
     </properties>
@@ -27,27 +27,27 @@
             <id>vaadin-addons</id>
             <url>http://maven.vaadin.com/vaadin-addons</url>
         </repository>
-         <!-- Compomics Genesis Maven 2 repository -->
-    <repository>
-        <id>genesis-maven2-repository</id>
-        <name>Genesis maven2 repository</name>
-        <url>http://genesis.UGent.be/maven2</url>
-        <layout>default</layout>
-    </repository>
+        <!-- Compomics Genesis Maven 2 repository -->
+        <repository>
+            <id>genesis-maven2-repository</id>
+            <name>Genesis maven2 repository</name>
+            <url>http://genesis.UGent.be/maven2</url>
+            <layout>default</layout>
+        </repository>
 
-    <!-- old EBI repository -->
-    <repository>
-        <id>ebi-repo</id> 
-        <name>The EBI internal repository</name>
-        <url>http://www.ebi.ac.uk/~maven/m2repo</url>
-    </repository>
+        <!-- old EBI repository -->
+        <repository>
+            <id>ebi-repo</id> 
+            <name>The EBI internal repository</name>
+            <url>http://www.ebi.ac.uk/~maven/m2repo</url>
+        </repository>
 
-    <!-- EBI repository -->
-    <repository>
-        <id>pst-release</id>
-        <name>EBI Nexus Repository</name>
-        <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
-    </repository>
+        <!-- EBI repository -->
+        <repository>
+            <id>pst-release</id>
+            <name>EBI Nexus Repository</name>
+            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
+        </repository>
     </repositories>
     <dependencyManagement>
         <dependencies>
@@ -297,12 +297,13 @@
                                 <include>**/styles.css</include>
                                 <include>**/styles.scss.cache</include>
                             </includes>
-                        </fileset>
+                        </fileset>                         
                     </filesets>
                 </configuration>
             </plugin>
            
         </plugins>
+       
      
     </build>
 

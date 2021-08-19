@@ -1,7 +1,6 @@
 
 target/
 nb-configuration.xml
-src/main/webapp/WEB-INF/web.xml
 .idea/
 .idea/artifacts/webpeptideshaker_war.xml
 .idea/artifacts/webpeptideshaker_war.xml
@@ -113,8 +112,7 @@ src/main/webapp/WEB-INF/web.xml
 .idea/libraries/Maven__org_jvnet_mimepull_mimepull_1_9_13.xml
 .idea/libraries/Maven__org_objenesis_objenesis_3_0_1.xml
 .idea/libraries/Maven__org_xerial_sqlite_jdbc_3_18_0.xml
-src/main/webapp/WEB-INF/web.xml
-src/main/webapp/WEB-INF/web.xml
+
 .idea/encodings.xml
 .idea/artifacts/webpeptideshaker_war_exploded.xml
 .idea/artifacts/webpeptideshaker_war.xml
@@ -122,9 +120,4 @@ src/main/webapp/WEB-INF/web.xml
 .idea/artifacts/webpeptideshaker_war.xml
 .idea/artifacts/webpeptideshaker_war_exploded.xml
 .idea/encodings.xml
-src/main/webapp/VAADIN/cofig.json
-src/main/webapp/WEB-INF/web.xml
-src/main/webapp/VAADIN/config.json
-src/main/webapp/VAADIN/config.json
-*.json
-src/main/webapp/VAADIN/config.json
+

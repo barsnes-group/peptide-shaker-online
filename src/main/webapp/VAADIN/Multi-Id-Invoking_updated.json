@@ -1,0 +1,51 @@
+{
+    "new_history_name": null,
+    "resource_params": {},
+    "replacement_params": {},
+    "parameters": {
+        "0": {
+            "input": {
+                "values": [{
+                        "keep": false,
+                        "src": "hda",
+                        "tags": []
+                    }],
+                "batch": false
+            }
+        },
+        "1": {
+            "input": {
+                "values": [{
+                        "keep": false,
+                        "src": "hda",
+                        "tags": []
+                    }],
+                "batch": false
+            }
+        },
+        "2": {
+            "input": {
+                "values": [{
+                       
+                        "src": "hdca",
+                        "tags": []
+                    }],
+                "batch": false
+            }
+        },
+        "3": {
+            
+        },
+        "4": {
+            
+        },
+        "5": {
+         
+        },
+        "6": {
+           
+        }
+    },
+    "parameters_normalized": true,
+    "batch": true
+}

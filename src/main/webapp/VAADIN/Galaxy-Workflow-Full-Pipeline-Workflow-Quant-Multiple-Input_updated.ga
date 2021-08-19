@@ -1,0 +1,507 @@
+{
+    "a_galaxy_workflow": "true",
+    "annotation": "",
+    "format-version": "0.1",
+    "name": "quant-workflow",
+    "steps": {
+        "0": {
+            "annotation": "",
+            "content_id": null,
+            "errors": null,
+            "id": 0,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "",
+                    "name": "SearchParamFile"
+                }
+            ],
+            "label": "SearchParamFile",
+            "name": "Input dataset",
+            "outputs": [],
+            "position": {
+                "left": 210,
+                "top": 179
+            },
+            "tool_id": null,
+            "tool_state": "{\"optional\": false}",
+            "tool_version": null,
+            "type": "data_input",
+            "uuid": "95e51630-c158-4c29-88c7-30a8dee3111e",
+            "workflow_outputs": [
+                {
+                    "label": null,
+                    "output_name": "output",
+                    "uuid": "0dd7eb7a-801c-4bab-b344-76d77dd9109b"
+                }
+            ]
+        },
+        "1": {
+            "annotation": "",
+            "content_id": null,
+            "errors": null,
+            "id": 1,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "",
+                    "name": "FastaFile"
+                }
+            ],
+            "label": "FastaFile",
+            "name": "Input dataset",
+            "outputs": [],
+            "position": {
+                "left": 205,
+                "top": 284
+            },
+            "tool_id": null,
+            "tool_state": "{\"optional\": false}",
+            "tool_version": null,
+            "type": "data_input",
+            "uuid": "05f00219-c50a-49bf-b6ea-a2bcf1c626d1",
+            "workflow_outputs": [
+                {
+                    "label": null,
+                    "output_name": "output",
+                    "uuid": "b9db03d7-50d1-4452-b8ca-b93fd505d285"
+                }
+            ]
+        },
+        "2": {
+            "annotation": "",
+            "content_id": null,
+            "errors": null,
+            "id": 2,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "",
+                    "name": "SpectrumInputList"
+                }
+            ],
+            "label": "SpectrumInputList",
+            "name": "Input dataset collection",
+            "outputs": [],
+            "position": {
+                "left": 203,
+                "top": 374
+            },
+            "tool_id": null,
+            "tool_state": "{\"optional\": false, \"collection_type\": \"list\"}",
+            "tool_version": null,
+            "type": "data_collection_input",
+            "uuid": "c3f41a7c-50e5-42ac-ac4d-e8df39384ab4",
+            "workflow_outputs": [
+                {
+                    "label": null,
+                    "output_name": "output",
+                    "uuid": "d2607978-b1a6-4d07-9b4a-e394915f0c49"
+                }
+            ]
+        },
+        "3": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/fasta_cli/4.0.41+galaxy1",
+            "errors": null,
+            "id": 3,
+            "input_connections": {
+                "input_database": {
+                    "id": 1,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool FastaCLI",
+                    "name": "input_database"
+                }
+            ],
+            "label": null,
+            "name": "FastaCLI",
+            "outputs": [
+                {
+                    "name": "input_database_concatenated_target_decoy",
+                    "type": "fasta"
+                }
+            ],
+            "position": {
+                "left": 481,
+                "top": 245
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/fasta_cli/4.0.41+galaxy1",
+            "tool_shed_repository": {
+                "changeset_revision": "3ec27b4cee7c",
+                "name": "peptideshaker",
+                "owner": "galaxyp",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"database_processing_options\": {\"decoy_tag\": \"_REVERSED\", \"decoy_type\": \"2\", \"decoy_file_tag\": \"_concatenated_target_decoy\"}, \"input_database\": {\"__class__\": \"RuntimeValue\"}, \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "4.0.41+galaxy1",
+            "type": "tool",
+            "uuid": "5222af2c-f7f2-4eb7-90de-0c2eb21b113a",
+            "workflow_outputs": [
+                {
+                    "label": null,
+                    "output_name": "input_database_concatenated_target_decoy",
+                    "uuid": "a740a195-dfe5-4b11-9a65-def61e602165"
+                }
+            ]
+        },
+        "4": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/thermo_raw_file_converter/thermo_raw_file_converter/1.2.3+galaxy0",
+            "errors": null,
+            "id": 4,
+            "input_connections": {
+                "input_files": {
+                    "id": 2,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Thermo",
+                    "name": "input_files"
+                }
+            ],
+            "label": null,
+            "name": "Thermo",
+            "outputs": [
+                {
+                    "name": "output_mzml_collection",
+                    "type": "input"
+                }
+            ],
+            "position": {
+                "left": 488,
+                "top": 376
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/thermo_raw_file_converter/thermo_raw_file_converter/1.2.3+galaxy0",
+            "tool_shed_repository": {
+                "changeset_revision": "26c6706bfb07",
+                "name": "thermo_raw_file_converter",
+                "owner": "galaxyp",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"ignore_instrument_errors_boolean\": \"true\", \"input_files\": {\"__class__\": \"RuntimeValue\"}, \"output_format\": \"1\", \"output_metadata_selector\": \"off\", \"peakpicking_boolean\": \"true\", \"zlib_boolean\": \"true\", \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "1.2.3+galaxy0",
+            "type": "tool",
+            "uuid": "c6f1d80e-65b4-4b70-97e7-1425d05dbc64",
+            "workflow_outputs": [
+                {
+                    "label": null,
+                    "output_name": "output_mzml_collection",
+                    "uuid": "75458fdd-d677-4b22-a58a-36eccbcb483b"
+                }
+            ]
+        },
+        "5": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/search_gui/4.0.41+galaxy1",
+            "errors": null,
+            "id": 5,
+            "input_connections": {
+                "input_fasta_file": {
+                    "id": 3,
+                    "output_name": "input_database_concatenated_target_decoy"
+                },
+                "input_parameters_file": {
+                    "id": 0,
+                    "output_name": "output"
+                },
+                "peak_lists_files": {
+                    "id": 4,
+                    "output_name": "output_mzml_collection"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Search GUI",
+                    "name": "input_fasta_file"
+                },
+                {
+                    "description": "runtime parameter for tool Search GUI",
+                    "name": "input_parameters_file"
+                },
+                {
+                    "description": "runtime parameter for tool Search GUI",
+                    "name": "peak_lists_files"
+                }
+            ],
+            "label": null,
+            "name": "Search GUI",
+            "outputs": [
+                {
+                    "name": "searchgui_results",
+                    "type": "searchgui_archive"
+                }
+            ],
+            "position": {
+                "left": 851,
+                "top": 179
+            },
+            "post_job_actions": {
+                "RenameDatasetActionsearchgui_results": {
+                    "action_arguments": {
+                        "newname": "LabelToRename"
+                    },
+                    "action_type": "RenameDatasetAction",
+                    "output_name": "searchgui_results"
+                }
+            },
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/search_gui/4.0.41+galaxy1",
+            "tool_shed_repository": {
+                "changeset_revision": "3ec27b4cee7c",
+                "name": "peptideshaker",
+                "owner": "galaxyp",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": {"input_fasta_file": {"__class__": "RuntimeValue"}, "input_parameters_file": {"__class__": "RuntimeValue"}, "peak_lists_files": {"__class__": "RuntimeValue"}, "search_engines_options": {"engines": ["X!Tandem"]}, "searchgui_advanced": {"searchgui_advanced_selector": "basic", "__current_case__": 0}, "__page__": null, "__rerun_remap_job_id__": null},
+            "tool_version": "4.0.41+galaxy1",
+            "type": "tool",
+            "uuid": "de1dd341-b24b-4026-b188-dc343d763bd2",
+            "workflow_outputs": [
+                {
+                    "label": "LabelToRename",
+                    "output_name": "searchgui_results",
+                    "uuid": "c0bb6ca0-54a4-4056-a4c4-047c5e35259f"
+                }
+            ]
+        },
+         "6": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/peptide_shaker/2.0.33+galaxy1",
+            "errors": null,
+            "id": 6,
+            "input_connections": {
+                "searchgui_input": {
+                    "id": 5,
+                    "output_name": "searchgui_results"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Peptide Shaker",
+                    "name": "optional_main_parameters"
+                },
+                {
+                    "description": "runtime parameter for tool Peptide Shaker",
+                    "name": "optional_main_parameters"
+                },
+                {
+                    "description": "runtime parameter for tool Peptide Shaker",
+                    "name": "optional_main_parameters"
+                },
+                {
+                    "description": "runtime parameter for tool Peptide Shaker",
+                    "name": "searchgui_input"
+                }
+            ],
+            "label": null,
+            "name": "Peptide Shaker",
+            "outputs": [
+                {
+                    "name": "output_mgf",
+                    "type": "input"
+                },
+                {
+                    "name": "output_cui",
+                    "type": "input"
+                },
+                {
+                    "name": "output_zip",
+                    "type": "zip"
+                },
+                {
+                    "name": "output_proteoforms",
+                    "type": "txt"
+                },
+                {
+                    "name": "output_psm_nonvalidated",
+                    "type": "tabular"
+                },
+                {
+                    "name": "output_peptides_nonvalidated",
+                    "type": "tabular"
+                },
+                {
+                    "name": "output_proteins_nonvalidated",
+                    "type": "tabular"
+                }
+            ],
+            "position": {
+                "left": 1167,
+                "top": 197
+            },
+            "post_job_actions": {
+                "HideDatasetActionoutput_peptides_nonvalidated": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "output_peptides_nonvalidated"
+                },
+                "HideDatasetActionoutput_proteins_nonvalidated": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "output_proteins_nonvalidated"
+                },
+                "HideDatasetActionoutput_proteoforms": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "output_proteoforms"
+                },
+                "RenameDatasetActionoutput_psm_nonvalidated": {
+                    "action_arguments": {
+                        "newname": "psm_report"
+                    },
+                    "action_type": "RenameDatasetAction",
+                    "output_name": "output_psm_nonvalidated"
+                },
+                "RenameDatasetActionoutput_zip": {
+                    "action_arguments": {
+                        "newname": "LabelToRename"
+                    },
+                    "action_type": "RenameDatasetAction",
+                    "output_name": "output_zip"
+                }
+            },
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/peptideshaker/peptide_shaker/2.0.33+galaxy1",
+            "tool_shed_repository": {
+                "changeset_revision": "3ec27b4cee7c",
+                "name": "peptideshaker",
+                "owner": "galaxyp",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"exporting_options\": {\"zip_conditional\": {\"zip_output_boolean\": \"true\", \"__current_case__\": 1, \"export_reports_when_zip\": \"true\", \"export_mgf_when_zip\": \"true\"}, \"mzidentml_conditional\": {\"mzidentml_creation\": \"false\", \"__current_case__\": 1}, \"followup_conditional\": {\"followup_conditional_selector\": \"yes\", \"__current_case__\": 1, \"followup_export_spectra\": \"off\", \"followup_export_accession_numbers\": \"off\", \"followup_export_sequences\": \"off\", \"followup_export_proteoforms\": \"on\", \"followup_export_progenesis_conditional\": {\"followup_export_progenesis_selector\": \"off\", \"__current_case__\": 4}, \"followup_export_inclusion_list_conditional\": {\"followup_export_inclusion_list_selector\": \"off\", \"__current_case__\": 4}}, \"output_reports\": [\"4\", \"7\", \"10\"]}, \"optional_main_parameters\": {\"input_optional_identification_parameters\": {\"__class__\": \"RuntimeValue\"}, \"input_fasta_file\": {\"__class__\": \"RuntimeValue\"}, \"input_optional_spectrum_files\": {\"__class__\": \"RuntimeValue\"}}, \"searchgui_input\": {\"__class__\": \"RuntimeValue\"}, \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "2.0.33+galaxy1",
+            "type": "tool",
+            "uuid": "0885f212-9f61-4791-8e3f-dfb92bcc79b7",
+            "workflow_outputs": [
+                {
+                    "label": null,
+                    "output_name": "output_cui",
+                    "uuid": "717a1d6f-e3f8-4532-a3c3-86ca218e1bd4"
+                },
+                {
+                    "label": "LabelToRename",
+                    "output_name": "output_zip",
+                    "uuid": "5649cc2a-7406-48ef-823a-ce1370f4a6d8"
+                },
+                {
+                    "label": "psm_report",
+                    "output_name": "output_psm_nonvalidated",
+                    "uuid": "e771e8eb-4b86-4d7f-ad13-7e6464da9e99"
+                },
+                {
+                    "label": null,
+                    "output_name": "output_mgf",
+                    "uuid": "009cc6ab-3b1e-4041-b1ae-29bc3a4137da"
+                }
+            ]
+        },"7": {
+            "annotation": "",
+            "content_id": "Convert characters1",
+            "errors": null,
+            "id": 7,
+            "input_connections": {
+                "input": {
+                    "id": 6,
+                    "output_name": "output_mgf"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Convert",
+                    "name": "input"
+                }
+            ],
+            "label": null,
+            "name": "Convert",
+            "outputs": [
+                {
+                    "name": "out_file1",
+                    "type": "tabular"
+                }
+            ],
+            "position": {
+                "left": 1541,
+                "top": 291
+            },
+            "post_job_actions": {},
+            "tool_id": "Convert characters1",
+            "tool_state": "{\"condense\": \"true\", \"convert_from\": \"s\", \"input\": {\"__class__\": \"RuntimeValue\"}, \"strip\": \"true\", \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "1.0.0",
+            "type": "tool",
+            "uuid": "5635bb02-7598-427c-9cdc-316d8c733420",
+            "workflow_outputs": [
+                {
+                    "label": null,
+                    "output_name": "out_file1",
+                    "uuid": "d9b23de8-00ba-453e-9265-753390e9a674"
+                }
+            ]
+        },
+        "8": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/proteomics_moff/proteomics_moff/2.0.3.0",
+            "errors": null,
+            "id": 8,
+            "input_connections": {
+                "task|ident_input|ident_input_file": {
+                    "id": 6,
+                    "output_name": "output_psm_nonvalidated"
+                },
+                "task|msms_input|raw_list": {
+                    "id": 2,
+                    "output_name": "output" 
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "moFF",
+            "outputs": [
+                {
+                    "name": "output_table",
+                    "type": "tabular"
+                },
+                {
+                    "name": "output_logs",
+                    "type": "txt"
+                }
+            ],
+            "position": {
+                "left": 1397,
+                "top": 981
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/proteomics_moff/proteomics_moff/2.0.3.0",
+            "tool_shed_repository": {
+                "changeset_revision": "a96af68dafb2",
+                "name": "proteomics_moff",
+                "owner": "galaxyp",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"task\": {\"task_selector\": \"moff\", \"__current_case__\": 0, \"ident_input\": {\"input_type_selector\": \"ps\", \"__current_case__\": 0, \"ident_input_file\": {\"__class__\": \"RuntimeValue\"}}, \"msms_input\": {\"input_type_selector\": \"raw\", \"__current_case__\": 0, \"raw_list\": {\"__class__\": \"RuntimeValue\"}}, \"tol\": \"10.0\", \"mbr\": \"off\", \"xic_length\": \"3.0\", \"rt_peak_win\": \"1.0\", \"rt_peak_win_match\": \"1.2\", \"match_filter\": {\"filter_flags\": \"nofilter\", \"__current_case__\": 1}, \"peptide_summary\": \"false\"}, \"__page__\": null, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "2.0.3.0",
+            "type": "tool",
+            "uuid": "86878b4a-1df5-4b4a-8a8e-161f958eda3c",
+            "workflow_outputs": [
+                {
+                    "label": null,
+                    "output_name": "output_table",
+                    "uuid": "d01541e8-0734-4e0e-862a-96942a366222"
+                },
+                {
+                    "label": null,
+                    "output_name": "output_logs",
+                    "uuid": "6931411b-2a07-433a-8f27-7717e4033ad2"
+                }
+            ]
+        }
+    },
+    "tags": [],
+    "uuid": "bd038743-a8f0-478b-ac49-4d51b1ae336f",
+    "version": 1
+}
