@@ -121,3 +121,5 @@ nb-configuration.xml
 .idea/artifacts/webpeptideshaker_war_exploded.xml
 .idea/encodings.xml
 
+src/main/webapp/WEB-INF/config.json
+src/main/webapp/WEB-INF/config.json
