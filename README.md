@@ -23,5 +23,5 @@ Before using PeptideShaker Online, please read [Start using PeptideShaker Online
 ## Demo
 A fully functional demo is available to test PeptideShaker Online. Due to resource limitations, the maximum number of concurrent users is set to five and uploading and deleting of files is not supported.
 
-[![demo](https://github.com/barsnes-group/peptide-shaker-online/wiki/images/demo.png)](http://158.39.77.27:8081/webpeptideshaker-1.0-SNAPSHOT/) 
+[![demo](https://github.com/barsnes-group/peptide-shaker-online/wiki/images/demo.png)](http://158.39.77.27:8081/webpeptideshaker-1.0/) 
 -----
