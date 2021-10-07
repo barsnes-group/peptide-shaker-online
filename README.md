@@ -15,11 +15,11 @@ PeptideShaker Online is a user-friendly web-based framework for the identificati
 ----
 
 ## Setup
-The setup of PeptideShaker Online requires local access to the following:
+The setup of PeptideShaker Online requires access to the following:
 
-1.  Galaxy server 
-2.  MySQL database engine
-3.  Tomcat webserver
+1.  Galaxy server (local or external)
+2.  Tomcat web server (local)
+3.  MySQL database engine (local)
 
 Step-by-step instructions on how to deploy PeptideShaker Online on your own web server are available here: [PeptideShaker Online Setup](https://github.com/barsnes-group/peptide-shaker-online/wiki/PeptideShaker-Online-Setup).
 
