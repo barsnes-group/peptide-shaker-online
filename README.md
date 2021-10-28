@@ -31,5 +31,7 @@ Before using PeptideShaker Online, please read [Start using PeptideShaker Online
 ## Demo
 A fully functional demo is available to test PeptideShaker Online. Due to resource limitations, the maximum number of concurrent users is set to five and uploading and deleting of files is not supported.
 
+_Note that due to recent security updates at the University of Bergen, the demo is currently only available from inside the University of Bergen network... We are working hard on a solution and hope that the demo will be back online soon!_
+
 [![demo](https://github.com/barsnes-group/peptide-shaker-online/wiki/images/demo.png)](https://proteomics.uib.no/webpeptideshaker-1.0/) 
 -----
