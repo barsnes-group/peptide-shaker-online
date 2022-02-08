@@ -15,7 +15,7 @@ PeptideShaker Online is a user-friendly web-based framework for the identificati
 ---
 
 ## PeptideShaker Online Publication
-  * [Farag et al. J. Proteome Res. 2021 (in press)](https://pubs.acs.org/doi/10.1021/acs.jproteome.1c00678).
+  * [Farag et al. J. Proteome Res. 2021](https://pubs.acs.org/doi/10.1021/acs.jproteome.1c00678).
   * If you use PeptideShaker Online as part of a publication please include this reference.
 
 ---
