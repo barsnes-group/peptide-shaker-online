@@ -568,7 +568,7 @@ public class GalaxyFacade implements Serializable {
                                 )
                                 .toArray();
                         bin.close();
-                        return new Spectrum(precursor, mzArray, intensityArray);
+                        return new Spectrum(precursor, mzArray, intensityArray,2);
 
                     } else if (insideSpectrum && !line.equals("")) {
                         try {
