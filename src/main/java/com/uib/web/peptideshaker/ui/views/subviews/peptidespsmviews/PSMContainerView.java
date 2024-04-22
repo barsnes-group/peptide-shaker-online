@@ -28,6 +28,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Yehia Mokhtar Farag
@@ -254,49 +256,53 @@ public class PSMContainerView extends VerticalLayout {
         psms.stream().map((psm) -> {
             return psm;
         }).forEachOrdered((psm) -> {
-            fragWidth = Math.max(fragWidth, psm.getSequence().length() * 17 + 100);
-             psmTooltip = "";
-            for (String str : mainPeptideTooltip.split("</br>")) {
-                if (str.contains("Intensity:") && psm.getIntensity() == -10000.0) {
-                    psmTooltip = mainPeptideTooltip.replace(str, "");
-                } else if (str.contains("Intensity:")) {
-                    psmTooltip = mainPeptideTooltip.replace(str, "Intensity: " + psm.getIntensity());
-                    break;
+            try {
+                fragWidth = Math.max(fragWidth, psm.getSequence().length() * 17 + 100);
+                psmTooltip = "";
+                for (String str : mainPeptideTooltip.split("</br>")) {
+                    if (str.contains("Intensity:") && psm.getIntensity() == -10000.0) {
+                        psmTooltip = mainPeptideTooltip.replace(str, "");
+                    } else if (str.contains("Intensity:")) {
+                        psmTooltip = mainPeptideTooltip.replace(str, "Intensity: " + psm.getIntensity());
+                        break;
+                    }
                 }
+                SecondarySpectraChartsGenerator chartGenerator = new SecondarySpectraChartsGenerator(psm.getModifiedSequence(), psmTooltip, psm.getIndex(), spectrumInformationMap.get(psm.getIndex()));
+                chartGenerator.getSequenceFragmentationChart().addLayoutClickListener(listener);
+                chartGenerator.getMassErrorPlot().addLayoutClickListener(listener);
+                int charge = Integer.parseInt(psm.getIdentificationCharge().replace("+", ""));
+                Map<String, Number> values = new LinkedHashMap<>();
+                values.put("greenlayout", (float) charge / (float) spectrumInformationMap.get(psm.getIndex()).getMaxCharge());
+                SparkLineLabel chargeLabel = new SparkLineLabel(charge + "", values, psm.getIndex()) {
+                    @Override
+                    public void selected(Object itemId) {
+                        psmOverviewTable.setValue(itemId);
+                    }
+                };
+                
+                double mzError = Math.abs(psm.getPrecursorMZError_PPM());
+                Map<String, Number> mzErrorValues = new LinkedHashMap<>();
+                mzErrorValues.put("greenlayout", (float) mzError / ((float) spectrumInformationMap.get(psm.getIndex()).getMzError() * 2.0f));
+                SparkLineLabel mzErrorLabel = new SparkLineLabel(df1.format(mzError) + "", mzErrorValues, psm.getIndex()) {
+                    @Override
+                    public void selected(Object itemId) {
+                        psmOverviewTable.setValue(itemId);
+                    }
+                };
+                
+                Map<String, Number> confidentValues = new LinkedHashMap<>();
+                confidentValues.put("greenlayout", (float) psm.getConfidence() / 100f);
+                SparkLineLabel confidentLabel = new SparkLineLabel(df1.format(psm.getConfidence()), confidentValues, psm.getIndex()) {
+                    @Override
+                    public void selected(Object itemId) {
+                        psmOverviewTable.setValue(itemId);
+                    }
+                };
+                ValidationLabel validation = new ValidationLabel(psm.getValidation());
+                this.psmOverviewTable.addItem(new Object[]{index++, chartGenerator.getSequenceFragmentationChart(), chartGenerator.getMassErrorPlot(), new ColorLabelWithPopupTooltip(psm.getIntensity(), psm.getIntensityColor(), psm.getIntensityPercentage()), chargeLabel, mzErrorLabel, confidentLabel, validation}, psm.getIndex());
+            } catch (InterruptedException ex) {
+                Logger.getLogger(PSMContainerView.class.getName()).log(Level.SEVERE, null, ex);
             }
-            SecondarySpectraChartsGenerator chartGenerator = new SecondarySpectraChartsGenerator(psm.getModifiedSequence(), psmTooltip, psm.getIndex(), spectrumInformationMap.get(psm.getIndex()));
-            chartGenerator.getSequenceFragmentationChart().addLayoutClickListener(listener);
-            chartGenerator.getMassErrorPlot().addLayoutClickListener(listener);
-            int charge = Integer.parseInt(psm.getIdentificationCharge().replace("+", ""));
-            Map<String, Number> values = new LinkedHashMap<>();
-            values.put("greenlayout", (float) charge / (float) spectrumInformationMap.get(psm.getIndex()).getMaxCharge());
-            SparkLineLabel chargeLabel = new SparkLineLabel(charge + "", values, psm.getIndex()) {
-                @Override
-                public void selected(Object itemId) {
-                    psmOverviewTable.setValue(itemId);
-                }
-            };
-
-            double mzError = Math.abs(psm.getPrecursorMZError_PPM());
-            Map<String, Number> mzErrorValues = new LinkedHashMap<>();
-            mzErrorValues.put("greenlayout", (float) mzError / ((float) spectrumInformationMap.get(psm.getIndex()).getMzError() * 2.0f));
-            SparkLineLabel mzErrorLabel = new SparkLineLabel(df1.format(mzError) + "", mzErrorValues, psm.getIndex()) {
-                @Override
-                public void selected(Object itemId) {
-                    psmOverviewTable.setValue(itemId);
-                }
-            };
-
-            Map<String, Number> confidentValues = new LinkedHashMap<>();
-            confidentValues.put("greenlayout", (float) psm.getConfidence() / 100f);
-            SparkLineLabel confidentLabel = new SparkLineLabel(df1.format(psm.getConfidence()), confidentValues, psm.getIndex()) {
-                @Override
-                public void selected(Object itemId) {
-                    psmOverviewTable.setValue(itemId);
-                }
-            };
-            ValidationLabel validation = new ValidationLabel(psm.getValidation());
-            this.psmOverviewTable.addItem(new Object[]{index++, chartGenerator.getSequenceFragmentationChart(), chartGenerator.getMassErrorPlot(), new ColorLabelWithPopupTooltip(psm.getIntensity(), psm.getIntensityColor(), psm.getIntensityPercentage()), chargeLabel, mzErrorLabel, confidentLabel, validation}, psm.getIndex());
 
         });
         this.psmOverviewTable.setSortContainerPropertyId("confidence");

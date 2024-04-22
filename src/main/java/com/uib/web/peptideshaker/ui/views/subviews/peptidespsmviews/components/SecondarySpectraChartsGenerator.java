@@ -56,7 +56,7 @@ public class SecondarySpectraChartsGenerator {
     private String base64;
     private MassErrorPlot errorPlot;
 
-    public SecondarySpectraChartsGenerator(String sequence, String tooltip, Object objectId, SpectrumInformation spectrumInformation) {
+    public SecondarySpectraChartsGenerator(String sequence, String tooltip, Object objectId, SpectrumInformation spectrumInformation) throws InterruptedException {
         this.sequenceFragmentationChart = new VerticalLayout();
         this.massErrorPlot = new VerticalLayout();
         this.sequenceFragmentationChart.setHeight(70, Unit.PIXELS);
@@ -156,8 +156,7 @@ public class SecondarySpectraChartsGenerator {
         //            errorPlot = new MassErrorPlot(annotations, spectrumInformation.getSpectrum(), accuracy, spectrumInformation.getIdentificationParameters().getSearchParameters().getFragmentAccuracyType() == SearchParameters.MassAccuracyType.PPM);
 
         // create the miniature mass error plot
-        errorPlot = new MassErrorPlot(annotations, spectrumInformation.getSpectrum(),
-                specificAnnotationParameters.getFragmentIonAccuracy(),
+        errorPlot = new MassErrorPlot(annotations, spectrumInformation.getSpectrum(), specificAnnotationParameters.getFragmentIonAccuracy(),
                 spectrumInformation.getIdentificationParameters().getSearchParameters().getFragmentAccuracyType() == SearchParameters.MassAccuracyType.PPM);
         errorPlot.setSize(300, 68);
         if (errorPlot.getChartPanel() != null) {
