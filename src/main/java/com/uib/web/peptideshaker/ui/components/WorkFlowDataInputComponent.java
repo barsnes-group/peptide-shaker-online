@@ -745,6 +745,9 @@ public class WorkFlowDataInputComponent extends Panel {
         searchEnginesList.put("MS_Amanda", "MS Amanda");
         searchEnginesList.put("DirecTag", "DirecTag");
         searchEnginesList.put("Novor", "Novor");
+        searchEnginesList.put("InstaNovo", "InstaNovo");
+        searchEnginesList.put("InstaNovoPlus", "InstaNovo+");
+        searchEnginesList.put("InstaNovoRefine", "InstaNovo with refinement");
         return searchEnginesList;
     }
 
